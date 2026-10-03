@@ -32,6 +32,10 @@ playwright-report/
 .turbo/
 .vercel/
 
+# TypeScript build cache
+*.tsbuildinfo
+next-env.d.ts
+
 # OS files
 .DS_Store
 Thumbs.db
