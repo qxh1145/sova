@@ -7,11 +7,10 @@ import type {
   Project,
   Service,
   ServiceKey,
-  SiteSettings,
   Testimonial,
 } from '@/types/content';
 import { getFAQs } from './faq';
-import { resolveSiteTokens } from './tokens';
+import { resolveDeep } from './tokens';
 
 export function getService(key: ServiceKey, locale: Locale): Promise<Service | null> {
   return getRepository().getService(key, locale);
@@ -28,17 +27,6 @@ export interface ServicePage {
   testimonials: Testimonial[];
   projects: Project[];
   pricing: Pricing | null;
-}
-
-/** Every string resolved; `html` fields are HTML-escaped, the rest (labels, hrefs) are not. */
-function resolveDeep<T>(value: T, settings: SiteSettings, html = false): T {
-  if (typeof value === 'string') return resolveSiteTokens(value, settings, html) as T;
-  if (Array.isArray(value)) return value.map((v) => resolveDeep(v, settings)) as T;
-  if (value && typeof value === 'object')
-    return Object.fromEntries(
-      Object.entries(value).map(([k, v]) => [k, resolveDeep(v, settings, k === 'html')]),
-    ) as T;
-  return value;
 }
 
 /**

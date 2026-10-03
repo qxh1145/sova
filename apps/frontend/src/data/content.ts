@@ -172,4 +172,13 @@ export const utilityContent: { id: EntityId; body: RichContent }[] = [
       ],
     },
   },
+  {
+    id: 'thank-you-vi',
+    body: {
+      format: 'sanitized-html',
+      html: '<h1>Gửi thông tin thành công!</h1><p>Cảm ơn bạn đã quan tâm đến Sova.<br>Chúng tôi sẽ liên hệ lại ngay để tư vấn chi tiết cho bạn.</p>',
+      assetIds: [],
+      sources: [{ file: 'eras-xin-chan-thanh-cam-on-quy-khach/index.html', line: 647 }],
+    },
+  },
 ];

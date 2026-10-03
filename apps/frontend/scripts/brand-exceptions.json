@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "match": "eras-",
+    "within": "porfolio-eras-vietnam",
+    "reason": "Source slug kept in the mock route registry and SourceRef files (MIGRATION_PLAN: rename to a Sova slug before release)"
+  },
+  {
+    "match": "eras-",
+    "within": "ho-so-nang-luc-eras-vietnam",
+    "reason": "Source slug kept in the mock route registry and SourceRef files (MIGRATION_PLAN: rename to a Sova slug before release)"
+  },
+  {
+    "match": "eras-",
+    "within": "eras-xin-chan-thanh-cam-on-quy-khach",
+    "reason": "Source slug kept in the mock route registry and SourceRef files (MIGRATION_PLAN: rename to a Sova slug before release)"
+  }
+]
