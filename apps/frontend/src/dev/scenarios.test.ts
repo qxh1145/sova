@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { getRepository } from '@/lib/repositories';
 import { getAssets } from '@/lib/queries/assets';
-import { getFAQs } from '@/lib/queries/faq';
+import { getFAQs, getFAQTopics } from '@/lib/queries/faq';
 import {
   getAboutPage,
   getContactPage,
@@ -50,6 +50,7 @@ const queries: [
     () => listPosts({ locale: 'vi', category: 'fixture-category', page: 1, pageSize: 10 }),
   ],
   ['getFAQs', 'list', ['faq-1'], () => getFAQs(['faq-1'], 'vi')],
+  ['getFAQTopics', 'list', ['faq-topic-1'], () => getFAQTopics('vi')],
   ['getTestimonials', 'list', ['testimonial-1'], () => getTestimonials(['testimonial-1'], 'vi')],
   ['getPartners', 'list', ['partner-1'], () => getPartners(['partner-1'])],
   ['getStats', 'list', ['stat-1'], () => getStats(['stat-1'])],

@@ -5,6 +5,7 @@ import type {
   ContactPageContent,
   EntityId,
   FAQ,
+  FAQTopic,
   HomePageContent,
   LegalPage,
   ListingSettings,
@@ -45,6 +46,7 @@ export interface ContentRepository {
     pageSize: number;
   }): Promise<PageResult<Post>>;
   getFAQs(ids: EntityId[], locale: Locale): Promise<FAQ[]>;
+  getFAQTopics(locale: Locale): Promise<FAQTopic[]>;
   getTestimonials(ids: EntityId[], locale: Locale): Promise<Testimonial[]>;
   getPartners(ids: EntityId[]): Promise<Partner[]>;
   getStats(ids: EntityId[]): Promise<Stat[]>;
@@ -70,6 +72,7 @@ export interface ContentData {
   posts: Post[];
   postCategories: PostCategory[];
   faqs: FAQ[];
+  faqTopics: FAQTopic[];
   testimonials: Testimonial[];
   partners: Partner[];
   stats: Stat[];
