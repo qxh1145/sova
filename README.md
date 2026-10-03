@@ -23,6 +23,23 @@ npx playwright install chromium && npm run test:e2e  # chạy trên production b
 
 E2E specs import `test` từ `apps/frontend/tests/e2e/fixtures.ts`: network guard fail-closed, chặn mọi host ngoài localhost và `MAPS_EMBED_ALLOWLIST`.
 
+## Baseline
+
+Ảnh gốc từ `../eras-clone` để so pixel với trang Sova. Chạy offline: request tới `https://erasvietnam.vn/**` được trả từ file mirror; hai file GSAP 3.12.2 trên cdnjs được trả từ bản copy giống hệt trong mirror (log `local`); mọi host khác bị chặn và ghi log. Không chạy `serve.py`/`build.py`. Không thuộc `test:e2e` hay CI.
+
+```bash
+cd apps/frontend
+npm run baseline          # chụp manifest × 8 viewport vào baseline/<route-key>/<vw>.png + .json (network/DOM evidence)
+npm run baseline:compare  # kiểm tra harness: trang nguồn khớp baseline, trang bị sửa thì fail
+npm run baseline:hash     # ../eras-clone khớp tests/baseline/source-hash.json (UPDATE_SOURCE_HASH=1 để tạo lại)
+npm run baseline:sova     # cần `npm run build` trước: khởi động `next start` (port 3100) và chạy spec Sova so với baseline
+```
+
+- `ERAS_CLONE_DIR`: đường dẫn mirror (mặc định `../eras-clone` cạnh repo). Đường dẫn tương đối được resolve theo cwd (`apps/frontend` khi chạy qua npm), không theo repo root, nên dùng đường dẫn tuyệt đối. Thiếu mirror thì các spec tự skip.
+- Route chụp: `tests/baseline/manifest.json`. `baseline/` bị git-ignore, tạo lại bằng `npm run baseline`.
+- Page epic đặt spec so sánh trong `tests/baseline/`, đặt tên `*.sova.spec.ts` (để `baseline:sova` chạy), `test.skip` khi `BASELINE_SOVA !== '1'` như `sova.spec.ts` (import `test` từ `tests/e2e/fixtures.ts`), gọi `compareToBaseline(page, key, viewport)` từ `tests/baseline/compare.ts` và chạy với `BASELINE_SOVA=1` (như `baseline:sova`); diff image trong `test-results/`.
+- Khác biệt đã biết (font Google bị chặn, asset thiếu trong mirror) ghi ở `docs/ANOMALY_REGISTER.md` (local).
+
 ## Liên kết GitHub và Vercel (thao tác thủ công)
 
 1. Tạo GitHub repo, `git remote add origin <url>`, push. Kiểm tra workflow **CI** (`.github/workflows/ci.yml`) xanh trong tab Actions.

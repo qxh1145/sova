@@ -10,7 +10,11 @@
     "typecheck": "next typegen && tsc --noEmit",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "baseline": "playwright test -c playwright.baseline.config.ts capture.spec",
+    "baseline:compare": "playwright test -c playwright.baseline.config.ts compare.spec",
+    "baseline:hash": "playwright test -c playwright.baseline.config.ts source-hash.spec",
+    "baseline:sova": "BASELINE_SOVA=1 playwright test -c playwright.baseline.config.ts sova.spec"
   },
   "dependencies": {
     "next": "16.3.8",
