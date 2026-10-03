@@ -20,3 +20,14 @@ export function resolveSiteTokens(text: string, settings: SiteSettings, html = t
     return html ? escapeHtml(value) : value;
   });
 }
+
+/** Every string resolved; `html` fields are HTML-escaped, the rest (labels, hrefs) are not. */
+export function resolveDeep<T>(value: T, settings: SiteSettings, html = false): T {
+  if (typeof value === 'string') return resolveSiteTokens(value, settings, html) as T;
+  if (Array.isArray(value)) return value.map((v) => resolveDeep(v, settings)) as T;
+  if (value && typeof value === 'object')
+    return Object.fromEntries(
+      Object.entries(value).map(([k, v]) => [k, resolveDeep(v, settings, k === 'html')]),
+    ) as T;
+  return value;
+}

@@ -10,6 +10,7 @@ import {
   getHomePage,
   getLegalPage,
   getListingSettings,
+  getPaymentGuide,
   getProfile,
 } from '@/lib/queries/pages';
 import { getPost, listPosts } from '@/lib/queries/posts';
@@ -60,6 +61,7 @@ const queries: [
   ['getContactPage', 'single', 'contact-1', () => getContactPage('vi')],
   ['getProfile', 'single', 'profile-1', () => getProfile('vi')],
   ['getLegalPage', 'single', 'legal-1', () => getLegalPage('/fixture-legal', 'vi')],
+  ['getPaymentGuide', 'single', 'payment-1', () => getPaymentGuide('vi')],
   ['getListingSettings', 'single', 'route-1', () => getListingSettings('route-1')],
 ];
 

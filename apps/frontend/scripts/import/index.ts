@@ -1,6 +1,6 @@
 // Dev-only importer: `npm run import`. Reads ../eras-clone (read-only) and writes src/data/{faq,
 // posts,post-categories,listings,projects,project-categories,content,testimonials,partners,routes,
-// assets}.ts, services/*.ts and pricing/*.ts.
+// stats,navigation,assets}.ts, services/*.ts, pricing/*.ts and pages/*.ts. site.ts is hand-written.
 // Not run in CI (no source mirror there); CI guards the committed output instead.
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -11,6 +11,8 @@ import { importPosts } from './posts.ts';
 import { importProjects } from './projects.ts';
 import { createAssetRegistry } from './assets.ts';
 import { importRoutes } from './routes.ts';
+import { importNavigation } from './navigation.ts';
+import { importPages } from './pages.ts';
 import { importServices } from './services.ts';
 import { importSocial } from './social.ts';
 import type { Pricing, Service } from '../../src/types/content.ts';
@@ -76,15 +78,6 @@ import type { PostCategory, SourceRef } from '@/types/content';
 export const postCategories: (PostCategory & { sources: SourceRef[] })[] = ${JSON.stringify(categories)};
 `,
   );
-  await writeTs(
-    path.join(DATA, 'listings.ts'),
-    `${HEADER}
-import type { ListingSettings, ListingSnapshot } from '@/types/content';
-
-export const listingSettings: ListingSettings[] = [];
-export const listingSnapshots: ListingSnapshot[] = ${JSON.stringify(snapshots)};
-`,
-  );
 
   const projectStats: Stats = { brand: 0, scrub: 0 };
   const project = importProjects(ERAS_CLONE_DIR, registry, projectStats);
@@ -107,15 +100,6 @@ export const projects: Project[] = ${JSON.stringify(project.projects)};
 import type { ProjectCategory, SourceRef } from '@/types/content';
 
 export const projectCategories: (ProjectCategory & { sources: SourceRef[] })[] = ${JSON.stringify(project.categories)};
-`,
-  );
-  await writeTs(
-    path.join(DATA, 'content.ts'),
-    `${HEADER}
-import type { EntityId, RichContent } from '@/types/content';
-
-// Utility copy and project delivery terms (Project.deliveryTermsId).
-export const utilityContent: { id: EntityId; body: RichContent }[] = ${JSON.stringify(project.terms)};
 `,
   );
 
@@ -193,7 +177,71 @@ export const routes: RouteEntry[] = ${JSON.stringify(routes)};
 `,
   );
 
-  const assets = registry.list();
+  const pageStats: Stats = { brand: 0, scrub: 0 };
+  const page = importPages(ERAS_CLONE_DIR, registry, pageStats, {
+    routes,
+    projectIdBySlug: new Map(project.projects.map((p) => [p.slug, p.id])),
+    postIdBySlug: new Map(posts.map((p) => [p.slug, p.id])),
+    services,
+    partnerIds: new Set(partners.map((p) => p.id)),
+  });
+  const { navigation, dropped } = importNavigation(ERAS_CLONE_DIR, routes, pageStats);
+  for (const link of dropped) console.log(`nav dropped ${link}`);
+  console.log(
+    `pages: ${page.homePages.length} home, ${page.aboutPages.length} about, ` +
+      `${page.contactPages.length} contact, ${page.legalPages.length} legal, ` +
+      `${page.paymentGuides.length} payment, ${page.profiles.length} profile, ` +
+      `${page.stats.length} stats, ${page.listingSettings.length} listing settings, ` +
+      `${navigation.length} navigation (${dropped.length} links dropped) ` +
+      `(${pageStats.scrub} contact scrubs, ${pageStats.brand} brand replacements)`,
+  );
+  const pageFiles: [file: string, type: string, name: string, value: unknown][] = [
+    ['pages/home.ts', 'HomePageRecord', 'homePages', page.homePages],
+    ['pages/about.ts', 'AboutPageRecord', 'aboutPages', page.aboutPages],
+    ['pages/contact.ts', 'ContactPageContent', 'contactPages', page.contactPages],
+    ['pages/profile.ts', 'CompanyProfileContent', 'profiles', page.profiles],
+    ['stats.ts', 'Stat', 'stats', page.stats],
+    ['navigation.ts', 'Navigation', 'navigation', navigation],
+  ];
+  for (const [file, type, name, value] of pageFiles)
+    await writeTs(
+      path.join(DATA, file),
+      `${HEADER}
+import type { ${type} } from '@/types/content';
+
+export const ${name}: ${type}[] = ${JSON.stringify(value)};
+`,
+    );
+  await writeTs(
+    path.join(DATA, 'pages/legal.ts'),
+    `${HEADER}
+import type { LegalPage, PaymentGuideContent } from '@/types/content';
+
+export const legalPages: LegalPage[] = ${JSON.stringify(page.legalPages)};
+
+export const paymentGuides: PaymentGuideContent[] = ${JSON.stringify(page.paymentGuides)};
+`,
+  );
+  await writeTs(
+    path.join(DATA, 'listings.ts'),
+    `${HEADER}
+import type { ListingSettings, ListingSnapshot } from '@/types/content';
+
+export const listingSettings: ListingSettings[] = ${JSON.stringify(page.listingSettings)};
+export const listingSnapshots: ListingSnapshot[] = ${JSON.stringify(snapshots)};
+`,
+  );
+  await writeTs(
+    path.join(DATA, 'content.ts'),
+    `${HEADER}
+import type { EntityId, RichContent } from '@/types/content';
+
+// Utility copy and project delivery terms (Project.deliveryTermsId).
+export const utilityContent: { id: EntityId; body: RichContent }[] = ${JSON.stringify([...project.terms, ...page.thankYou])};
+`,
+  );
+
+  const assets = [...registry.list(), page.wordmark];
   console.log(
     `assets: ${assets.length} (${assets.filter((a) => a.status === 'local').length} local) ` +
       `(${assetStats.scrub} contact scrubs, ${assetStats.brand} brand replacements in alt text)`,

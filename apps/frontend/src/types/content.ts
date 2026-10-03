@@ -258,6 +258,8 @@ export interface Navigation {
   header: NavigationItem[];
   mobile: NavigationItem[];
   footerGroups: { id: EntityId; label: string; items: NavigationItem[] }[];
+  /** Contact-form service selector, in source option order; each links to its service page. */
+  serviceOptions: NavigationItem[];
 }
 
 export interface RouteEntry {
@@ -356,6 +358,9 @@ export interface HomePageContent extends LocalizedIdentity {
   postPlacements: CollectionPlacement[];
 }
 
+/** Stored home record: stats are shared records referenced by id; the query fills `stats`. */
+export type HomePageRecord = Omit<HomePageContent, 'stats'> & { statIds: EntityId[] };
+
 export interface AboutPageContent extends LocalizedIdentity {
   hero: HeroContent;
   seo: SEO;
@@ -367,6 +372,9 @@ export interface AboutPageContent extends LocalizedIdentity {
   partnerIds: EntityId[];
   testimonialIds: EntityId[];
 }
+
+/** Stored about record; the query fills `stats` from `statIds`. */
+export type AboutPageRecord = Omit<AboutPageContent, 'stats'> & { statIds: EntityId[] };
 
 export interface ContactPageContent extends LocalizedIdentity {
   heading: string;

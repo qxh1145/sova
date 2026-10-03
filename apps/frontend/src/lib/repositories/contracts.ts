@@ -1,18 +1,19 @@
 import type {
-  AboutPageContent,
+  AboutPageRecord,
   AssetRef,
   CompanyProfileContent,
   ContactPageContent,
   EntityId,
   FAQ,
   FAQTopic,
-  HomePageContent,
+  HomePageRecord,
   LegalPage,
   ListingSettings,
   Locale,
   Navigation,
   PageResult,
   Partner,
+  PaymentGuideContent,
   Post,
   PostCategory,
   Pricing,
@@ -52,11 +53,12 @@ export interface ContentRepository {
   getStats(ids: EntityId[]): Promise<Stat[]>;
   getPricing(id: EntityId, locale: Locale): Promise<Pricing | null>;
   getAssets(ids: EntityId[]): Promise<AssetRef[]>;
-  getHomePage(locale: Locale): Promise<HomePageContent | null>;
-  getAboutPage(locale: Locale): Promise<AboutPageContent | null>;
+  getHomePage(locale: Locale): Promise<HomePageRecord | null>;
+  getAboutPage(locale: Locale): Promise<AboutPageRecord | null>;
   getContactPage(locale: Locale): Promise<ContactPageContent | null>;
   getProfile(locale: Locale): Promise<CompanyProfileContent | null>;
   getLegalPage(path: string, locale: Locale): Promise<LegalPage | null>;
+  getPaymentGuide(locale: Locale): Promise<PaymentGuideContent | null>;
   getListingSettings(routeId: EntityId): Promise<ListingSettings | null>;
   listRoutes(): Promise<RouteEntry[]>;
 }
@@ -78,10 +80,11 @@ export interface ContentData {
   stats: Stat[];
   pricing: Pricing[];
   assets: AssetRef[];
-  homePages: HomePageContent[];
-  aboutPages: AboutPageContent[];
+  homePages: HomePageRecord[];
+  aboutPages: AboutPageRecord[];
   contactPages: ContactPageContent[];
   legalPages: LegalPage[];
+  paymentGuides: PaymentGuideContent[];
   profiles: CompanyProfileContent[];
   listingSettings: ListingSettings[];
 }
