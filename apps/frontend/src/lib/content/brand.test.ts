@@ -4,6 +4,7 @@ import { applyBrandTerms, decodeEscapes, rewriteEraLinks } from './brand';
 test.each([
   ['Eras Việt Nam hoạt động', 'Sova hoạt động', 1],
   ['ERAS', 'ERAS', 0],
+  ['SEO tại ERAS Việt Nam, ERAS VietNam và Eras VietNam', 'SEO tại Sova, Sova và Sova', 3],
   ['Erasmus', 'Erasmus', 0],
   ['Eras Việt Nam', 'Sova', 1],
   [

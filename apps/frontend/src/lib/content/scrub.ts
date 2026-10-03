@@ -19,6 +19,7 @@ const EMAIL = String.raw`(?:info|support|contact)@erasvietnam\.vn`;
 
 /** Order matters: links before the bare phone/email they contain. */
 export const SCRUB_RULES: [pattern: RegExp, token: string][] = [
+  [/zalo:\/\/conversation\?phone=(?:84|0)?988606539/gi, '{{site.zaloHref}}'],
   [/(?:https?:\/\/)?(?:www\.)?zalo\.me\/(?:84|0)?988606539/gi, '{{site.zaloHref}}'],
   [/(?:https?:\/\/)?(?:www\.)?m\.me\/103667724916938/gi, '{{site.messengerHref}}'],
   [new RegExp(String.raw`tel:\s*${PHONE}`, 'gi'), '{{site.phoneHref}}'],
@@ -33,8 +34,9 @@ export const SCRUB_RULES: [pattern: RegExp, token: string][] = [
     /No\. 33,? (?:Alley|Lane) 165,? Cau Giay Street,(?: Cau Giay (?:Ward|District),)? Hanoi(?: City)?,? Vietnam/g,
     '{{site.address}}',
   ],
-  // The bare domain as text (e.g. "tên miền “erasvietnam.vn”"); URLs are left to rewriteEraLinks.
-  [/(?<![\w/.@-])erasvietnam\.vn(?![\w/-])/gi, '{{site.domain}}'],
+  // The bare domain as text (e.g. "tên miền “erasvietnam.vn”", "…@erasvietnam.vn"); URLs are left
+  // to rewriteEraLinks.
+  [/(?<![\w/.-])erasvietnam\.vn(?![\w/-])/gi, '{{site.domain}}'],
 ];
 
 export function scrubContacts(text: string): { text: string; count: number } {
