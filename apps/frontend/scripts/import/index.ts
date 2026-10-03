@@ -1,5 +1,5 @@
 // Dev-only importer: `npm run import`. Reads ../eras-clone (read-only) and writes src/data/{faq,
-// posts,post-categories,listings,assets}.ts.
+// posts,post-categories,listings,projects,project-categories,content,assets}.ts.
 // Not run in CI (no source mirror there); CI guards the committed output instead.
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -7,6 +7,8 @@ import { format, resolveConfig } from 'prettier';
 import { crossCheck, importFAQs } from './faq.ts';
 import type { Stats } from './html.ts';
 import { importPosts } from './posts.ts';
+import { importProjects } from './projects.ts';
+import { createAssetRegistry } from './assets.ts';
 
 const here = import.meta.dirname;
 const ERAS_CLONE_DIR = path.resolve(
@@ -46,11 +48,12 @@ export const faqTopics: FAQTopic[] = ${JSON.stringify(topics)};
   );
 
   const postStats: Stats = { brand: 0, scrub: 0 };
-  const { posts, categories, snapshots, assets } = importPosts(ERAS_CLONE_DIR, postStats);
+  const assetStats: Stats = { brand: 0, scrub: 0 };
+  const registry = createAssetRegistry(ERAS_CLONE_DIR, assetStats);
+  const { posts, categories, snapshots } = importPosts(ERAS_CLONE_DIR, registry, postStats);
   console.log(
     `posts: ${posts.length} posts, ${categories.length} categories, ${snapshots.length} listing ` +
-      `pages, ${assets.length} assets (${assets.filter((a) => a.status === 'local').length} local) ` +
-      `(${postStats.scrub} contact scrubs, ${postStats.brand} brand replacements)`,
+      `pages (${postStats.scrub} contact scrubs, ${postStats.brand} brand replacements)`,
   );
   await writeTs(
     path.join(DATA, 'posts.ts'),
@@ -76,6 +79,45 @@ import type { ListingSettings, ListingSnapshot } from '@/types/content';
 export const listingSettings: ListingSettings[] = [];
 export const listingSnapshots: ListingSnapshot[] = ${JSON.stringify(snapshots)};
 `,
+  );
+
+  const projectStats: Stats = { brand: 0, scrub: 0 };
+  const project = importProjects(ERAS_CLONE_DIR, registry, projectStats);
+  console.log(
+    `projects: ${project.projects.length} projects, ${project.categories.length} categories, ` +
+      `${project.terms.length} delivery terms ` +
+      `(${projectStats.scrub} contact scrubs, ${projectStats.brand} brand replacements)`,
+  );
+  await writeTs(
+    path.join(DATA, 'projects.ts'),
+    `${HEADER}
+import type { Project } from '@/types/content';
+
+export const projects: Project[] = ${JSON.stringify(project.projects)};
+`,
+  );
+  await writeTs(
+    path.join(DATA, 'project-categories.ts'),
+    `${HEADER}
+import type { ProjectCategory, SourceRef } from '@/types/content';
+
+export const projectCategories: (ProjectCategory & { sources: SourceRef[] })[] = ${JSON.stringify(project.categories)};
+`,
+  );
+  await writeTs(
+    path.join(DATA, 'content.ts'),
+    `${HEADER}
+import type { EntityId, RichContent } from '@/types/content';
+
+// Utility copy and project delivery terms (Project.deliveryTermsId).
+export const utilityContent: { id: EntityId; body: RichContent }[] = ${JSON.stringify(project.terms)};
+`,
+  );
+
+  const assets = registry.list();
+  console.log(
+    `assets: ${assets.length} (${assets.filter((a) => a.status === 'local').length} local) ` +
+      `(${assetStats.scrub} contact scrubs, ${assetStats.brand} brand replacements in alt text)`,
   );
   await writeTs(
     path.join(DATA, 'assets.ts'),

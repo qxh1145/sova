@@ -1,0 +1,90 @@
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { expect, test } from 'vitest';
+import { createAssetRegistry } from './assets';
+import { importProjects } from './projects';
+
+const COUNTS = { website: 59, branding: 2, 'mobile-app': 1 } as const;
+
+/** Minimal mirror with 59/2/1 cards; `overrides` changes one detail page's parts. */
+function mirror(
+  overrides: Record<string, { category?: string; terms?: string; related?: string }> = {},
+) {
+  const dir = mkdtempSync(path.join(tmpdir(), 'projects-mirror-'));
+  const write = (file: string, html: string) => {
+    mkdirSync(path.dirname(path.join(dir, file)), { recursive: true });
+    writeFileSync(path.join(dir, file), html);
+  };
+  write(
+    'du-an/index.html',
+    `<div class="filter-nav">${Object.keys(COUNTS)
+      .map((s) => `<a href="index.html" data-term="${s}">${s}</a>`)
+      .join('')}</div>`,
+  );
+  for (const [category, count] of Object.entries(COUNTS)) {
+    const slugs = Array.from({ length: count }, (_, i) => `${category}-${i}`);
+    write(
+      `featured_item_category/${category}/index.html`,
+      slugs
+        .map(
+          (s) =>
+            `<div class="col" data-terms='["x"]'><a href="../../featured_item/${s}/index.html">${s}</a></div>`,
+        )
+        .join(''),
+    );
+    slugs.forEach((slug, i) => {
+      const o = overrides[slug] ?? {};
+      write(
+        `featured_item/${slug}/index.html`,
+        `<html><body class="postid-${category.length * 100 + i} featured-item-category-${o.category ?? category}">` +
+          `<h1 class="entry-title">${slug}</h1>` +
+          `<div class="qodef-portfolio-content"><p>${o.terms ?? 'Terms'}</p></div>` +
+          `<div class="portfolio-related">${o.related ? `<a href="${o.related}"><div class="portfolio-box"></div></a>` : ''}</div>` +
+          `</body></html>`,
+      );
+    });
+  }
+  return dir;
+}
+
+const run = (dir: string) => {
+  const stats = { brand: 0, scrub: 0 };
+  return importProjects(dir, createAssetRegistry(dir, stats), stats);
+};
+
+test('a fixture mirror imports 62 projects in website, branding, mobile-app order', () => {
+  const { projects, terms } = run(mirror());
+  expect(projects).toHaveLength(62);
+  expect(projects.map((p) => p.slug).slice(57, 62)).toEqual([
+    'website-57',
+    'website-58',
+    'branding-0',
+    'branding-1',
+    'mobile-app-0',
+  ]);
+  expect(terms).toHaveLength(1);
+});
+
+test('source drift: card count, body category, related href and a 3rd terms variant throw', () => {
+  const dir = mirror();
+  writeFileSync(path.join(dir, 'featured_item_category/branding/index.html'), '');
+  expect(() => run(dir)).toThrow(/Source drift: .*branding.* has 0 cards, expected 2/);
+  expect(() => run(mirror({ 'website-3': { category: 'branding' } }))).toThrow(
+    /Source drift: featured_item\/website-3\/index.html body says branding, listing says website/,
+  );
+  expect(() =>
+    run(mirror({ 'website-0': { related: '../../featured_item/nope/index.html' } })),
+  ).toThrow(/Source drift: .* is not a project folder/);
+  const gone = mirror();
+  writeFileSync(
+    path.join(gone, 'featured_item_category/mobile-app/index.html'),
+    `<div class="col" data-terms='["x"]'><a href="../../featured_item/gone/index.html">x</a></div>`,
+  );
+  expect(() => run(gone)).toThrow(
+    /Source drift: featured_item_category\/mobile-app\/index.html: ..\/..\/featured_item\/gone\/index.html has no project folder/,
+  );
+  expect(() =>
+    run(mirror({ 'website-1': { terms: 'Variant 2' }, 'website-2': { terms: 'Variant 3' } })),
+  ).toThrow(/Source drift: featured_item\/website-2\/index.html has terms variant 3/);
+});
