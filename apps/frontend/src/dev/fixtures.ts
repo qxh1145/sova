@@ -60,6 +60,8 @@ export const fixtures: ContentData = {
       testimonialIds: ['testimonial-1'],
       featuredProjectIds: ['project-1'],
       pricingId: 'pricing-1',
+      offerings: [],
+      sectionCopy: {},
     },
   ],
   projects: [

@@ -21,6 +21,8 @@ test.each([
   ['https://m.me/103667724916938', '{{site.messengerHref}}'],
   ['https://zalo.me/0988606539', '{{site.zaloHref}}'],
   ['https://zalo.me/84988606539', '{{site.zaloHref}}'],
+  ['zalo://conversation?phone=0988606539', '{{site.zaloHref}}'],
+  ['định dạng “…@erasvietnam.vn”', 'định dạng “…@{{site.domain}}”'],
   ['tên miền “erasvietnam.vn”', 'tên miền “{{site.domain}}”'],
   ['https://erasvietnam.vn/x/', 'https://erasvietnam.vn/x/'],
   ['10988606539 and 09886065390', '10988606539 and 09886065390'],
