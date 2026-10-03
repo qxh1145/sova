@@ -1,5 +1,6 @@
 // Post-build guard (CI, after `next build`): no Eras string or scrubbed Eras contact value in the
-// built output. Matches listed in scripts/brand-exceptions.json ({file?, match, reason}) pass.
+// built output. Matches listed in scripts/brand-exceptions.json ({file?, match, within?, reason})
+// pass; `within` limits an exception to a match inside that string (e.g. a kept source slug).
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { BRAND_LEAK_RE } from '../src/lib/content/brand.ts';
@@ -10,12 +11,20 @@ const NEXT_DIR = path.resolve(process.env.NEXT_DIR ?? path.join(here, '../.next'
 const TEXT_EXT = /\.(html|js|mjs|cjs|json|txt|rsc|css|map|body|meta|svg|xml)$/;
 const PATTERNS = [BRAND_LEAK_RE, ...SCRUB_RULES.map(([pattern]) => pattern)];
 
-type Exception = { file?: string; match: string; reason: string };
+type Exception = { file?: string; match: string; within?: string; reason: string };
 const exceptions = JSON.parse(
   readFileSync(process.env.BRAND_EXCEPTIONS ?? path.join(here, 'brand-exceptions.json'), 'utf8'),
 ) as Exception[];
-const allowed = (file: string, match: string) =>
-  exceptions.some((e) => e.match === match && (!e.file || e.file === file));
+const allowed = (file: string, match: string, text: string, index: number) =>
+  exceptions.some(
+    (e) =>
+      e.match === match &&
+      (!e.file || e.file === file) &&
+      (!e.within ||
+        text
+          .slice(Math.max(0, index - e.within.length), index + match.length + e.within.length)
+          .includes(e.within)),
+  );
 
 const roots = ['server', 'static'].map((dir) => path.join(NEXT_DIR, dir));
 if (!roots.every(existsSync)) {
@@ -33,7 +42,7 @@ for (const root of roots) {
     scanned++;
     for (const pattern of PATTERNS) {
       for (const { 0: match, index } of text.matchAll(pattern)) {
-        if (allowed(file, match)) continue;
+        if (allowed(file, match, text, index)) continue;
         const context = text.slice(Math.max(0, index - 40), index + match.length + 40);
         leaks.push(`${file}: ${JSON.stringify(match)} in …${context.replace(/\s+/g, ' ')}…`);
       }

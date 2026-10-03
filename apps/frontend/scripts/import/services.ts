@@ -61,22 +61,22 @@ interface Ctx {
   stats: Stats;
 }
 
-const unescape = (text: string) =>
+export const unescape = (text: string) =>
   text.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 
 /** Visible text of an element (br -> space) through the text pipeline. */
-const plain = (el: HTMLElement, stats: Stats) =>
+export const plain = (el: HTMLElement, stats: Stats) =>
   unescape(visibleText(sanitize(el, { text: (raw) => processText(raw, stats), href: () => null })));
 
 /** Drops the `<br>` the source leaves at the end of paragraphs and list items. */
-const trimBreaks = (html: string) => html.replace(/(?:<br>)+(?=<\/(?:p|li)>)/g, '');
+export const trimBreaks = (html: string) => html.replace(/(?:<br>)+(?=<\/(?:p|li)>)/g, '');
 
 const hooks = (ctx: Ctx, line: number) => ({
   text: (raw: string) => processText(raw, ctx.stats),
   href: (raw: string) => processHref(raw, ctx.file, line, ctx.stats),
 });
 
-function linkModel(a: HTMLElement | null, ctx: Ctx): LinkModel | undefined {
+export function linkModel(a: HTMLElement | null, ctx: Ctx): LinkModel | undefined {
   const raw = a?.getAttribute('href');
   if (!a || raw === undefined) return undefined;
   const href = processHref(raw, ctx.file, ctx.lineOf(a.range[0]), ctx.stats);

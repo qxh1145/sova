@@ -42,7 +42,7 @@ export const POST_ALLOWED: ReadonlySet<string> = new Set([
 export type PostCategoryRecord = PostCategory & { sources: SourceRef[] };
 
 // A bare Eras URL written as body text (not a link) keeps only its path, like rewriteEraLinks.
-const ERAS_URL_TEXT = /https?:\/\/(?:[\w-]+\.)*erasvietnam\.(?:vn|com)(\/[^\s<]*)?/gi;
+export const ERAS_URL_TEXT = /https?:\/\/(?:[\w-]+\.)*erasvietnam\.(?:vn|com)(\/[^\s<]*)?/gi;
 
 /** `/slug/` of a post link on `file`, or throws when it is not one of the listed posts. */
 function postSlug(href: string, file: string, slugs: Set<string>): string {
