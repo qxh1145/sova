@@ -39,3 +39,14 @@ Platform and data boundary: no page UI, no shell. Owns the shared decisions ever
 - decision — docs/ROUTE_MAP.md
 - decision — docs/ASSET_MAP.md, docs/STYLE_AUDIT.md
 - decision — docs/MIGRATION_PLAN.md, section Quyết định đã chốt — 03/10/2026
+
+## Notes
+
+- Decision: tracer bullet is 1 (scaffold + CI + Vercel staging showing SiteSettings "Sova" through contract → mock adapter → query); 2 (baseline + pixel-diff compare harness) follows as the least-certain slice and because UI must match `../eras-clone` exactly (2026-10-03).
+- Decision: importer is a committed, re-runnable, deterministic script in `scripts/import/` reading `../eras-clone` and `docs/evidence/` read-only (2026-10-03).
+- Decision: Eras contact values in imported copy are scrubbed to reference tokens resolved from SiteSettings placeholders; the build-output grep also checks them (2026-10-03).
+- Decision: source baseline lives in git-ignored `baseline/` with a committed manifest and a script that recreates it (2026-10-03).
+- Decision: SiteSettings.mapEmbedUrl is a live Google Maps embed at a neutral placeholder location, not the Eras address (2026-10-03).
+- Decision: form SubmitAdapter and mock transport stay with epic-site-shell-and-primitives; this epic ships only the `SubmitResult` type (2026-10-03).
+- Decision: the 200-crawl part of CAP-2 is deferred to the page epics and epic-fidelity-and-handoff; 8 delivers the registry part (2026-10-03).
+- Decision: 2, 3 and 10 can run in parallel after 1; importers 4→5→6 run in sequence because they share the pipeline (2026-10-03).

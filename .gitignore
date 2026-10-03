@@ -1,1 +1,63 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build and production outputs
+dist/
+build/
+out/
+.next/
+
+# Environment files
+.env
+.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Cache and temporary directories
+.cache/
+.turbo/
+.temp/
+.tmp/
+tmp/
+temp/
 .omc/
+baseline/
+
+# Testing and Coverage
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+
+# Editor and IDE configurations
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# BMad generated skill renders
+_bmad/render/
