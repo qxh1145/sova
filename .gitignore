@@ -59,5 +59,12 @@ test-results/
 ehthumbs.db
 Thumbs.db
 
-# BMad generated skill renders
-_bmad/render/
+# AI Agents & BMad Tooling
+.agents/
+.claude/
+skills-lock.json
+_bmad/
+_bmad-output/
+
+# Project documentation & audit evidence
+docs/
