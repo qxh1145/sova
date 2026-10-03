@@ -1,0 +1,26 @@
+@import './tokens.css';
+/* port:css begin — generated, do not edit */
+@import './legacy/01-wp-img-auto-sizes-contain-inline.css';
+@import './legacy/02-global-styles-inline.css';
+@import './legacy/03-dnd-upload-cf7.css';
+@import './legacy/04-contact-form-7.css';
+@import './legacy/05-contactus.css';
+@import './legacy/06-contactus-generated-desktop.css';
+@import './legacy/07-dflip-style.css';
+@import './legacy/08-flatsome-main.css';
+@import './legacy/09-flatsome-main-inline.css';
+@import './legacy/10-flatsome-style.css';
+@import './legacy/11-custom.css';
+@import './legacy/12-wp-custom.css';
+/* port:css end */
+
+/* Shell-pending overrides: the source paints the background on #wrapper/#main (flatsome paints
+   html #4d4d4d) and hides the pointer for a custom cursor. Remove both when the site shell and the
+   Cursor component land. */
+html,
+body {
+  background-color: var(--color-bg);
+}
+body {
+  cursor: auto;
+}
