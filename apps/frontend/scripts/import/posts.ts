@@ -1,9 +1,7 @@
-import { createHash } from 'node:crypto';
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { HTMLElement } from 'node-html-parser';
 import type {
-  AssetRef,
   ListingSnapshot,
   Post,
   PostCategory,
@@ -20,6 +18,7 @@ import {
   sanitize,
   type Stats,
 } from './html.ts';
+import type { AssetRegistry } from './assets.ts';
 
 /** Blog listings: public path -> page count. `/goc-nhin/` (all posts) first. */
 const LISTINGS: [PublicPath, number][] = [
@@ -42,39 +41,8 @@ export const POST_ALLOWED: ReadonlySet<string> = new Set([
 
 export type PostCategoryRecord = PostCategory & { sources: SourceRef[] };
 
-const ERAS_HOST = /(^|\.)erasvietnam\.(vn|com)$/i;
 // A bare Eras URL written as body text (not a link) keeps only its path, like rewriteEraLinks.
 const ERAS_URL_TEXT = /https?:\/\/(?:[\w-]+\.)*erasvietnam\.(?:vn|com)(\/[^\s<]*)?/gi;
-
-/**
- * Media src -> AssetRef src + status. Mirror-relative and Eras-host paths become `/path`
- * (local when the file exists in the mirror, else missing); any other host keeps its URL (missing).
- */
-export function classifyAsset(
-  raw: string,
-  file: string,
-  erasDir: string,
-): { src: string; status: 'local' | 'missing' } | null {
-  const value = decodeEscapes(raw).trim();
-  let url: URL;
-  try {
-    url = new URL(value, `https://erasvietnam.vn/${file}`);
-  } catch {
-    return null;
-  }
-  if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
-  if (!ERAS_HOST.test(url.hostname)) return { src: value, status: 'missing' };
-  let local = false;
-  try {
-    local = statSync(path.join(erasDir, decodeURIComponent(url.pathname))).isFile();
-  } catch {
-    // missing file or malformed %-escape: no local file
-  }
-  return { src: url.pathname, status: local ? 'local' : 'missing' };
-}
-
-const dimension = (value: string | undefined) =>
-  value && /^\d+$/.test(value) ? Number(value) : undefined;
 
 /** `/slug/` of a post link on `file`, or throws when it is not one of the listed posts. */
 function postSlug(href: string, file: string, slugs: Set<string>): string {
@@ -92,48 +60,8 @@ interface Card {
   thumbnailId?: string;
 }
 
-export function importPosts(erasDir: string, stats: Stats) {
-  const assets = new Map<string, AssetRef>();
-
-  const addAsset = (
-    raw: string | undefined,
-    meta: { alt?: string; width?: string; height?: string; kind: AssetRef['kind'] },
-    source: SourceRef,
-  ): { src: string; id: string } | null => {
-    const found = raw ? classifyAsset(raw, source.file, erasDir) : null;
-    if (!found) {
-      console.log(`asset dropped ${source.file}:${source.line} ${raw ?? '(no src)'}`);
-      return null;
-    }
-    const id = `asset-${createHash('sha1').update(found.src).digest('hex').slice(0, 10)}`;
-    let asset = assets.get(id);
-    if (asset && asset.src !== found.src) throw new Error(`Asset id collision: ${id}`);
-    if (!asset) {
-      asset = { id, src: found.src, alt: '', kind: meta.kind, status: found.status, sources: [] };
-      assets.set(id, asset);
-    }
-    // First non-empty value wins, so the output does not depend on which page mentioned it last.
-    if (!asset.alt && meta.alt) asset.alt = processText(meta.alt, stats).trim();
-    asset.width ??= dimension(meta.width);
-    asset.height ??= dimension(meta.height);
-    if (!asset.sources.some((s) => s.file === source.file && s.line === source.line))
-      asset.sources.push(source);
-    return { src: asset.src, id };
-  };
-
-  const imageAsset = (el: HTMLElement | null, file: string, lineOf: (o: number) => number) =>
-    el
-      ? addAsset(
-          el.getAttribute('src'),
-          {
-            alt: el.getAttribute('alt'),
-            width: el.getAttribute('width'),
-            height: el.getAttribute('height'),
-            kind: 'image',
-          },
-          { file, line: lineOf(el.range[0]) },
-        )?.id
-      : undefined;
+export function importPosts(erasDir: string, registry: AssetRegistry, stats: Stats) {
+  const { add: addAsset, image: imageAsset } = registry;
 
   // Listings: cards and pagination per page.
   const cards = new Map<string, Card>();
@@ -349,5 +277,5 @@ export function importPosts(erasDir: string, stats: Stats) {
     posts.push(post);
   }
 
-  return { posts, categories, snapshots, assets: [...assets.values()] };
+  return { posts, categories, snapshots };
 }
