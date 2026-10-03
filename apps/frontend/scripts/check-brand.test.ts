@@ -36,3 +36,9 @@ test('a listed exception passes', () => {
   expect(run('<p>Eras</p>', [exception]).status).toBe(0);
   expect(run('<p>Eras</p>', [{ ...exception, file: 'other.html' }]).status).toBe(1);
 });
+
+test('a `within` exception passes only inside that string', () => {
+  const exception = { match: 'eras-', within: 'ho-so-nang-luc-eras-vietnam', reason: 'test' };
+  expect(run('<a href="/ho-so-nang-luc-eras-vietnam/">x</a>', [exception]).status).toBe(0);
+  expect(run('<p>eras-x</p>', [exception]).status).toBe(1);
+});

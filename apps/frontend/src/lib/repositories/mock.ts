@@ -5,7 +5,7 @@ import { navigation } from '@/data/navigation';
 import { aboutPages } from '@/data/pages/about';
 import { contactPages } from '@/data/pages/contact';
 import { homePages } from '@/data/pages/home';
-import { legalPages } from '@/data/pages/legal';
+import { legalPages, paymentGuides } from '@/data/pages/legal';
 import { profiles } from '@/data/pages/profile';
 import { partners } from '@/data/partners';
 import { postCategories } from '@/data/post-categories';
@@ -129,6 +129,9 @@ export function createMockRepository(data: ContentData): ContentRepository {
     async getContactPage(locale) {
       return data.contactPages.find((p) => p.locale === locale) ?? null;
     },
+    async getPaymentGuide(locale) {
+      return data.paymentGuides.find((p) => p.locale === locale) ?? null;
+    },
     async getProfile(locale) {
       return data.profiles.find((p) => p.locale === locale) ?? null;
     },
@@ -173,6 +176,7 @@ export const mockRepository = createMockRepository({
   aboutPages,
   contactPages,
   legalPages,
+  paymentGuides,
   profiles,
   listingSettings,
 });

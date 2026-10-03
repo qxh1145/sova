@@ -35,6 +35,19 @@ export const fixtures: ContentData = {
       mapEmbedUrl: '',
       logoIds: ['asset-1'],
     },
+    {
+      locale: 'en',
+      companyName: 'Fixture Co',
+      wordmark: 'Fixture',
+      address: 'Fixture address',
+      phones: [{ label: '000', href: 'tel:000' }],
+      email: 'fixture@example.com',
+      socialLinks: [],
+      messengerHref: 'https://example.com/messenger',
+      zaloHref: 'https://example.com/zalo',
+      mapEmbedUrl: '',
+      logoIds: ['asset-1'],
+    },
   ],
   navigation: [
     {
@@ -44,6 +57,9 @@ export const fixtures: ContentData = {
       ],
       mobile: [],
       footerGroups: [],
+      serviceOptions: [
+        { id: 'nav-2', label: 'Fixture', destination: { kind: 'internal', routeId: 'route-1' } },
+      ],
     },
   ],
   routes: [
@@ -148,7 +164,7 @@ export const fixtures: ContentData = {
     {
       ...page('home-1', '/'),
       hero,
-      stats: [],
+      statIds: ['stat-1'],
       sectionCopy: {
         achievements: { title: 'Fixture' },
         services: { title: 'Fixture' },
@@ -169,7 +185,7 @@ export const fixtures: ContentData = {
     {
       ...page('about-1', '/fixture-about'),
       hero,
-      stats: [],
+      statIds: ['stat-1'],
       goals: [],
       purposePanels: [],
       timeline: [],
@@ -182,6 +198,14 @@ export const fixtures: ContentData = {
     { ...page('contact-1', '/fixture-contact'), heading: 'Fixture', introduction: rich },
   ],
   legalPages: [{ ...page('legal-1', '/fixture-legal'), body: rich }],
+  paymentGuides: [
+    {
+      ...page('payment-1', '/fixture-payment'),
+      introduction: rich,
+      accounts: [{ id: 'account-1', bank: 'Fixture', holder: 'Fixture', accountNumber: '000' }],
+      instructions: rich,
+    },
+  ],
   profiles: [{ ...page('profile-1', '/fixture-profile'), pdfAssetId: 'asset-1' }],
   listingSettings: [{ routeId: 'route-1', heading: { title: 'Fixture' } }],
 };

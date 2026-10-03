@@ -99,7 +99,10 @@ test('gallery shapes 0–4 and the 7 pages without a display date', () => {
 });
 
 test('no Eras word or raw Eras contact value in project, category and terms text', () => {
-  const text = JSON.stringify({ projects, projectCategories, utilityContent });
+  // Source refs are provenance, not text (the thank-you page's mirror folder keeps the brand).
+  const text = JSON.stringify({ projects, projectCategories, utilityContent }, (key, value) =>
+    key === 'sources' ? undefined : value,
+  );
   expect([...text.matchAll(BRAND_LEAK_RE)].map((m) => m[0])).toEqual([]);
   for (const [pattern] of SCRUB_RULES) expect(text.match(pattern)).toBeNull();
 });
