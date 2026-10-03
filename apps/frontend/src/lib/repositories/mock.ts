@@ -1,5 +1,5 @@
 import { assets } from '@/data/assets';
-import { faqs } from '@/data/faq';
+import { faqs, faqTopics } from '@/data/faq';
 import { listingSettings } from '@/data/listings';
 import { navigation } from '@/data/navigation';
 import { aboutPages } from '@/data/pages/about';
@@ -102,6 +102,9 @@ export function createMockRepository(data: ContentData): ContentRepository {
     async getFAQs(ids, locale) {
       return byIds(data.faqs, ids, (f) => f.locale === locale);
     },
+    async getFAQTopics(locale) {
+      return data.faqTopics.filter((t) => t.locale === locale);
+    },
     async getTestimonials(ids, locale) {
       return byIds(data.testimonials, ids, (t) => t.locale === locale);
     },
@@ -160,6 +163,7 @@ export const mockRepository = createMockRepository({
   posts,
   postCategories,
   faqs,
+  faqTopics,
   testimonials,
   partners,
   stats,
