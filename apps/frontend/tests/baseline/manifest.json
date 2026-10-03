@@ -1,0 +1,287 @@
+{
+  "viewports": [390, 549, 550, 768, 849, 850, 1280, 1440],
+  "viewportHeight": 900,
+  "rows": [
+    {
+      "key": "home-vi",
+      "url": "/",
+      "family": "home",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "home-en",
+      "url": "/en/home/",
+      "family": "home",
+      "locale": "en",
+      "reason": "family"
+    },
+    {
+      "key": "about-vi",
+      "url": "/gioi-thieu/",
+      "family": "about",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "about-en",
+      "url": "/en/about-us/",
+      "family": "about",
+      "locale": "en",
+      "reason": "family"
+    },
+    {
+      "key": "contact-vi",
+      "url": "/lien-he/",
+      "family": "contact",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "contact-en",
+      "url": "/en/contact-us/",
+      "family": "contact",
+      "locale": "en",
+      "reason": "family"
+    },
+    {
+      "key": "faq-vi",
+      "url": "/cau-hoi-thuong-gap/",
+      "family": "faq",
+      "locale": "vi",
+      "reason": "family; exception: FAQ tabs"
+    },
+    {
+      "key": "faq-en",
+      "url": "/en/faq/",
+      "family": "faq",
+      "locale": "en",
+      "reason": "family"
+    },
+    {
+      "key": "website-vi",
+      "url": "/thiet-ke-website/",
+      "family": "website",
+      "locale": "vi",
+      "reason": "family; exception: duplicated form (A06)"
+    },
+    {
+      "key": "website-en",
+      "url": "/en/website-development/",
+      "family": "website",
+      "locale": "en",
+      "reason": "family"
+    },
+    {
+      "key": "seo-vi",
+      "url": "/seo-tu-khoa-website/",
+      "family": "seo",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "seo-en",
+      "url": "/en/website-keyword-seo/",
+      "family": "seo",
+      "locale": "en",
+      "reason": "family"
+    },
+    {
+      "key": "mobile-vi",
+      "url": "/thiet-ke-app-mobile/",
+      "family": "mobile",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "mobile-en",
+      "url": "/en/app-mobile-development/",
+      "family": "mobile",
+      "locale": "en",
+      "reason": "family"
+    },
+    {
+      "key": "branding-vi",
+      "url": "/ui-ux-branding-design/",
+      "family": "branding",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "branding-en",
+      "url": "/en/ui-ux-branding-design-2/",
+      "family": "branding",
+      "locale": "en",
+      "reason": "family"
+    },
+    {
+      "key": "email-vi",
+      "url": "/e-mail-doanh-nghiep/",
+      "family": "email",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "email-en",
+      "url": "/en/business-e-mail/",
+      "family": "email",
+      "locale": "en",
+      "reason": "family"
+    },
+    {
+      "key": "hosting-vi",
+      "url": "/hosting-doanh-nghiep/",
+      "family": "hosting",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "hosting-en",
+      "url": "/en/business-hosting/",
+      "family": "hosting",
+      "locale": "en",
+      "reason": "family"
+    },
+    {
+      "key": "vps-vi",
+      "url": "/vps-doanh-nghiep/",
+      "family": "vps",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "vps-en",
+      "url": "/en/business-vps/",
+      "family": "vps",
+      "locale": "en",
+      "reason": "family"
+    },
+    {
+      "key": "storage-vi",
+      "url": "/giai-phap-luu-tru/",
+      "family": "storage",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "storage-en",
+      "url": "/en/storage-solution/",
+      "family": "storage",
+      "locale": "en",
+      "reason": "family"
+    },
+    {
+      "key": "profile-vi",
+      "url": "/ho-so-nang-luc-eras-vietnam/",
+      "family": "profile",
+      "locale": "vi",
+      "reason": "family; exception: profile PDF"
+    },
+    {
+      "key": "profile-en",
+      "url": "/en/porfolio-eras-vietnam/",
+      "family": "profile",
+      "locale": "en",
+      "reason": "family"
+    },
+    {
+      "key": "projects-vi",
+      "url": "/du-an/",
+      "family": "projects",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "projects-en",
+      "url": "/en/our-project/",
+      "family": "projects",
+      "locale": "en",
+      "reason": "family; exception: EN blank project template (A08)"
+    },
+    {
+      "key": "projects-featured-index",
+      "url": "/featured_item/",
+      "family": "projects",
+      "locale": "vi",
+      "reason": "exception: A12 THP heading before the shared hero"
+    },
+    {
+      "key": "blog-vi",
+      "url": "/goc-nhin/",
+      "family": "blog",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "blog-en",
+      "url": "/en/insight/",
+      "family": "blog",
+      "locale": "en",
+      "reason": "family"
+    },
+    {
+      "key": "content-vi",
+      "url": "/chinh-sach-bao-mat/",
+      "family": "content",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "content-en",
+      "url": "/en/privacy-policy/",
+      "family": "content",
+      "locale": "en",
+      "reason": "family"
+    },
+    {
+      "key": "project-detail-thp",
+      "url": "/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/",
+      "family": "project-detail",
+      "locale": "vi",
+      "reason": "family; exception: THP gallery (A12)"
+    },
+    {
+      "key": "project-detail-no-gallery",
+      "url": "/featured_item/centro-noi-that-cao-cap-centro-chau-au/",
+      "family": "project-detail",
+      "locale": "vi",
+      "reason": "exception: project without gallery (no project images in body)"
+    },
+    {
+      "key": "post-detail-table",
+      "url": "/phat-trien-ung-dung-di-dong-cho-doanh-nghiep-huong-dan-chi-tiet/",
+      "family": "post-detail",
+      "locale": "vi",
+      "reason": "family; exception: long article with table"
+    },
+    {
+      "key": "post-detail-video",
+      "url": "/hieu-tu-a-z-ve-thiet-ke-website-responsive/",
+      "family": "post-detail",
+      "locale": "vi",
+      "reason": "exception: long article with video embeds (no article has both table and video)"
+    },
+    {
+      "key": "thank-you-vi",
+      "url": "/eras-xin-chan-thanh-cam-on-quy-khach/",
+      "family": "thank-you",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "sample-vi",
+      "url": "/sample-page/",
+      "family": "sample",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "login-vi",
+      "url": "/login-eras/",
+      "file": "login-eras/index__q_6b334f548d36.html",
+      "family": "login",
+      "locale": "vi",
+      "reason": "exception: login utility"
+    }
+  ]
+}
