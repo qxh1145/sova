@@ -1,6 +1,14 @@
-import { repository } from '@/lib/repositories';
-import type { Locale, SiteSettings } from '@/types/content';
+import { getRepository } from '@/lib/repositories';
+import type { Locale, Navigation, RouteEntry, SiteSettings } from '@/types/content';
 
 export function getSiteSettings(locale: Locale): Promise<SiteSettings> {
-  return repository.getSiteSettings(locale);
+  return getRepository().getSiteSettings(locale);
+}
+
+export function getNavigation(locale: Locale): Promise<Navigation> {
+  return getRepository().getNavigation(locale);
+}
+
+export function listRoutes(): Promise<RouteEntry[]> {
+  return getRepository().listRoutes();
 }
