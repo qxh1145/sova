@@ -3,6 +3,7 @@ import path from 'node:path';
 import type { HTMLElement } from 'node-html-parser';
 import type {
   FAQ,
+  FAQPlacement,
   FAQTopic,
   Locale,
   RichContent,
@@ -20,7 +21,7 @@ import {
 } from './html.ts';
 
 // Global FAQ page first, then service pages in this fixed order.
-const PAGES: Record<Locale, { global: string; services: [ServiceKey, string][] }> = {
+export const PAGES: Record<Locale, { global: string; services: [ServiceKey, string][] }> = {
   vi: {
     global: 'cau-hoi-thuong-gap/index.html',
     services: [
@@ -95,7 +96,7 @@ export const normalizeQuestion = (question: string) =>
     .replace(/\s+/g, ' ')
     .toLowerCase();
 
-const slug = (text: string) =>
+export const slug = (text: string) =>
   text
     .normalize('NFD')
     .replace(/\p{M}/gu, '')
@@ -115,6 +116,8 @@ export function importFAQs(erasDir: string, stats: Stats) {
   const faqs: FAQ[] = [];
   const topics: FAQTopic[] = [];
   const occurrences: SourceRef[] = [];
+  /** `{locale}:{serviceKey}` -> the page's accordion, in order. */
+  const servicePlacements = new Map<string, FAQPlacement[]>();
 
   for (const locale of ['vi', 'en'] as const) {
     const byQuestion = new Map<string, FAQ>();
@@ -186,11 +189,20 @@ export function importFAQs(erasDir: string, stats: Stats) {
     // the source, merged by question like any other, and tagged serviceKeys ['storage'] only;
     // they are not a topic (the global FAQ has no storage tab).
     for (const [serviceKey, file] of services) {
-      for (const occ of readOccurrences(erasDir, file, locale, stats).items.values())
-        add(occ, serviceKey);
+      const items: FAQPlacement[] = [];
+      for (const occ of readOccurrences(erasDir, file, locale, stats).items.values()) {
+        const faq = add(occ, serviceKey);
+        const revision = faq.sourceRevisions?.find((r) => r.sources[0] === occ.source);
+        items.push({
+          faqId: faq.id,
+          order: items.length + 1,
+          ...(revision && { sourceRevisionId: revision.id }),
+        });
+      }
+      servicePlacements.set(`${locale}:${serviceKey}`, items);
     }
   }
-  return { faqs, topics, occurrences };
+  return { faqs, topics, occurrences, servicePlacements };
 }
 
 /** Compare parsed occurrences with docs/evidence/faq-occurrences.json (minus mirror copies and home). */

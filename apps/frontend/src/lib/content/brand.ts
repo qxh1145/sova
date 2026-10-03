@@ -32,7 +32,17 @@ export function decodeEscapes(text: string): string {
 }
 
 // Longest first so "Eras Việt Nam" wins over "Eras".
-export const BRAND_TERMS = ['Eras Việt Nam', 'Eras Vietnam', 'Eras Viet Nam', 'ErasVietnam', 'Eras']
+// Uppercase ERAS only as a whole phrase: bare "ERAS" stays (asset paths such as ERAS-THUMB-*).
+export const BRAND_TERMS = [
+  'Eras Việt Nam',
+  'Eras Vietnam',
+  'Eras VietNam',
+  'Eras Viet Nam',
+  'ErasVietnam',
+  'ERAS Việt Nam',
+  'ERAS VietNam',
+  'Eras',
+]
   .map((term) => term.normalize('NFC'))
   .sort((a, b) => b.length - a.length);
 

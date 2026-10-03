@@ -1,5 +1,6 @@
 // Dev-only importer: `npm run import`. Reads ../eras-clone (read-only) and writes src/data/{faq,
-// posts,post-categories,listings,projects,project-categories,content,assets}.ts.
+// posts,post-categories,listings,projects,project-categories,content,testimonials,partners,assets}.ts,
+// services/*.ts and pricing/*.ts.
 // Not run in CI (no source mirror there); CI guards the committed output instead.
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -9,6 +10,9 @@ import type { Stats } from './html.ts';
 import { importPosts } from './posts.ts';
 import { importProjects } from './projects.ts';
 import { createAssetRegistry } from './assets.ts';
+import { importServices } from './services.ts';
+import { importSocial } from './social.ts';
+import type { Pricing, Service } from '../../src/types/content.ts';
 
 const here = import.meta.dirname;
 const ERAS_CLONE_DIR = path.resolve(
@@ -30,7 +34,7 @@ async function main() {
   if (!existsSync(path.join(ERAS_CLONE_DIR, 'index.html')))
     throw new Error(`Source mirror not found at ${ERAS_CLONE_DIR} (set ERAS_CLONE_DIR)`);
   const stats: Stats = { brand: 0, scrub: 0 };
-  const { faqs, topics, occurrences } = importFAQs(ERAS_CLONE_DIR, stats);
+  const { faqs, topics, occurrences, servicePlacements } = importFAQs(ERAS_CLONE_DIR, stats);
   const checked = crossCheck(path.join(DOCS_DIR, 'evidence/faq-occurrences.json'), occurrences);
   console.log(
     `faq: ${checked} occurrences -> ${faqs.length} FAQs, ${topics.length} topics ` +
@@ -111,6 +115,60 @@ import type { EntityId, RichContent } from '@/types/content';
 
 // Utility copy and project delivery terms (Project.deliveryTermsId).
 export const utilityContent: { id: EntityId; body: RichContent }[] = ${JSON.stringify(project.terms)};
+`,
+  );
+
+  const serviceStats: Stats = { brand: 0, scrub: 0 };
+  const { services, pricing } = importServices(ERAS_CLONE_DIR, registry, serviceStats, {
+    placements: servicePlacements,
+    projectIdBySlug: new Map(project.projects.map((p) => [p.slug, p.id])),
+  });
+  const { testimonials, partners } = importSocial(ERAS_CLONE_DIR, registry, serviceStats);
+  for (const service of services)
+    for (const id of service.testimonialIds)
+      if (!testimonials.some((t) => t.id === id && t.locale === service.locale))
+        throw new Error(`${service.sources[0].file}: testimonial ${id} not imported`);
+  console.log(
+    `services: ${services.length} services, ${pricing.length} pricing, ${testimonials.length} ` +
+      `testimonials, ${partners.length} partners ` +
+      `(${serviceStats.scrub} contact scrubs, ${serviceStats.brand} brand replacements)`,
+  );
+  const byKey = <T extends { serviceKey?: string; key?: string }>(list: T[], key: string) =>
+    list.filter((r) => (r.key ?? r.serviceKey) === key);
+  for (const key of new Set(services.map((s) => s.key))) {
+    await writeTs(
+      path.join(DATA, `services/${key}.ts`),
+      `${HEADER}
+import type { Service } from '@/types/content';
+
+export const ${key}Services: Service[] = ${JSON.stringify(byKey<Service>(services, key))};
+`,
+    );
+  }
+  for (const key of new Set(pricing.map((p) => p.serviceKey))) {
+    await writeTs(
+      path.join(DATA, `pricing/${key}.ts`),
+      `${HEADER}
+import type { Pricing } from '@/types/content';
+
+export const ${key}Pricing: Pricing[] = ${JSON.stringify(byKey<Pricing>(pricing, key))};
+`,
+    );
+  }
+  await writeTs(
+    path.join(DATA, 'testimonials.ts'),
+    `${HEADER}
+import type { Testimonial } from '@/types/content';
+
+export const testimonials: Testimonial[] = ${JSON.stringify(testimonials)};
+`,
+  );
+  await writeTs(
+    path.join(DATA, 'partners.ts'),
+    `${HEADER}
+import type { Partner } from '@/types/content';
+
+export const partners: Partner[] = ${JSON.stringify(partners)};
 `,
   );
 

@@ -80,7 +80,14 @@ export interface Service extends LocalizedIdentity {
   featuredProjectIds: EntityId[];
   pricingId?: EntityId;
   seo: SEO;
+  /** Why-choose-us (website/mobile), packages (SEO/branding), hub summaries (storage); else []. */
+  offerings: OfferingPanel[];
+  /** Section headings; `contact` is the website form copy. */
+  sectionCopy: Partial<Record<ServiceSection, SectionCopy>>;
 }
+
+export type ServiceSection =
+  'intro' | 'benefits' | 'offerings' | 'pricing' | 'projects' | 'testimonials' | 'faq' | 'contact';
 
 export interface OfferingPanel {
   id: EntityId;
