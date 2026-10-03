@@ -3,14 +3,14 @@
 Thư mục đích được xác nhận: `/Users/quan/HocTap/Vibecode/sova-landing-page`.
 Nguồn chỉ đọc: `../eras-clone`.
 
-**Trạng thái: đã scaffold ứng dụng Next.js trong `frontend/`** (tracer: `/` hiển thị `SiteSettings.companyName` qua contract → mock repository → query). Chưa migrate giao diện. `backend/` dành cho phase B.
+**Trạng thái: đã scaffold ứng dụng Next.js trong `apps/frontend/`** (tracer: `/` hiển thị `SiteSettings.companyName` qua contract → mock repository → query). Chưa migrate giao diện. `apps/backend/` dành cho phase B.
 
 ## Chạy ứng dụng
 
 Node 24 (`.nvmrc`), npm. Không cần `.env`.
 
 ```bash
-cd frontend
+cd apps/frontend
 npm ci
 npm run dev        # http://localhost:3000/
 npm run build && npm run start
@@ -21,12 +21,12 @@ npm test           # vitest run
 npx playwright install chromium && npm run test:e2e  # chạy trên production build (cần `npm run build` trước)
 ```
 
-E2E specs import `test` từ `frontend/tests/e2e/fixtures.ts`: network guard fail-closed, chặn mọi host ngoài localhost và `MAPS_EMBED_ALLOWLIST`.
+E2E specs import `test` từ `apps/frontend/tests/e2e/fixtures.ts`: network guard fail-closed, chặn mọi host ngoài localhost và `MAPS_EMBED_ALLOWLIST`.
 
 ## Liên kết GitHub và Vercel (thao tác thủ công)
 
 1. Tạo GitHub repo, `git remote add origin <url>`, push. Kiểm tra workflow **CI** (`.github/workflows/ci.yml`) xanh trong tab Actions.
-2. Trên Vercel: Import repo, đặt **Root Directory = `frontend`**, framework Next.js, không cần env vars. Mở staging URL và kiểm tra hiển thị "Sova".
+2. Trên Vercel: Import repo, đặt **Root Directory = `apps/frontend`**, framework Next.js, không cần env vars. Mở staging URL và kiểm tra hiển thị "Sova".
 3. Không commit token/secret Vercel hoặc GitHub vào repo.
 
 ## Frontend tech stack
