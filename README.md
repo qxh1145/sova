@@ -29,6 +29,12 @@ E2E specs import `test` từ `apps/frontend/tests/e2e/fixtures.ts`: network guar
 2. Trên Vercel: Import repo, đặt **Root Directory = `apps/frontend`**, framework Next.js, không cần env vars. Mở staging URL và kiểm tra hiển thị "Sova".
 3. Không commit token/secret Vercel hoặc GitHub vào repo.
 
+## Quy trình phân nhánh Git (Branching Workflow)
+
+- `main`: Nhánh production. Chỉ merge từ `develop` khi code đã được kiểm thử ổn định (stable) và toàn bộ CI xanh.
+- `develop`: Nhánh tích hợp (integration/staging). Mọi nhánh tính năng (`story-*`, `feature/*`) tạo từ `develop` và tạo PR/merge về `develop`.
+- Khi release hoặc deploy production: Tạo PR từ `develop` $\rightarrow$ `main`.
+
 ## Frontend tech stack
 
 [TECH_STACK](docs/TECH_STACK.md): Next.js 16 App Router + React 19 + TypeScript strict; CSS Modules; Radix primitives; GSAP; Embla; React Hook Form/Zod; typed mock repository; Playwright/Vitest.
