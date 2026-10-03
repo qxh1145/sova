@@ -36,7 +36,7 @@ export interface TermsRecord {
 }
 
 /** Slug of a `featured_item/<slug>/` link on `file`, or throws naming the href. */
-function projectSlug(href: string | undefined, file: string, slugs?: Set<string>): string {
+export function projectSlug(href: string | undefined, file: string, slugs?: Set<string>): string {
   const target = href
     ? (rewriteEraLinks(decodeEscapes(href), `https://erasvietnam.vn/${file}`) ?? '')
     : '';
@@ -46,7 +46,7 @@ function projectSlug(href: string | undefined, file: string, slugs?: Set<string>
   return slug;
 }
 
-const load = (erasDir: string, file: string) => {
+export const load = (erasDir: string, file: string) => {
   const source = readFileSync(path.join(erasDir, file), 'utf8');
   return { source, root: parseHtml(source), lineOf: lineLookup(source) };
 };
