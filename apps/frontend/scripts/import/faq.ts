@@ -9,9 +9,15 @@ import type {
   ServiceKey,
   SourceRef,
 } from '../../src/types/content.ts';
-import { applyBrandTerms, decodeEscapes, rewriteEraLinks } from '../../src/lib/content/brand.ts';
-import { scrubContacts } from '../../src/lib/content/scrub.ts';
-import { lineLookup, parseHtml, sanitize, visibleText } from './html.ts';
+import {
+  lineLookup,
+  parseHtml,
+  processHref,
+  processText,
+  sanitize,
+  visibleText,
+  type Stats,
+} from './html.ts';
 
 // Global FAQ page first, then service pages in this fixed order.
 const PAGES: Record<Locale, { global: string; services: [ServiceKey, string][] }> = {
@@ -43,35 +49,11 @@ const PAGES: Record<Locale, { global: string; services: [ServiceKey, string][] }
   },
 };
 
-export interface Stats {
-  brand: number;
-  scrub: number;
-}
-
 interface Occurrence {
   id: string;
   question: string;
   answerHtml: string;
   source: SourceRef;
-}
-
-/** Text pipeline: decode -> scrub -> brand map. */
-function processText(raw: string, stats: Stats): string {
-  const scrubbed = scrubContacts(decodeEscapes(raw));
-  const branded = applyBrandTerms(scrubbed.text);
-  stats.scrub += scrubbed.count;
-  stats.brand += branded.count;
-  return branded.text;
-}
-
-/** Href pipeline: decode -> scrub -> link rewrite (logged). */
-function processHref(raw: string, file: string, line: number, stats: Stats): string | null {
-  const scrubbed = scrubContacts(decodeEscapes(raw));
-  stats.scrub += scrubbed.count;
-  const href = rewriteEraLinks(scrubbed.text, `https://erasvietnam.vn/${file}`);
-  if (href !== scrubbed.text)
-    console.log(`link ${file}:${line} ${raw} -> ${href ?? '(unwrapped)'}`);
-  return href;
 }
 
 function readOccurrences(
