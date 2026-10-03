@@ -3,7 +3,8 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { expect, test } from 'vitest';
 import { parseHtml, sanitize } from './html';
-import { classifyAsset, importPosts, POST_ALLOWED } from './posts';
+import { classifyAsset, createAssetRegistry } from './assets';
+import { importPosts, POST_ALLOWED } from './posts';
 
 const mirror = mkdtempSync(path.join(tmpdir(), 'posts-mirror-'));
 mkdirSync(path.join(mirror, 'wp-content/uploads'), { recursive: true });
@@ -81,7 +82,8 @@ test('source drift: a listing without the 27 posts exits naming the count', () =
     mkdirSync(path.join(mirror, dir), { recursive: true });
     writeFileSync(path.join(mirror, dir, 'index.html'), '<html><body></body></html>');
   }
-  expect(() => importPosts(mirror, { brand: 0, scrub: 0 })).toThrow(
+  const stats = { brand: 0, scrub: 0 };
+  expect(() => importPosts(mirror, createAssetRegistry(mirror, stats), stats)).toThrow(
     /Source drift: \/goc-nhin\/ has 0 cards, expected 27/,
   );
 });
