@@ -1,6 +1,6 @@
 // Dev-only importer: `npm run import`. Reads ../eras-clone (read-only) and writes src/data/{faq,
-// posts,post-categories,listings,projects,project-categories,content,testimonials,partners,assets}.ts,
-// services/*.ts and pricing/*.ts.
+// posts,post-categories,listings,projects,project-categories,content,testimonials,partners,routes,
+// assets}.ts, services/*.ts and pricing/*.ts.
 // Not run in CI (no source mirror there); CI guards the committed output instead.
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -10,6 +10,7 @@ import type { Stats } from './html.ts';
 import { importPosts } from './posts.ts';
 import { importProjects } from './projects.ts';
 import { createAssetRegistry } from './assets.ts';
+import { importRoutes } from './routes.ts';
 import { importServices } from './services.ts';
 import { importSocial } from './social.ts';
 import type { Pricing, Service } from '../../src/types/content.ts';
@@ -169,6 +170,26 @@ export const testimonials: Testimonial[] = ${JSON.stringify(testimonials)};
 import type { Partner } from '@/types/content';
 
 export const partners: Partner[] = ${JSON.stringify(partners)};
+`,
+  );
+
+  const routes = importRoutes(DOCS_DIR, ERAS_CLONE_DIR, {
+    posts,
+    projects: project.projects,
+    postCategories: categories,
+    projectCategories: project.categories,
+    services,
+  });
+  console.log(
+    `routes: ${routes.length} routes, ${routes.reduce((n, r) => n + r.aliases.length, 0)} aliases, ` +
+      `${routes.filter((r) => r.counterpartId).length} with a counterpart`,
+  );
+  await writeTs(
+    path.join(DATA, 'routes.ts'),
+    `${HEADER}
+import type { RouteEntry } from '@/types/content';
+
+export const routes: RouteEntry[] = ${JSON.stringify(routes)};
 `,
   );
 
