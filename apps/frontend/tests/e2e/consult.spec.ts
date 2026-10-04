@@ -26,7 +26,7 @@ const COPIES = {
     submitting: 'Đang gửi...',
     required: 'Vui lòng nhập số điện thoại',
     invalid: 'Số điện thoại không hợp lệ',
-    success: 'Cảm ơn bạn đã gửi yêu cầu. Chúng tôi sẽ liên hệ lại sớm nhất.',
+    success: 'Đã ghi nhận yêu cầu trong bản demo.',
     error: 'Đã có lỗi xảy ra trong quá trình gửi. Vui lòng thử lại.',
     demoBadge: 'Bản demo — chưa gửi thông tin',
     note: 'Đăng ký để nhận những thông tin mới nhất về các chương trình ưu đãi của Sova',
@@ -38,7 +38,7 @@ const COPIES = {
     submitting: 'Sending...',
     required: 'Please enter your phone number',
     invalid: 'Invalid phone number',
-    success: 'Thank you for your submission. We will contact you soon.',
+    success: 'Request recorded in demo mode.',
     error: 'An error occurred while sending. Please try again.',
     demoBadge: 'Demo — no data was sent',
     note: "Register to receive the latest information about Sova's promotional programs",
@@ -109,8 +109,10 @@ test.describe('ConsultForm and drawer demo flow contract', () => {
 
         const drawer = page.locator('#main-menu');
         await expect(drawer).toBeVisible();
+        expect(await getBodyOverflow(page)).toBe('hidden');
 
         await expectNoDuplicateIds(page);
+        await expect(drawer.locator('.wpcf7')).toHaveAttribute('lang', route.locale);
 
         const form = drawer.locator('form.wpcf7-form');
         const input = form.locator('input.wpcf7-tel');
@@ -148,9 +150,19 @@ test.describe('ConsultForm and drawer demo flow contract', () => {
         await expect(responseOutput).toContainText(copy.success);
         await expect(responseOutput).toContainText(copy.demoBadge);
         await expect(form).toHaveClass(/sent/);
+        await expect(drawer.locator('.screen-reader-response [role="status"]')).toHaveText(
+          `${copy.success} ${copy.demoBadge}`,
+        );
 
         // Drawer stays open on submit
         await expect(drawer).toBeVisible();
+
+        // An invalid resubmit clears the earlier result instead of showing it next to the tip
+        await input.fill('');
+        await submitBtn.click();
+        await expect(tip).toHaveText(copy.required);
+        await expect(form).toHaveClass(/invalid/);
+        await expect(responseOutput).toHaveCount(0);
 
         // 4. Escape closes drawer, returns focus to trigger, releases scroll lock
         await page.keyboard.press('Escape');
@@ -200,6 +212,11 @@ test.describe('ConsultForm and drawer demo flow contract', () => {
       await expect(submitBtn).toBeDisabled();
       await expect(submitBtn).toHaveAttribute('aria-busy', 'true');
       await expect(submitBtn).toHaveValue(copy.submitting);
+      await expect(form).toHaveClass(/submitting/);
+
+      // Double-submit while busy is ignored: the button is disabled, so dispatch submit directly
+      await form.evaluate((el) => (el as HTMLFormElement).requestSubmit());
+      await expect(submitBtn).toBeDisabled();
       await expect(form).toHaveClass(/submitting/);
 
       // Release gate
