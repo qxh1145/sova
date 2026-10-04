@@ -230,8 +230,8 @@ test.describe('Accordion primitive and shared FAQ list', () => {
     );
     const defaultA05Html = await defaultA05Faq.innerHTML();
 
-    // Verify A05 revision text ends with literal </p
-    expect(defaultA05Html).toContain('</p');
+    // The SEO revision (not the base answer) is rendered: only it carries the escaped `</p` text
+    expect(defaultA05Html).toContain('&lt;/p');
 
     // 2. Visit changed variant
     await page.goto('/dev-fixtures/faq/changed');

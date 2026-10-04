@@ -1,6 +1,5 @@
 // Test-only fake content: one minimal VI record per domain. No real or imported text.
 import type { ContentData } from '@/lib/repositories/contracts';
-import { defaultContentData } from '@/lib/repositories/mock';
 import type { RichContent, SEO, SourceRef } from '@/types/content';
 
 const sources: SourceRef[] = [{ file: 'fixture', line: 1 }];
@@ -365,13 +364,3 @@ export const noPhonesFixtures: ContentData = {
   ...fixtures,
   siteSettings: fixtures.siteSettings.map((s) => ({ ...s, phones: [] })),
 };
-
-export const faqChangedFixtures: ContentData = (() => {
-  const data = structuredClone(defaultContentData);
-  const target = data.faqs.find((f) => f.id === 'faq-vi-3285462442');
-  if (target) {
-    target.answer.html = '<p>Nội dung câu hỏi FAQ đã được chỉnh sửa cho fixture test.</p>';
-  }
-  return data;
-})();
-

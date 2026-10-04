@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation';
 import { FAQList } from '@/components/faq/FAQList';
-import { faqChangedFixtures } from '@/dev/fixtures';
 import { getFAQTopics, getPlacedFAQs } from '@/lib/queries/faq';
 import { createMockRepository, defaultContentData } from '@/lib/repositories/mock';
 import type { ContentData } from '@/lib/repositories/contracts';
@@ -9,9 +8,18 @@ import { FIXTURE_FAQ_LABELS, isFAQVariant, type FAQVariant } from './constants';
 
 export const dynamic = 'force-dynamic';
 
+/** Real data with one VI FAQ answer edited; revision entries untouched. */
+const faqChangedData: ContentData = (() => {
+  const data = structuredClone(defaultContentData);
+  const target = data.faqs.find((f) => f.id === 'faq-vi-3285462442');
+  if (!target) throw new Error('faq-vi-3285462442 missing: faq changed fixture cannot apply');
+  target.answer.html = '<p>Nội dung câu hỏi FAQ đã được chỉnh sửa cho fixture test.</p>';
+  return data;
+})();
+
 const VARIANTS: Record<FAQVariant, ContentData> = {
   default: defaultContentData,
-  changed: faqChangedFixtures,
+  changed: faqChangedData,
 };
 
 export default async function FixtureFAQPage({
