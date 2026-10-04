@@ -1,12 +1,8 @@
 'use client';
 
-import {
-  useEffect,
-  useState,
-  type CSSProperties,
-  type ReactNode,
-} from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
+import { visuallyHiddenStyle } from './visuallyHidden';
 
 export interface DialogLabels {
   close: string;
@@ -26,18 +22,6 @@ export interface DialogProps {
   onCloseAutoFocus?: (event: Event) => void;
   children: ReactNode;
 }
-
-const visuallyHiddenStyle: CSSProperties = {
-  position: 'absolute',
-  width: 1,
-  height: 1,
-  padding: 0,
-  margin: -1,
-  overflow: 'hidden',
-  clip: 'rect(0, 0, 0, 0)',
-  whiteSpace: 'nowrap',
-  border: 0,
-};
 
 function DialogPortalInner({
   variant,
