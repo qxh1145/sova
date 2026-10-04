@@ -35,6 +35,7 @@ tmp/
 temp/
 .omc/
 baseline/
+!apps/frontend/tests/baseline/
 
 # Testing and Coverage
 coverage/

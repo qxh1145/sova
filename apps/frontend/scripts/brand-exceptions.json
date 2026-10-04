@@ -1,0 +1,37 @@
+[
+  {
+    "match": "eras-",
+    "within": "porfolio-eras-vietnam",
+    "reason": "Source slug kept in the mock route registry and SourceRef files (MIGRATION_PLAN: rename to a Sova slug before release)"
+  },
+  {
+    "match": "eras-",
+    "within": "ho-so-nang-luc-eras-vietnam",
+    "reason": "Source slug kept in the mock route registry and SourceRef files (MIGRATION_PLAN: rename to a Sova slug before release)"
+  },
+  {
+    "match": "eras-",
+    "within": "eras-xin-chan-thanh-cam-on-quy-khach",
+    "reason": "Source slug kept in the mock route registry and SourceRef files (MIGRATION_PLAN: rename to a Sova slug before release)"
+  },
+  {
+    "match": "eras-",
+    "within": "page-template-page-eras-social",
+    "reason": "Source selector kept verbatim in the ported legacy CSS (story 10 decision 2026-10-03); its Eras url()s become none"
+  },
+  {
+    "match": "eras-",
+    "within": ".eras-logo",
+    "reason": "Source selector kept verbatim in the ported legacy CSS (story 10 decision 2026-10-03); its Eras url()s become none"
+  },
+  {
+    "match": "eras/",
+    "within": "login-eras/",
+    "reason": "Source slug kept in the mock route registry and SourceRef files (/login-eras/, id route-login-eras; MIGRATION_PLAN: rename to a Sova slug before release)"
+  },
+  {
+    "match": "eras",
+    "within": "login-eras",
+    "reason": "Source slug kept in the mock route registry and SourceRef files (/login-eras/, id route-login-eras; MIGRATION_PLAN: rename to a Sova slug before release)"
+  }
+]
