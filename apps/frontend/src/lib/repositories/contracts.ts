@@ -23,6 +23,7 @@ import type {
   RouteEntry,
   Service,
   ServiceKey,
+  ShellContent,
   SiteSettings,
   Stat,
   Testimonial,
@@ -38,6 +39,8 @@ export interface ContentRepository {
   getSiteSettings(locale: Locale): Promise<SiteSettings>;
   /** Throws when the locale has no record. */
   getNavigation(locale: Locale): Promise<Navigation>;
+  /** Throws when the locale has no record. */
+  getShellContent(locale: Locale): Promise<ShellContent>;
   getService(key: ServiceKey, locale: Locale): Promise<Service | null>;
   getProject(slug: string): Promise<Project | null>;
   listProjects(input: {
@@ -76,6 +79,7 @@ export interface ContentRepository {
 export interface ContentData {
   siteSettings: SiteSettings[];
   navigation: Navigation[];
+  shellContent: ShellContent[];
   routes: RouteEntry[];
   services: Service[];
   projects: Project[];

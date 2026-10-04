@@ -303,6 +303,21 @@ export interface UtilityContent {
   body: RichContent;
 }
 
+export interface ShellContent {
+  locale: Locale;
+  headerCta: {
+    label: string;
+    routeId: EntityId;
+  };
+  footerCta: {
+    headingLines: string[];
+    targetRouteId: EntityId;
+  };
+  copyright: string;
+  themeCredit: string;
+  languageLabels: Record<Locale, string>;
+}
+
 export interface SiteSettings {
   locale: Locale;
   companyName: string;

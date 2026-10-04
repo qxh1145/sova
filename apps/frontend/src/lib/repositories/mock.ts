@@ -3,6 +3,7 @@ import { utilityContent } from '@/data/content';
 import { faqs, faqTopics } from '@/data/faq';
 import { listingSettings, listingSnapshots } from '@/data/listings';
 import { navigation } from '@/data/navigation';
+import { shellContent } from '@/data/shell';
 import { aboutPages } from '@/data/pages/about';
 import { contactPages } from '@/data/pages/contact';
 import { homePages } from '@/data/pages/home';
@@ -107,6 +108,12 @@ function createRawRepository(data: ContentData): ContentRepository {
         `Navigation for locale "${locale}"`,
       );
     },
+    async getShellContent(locale) {
+      return required(
+        data.shellContent.find((s) => s.locale === locale),
+        `ShellContent for locale "${locale}"`,
+      );
+    },
     async getService(key, locale) {
       return data.services.find((s) => s.key === key && s.locale === locale) ?? null;
     },
@@ -193,6 +200,7 @@ function createRawRepository(data: ContentData): ContentRepository {
 export const mockRepository = createMockRepository({
   siteSettings,
   navigation,
+  shellContent,
   routes,
   services: [
     ...websiteServices,

@@ -35,7 +35,7 @@ import {
 } from './pages';
 import { getPost, listPosts } from './posts';
 import { getProject, listProjects } from './projects';
-import { getNavigation, getSiteSettings } from './site';
+import { getNavigation, getShellContent, getSiteSettings } from './site';
 import { getPricing, getService, getServicePage } from './services';
 import { getPartners, getStats, getTestimonials } from './social-proof';
 
@@ -60,6 +60,7 @@ test.each<Locale>(['vi', 'en'])('no %s query result contains {{site.', async (lo
   const results = await Promise.all([
     getSiteSettings(locale),
     getNavigation(locale),
+    getShellContent(locale),
     ...KEYS.flatMap((key) => [getService(key, locale), getServicePage(key, locale)]),
     ...pricing.map((p) => getPricing(p.id, locale)),
     ...projects.map((p) => getProject(p.slug)),

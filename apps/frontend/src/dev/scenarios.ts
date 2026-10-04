@@ -11,6 +11,7 @@ const empty: ContentData = {
   // The site shell needs these even when everything else is empty.
   siteSettings: fixtures.siteSettings,
   navigation: fixtures.navigation,
+  shellContent: fixtures.shellContent,
 };
 
 // Every method rejects with a transport error naming itself.
