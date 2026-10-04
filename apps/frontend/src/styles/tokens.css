@@ -1,0 +1,29 @@
+/* Shared design tokens (STYLE_AUDIT token candidates, MIGRATION_PLAN font decision). */
+:root {
+  --color-primary: #0065df;
+  --color-bg: #181818;
+  --color-text: #fefefe;
+  --color-header-bg: rgba(10, 10, 10, 0.9);
+  --color-secondary: #c05530;
+  --color-success: #627d47;
+  --color-alert: #b20000;
+
+  --container-width: 1320px;
+  --header-height: 90px;
+  --header-height-sticky: 70px;
+
+  --radius-accordion: 8px;
+  --radius-card: 10px;
+  --radius-pill: 100px;
+
+  --shadow-cta: 0 4px 10px rgba(0, 101, 223, 0.3);
+  --shadow-cta-hover: 0 6px 18px rgba(0, 101, 223, 0.4);
+  --shadow-achievement: 0 0 10px rgba(255, 255, 255, 0.5);
+
+  /* System fallback, no webfonts (MIGRATION_PLAN 03/10/2026). Swap values here only. */
+  --font-body:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
+  --font-display: var(--font-body); /* replaces Kanit (.kanit-font) */
+  --font-alt: var(--font-body); /* replaces Moul */
+}
