@@ -3,6 +3,8 @@ import type { AssetRef, Locale, Navigation, NavigationItem, RouteEntry, ShellCon
 import { pathForRouteId } from '@/lib/routes';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { LogoLink } from './LogoLink';
+import { HeaderMotion } from './headerMotion';
+import { MobileMenuTrigger } from './MobileMenu';
 
 export interface HeaderProps {
   locale: Locale;
@@ -114,7 +116,7 @@ export function Header({
   const homeHref = pathForRouteId(routes, homeRouteId) ?? (locale === 'en' ? '/en/home/' : '/');
 
   return (
-    <header id="header" className="header transparent has-transparent has-sticky sticky-jump">
+    <HeaderMotion>
       <div className="header-wrapper">
         <div id="masthead" className="header-main nav-dark">
           <div className="header-inner flex-row container logo-left medium-logo-left" role="navigation">
@@ -174,6 +176,9 @@ export function Header({
                     </Link>
                   </div>
                 </li>
+                <li className="nav-icon has-icon">
+                  <MobileMenuTrigger label={shellContent.mobileMenu.trigger} />
+                </li>
               </ul>
             </div>
 
@@ -202,6 +207,9 @@ export function Header({
                     </Link>
                   </div>
                 </li>
+                <li className="nav-icon has-icon">
+                  <MobileMenuTrigger label={shellContent.mobileMenu.trigger} />
+                </li>
               </ul>
             </div>
           </div>
@@ -216,6 +224,6 @@ export function Header({
           <div className="header-bg-color fill" />
         </div>
       </div>
-    </header>
+    </HeaderMotion>
   );
 }

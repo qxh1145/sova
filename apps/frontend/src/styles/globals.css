@@ -14,6 +14,7 @@
 @import './legacy/12-wp-custom.css';
 /* port:css end */
 @import './carousel.css';
+@import './mobile-menu.css';
 
 body {
   cursor: auto;
