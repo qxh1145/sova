@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/ui/FormField';
+import { FormResponse, ScreenReaderResponse, formStatusClass } from '@/components/ui/FormResponse';
 import { createMockTransport } from '@/lib/forms/mock-transport';
 import {
   consultSchema,
@@ -41,7 +42,7 @@ export function FormFixture({ variant }: FormFixtureProps) {
     });
   }, [variant, deferred]);
 
-  const { status, isSubmitting, submit } = useSubmitStatus(adapter);
+  const { status, isSubmitting, submit, reset } = useSubmitStatus(adapter);
 
   const {
     register,
@@ -59,31 +60,26 @@ export function FormFixture({ variant }: FormFixtureProps) {
     },
   });
 
+  // A failed validation clears any earlier demo result, like CF7 swapping to `invalid`.
   const onSubmit = handleSubmit(async (data) => {
     await submit(data);
-  });
+  }, reset);
 
-  const formStatusClass =
-    status === 'submitting'
-      ? 'submitting'
-      : status === 'demo-success'
-        ? 'sent'
-        : status === 'demo-error'
-          ? 'failed'
-          : Object.keys(errors).length > 0
-            ? 'invalid'
-            : 'init';
+  const responseLabels = {
+    success: FIXTURE_FORM_LABELS.successMessage,
+    error: FIXTURE_FORM_LABELS.errorMessage,
+    demoBadge: FIXTURE_FORM_LABELS.demoBadge,
+  };
+
+  const statusClass = formStatusClass(status, Object.keys(errors).length > 0);
 
   return (
     <div className="wpcf7" id="wpcf7-f11-p0-o1" lang="vi" dir="ltr">
-      <div className="screen-reader-response">
-        <p role="status" aria-live="polite" aria-atomic="true"></p>
-        <ul></ul>
-      </div>
+      <ScreenReaderResponse status={status} labels={responseLabels} />
 
       <form
         onSubmit={onSubmit}
-        className={`wpcf7-form ${formStatusClass}`}
+        className={`wpcf7-form ${statusClass}`}
         noValidate
         data-status={status}
       >
@@ -117,23 +113,7 @@ export function FormFixture({ variant }: FormFixtureProps) {
           <span className="wpcf7-spinner" aria-hidden="true" />
         </p>
 
-        {status === 'demo-success' || status === 'demo-error' ? (
-          <div
-            className={`wpcf7-response-output ${status === 'demo-success' ? 'sent' : 'failed'}`}
-            role="status"
-            aria-live="polite"
-          >
-            <span>
-              {status === 'demo-success'
-                ? FIXTURE_FORM_LABELS.successMessage
-                : FIXTURE_FORM_LABELS.errorMessage}
-            </span>
-            {' '}
-            <span className="wpcf7-demo-badge">
-              {FIXTURE_FORM_LABELS.demoBadge}
-            </span>
-          </div>
-        ) : null}
+        <FormResponse status={status} labels={responseLabels} />
       </form>
 
       <button

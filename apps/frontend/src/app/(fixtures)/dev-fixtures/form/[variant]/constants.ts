@@ -15,6 +15,6 @@ export const FIXTURE_FORM_LABELS = {
   submittingButton: 'Đang gửi...',
   releaseButton: 'Release Gate',
   demoBadge: 'Bản demo — chưa gửi thông tin',
-  successMessage: 'Cảm ơn bạn đã gửi yêu cầu. Chúng tôi sẽ liên hệ lại sớm nhất.',
+  successMessage: 'Đã ghi nhận yêu cầu trong bản demo.',
   errorMessage: 'Đã có lỗi xảy ra trong quá trình gửi. Vui lòng thử lại.',
 };
