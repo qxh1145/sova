@@ -1,0 +1,61 @@
+/* Ported from source inline index.html:3540-3595 */
+.accordion-mobile-menu {
+  font-size: 16px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.accordion-menu,
+.accordion-menu ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.accordion-menu li {
+  position: relative;
+}
+
+.accordion-menu a {
+  display: block;
+  text-decoration: none;
+  color: #333;
+  padding: 12px 15px;
+}
+
+.toggle-submenu {
+  position: absolute;
+  right: 15px;
+  top: 20px;
+  transform: translateY(-50%);
+  font-size: 0.8em;
+  cursor: pointer;
+  user-select: none;
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  line-height: 1;
+}
+
+.has-children.active > .toggle-submenu {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.accordion-menu .sub-menu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  padding-left: 10px;
+}
+
+.accordion-menu .active > .sub-menu {
+  max-height: 1000px;
+  transition: max-height 0.5s ease;
+}
+
+@media (min-width: 768px) {
+  .accordion-mobile-menu {
+    display: none;
+  }
+}

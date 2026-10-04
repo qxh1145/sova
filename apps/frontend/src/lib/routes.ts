@@ -1,5 +1,5 @@
 // Pure route registry helpers. Relative imports only: the importer loads this with Node type stripping.
-import type { PublicPath, RouteEntry } from '../types/content.ts';
+import type { Locale, NavigationItem, PublicPath, RouteEntry } from '../types/content.ts';
 
 /** Drops query and hash, adds the leading and trailing slash. */
 export function normalizePath(input: string): PublicPath {
@@ -89,4 +89,25 @@ export function resolvePath(
 /** Looks up a route by its entity id and returns its canonical public path. */
 export function pathForRouteId(routes: RouteEntry[], id: string): PublicPath | undefined {
   return routes.find((r) => r.id === id)?.path;
+}
+
+/** Href for a navigation destination; undefined when the item has none. */
+export function resolveDestination(
+  destination: NavigationItem['destination'],
+  routes: RouteEntry[],
+): string | undefined {
+  if (!destination) return undefined;
+  if (destination.kind === 'internal') {
+    return pathForRouteId(routes, destination.routeId) ?? '#';
+  }
+  if (destination.kind === 'external') {
+    return destination.href;
+  }
+  return destination.hash;
+}
+
+/** Locale home path, falling back to the known home paths when the registry lacks them. */
+export function homeHref(routes: RouteEntry[], locale: Locale): string {
+  const id = locale === 'en' ? 'route-en--home' : 'route-root';
+  return pathForRouteId(routes, id) ?? (locale === 'en' ? '/en/home/' : '/');
 }
