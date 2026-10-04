@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/ui/FormField';
+import { FormResponse, formStatusClass } from '@/components/ui/FormResponse';
 import { createMockTransport } from '@/lib/forms/mock-transport';
 import {
   consultSchema,
@@ -63,16 +64,7 @@ export function FormFixture({ variant }: FormFixtureProps) {
     await submit(data);
   });
 
-  const formStatusClass =
-    status === 'submitting'
-      ? 'submitting'
-      : status === 'demo-success'
-        ? 'sent'
-        : status === 'demo-error'
-          ? 'failed'
-          : Object.keys(errors).length > 0
-            ? 'invalid'
-            : 'init';
+  const statusClass = formStatusClass(status, Object.keys(errors).length > 0);
 
   return (
     <div className="wpcf7" id="wpcf7-f11-p0-o1" lang="vi" dir="ltr">
@@ -83,7 +75,7 @@ export function FormFixture({ variant }: FormFixtureProps) {
 
       <form
         onSubmit={onSubmit}
-        className={`wpcf7-form ${formStatusClass}`}
+        className={`wpcf7-form ${statusClass}`}
         noValidate
         data-status={status}
       >
@@ -117,23 +109,14 @@ export function FormFixture({ variant }: FormFixtureProps) {
           <span className="wpcf7-spinner" aria-hidden="true" />
         </p>
 
-        {status === 'demo-success' || status === 'demo-error' ? (
-          <div
-            className={`wpcf7-response-output ${status === 'demo-success' ? 'sent' : 'failed'}`}
-            role="status"
-            aria-live="polite"
-          >
-            <span>
-              {status === 'demo-success'
-                ? FIXTURE_FORM_LABELS.successMessage
-                : FIXTURE_FORM_LABELS.errorMessage}
-            </span>
-            {' '}
-            <span className="wpcf7-demo-badge">
-              {FIXTURE_FORM_LABELS.demoBadge}
-            </span>
-          </div>
-        ) : null}
+        <FormResponse
+          status={status}
+          labels={{
+            success: FIXTURE_FORM_LABELS.successMessage,
+            error: FIXTURE_FORM_LABELS.errorMessage,
+            demoBadge: FIXTURE_FORM_LABELS.demoBadge,
+          }}
+        />
       </form>
 
       <button

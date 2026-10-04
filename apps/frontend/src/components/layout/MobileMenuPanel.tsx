@@ -12,6 +12,7 @@ import { homeHref as homeHrefFor, resolveDestination } from '@/lib/routes';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { LogoLink } from './LogoLink';
 import { MobileMenuItem } from './MobileMenuItem';
+import { ConsultForm } from '@/components/forms/ConsultForm';
 
 export interface MobileMenuPanelProps {
   locale: Locale;
@@ -165,6 +166,11 @@ export function MobileMenuPanel({
               </div>
             </a>
           )}
+
+          {/* 8. Consult / subscribe form block */}
+          <h4>{shellContent.consult.heading}</h4>
+          <ConsultForm labels={shellContent.consult} locale={locale} />
+          <p>{shellContent.consult.note}</p>
         </div>
       </div>
     </div>
