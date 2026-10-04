@@ -364,4 +364,3 @@ export const noPhonesFixtures: ContentData = {
   ...fixtures,
   siteSettings: fixtures.siteSettings.map((s) => ({ ...s, phones: [] })),
 };
-
