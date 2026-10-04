@@ -18,7 +18,7 @@ export interface HeaderProps {
   logoAsset?: AssetRef | null;
 }
 
-function resolveDestination(
+export function resolveDestination(
   destination: NavigationItem['destination'],
   routes: RouteEntry[],
 ): string | undefined {

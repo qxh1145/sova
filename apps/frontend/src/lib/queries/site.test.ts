@@ -1,5 +1,5 @@
 import { afterEach, expect, test, vi } from 'vitest';
-import { getCounterpartMap, getShellContent, getSiteSettings, resolveRoute } from './site';
+import { getCounterpartMap, getShellContent, getShellProps, getSiteSettings, resolveRoute } from './site';
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -46,3 +46,14 @@ test('resolveRoute resolves aliases over the repository', async () => {
   expect(await resolveRoute('/cloud-vps/')).toBeNull();
 });
 
+
+test('getShellProps composes locale shell props', async () => {
+  vi.stubEnv('CONTENT_SCENARIO', '');
+  const en = await getShellProps('en');
+  expect(en.shellContent.locale).toBe('en');
+  expect(en.headerCtas).toEqual({
+    vi: { label: 'Liên hệ', href: '/lien-he/' },
+    en: { label: 'Contact Us', href: '/en/contact-us/' },
+  });
+  expect(en.counterparts['/en/home/']).toBe('/');
+});

@@ -103,6 +103,27 @@ test.describe('Site shell and primitives', () => {
     await expect(enParentItem.locator('.sub-menu li')).not.toHaveCount(0);
   });
 
+  test('Header and footer nav items link to their registry paths', async ({ page }) => {
+    const cases = [
+      { path: '/', top: ['Giới thiệu', '/gioi-thieu/'], child: ['Thiết kế website', '/thiet-ke-website/'] },
+      { path: '/en/home/', top: ['About Us', '/en/about-us/'], child: ['Website Development', '/en/website-development/'] },
+    ];
+    for (const { path, top, child } of cases) {
+      await page.goto(path);
+      const nav = page.locator('#masthead .header-nav-main');
+      await expect(nav.locator('> li > a', { hasText: top[0] })).toHaveAttribute('href', top[1]);
+      await expect(nav.locator('.sub-menu a', { hasText: child[0] }).first()).toHaveAttribute('href', child[1]);
+      await expect(
+        page.locator('footer#footer .ux-menu-link__link', { hasText: top[0] }).first(),
+      ).toHaveAttribute('href', top[1]);
+    }
+  });
+
+  test('/en/ redirects to /en/home/', async ({ page }) => {
+    await page.goto('/en/');
+    await expect(page).toHaveURL(/\/en\/home\/$/);
+  });
+
   test('Excluded routes are never linked in the shell', async ({ page }) => {
     for (const path of ['/', '/en/home/']) {
       await page.goto(path);

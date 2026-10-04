@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { AssetRef, Locale, Navigation, RouteEntry, ShellContent, SiteSettings } from '@/types/content';
 import { pathForRouteId } from '@/lib/routes';
 import { FooterCTA } from './FooterCTA';
+import { resolveDestination } from './Header';
 import { LogoLink } from './LogoLink';
 
 export interface FooterProps {
@@ -27,10 +28,10 @@ export function Footer({
     pathForRouteId(routes, shellContent.footerCta.targetRouteId) ??
     (locale === 'en' ? '/en/contact-us/' : '/lien-he/');
 
-  const hasCompanyInCopyright = shellContent.copyright.includes(settings.companyName);
-  const [copyrightBefore, copyrightAfter] = hasCompanyInCopyright
-    ? shellContent.copyright.split(settings.companyName)
-    : ['', ''];
+  const companyAt = settings.companyName ? shellContent.copyright.indexOf(settings.companyName) : -1;
+  const hasCompanyInCopyright = companyAt >= 0;
+  const copyrightBefore = shellContent.copyright.slice(0, Math.max(companyAt, 0));
+  const copyrightAfter = shellContent.copyright.slice(companyAt + settings.companyName.length);
 
   return (
     <footer id="footer" className="footer-wrapper">
@@ -169,12 +170,7 @@ export function Footer({
                     />
                     <div className="ux-menu stack stack-col justify-start">
                       {group.items.map((item) => {
-                        const href =
-                          item.destination?.kind === 'internal'
-                            ? pathForRouteId(routes, item.destination.routeId) ?? '#'
-                            : item.destination?.kind === 'external'
-                              ? item.destination.href
-                              : item.destination?.hash ?? '#';
+                        const href = resolveDestination(item.destination, routes) ?? '#';
 
                         return (
                           <div key={item.id} className="ux-menu-link flex menu-item">
