@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, type ReactNode } from 'react';
-import { nextStuck } from './headerMotion.ts';
+import { nextStuck } from './stickyThreshold.ts';
 
 export interface HeaderMotionProps {
   className?: string;
@@ -35,7 +35,7 @@ export function HeaderMotion({
 
     const onScroll = () => {
       const scrollY = window.scrollY;
-      const currentWrapperHeight = isStuck ? lockedHeight : (wrapperEl.offsetHeight || 90);
+      const currentWrapperHeight = isStuck ? lockedHeight : wrapperEl.offsetHeight || 90;
       const shouldStick = nextStuck(scrollY, currentWrapperHeight, isStuck);
 
       if (shouldStick !== isStuck) {

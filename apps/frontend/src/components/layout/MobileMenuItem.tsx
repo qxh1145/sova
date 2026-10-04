@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
+import { useState, type MouseEvent, type ReactNode } from 'react';
 import Link from 'next/link';
 
 export interface MobileMenuItemProps {
@@ -11,22 +11,30 @@ export interface MobileMenuItemProps {
   children: ReactNode;
 }
 
-export function MobileMenuItem({
-  id,
-  href,
-  label,
-  toggleLabel,
-  children,
-}: MobileMenuItemProps) {
+export function MobileMenuItem({ id, href, label, toggleLabel, children }: MobileMenuItemProps) {
   const [isOpen, setIsOpen] = useState(false);
   const submenuId = `submenu-${id}`;
+  const toggle = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsOpen((prev) => !prev);
+  };
 
   return (
     <li className={`has-children${isOpen ? ' active' : ''}`}>
       {href ? (
         <Link href={href}>{label}</Link>
       ) : (
-        <a className="nav-top-link">{label}</a>
+        // A parent with no destination toggles its submenu, so the label is never a dead tap target.
+        <a
+          href={`#${submenuId}`}
+          className="nav-top-link"
+          aria-expanded={isOpen}
+          aria-controls={submenuId}
+          onClick={toggle}
+        >
+          {label}
+        </a>
       )}
       <button
         type="button"
@@ -34,15 +42,11 @@ export function MobileMenuItem({
         aria-expanded={isOpen}
         aria-controls={submenuId}
         aria-label={toggleLabel}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          setIsOpen((prev) => !prev);
-        }}
+        onClick={toggle}
       >
         ▼
       </button>
-      <ul id={submenuId} className="sub-menu">
+      <ul id={submenuId} className="sub-menu" inert={!isOpen}>
         {children}
       </ul>
     </li>

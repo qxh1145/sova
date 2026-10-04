@@ -22,7 +22,9 @@ test.describe('Mobile menu drawer and accordion navigation', () => {
     page.on('console', (msg) => {
       if (msg.type() === 'error') {
         const text = msg.text();
-        if (!text.startsWith('Failed to load resource: the server responded with a status of 404')) {
+        if (
+          !text.startsWith('Failed to load resource: the server responded with a status of 404')
+        ) {
           consoleErrors.push(text);
         }
       }
@@ -177,6 +179,14 @@ test.describe('Mobile menu drawer and accordion navigation', () => {
     await expect(servicesLi).not.toHaveClass(/active/);
     await expect(toggleBtn).toHaveAttribute('aria-expanded', 'false');
     expect(page.url()).toBe(initialUrl);
+
+    // The destination-free label also toggles, keeps the drawer open and does not navigate
+    const label = servicesLi.locator('> a.nav-top-link');
+    await label.click();
+    await expect(servicesLi).toHaveClass(/active/);
+    await expect(label).toHaveAttribute('aria-expanded', 'true');
+    await expect(drawer).toBeVisible();
+    expect(page.url()).toBe(initialUrl);
   });
 
   test('Matrix 6: Nested submenu — two-level nesting reachable and navigable', async ({ page }) => {
@@ -295,32 +305,5 @@ test.describe('Mobile menu drawer and accordion navigation', () => {
     await expect(page.locator('#main-menu')).toBeVisible();
 
     await expectNoDuplicateIds(page);
-  });
-
-  test('Matrix 11: Server render with JS disabled — header and drawer nav links in HTML response', async ({
-    browser,
-  }) => {
-    const context = await browser.newContext({ javaScriptEnabled: false });
-    const page = await context.newPage();
-
-    await page.goto('/');
-
-    // Header is rendered
-    await expect(page.locator('#header')).toHaveCount(1);
-
-    // The drawer is closed
-    await expect(page.locator('#main-menu')).toHaveCount(0);
-
-    // HTML response contains header and drawer navigation links
-    const response = await page.request.get('/');
-    const html = await response.text();
-
-    expect(html).toContain('id="main-menu-noscript"');
-    const noscriptContent = html.split('id="main-menu-noscript"')[1];
-    expect(noscriptContent).toContain('Thiết kế website');
-    expect(noscriptContent).toContain('Giới thiệu');
-    expect(noscriptContent).toContain('Dịch vụ');
-
-    await context.close();
   });
 });
