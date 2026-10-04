@@ -7,6 +7,7 @@ import { MobileMenuDrawer } from './MobileMenu';
 import { MobileMenuPanel } from './MobileMenuPanel';
 import { MobileContactBar } from './MobileContactBar';
 import { FloatingContactActions } from './FloatingContactActions';
+import { CustomCursor } from './CustomCursor';
 
 export interface SiteShellProps {
   locale: Locale;
@@ -79,6 +80,7 @@ export function SiteShell({
         labels={shellContent.floatingContacts}
         settings={settings}
       />
+      <CustomCursor />
     </ShellOverlayProvider>
   );
 }

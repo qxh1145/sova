@@ -20,3 +20,19 @@ body {
   cursor: auto;
 }
 
+.custom-cursor {
+  display: none;
+}
+
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  body {
+    cursor: none;
+  }
+
+  .custom-cursor,
+  .cursor-dot,
+  .cursor-ring {
+    display: block;
+  }
+}
+
