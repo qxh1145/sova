@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 import type { AssetRef } from '../src/types/content.ts';
 
 const FORBIDDEN =
-  /(?:^|\/)logo-eras-|\.(?:js|mjs|cjs|php|html?)$|(?:^|\/)wp-includes\/|(?:^|\/)dist\/|_files\/|(?:^|\/)\.\.(?:\/|$)/i;
+  /(?:^|\/)logo-eras-|\.(?:js|mjs|cjs|php|html?|css|map|json)$|(?:^|\/)wp-includes\/|(?:^|\/)dist\/|_files\/|(?:^|\/)\.\.(?:\/|$)/i;
 
 /** Root-absolute `/wp-content/...` ref -> decoded mirror-relative path, else null. */
 function toRel(ref: string): string | null {
@@ -114,6 +114,7 @@ async function main() {
   const known = new Set([...allowlist, ...icons]);
   for (const file of files(path.join(PUBLIC, 'wp-content'))) {
     const rel = path.relative(PUBLIC, file).split(path.sep).join('/');
+    if (path.basename(file) === '.DS_Store') continue;
     if (/(?:^|\/)logo-eras-/i.test(rel)) failures.push(`Eras logo: public/${rel}`);
     else if (!known.has(rel)) failures.push(`not allowlisted: public/${rel}`);
   }
