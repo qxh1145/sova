@@ -23,6 +23,7 @@
     "verify:assets": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/assets.ts --verify"
   },
   "dependencies": {
+    "@hookform/resolvers": "5.9.1",
     "@radix-ui/react-dialog": "1.1.23",
     "embla-carousel": "8.6.0",
     "embla-carousel-auto-height": "8.6.0",
@@ -30,7 +31,9 @@
     "embla-carousel-react": "8.6.0",
     "next": "16.3.8",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "react-hook-form": "7.89.0",
+    "zod": "4.6.5"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
