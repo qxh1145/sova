@@ -7,3 +7,4 @@ test-results/
 tsconfig.json
 .omc/
 /baseline/
+src/styles/legacy/
