@@ -66,7 +66,7 @@ function DialogPortalInner({
   const readyClass = isReady ? 'mfp-ready' : undefined;
 
   const overlayClasses = ['mfp-bg', variantClass, readyClass].filter(Boolean).join(' ');
-  const wrapClasses = ['mfp-wrap', variantClass, readyClass].filter(Boolean).join(' ');
+  const wrapClasses = ['mfp-wrap', 'mfp-close-btn-in', 'mfp-auto-cursor', variantClass, readyClass].filter(Boolean).join(' ');
   const contentClasses = [
     'mfp-content',
     variant === 'lightbox' ? 'lightbox-content' : undefined,
@@ -79,7 +79,7 @@ function DialogPortalInner({
     <>
       <DialogPrimitive.Overlay className={overlayClasses} />
       <div className={wrapClasses} style={{ pointerEvents: 'auto' }}>
-        <div className="mfp-container">
+        <div className="mfp-container mfp-s-ready mfp-inline-holder">
           <DialogPrimitive.Content
             id={id}
             className={contentClasses}

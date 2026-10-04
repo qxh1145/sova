@@ -45,7 +45,7 @@ describe('FixtureOverlayPage', () => {
     const result = await FixtureOverlayPage({
       params: Promise.resolve({ variant: 'menu-consult' }),
     });
-    expect(result).toBeDefined();
+    expect(result.props.variant).toBe('menu-consult');
   });
 
   it('renders successfully for single when FIXTURE_HARNESS is "1"', async () => {
@@ -53,6 +53,6 @@ describe('FixtureOverlayPage', () => {
     const result = await FixtureOverlayPage({
       params: Promise.resolve({ variant: 'single' }),
     });
-    expect(result).toBeDefined();
+    expect(result.props.variant).toBe('single');
   });
 });

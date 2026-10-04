@@ -97,37 +97,37 @@ const ShellOverlayContext = createContext<ShellOverlayContextValue | null>(null)
 
 export function ShellOverlayProvider({ children }: { children: ReactNode }) {
   const [active, setActive] = useState<string | null>(null);
-  const activeRef = useRef<string | null>(null);
-  const triggerRef = useRef<HTMLElement | null>(null);
+  // Ref mirror so onCloseAutoFocus reads the latest state synchronously.
+  const stateRef = useRef<ShellOverlayState>({ active: null, trigger: null });
 
-  const open = useCallback((id: string, trigger?: HTMLElement | null) => {
-    if (activeRef.current === null) {
-      triggerRef.current = trigger ?? null;
-    }
-    activeRef.current = id;
-    setActive(id);
+  const dispatch = useCallback((action: ShellOverlayAction) => {
+    stateRef.current = shellOverlayReducer(stateRef.current, action);
+    setActive(stateRef.current.active);
   }, []);
 
-  const handoff = useCallback((id: string) => {
-    activeRef.current = id;
-    setActive(id);
-  }, []);
+  const open = useCallback(
+    (id: string, trigger?: HTMLElement | null) => dispatch({ type: 'OPEN', id, trigger }),
+    [dispatch],
+  );
 
-  const close = useCallback(() => {
-    activeRef.current = null;
-    setActive(null);
-  }, []);
+  const handoff = useCallback((id: string) => dispatch({ type: 'HANDOFF', id }), [dispatch]);
+
+  const close = useCallback(() => dispatch({ type: 'CLOSE' }), [dispatch]);
 
   const isOpen = useCallback((id: string) => active === id, [active]);
 
-  const onCloseAutoFocus = useCallback((event: Event) => {
-    if (activeRef.current === null) {
+  const onCloseAutoFocus = useCallback(
+    (event: Event) => {
+      // Always own focus: on handoff the next overlay's trap holds it.
       event.preventDefault();
-      const trigger = triggerRef.current;
-      triggerRef.current = null;
-      restoreFocus(trigger);
-    }
-  }, []);
+      if (stateRef.current.active === null) {
+        const { trigger } = stateRef.current;
+        dispatch({ type: 'CLEAR_TRIGGER' });
+        restoreFocus(trigger);
+      }
+    },
+    [dispatch],
+  );
 
   const value = useMemo(
     () => ({
