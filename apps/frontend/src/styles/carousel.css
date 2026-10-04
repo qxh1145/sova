@@ -1,0 +1,47 @@
+/* Minimal override so .flickity-slider is an Embla flex track (static position, flex, no absolute cells) */
+.flickity-slider {
+  display: flex;
+  align-items: flex-start; /* cells keep their own height so AutoHeight can measure them */
+  position: static;
+  height: auto;
+  width: 100%;
+  transition: height 0.25s ease;
+  touch-action: pan-y pinch-zoom;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.flickity-slider img {
+  -webkit-user-drag: none;
+}
+
+.flickity-slider > * {
+  position: relative;
+  flex: 0 0 100%;
+  min-width: 0;
+  margin: 0;
+}
+
+.flickity-viewport {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: auto;
+  transition: height 0.25s ease;
+}
+
+.flickity-page-dots li {
+  display: inline-block;
+}
+
+.flickity-page-dots li .dot,
+.flickity-page-dots li .dot:first-child:last-child {
+  display: inline-block;
+}
+
+.flickity-page-dots .dot {
+  pointer-events: auto;
+  padding: 0;
+  appearance: none;
+  background: none;
+}

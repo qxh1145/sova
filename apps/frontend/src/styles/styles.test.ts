@@ -54,7 +54,11 @@ test('globals.css imports tokens then the cascade in manifest order', () => {
   const imports = [
     ...readFileSync(path.join(__dirname, 'globals.css'), 'utf8').matchAll(/@import '([^']+)'/g),
   ].map((m) => m[1]);
-  expect(imports).toEqual(['./tokens.css', ...manifest.cascade.map((e) => `./legacy/${e.file}`)]);
+  expect(imports).toEqual([
+    './tokens.css',
+    ...manifest.cascade.map((e) => `./legacy/${e.file}`),
+    './carousel.css',
+  ]);
 });
 
 test('no webfont loading anywhere under src/', () => {
