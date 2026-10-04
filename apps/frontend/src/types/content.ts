@@ -336,6 +336,22 @@ export interface ShellContent {
     demoBadge: string;
     note: string;
   };
+  contactBar: {
+    menu: string;
+    contact: string;
+    call: string;
+    messenger: string;
+    zalo: string;
+  };
+  floatingContacts: {
+    buttonText: string;
+    menuHeader: string;
+    hours: string;
+    hotline: string;
+    messenger: string;
+    zalo: string;
+    email: string;
+  };
 }
 
 export interface SiteSettings {
