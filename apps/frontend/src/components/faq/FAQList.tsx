@@ -6,16 +6,16 @@ export type FAQListLabels = AccordionLabels;
 
 export interface FAQListProps {
   faqs: FAQ[];
-  type?: 'single' | 'multiple';
-  defaultOpen?: 'first' | 'none';
+  type: 'single' | 'multiple';
+  defaultOpen: 'first' | 'none';
   className?: string;
   labels: FAQListLabels;
 }
 
 export function FAQList({
   faqs,
-  type = 'single',
-  defaultOpen = 'none',
+  type,
+  defaultOpen,
   className,
   labels,
 }: FAQListProps) {

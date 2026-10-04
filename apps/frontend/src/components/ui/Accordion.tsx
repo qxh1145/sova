@@ -9,7 +9,7 @@ export interface AccordionLabels {
 
 export interface AccordionProps {
   type: 'single' | 'multiple';
-  defaultValue?: string[];
+  defaultValue: string[];
   className?: string;
   children: ReactNode;
 }
@@ -36,7 +36,7 @@ export function useAccordionContext() {
 
 export function Accordion({
   type,
-  defaultValue = [],
+  defaultValue,
   className,
   children,
 }: AccordionProps) {
