@@ -18,7 +18,9 @@
     "import": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import/index.ts",
     "port:css": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/port-css.ts",
     "check:brand": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-brand.ts",
-    "check:components": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-components.ts"
+    "check:components": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-components.ts",
+    "copy:assets": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/assets.ts",
+    "verify:assets": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/assets.ts --verify"
   },
   "dependencies": {
     "next": "16.3.8",
