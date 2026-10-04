@@ -2,10 +2,14 @@
 
 import {
   Children,
+  cloneElement,
   isValidElement,
   useCallback,
+  useEffect,
   useMemo,
+  useRef,
   useSyncExternalStore,
+  type ReactElement,
   type ReactNode,
 } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
@@ -17,6 +21,8 @@ export interface CarouselLabels {
   prev: string;
   next: string;
   goTo: string | ((index: number) => string);
+  /** Accessible name; when set the root becomes a `region` landmark. */
+  region?: string;
 }
 
 export interface CarouselOptionsInput {
@@ -29,11 +35,11 @@ export interface CarouselOptionsInput {
 
 export interface CarouselPluginInput {
   autoplayMs?: number;
-  pauseOnHover?: boolean;
   adaptiveHeight?: boolean;
 }
 
 export interface CarouselProps extends CarouselOptionsInput, CarouselPluginInput {
+  pauseOnHover?: boolean;
   id?: string;
   className?: string;
   arrows?: boolean;
@@ -43,10 +49,7 @@ export interface CarouselProps extends CarouselOptionsInput, CarouselPluginInput
 }
 
 /** Pure option mapping from Carousel props to Embla options. */
-export function toEmblaOptions(
-  input: CarouselOptionsInput,
-  slideCount: number,
-): EmblaOptionsType {
+export function toEmblaOptions(input: CarouselOptionsInput, slideCount: number): EmblaOptionsType {
   const isSingle = slideCount <= 1;
   const options: EmblaOptionsType = {
     align: input.align ?? 'start',
@@ -76,11 +79,8 @@ export function getCarouselPlugins(
 
   if (input.autoplayMs && input.autoplayMs > 0) {
     plugins.push(
-      Autoplay({
-        delay: input.autoplayMs,
-        stopOnMouseEnter: input.pauseOnHover ?? true,
-        stopOnInteraction: false,
-      }),
+      // Flickity parity: any drag/click stops autoplay for good; hover pause lives in Carousel.
+      Autoplay({ delay: input.autoplayMs, stopOnInteraction: true }),
     );
   }
 
@@ -89,6 +89,13 @@ export function getCarouselPlugins(
   }
 
   return plugins;
+}
+
+const REDUCED_MOTION = '(prefers-reduced-motion: reduce)';
+function subscribeReducedMotion(callback: () => void) {
+  const query = window.matchMedia(REDUCED_MOTION);
+  query.addEventListener('change', callback);
+  return () => query.removeEventListener('change', callback);
 }
 
 export function Carousel({
@@ -107,7 +114,9 @@ export function Carousel({
   labels,
   children,
 }: CarouselProps) {
-  const validChildren = Children.toArray(children).filter(isValidElement);
+  const validChildren = Children.toArray(children).filter(isValidElement) as ReactElement<{
+    className?: string;
+  }>[];
   const slideCount = validChildren.length;
   const isSingle = slideCount <= 1;
 
@@ -116,9 +125,16 @@ export function Carousel({
     [align, loop, dragThreshold, duration, containScroll, slideCount],
   );
 
+  const reducedMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    () => window.matchMedia(REDUCED_MOTION).matches,
+    () => false,
+  );
+  const effectiveAutoplayMs = reducedMotion ? undefined : autoplayMs;
+
   const plugins = useMemo(
-    () => getCarouselPlugins({ autoplayMs, pauseOnHover, adaptiveHeight }, slideCount),
-    [autoplayMs, pauseOnHover, adaptiveHeight, slideCount],
+    () => getCarouselPlugins({ autoplayMs: effectiveAutoplayMs, adaptiveHeight }, slideCount),
+    [effectiveAutoplayMs, adaptiveHeight, slideCount],
   );
 
   const [emblaRef, emblaApi] = useEmblaCarousel(emblaOptions, plugins);
@@ -141,22 +157,20 @@ export function Carousel({
     () => 0,
   );
 
+  const initialCanPrev = !!loop && !isSingle;
   const canScrollPrev = useSyncExternalStore(
     subscribe,
-    () => (emblaApi ? emblaApi.canScrollPrev() : false),
-    () => (loop && !isSingle ? true : false),
+    () => (emblaApi ? emblaApi.canScrollPrev() : initialCanPrev),
+    () => initialCanPrev,
   );
 
   const canScrollNext = useSyncExternalStore(
     subscribe,
-    () => (emblaApi ? emblaApi.canScrollNext() : false),
-    () => (!isSingle ? true : false),
+    () => (emblaApi ? emblaApi.canScrollNext() : !isSingle),
+    () => !isSingle,
   );
 
-  const defaultSnaps = useMemo(
-    () => Array.from({ length: slideCount }, (_, i) => i),
-    [slideCount],
-  );
+  const defaultSnaps = useMemo(() => Array.from({ length: slideCount }, (_, i) => i), [slideCount]);
 
   const scrollSnaps = useSyncExternalStore(
     subscribe,
@@ -164,33 +178,42 @@ export function Carousel({
     () => defaultSnaps,
   );
 
-  const resetAutoplay = useCallback(() => {
+  // Set once the user drags or clicks a control; hover-leave must not restart autoplay after that.
+  const userStopped = useRef(false);
+  const stopAutoplay = useCallback(() => {
+    userStopped.current = true;
+    emblaApi?.plugins().autoplay?.stop();
+  }, [emblaApi]);
+
+  useEffect(() => {
     if (!emblaApi) return;
-    (emblaApi.plugins().autoplay as { reset?: () => void } | undefined)?.reset?.();
+    emblaApi.on('pointerDown', stopAutoplay);
+    return () => {
+      emblaApi.off('pointerDown', stopAutoplay);
+    };
+  }, [emblaApi, stopAutoplay]);
+
+  const pauseHover = useCallback(() => emblaApi?.plugins().autoplay?.stop(), [emblaApi]);
+  const resumeHover = useCallback(() => {
+    if (!userStopped.current) emblaApi?.plugins().autoplay?.play();
   }, [emblaApi]);
 
   const scrollPrev = useCallback(() => {
-    if (emblaApi) {
-      emblaApi.scrollPrev();
-      resetAutoplay();
-    }
-  }, [emblaApi, resetAutoplay]);
+    emblaApi?.scrollPrev();
+    stopAutoplay();
+  }, [emblaApi, stopAutoplay]);
 
   const scrollNext = useCallback(() => {
-    if (emblaApi) {
-      emblaApi.scrollNext();
-      resetAutoplay();
-    }
-  }, [emblaApi, resetAutoplay]);
+    emblaApi?.scrollNext();
+    stopAutoplay();
+  }, [emblaApi, stopAutoplay]);
 
   const scrollTo = useCallback(
     (index: number) => {
-      if (emblaApi) {
-        emblaApi.scrollTo(index);
-        resetAutoplay();
-      }
+      emblaApi?.scrollTo(index);
+      stopAutoplay();
     },
-    [emblaApi, resetAutoplay],
+    [emblaApi, stopAutoplay],
   );
 
   const { goTo } = labels;
@@ -209,26 +232,29 @@ export function Carousel({
     [goTo],
   );
 
-  const rootClasses = [
-    className,
-    'flickity-enabled',
-    slideCount > 1 ? 'is-draggable' : undefined,
-  ]
+  const rootClasses = [className, 'flickity-enabled', slideCount > 1 ? 'is-draggable' : undefined]
     .filter(Boolean)
     .join(' ');
 
   return (
-    <div id={id} className={rootClasses}>
+    <div
+      id={id}
+      className={rootClasses}
+      role={labels.region ? 'region' : undefined}
+      aria-label={labels.region}
+      onMouseEnter={pauseOnHover ? pauseHover : undefined}
+      onMouseLeave={pauseOnHover ? resumeHover : undefined}
+    >
       <div ref={emblaRef} className="flickity-viewport">
         <div className="flickity-slider">
-          {validChildren.map((child, index) => (
-            <div
-              key={isValidElement(child) && child.key != null ? child.key : index}
-              className={`flickity-cell ${selectedIndex === index ? 'is-selected' : ''}`.trim()}
-            >
-              {child}
-            </div>
-          ))}
+          {/* Flickity parity: the child itself is the cell, so legacy `.flickity-slider > .row/.col` rules match. */}
+          {validChildren.map((child, index) =>
+            selectedIndex === index
+              ? cloneElement(child, {
+                  className: [child.props.className, 'is-selected'].filter(Boolean).join(' '),
+                })
+              : child,
+          )}
         </div>
       </div>
 
@@ -241,7 +267,12 @@ export function Carousel({
             disabled={!canScrollPrev}
             onClick={scrollPrev}
           >
-            <svg className="flickity-button-icon" viewBox="0 0 100 100">
+            <svg
+              className="flickity-button-icon"
+              viewBox="0 0 100 100"
+              aria-hidden="true"
+              focusable="false"
+            >
               <path d="M 10,50 L 60,100 L 70,90 L 30,50  L 70,10 L 60,0 Z" className="arrow" />
             </svg>
           </button>
@@ -252,7 +283,12 @@ export function Carousel({
             disabled={!canScrollNext}
             onClick={scrollNext}
           >
-            <svg className="flickity-button-icon" viewBox="0 0 100 100">
+            <svg
+              className="flickity-button-icon"
+              viewBox="0 0 100 100"
+              aria-hidden="true"
+              focusable="false"
+            >
               <path
                 d="M 10,50 L 60,100 L 70,90 L 30,50  L 70,10 L 60,0 Z"
                 className="arrow"
@@ -266,7 +302,7 @@ export function Carousel({
       {dots && slideCount > 1 && (
         <ol className="flickity-page-dots">
           {scrollSnaps.map((_, index) => (
-            <li key={index} style={{ display: 'inline-block' }}>
+            <li key={index}>
               <button
                 type="button"
                 className={`dot ${selectedIndex === index ? 'is-selected' : ''}`.trim()}

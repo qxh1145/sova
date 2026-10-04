@@ -1,6 +1,7 @@
 /* Minimal override so .flickity-slider is an Embla flex track (static position, flex, no absolute cells) */
 .flickity-slider {
   display: flex;
+  align-items: flex-start; /* cells keep their own height so AutoHeight can measure them */
   position: static;
   height: auto;
   width: 100%;
@@ -12,7 +13,6 @@
 
 .flickity-slider img {
   -webkit-user-drag: none;
-  user-drag: none;
 }
 
 .flickity-slider > * {

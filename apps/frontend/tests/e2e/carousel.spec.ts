@@ -1,252 +1,254 @@
+import type { Locator, Page } from '@playwright/test';
 import { expect, test } from './fixtures';
 
+const TESTIMONIALS = '#slider-1717467276';
+
+/** Hydrate on a running fake clock, wait for Embla, then freeze time so only runFor() moves it. */
+async function openPaused(page: Page, url: string) {
+  await page.clock.install();
+  await page.goto(url);
+  await expect(page.locator('.flickity-slider').first()).toHaveAttribute('style', /translate/);
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 500));
+}
+
+function selected(slides: Locator) {
+  return slides.evaluateAll((els) => els.findIndex((e) => e.classList.contains('is-selected')));
+}
+
+/** Advance the paused clock and let React commit before reading the selection. */
+async function tick(page: Page, slides: Locator, ms: number) {
+  await page.clock.runFor(ms);
+  await page.waitForTimeout(50); // real time for React's microtask/MessageChannel flush
+  return selected(slides);
+}
+
+/** Move the pointer to the empty bottom edge of the fixture page (fires mouseleave). */
+async function leaveSlider(page: Page) {
+  const { width, height } = page.viewportSize()!;
+  await page.mouse.move(width / 2, height - 5);
+}
+
+const STEP = 250;
+
+/**
+ * Sync to an autoplay advance (known to within STEP), then prove the next one lands at `delay`:
+ * no advance at delay - 2*STEP, advance by delay. A slower or faster interval fails.
+ */
+async function expectAutoplayEvery(page: Page, slides: Locator, delay: number) {
+  const count = await slides.count();
+  let current = await selected(slides);
+  for (let waited = 0; ; waited += STEP) {
+    expect(waited, 'first autoplay advance').toBeLessThanOrEqual(delay);
+    const next = await tick(page, slides, STEP);
+    if (next !== current) {
+      expect(next).toBe((current + 1) % count);
+      current = next;
+      break;
+    }
+  }
+  for (let i = 0; i < count; i++) {
+    expect(await tick(page, slides, delay - 2 * STEP), 'advanced too early').toBe(current);
+    const next = await tick(page, slides, 2 * STEP);
+    expect(next, 'did not advance on time').toBe((current + 1) % count);
+    current = next;
+  }
+}
+
 test.describe('Carousel contract checks', () => {
-  test('Testimonials autoplay: advances every 6000ms, wraps last to first, and adapts height', async ({
-    page,
-  }) => {
-    await page.clock.install();
-    await page.goto('/dev-fixtures/carousel/testimonials');
-
-    const slides = page.locator('#slider-1717467276 .flickity-slider > .flickity-cell');
-    const dots = page.locator('#slider-1717467276 .flickity-page-dots .dot');
-
+  test('Testimonials autoplay: advances every 6000ms and wraps last to first', async ({ page }) => {
+    await openPaused(page, '/dev-fixtures/carousel/testimonials');
+    const slides = page.locator(`${TESTIMONIALS} .flickity-slider > *`);
+    const dots = page.locator(`${TESTIMONIALS} .flickity-page-dots .dot`);
     await expect(slides).toHaveCount(3);
     await expect(dots).toHaveCount(3);
-
-    // Initial state: slide 0
     await expect(slides.nth(0)).toHaveClass(/is-selected/);
     await expect(dots.nth(0)).toHaveClass(/is-selected/);
 
-    // After 6000ms: slide 1
-    await page.clock.fastForward(6000);
-    await expect(slides.nth(1)).toHaveClass(/is-selected/);
-    await expect(dots.nth(1)).toHaveClass(/is-selected/);
-
-    // After another 6000ms: slide 2
-    await page.clock.fastForward(6000);
-    await expect(slides.nth(2)).toHaveClass(/is-selected/);
-    await expect(dots.nth(2)).toHaveClass(/is-selected/);
-
-    // After another 6000ms: wraps around to slide 0
-    await page.clock.fastForward(6000);
-    await expect(slides.nth(0)).toHaveClass(/is-selected/);
-    await expect(dots.nth(0)).toHaveClass(/is-selected/);
-
-    // Viewport adapts height to the active slide
-    const viewport = page.locator('#slider-1717467276 .flickity-viewport');
-    const viewportBox = await viewport.boundingBox();
-    expect(viewportBox).not.toBeNull();
-    expect(viewportBox!.height).toBeGreaterThan(50);
+    // Loops through all 3 slides, so it covers the last -> first wrap.
+    await expectAutoplayEvery(page, slides, 6000);
   });
 
-  test('THP gallery autoplay: advances every 3000ms, center align with 80% cells and peeking neighbours', async ({
+  test('Testimonials adaptive height: viewport follows the selected slide', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 800 });
+    await openPaused(page, '/dev-fixtures/carousel/testimonials');
+    const slides = page.locator(`${TESTIMONIALS} .flickity-slider > *`);
+    const viewport = page.locator(`${TESTIMONIALS} .flickity-viewport`);
+    const region = page.getByRole('region', { name: 'Carousel' });
+
+    const heights: number[] = [];
+    for (let i = 0; i < 3; i++) {
+      await region.getByRole('button', { name: `Go to slide ${i + 1}` }).click();
+      await expect(slides.nth(i)).toHaveClass(/is-selected/);
+      await page.clock.runFor(1000); // settle height transition
+      const cell = (await slides.nth(i).boundingBox())!.height;
+      await expect.poll(async () => (await viewport.boundingBox())!.height).toBeCloseTo(cell, 0);
+      heights.push(cell);
+    }
+    // Cells keep their own height (no stretch to the tallest), so the quotes measure differently.
+    expect(new Set(heights.map(Math.round)).size).toBeGreaterThan(1);
+  });
+
+  test('THP gallery autoplay: advances every 3000ms, 1050px centred cells with peeking neighbours', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1320, height: 800 });
-    await page.goto('/dev-fixtures/carousel/thp-gallery');
-    await page.clock.install();
+    await openPaused(page, '/dev-fixtures/carousel/thp-gallery');
 
     const slider = page.locator('#slider-duan .slider');
-    const slides = page.locator('#slider-duan .flickity-slider > .flickity-cell');
-    const dots = page.locator('#slider-duan .flickity-page-dots .dot');
-
+    const slides = page.locator('#slider-duan .flickity-slider > *');
     await expect(slides).toHaveCount(2);
-    await expect(dots).toHaveCount(2);
+    await expect(page.locator('#slider-duan .flickity-page-dots .dot')).toHaveCount(2);
 
-    // Allow initial animation frame and layout to settle under fake clock
-    await page.clock.runFor(100);
+    const sliderBox = (await slider.boundingBox())!;
+    const slideBox = (await slides.nth(0).boundingBox())!;
+    // Desktop: `.slider-style-focus .flickity-slider>*{max-width:1050px}`; the page-scoped 80% rule is mobile-only.
+    expect(slideBox.width).toBeCloseTo(1050, 0);
+    expect(slideBox.width).toBeLessThan(sliderBox.width);
+    const sliderCenter = sliderBox.x + sliderBox.width / 2;
+    expect(Math.abs(sliderCenter - (slideBox.x + slideBox.width / 2))).toBeLessThan(5);
 
-    // Verify slide width is capped at 1050px (~80% of 1320px container)
-    const sliderBox = await slider.boundingBox();
-    const slideBox = await slides.nth(0).boundingBox();
-    expect(sliderBox).not.toBeNull();
-    expect(slideBox).not.toBeNull();
-
-    // 1050 / 1320 is ~0.795
-    const ratio = slideBox!.width / sliderBox!.width;
-    expect(ratio).toBeGreaterThan(0.75);
-    expect(ratio).toBeLessThan(0.85);
-
-    // Verify center alignment: slide center aligns closely with slider center
-    const sliderCenter = sliderBox!.x + sliderBox!.width / 2;
-    const slideCenter = slideBox!.x + slideBox!.width / 2;
-    expect(Math.abs(sliderCenter - slideCenter)).toBeLessThan(5);
-
-    // Slide 0 selected initially
     await expect(slides.nth(0)).toHaveClass(/is-selected/);
-
-    // Advance 3000ms -> slide 1 selected
-    await page.clock.fastForward(3000);
-    await expect(slides.nth(1)).toHaveClass(/is-selected/);
-    await expect(dots.nth(1)).toHaveClass(/is-selected/);
-
-    // Advance 3000ms -> wraps to slide 0
-    await page.clock.fastForward(3000);
-    await expect(slides.nth(0)).toHaveClass(/is-selected/);
-    await expect(dots.nth(0)).toHaveClass(/is-selected/);
+    await expectAutoplayEvery(page, slides, 3000);
   });
 
   test('Mobile pricing: 85% cells at 390px, advances every 6000ms, hidden at >=550px', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 390, height: 800 });
-    await page.clock.install();
-    await page.goto('/dev-fixtures/carousel/pricing-mobile');
+    await openPaused(page, '/dev-fixtures/carousel/pricing-mobile');
 
     const wrapper = page.locator('#slider-74016963');
     await expect(wrapper).toBeVisible();
-
     const slider = page.locator('#slider-74016963 .slider');
-    const slides = page.locator('#slider-74016963 .flickity-slider > .flickity-cell');
+    const slides = page.locator('#slider-74016963 .flickity-slider > *');
 
-    const sliderBox = await slider.boundingBox();
-    const slideBox = await slides.nth(0).boundingBox();
-    expect(sliderBox).not.toBeNull();
-    expect(slideBox).not.toBeNull();
+    const sliderBox = (await slider.boundingBox())!;
+    const slideBox = (await slides.nth(0).boundingBox())!;
+    expect(slideBox.width / sliderBox.width).toBeCloseTo(0.85, 1);
 
-    // Max width 85% of slider
-    const ratio = slideBox!.width / sliderBox!.width;
-    expect(ratio).toBeGreaterThan(0.8);
-    expect(ratio).toBeLessThanOrEqual(0.86);
-
-    // Autoplay advances every 6000ms
     await expect(slides.nth(0)).toHaveClass(/is-selected/);
-    await page.clock.fastForward(6000);
-    await expect(slides.nth(1)).toHaveClass(/is-selected/);
+    await expectAutoplayEvery(page, slides, 6000);
 
-    // When resized to >= 550px, show-for-small hides the wrapper
     await page.setViewportSize({ width: 600, height: 800 });
     await expect(wrapper).toBeHidden();
   });
 
   test('Hover pause: pauses on hover and resumes after leave', async ({ page }) => {
-    await page.clock.install();
-    await page.goto('/dev-fixtures/carousel/testimonials');
-
-    const slides = page.locator('#slider-1717467276 .flickity-slider > .flickity-cell');
+    await openPaused(page, '/dev-fixtures/carousel/testimonials');
+    const slides = page.locator(`${TESTIMONIALS} .flickity-slider > *`);
     await expect(slides.nth(0)).toHaveClass(/is-selected/);
 
-    // Hover over viewport
-    const viewport = page.locator('#slider-1717467276 .flickity-viewport');
-    await viewport.hover();
+    // Hovering a control counts too: Flickity pauses on the whole slider.
+    await page.locator(`${TESTIMONIALS} .flickity-prev-next-button.next`).hover();
+    expect(await tick(page, slides, 12000)).toBe(0);
 
-    // Fast-forward 12000ms (2 autoplay intervals): should remain on slide 0
-    await page.clock.fastForward(12000);
-    await expect(slides.nth(0)).toHaveClass(/is-selected/);
-
-    // Move pointer away outside viewport
-    const box = await viewport.boundingBox();
-    await page.mouse.move(0, (box?.y ?? 0) + (box?.height ?? 100) + 100);
-
-    // Fast-forward 6000ms: should advance to slide 1
-    await page.clock.fastForward(6000);
-    await expect(slides.nth(1)).toHaveClass(/is-selected/);
+    await leaveSlider(page);
+    expect(await tick(page, slides, 5500)).toBe(0); // timer restarts on leave
+    expect(await tick(page, slides, 500)).toBe(1);
   });
 
-  test('Controls: click and keyboard navigation on next, prev, and dots', async ({ page }) => {
-    await page.goto('/dev-fixtures/carousel/testimonials');
-
-    const slides = page.locator('#slider-1717467276 .flickity-slider > .flickity-cell');
-    const prevBtn = page.locator('#slider-1717467276 .flickity-prev-next-button.previous');
-    const nextBtn = page.locator('#slider-1717467276 .flickity-prev-next-button.next');
-    const dots = page.locator('#slider-1717467276 .flickity-page-dots .dot');
+  test('Controls: labelled buttons work by click and keyboard, then autoplay stops', async ({
+    page,
+  }) => {
+    await openPaused(page, '/dev-fixtures/carousel/testimonials');
+    const slides = page.locator(`${TESTIMONIALS} .flickity-slider > *`);
+    const region = page.getByRole('region', { name: 'Carousel' });
+    const prevBtn = region.getByRole('button', { name: 'Previous' });
+    const nextBtn = region.getByRole('button', { name: 'Next' });
 
     await expect(slides.nth(0)).toHaveClass(/is-selected/);
-
-    // Click next button
     await nextBtn.click();
     await expect(slides.nth(1)).toHaveClass(/is-selected/);
-
-    // Click prev button
     await prevBtn.click();
     await expect(slides.nth(0)).toHaveClass(/is-selected/);
-
-    // Click dot 2 (3rd slide)
-    await dots.nth(2).click();
+    await region.getByRole('button', { name: 'Go to slide 3' }).click();
     await expect(slides.nth(2)).toHaveClass(/is-selected/);
 
-    // Keyboard navigation: focus next button and press Enter
     await nextBtn.focus();
     await page.keyboard.press('Enter');
     await expect(slides.nth(0)).toHaveClass(/is-selected/);
-
-    // Keyboard navigation: focus dot 1 and press Enter
-    await dots.nth(1).focus();
+    await region.getByRole('button', { name: 'Go to slide 2' }).focus();
     await page.keyboard.press('Enter');
     await expect(slides.nth(1)).toHaveClass(/is-selected/);
+
+    // Flickity parity: interaction stops autoplay, even after the pointer leaves.
+    await leaveSlider(page);
+    expect(await tick(page, slides, 12000)).toBe(1);
   });
 
-  test('Drag: sub-threshold drag does not advance; drag past threshold advances', async ({
+  test('Drag: sub-threshold drag does not advance; a real drag advances and stops autoplay', async ({
     page,
   }) => {
+    // Embla's drag release settles on animation frames, so the gesture runs on a flowing clock.
+    await page.clock.install();
     await page.goto('/dev-fixtures/carousel/testimonials');
-
-    const viewport = page.locator('#slider-1717467276 .flickity-viewport');
-    const slides = page.locator('#slider-1717467276 .flickity-slider > .flickity-cell');
+    const viewport = page.locator(`${TESTIMONIALS} .flickity-viewport`);
+    const slides = page.locator(`${TESTIMONIALS} .flickity-slider > *`);
     await expect(slides.nth(0)).toHaveClass(/is-selected/);
 
     const box = (await viewport.boundingBox())!;
     const startX = box.x + box.width * 0.4;
     const startY = box.y + box.height / 2;
 
-    // Sub-threshold drag: 5px horizontally (threshold is 10)
+    // 5px is under dragThreshold:10
     await page.mouse.move(startX, startY);
     await page.mouse.down();
     await page.mouse.move(startX - 5, startY, { steps: 5 });
     await page.mouse.up();
-
     await expect(slides.nth(0)).toHaveClass(/is-selected/);
 
-    // Drag past threshold and distance (> 50% slide width): moves to next slide
+    // 35% of the viewport width: past the threshold and far enough to snap to the next slide
     await page.mouse.move(startX, startY);
     await page.mouse.down();
     await page.mouse.move(startX - Math.round(box.width * 0.35), startY, { steps: 15 });
     await page.mouse.up();
-
     await expect(slides.nth(1)).toHaveClass(/is-selected/);
+
+    await leaveSlider(page);
+    await page.clock.pauseAt(await page.evaluate(() => Date.now() + 500));
+    expect(await tick(page, slides, 12000)).toBe(1);
   });
 
   test('Single child: no arrows, no dots, no autoplay', async ({ page }) => {
-    await page.goto('/dev-fixtures/carousel/testimonials?single=1');
-    await page.clock.install();
-
-    const slides = page.locator('#slider-1717467276 .flickity-slider > .flickity-cell');
+    await openPaused(page, '/dev-fixtures/carousel/testimonials?single=1');
+    const slides = page.locator(`${TESTIMONIALS} .flickity-slider > *`);
     await expect(slides).toHaveCount(1);
     await expect(slides.nth(0)).toHaveClass(/is-selected/);
-
-    // No arrows and no dots
-    await expect(page.locator('#slider-1717467276 .flickity-prev-next-button')).toHaveCount(0);
-    await expect(page.locator('#slider-1717467276 .flickity-page-dots')).toHaveCount(0);
-
-    // No autoplay advance
-    await page.clock.fastForward(12000);
-    await expect(slides.nth(0)).toHaveClass(/is-selected/);
+    await expect(page.locator(`${TESTIMONIALS} .flickity-prev-next-button`)).toHaveCount(0);
+    await expect(page.locator(`${TESTIMONIALS} .flickity-page-dots`)).toHaveCount(0);
+    expect(await tick(page, slides, 12000)).toBe(0);
   });
 
-  test('Navigation away: destroys instances and timers with no console errors', async ({
+  test('Navigation away: client-side unmount leaves no running carousel or console errors', async ({
     page,
   }) => {
     const consoleErrors: string[] = [];
     page.on('console', (msg) => {
-      if (msg.type() === 'error') {
-        consoleErrors.push(msg.text());
-      }
+      if (msg.type() === 'error') consoleErrors.push(msg.text());
     });
-    page.on('pageerror', (err) => {
-      consoleErrors.push(err.message);
-    });
+    page.on('pageerror', (err) => consoleErrors.push(err.message));
 
-    await page.clock.install();
-    await page.goto('/dev-fixtures/carousel/testimonials');
-    await page.clock.fastForward(1000);
+    await openPaused(page, '/dev-fixtures/carousel/testimonials');
+    await page.clock.runFor(1000);
 
-    // Navigate to another carousel variant while autoplay is running
-    await page.goto('/dev-fixtures/carousel/thp-gallery');
-    await page.clock.fastForward(1000);
+    // Client-side route change (React unmount, not a document reload).
+    await page.clock.resume();
+    await page.getByTestId('fixture-client-nav').evaluate((el) => (el as HTMLElement).click());
+    await expect(page).toHaveURL(/\/thp-gallery\/?$/);
+    await expect(page.locator(TESTIMONIALS)).toHaveCount(0);
+    const thpSlides = page.locator('#slider-duan .flickity-slider > *');
+    await expect(thpSlides.nth(0)).toHaveClass(/is-selected/);
 
-    // Navigate back
-    await page.goto('/dev-fixtures/carousel/testimonials');
-    await page.clock.fastForward(2000);
+    // A leaked testimonials timer would fire on a destroyed instance here.
+    await page.clock.pauseAt(await page.evaluate(() => Date.now() + 500));
+    await page.clock.runFor(12000);
+
+    await page.clock.resume();
+    await page.goBack();
+    const slides = page.locator(`${TESTIMONIALS} .flickity-slider > *`);
+    await expect(slides.nth(0)).toHaveClass(/is-selected/);
+    await page.clock.fastForward(6500);
+    await expect(slides.nth(1)).toHaveClass(/is-selected/);
 
     expect(consoleErrors).toEqual([]);
   });
