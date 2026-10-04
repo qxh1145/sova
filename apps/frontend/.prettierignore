@@ -1,0 +1,10 @@
+.next/
+node_modules/
+package-lock.json
+next-env.d.ts
+playwright-report/
+test-results/
+tsconfig.json
+.omc/
+/baseline/
+src/styles/legacy/
