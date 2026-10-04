@@ -22,8 +22,8 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
     page.on('console', (msg) => {
       if (msg.type() === 'error') {
         const text = msg.text();
-        // Ignore expected HTTP 404 resource errors from the 404 guard test
-        if (!text.includes('404')) {
+        // Ignore only the expected resource 404 from the guard test
+        if (!text.startsWith('Failed to load resource: the server responded with a status of 404')) {
           consoleErrors.push(text);
         }
       }
@@ -57,6 +57,10 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
       return !!(d && active && d.contains(active));
     });
     expect(focusInside).toBe(true);
+
+    // Legacy CSS keeps .mfp-bg/.mfp-content at opacity 0 until mfp-ready lands
+    await expect(page.locator('.mfp-wrap')).toHaveClass(/mfp-ready/);
+    await expect(page.locator('.mfp-bg')).toHaveClass(/mfp-ready/);
 
     // Body scroll locked
     await expect(page.locator('body')).toHaveAttribute('data-scroll-locked');
@@ -161,6 +165,16 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
     await expect(page.locator('#main-menu')).toBeVisible();
     await expect(page.locator('body')).toHaveAttribute('data-scroll-locked');
 
+    // Record any moment the body loses its lock mid-handoff
+    await page.evaluate(() => {
+      const w = window as unknown as { __unlocked: boolean; __lockObs: MutationObserver };
+      w.__unlocked = false;
+      w.__lockObs = new MutationObserver(() => {
+        if (!document.body.hasAttribute('data-scroll-locked')) w.__unlocked = true;
+      });
+      w.__lockObs.observe(document.body, { attributes: true, attributeFilter: ['data-scroll-locked'] });
+    });
+
     // Activate consult inside menu
     const consultTrigger = page.locator('[data-testid="menu-consult-trigger"]');
     await consultTrigger.click();
@@ -170,6 +184,12 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
     await expect(page.locator('#consult-popup')).toBeVisible();
 
     // Body scroll stays locked throughout
+    const unlockedMidHandoff = await page.evaluate(() => {
+      const w = window as unknown as { __unlocked: boolean; __lockObs: MutationObserver };
+      w.__lockObs.disconnect();
+      return w.__unlocked;
+    });
+    expect(unlockedMidHandoff).toBe(false);
     await expect(page.locator('body')).toHaveAttribute('data-scroll-locked');
     expect(await getBodyOverflow(page)).toBe('hidden');
 
@@ -200,6 +220,11 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
 
     // Exactly one dialog exists in DOM
     await expect(page.locator('[role="dialog"]')).toHaveCount(1);
+
+    // open() while active keeps the original trigger for focus return
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#consult-popup')).toHaveCount(0);
+    await expect(page.locator('[data-testid="menu-trigger"]')).toBeFocused();
   });
 
   test('Matrix 8: Unmount while open — client-nav away restores body scroll and pointer-events with no errors', async ({
@@ -330,6 +355,8 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
     const dialog = page.locator('#single-dialog');
     await expect(dialog).toBeVisible();
     await expect(dialog).toHaveClass(/lightbox-content/);
+    await expect(page.locator('.mfp-wrap')).toHaveClass(/mfp-ready/);
+    await expect(page.locator('.mfp-bg')).toHaveClass(/mfp-ready/);
 
     // Inner content is visible
     await expect(page.locator('[data-testid="single-dialog-content"]')).toBeVisible();
