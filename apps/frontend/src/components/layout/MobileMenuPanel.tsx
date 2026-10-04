@@ -8,8 +8,7 @@ import type {
   ShellContent,
   SiteSettings,
 } from '@/types/content';
-import { pathForRouteId } from '@/lib/routes';
-import { resolveDestination } from './Header';
+import { homeHref as homeHrefFor, resolveDestination } from '@/lib/routes';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { LogoLink } from './LogoLink';
 import { MobileMenuItem } from './MobileMenuItem';
@@ -24,11 +23,7 @@ export interface MobileMenuPanelProps {
   logoAsset?: AssetRef | null;
 }
 
-function renderMobileNavItems(
-  items: NavigationItem[],
-  routes: RouteEntry[],
-  toggleLabel: string,
-) {
+function renderMobileNavItems(items: NavigationItem[], routes: RouteEntry[], toggleLabel: string) {
   return items.map((item) => {
     const href = resolveDestination(item.destination, routes);
     if (item.children && item.children.length > 0) {
@@ -61,8 +56,7 @@ export function MobileMenuPanel({
   counterparts,
   logoAsset,
 }: MobileMenuPanelProps) {
-  const homeRouteId = locale === 'en' ? 'route-en--home' : 'route-root';
-  const homeHref = pathForRouteId(routes, homeRouteId) ?? (locale === 'en' ? '/en/home/' : '/');
+  const homeHref = homeHrefFor(routes, locale);
 
   return (
     <div className="row row-collapse row_menu" id="row-1555793899">

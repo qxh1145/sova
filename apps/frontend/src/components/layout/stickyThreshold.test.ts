@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { nextStuck } from './headerMotion';
+import { nextStuck } from './stickyThreshold';
 
 describe('nextStuck', () => {
   const wrapperHeight = 90;

@@ -47,38 +47,31 @@ export function MobileMenuDrawer({ labels, children }: MobileMenuDrawerProps) {
   const handleContentClick = (e: MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
     const anchor = target.closest('a');
-    if (anchor && anchor.getAttribute('href') && !anchor.classList.contains('toggle-submenu')) {
+    if (anchor?.getAttribute('href')) {
       close();
     }
   };
 
   return (
-    <>
-      <Dialog
-        open={open}
-        onOpenChange={(nextOpen) => {
-          if (!nextOpen) close();
-        }}
-        variant="off-canvas"
-        side="right"
-        id="main-menu"
-        className="mobile-sidebar no-scrollbar"
-        title={labels.menuHeading}
-        titleHidden
-        labels={{ close: labels.close }}
-        onCloseAutoFocus={onCloseAutoFocus}
-      >
-        <div className="sidebar-menu no-scrollbar" onClick={handleContentClick}>
-          <ul className="nav nav-sidebar nav-vertical nav-uppercase" data-tab="1">
-            <li className="html custom html_nav_position_text">{children}</li>
-          </ul>
-        </div>
-      </Dialog>
-      <noscript>
-        <div hidden id="main-menu-noscript">
-          {children}
-        </div>
-      </noscript>
-    </>
+    <Dialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        if (!nextOpen) close();
+      }}
+      variant="off-canvas"
+      side="right"
+      id="main-menu"
+      className="mobile-sidebar no-scrollbar"
+      title={labels.menuHeading}
+      titleHidden
+      labels={{ close: labels.close }}
+      onCloseAutoFocus={onCloseAutoFocus}
+    >
+      <div className="sidebar-menu no-scrollbar" onClick={handleContentClick}>
+        <ul className="nav nav-sidebar nav-vertical nav-uppercase" data-tab="1">
+          <li className="html custom html_nav_position_text">{children}</li>
+        </ul>
+      </div>
+    </Dialog>
   );
 }

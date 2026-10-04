@@ -7,7 +7,9 @@ test.describe('Header sticky motion and geometry', () => {
     page.on('console', (msg) => {
       if (msg.type() === 'error') {
         const text = msg.text();
-        if (!text.startsWith('Failed to load resource: the server responded with a status of 404')) {
+        if (
+          !text.startsWith('Failed to load resource: the server responded with a status of 404')
+        ) {
           consoleErrors.push(text);
         }
       }
@@ -47,6 +49,7 @@ test.describe('Header sticky motion and geometry', () => {
     await page.evaluate(() => window.scrollTo(0, 300));
 
     await expect(wrapper).toHaveClass(/stuck/);
+    await expect(wrapper).not.toHaveClass(/ux-no-animation/);
     await expect(header).not.toHaveClass(/(^|\s)transparent(\s|$)/);
     await expect(header).toHaveClass(/has-transparent/);
 
@@ -127,6 +130,14 @@ test.describe('Header sticky motion and geometry', () => {
     const wrapper = page.locator('#header .header-wrapper');
     await expect(wrapper).toHaveClass(/stuck/);
     await expect(wrapper).toHaveClass(/ux-no-animation/);
+
+    // Unsticking clears ux-no-animation, so a later stick animates
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect(wrapper).not.toHaveClass(/stuck/);
+    await expect(wrapper).not.toHaveClass(/ux-no-animation/);
+    await page.evaluate(() => window.scrollTo(0, 300));
+    await expect(wrapper).toHaveClass(/stuck/);
+    await expect(wrapper).not.toHaveClass(/ux-no-animation/);
   });
 
   test('Matrix 5: Mobile geometry at 390px — 70px when stuck, stuck wrapper hidden per legacy CSS', async ({
@@ -290,13 +301,15 @@ test.describe('Header source parity comparison against eras-clone', () => {
 
       // Stick in source
       await page.evaluate(() => window.scrollTo(0, 300));
-      await page.waitForTimeout(100);
+      await page.locator('#header .header-wrapper.stuck').waitFor({ state: 'attached' });
 
       const sourceStuck = await page.evaluate(() => {
         const main = document.querySelector('#masthead');
         const wrapper = document.querySelector('#header .header-wrapper');
+        const trigger = document.querySelector('a[aria-controls="main-menu"]');
         return {
           mainHeight: main ? Math.round(main.getBoundingClientRect().height) : 0,
+          triggerVisible: trigger ? (trigger as HTMLElement).offsetParent !== null : false,
           wrapperDisplay: wrapper ? window.getComputedStyle(wrapper).display : '',
         };
       });
@@ -316,13 +329,15 @@ test.describe('Header source parity comparison against eras-clone', () => {
 
       // Stick in Sova
       await page.evaluate(() => window.scrollTo(0, 300));
-      await page.waitForTimeout(100);
+      await page.locator('#header .header-wrapper.stuck').waitFor({ state: 'attached' });
 
       const sovaStuck = await page.evaluate(() => {
         const main = document.querySelector('#masthead');
         const wrapper = document.querySelector('#header .header-wrapper');
+        const trigger = document.querySelector('a[aria-controls="main-menu"]');
         return {
           mainHeight: main ? Math.round(main.getBoundingClientRect().height) : 0,
+          triggerVisible: trigger ? (trigger as HTMLElement).offsetParent !== null : false,
           wrapperDisplay: wrapper ? window.getComputedStyle(wrapper).display : '',
         };
       });
@@ -334,6 +349,13 @@ test.describe('Header source parity comparison against eras-clone', () => {
       expect(sovaStuck.wrapperDisplay, `Stuck wrapper display at ${w}px`).toBe(
         sourceStuck.wrapperDisplay,
       );
+      expect(sovaUnstuck.triggerVisible, `Unstuck trigger visibility at ${w}px`).toBe(
+        sourceUnstuck.triggerVisible,
+      );
+      expect(sovaStuck.triggerVisible, `Stuck trigger visibility at ${w}px`).toBe(
+        sourceStuck.triggerVisible,
+      );
+      expect(sovaStuck.mainHeight, `Stuck height at ${w}px`).toBe(sourceStuck.mainHeight);
     }
   });
 });
