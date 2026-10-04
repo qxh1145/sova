@@ -13,6 +13,8 @@ export function resolveSiteTokens(text: string, settings: SiteSettings, html = t
     zaloHref: settings.zaloHref,
     messengerHref: settings.messengerHref,
     domain: settings.email.split('@')[1],
+    companyName: settings.companyName,
+    wordmark: settings.wordmark,
   };
   return text.replace(/\{\{site\.(\w+)\}\}/g, (token, key: string) => {
     const value = values[key];

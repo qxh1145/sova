@@ -3,7 +3,7 @@ import { posts } from '@/data/posts';
 import { projects } from '@/data/projects';
 import { routes } from '@/data/routes';
 import type { RouteEntry } from '@/types/content';
-import { normalizePath, reservedRootSlugs, resolvePath, validateRoutes } from './routes';
+import { normalizePath, pathForRouteId, reservedRootSlugs, resolvePath, validateRoutes } from './routes';
 
 const slugs = { postSlugs: posts.map((p) => p.slug), projectSlugs: projects.map((p) => p.slug) };
 // The 16 `excluded` rows of docs/evidence/routes.json (docs/ is not committed).
@@ -155,3 +155,11 @@ test('validateRoutes rejects crafted registries', () => {
     ),
   ).toThrow('featured_item_category');
 });
+
+test('pathForRouteId returns path for existing route and undefined for missing', () => {
+  expect(pathForRouteId(routes, 'route-root')).toBe('/');
+  expect(pathForRouteId(routes, 'route-en--home')).toBe('/en/home/');
+  expect(pathForRouteId(routes, 'route-lien-he')).toBe('/lien-he/');
+  expect(pathForRouteId(routes, 'route-non-existent')).toBeUndefined();
+});
+

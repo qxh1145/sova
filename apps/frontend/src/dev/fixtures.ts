@@ -61,9 +61,40 @@ export const fixtures: ContentData = {
         { id: 'nav-2', label: 'Fixture', destination: { kind: 'internal', routeId: 'route-1' } },
       ],
     },
+    {
+      locale: 'en',
+      header: [
+        { id: 'nav-en-1', label: 'Home', destination: { kind: 'internal', routeId: 'route-en-1' } },
+      ],
+      mobile: [],
+      footerGroups: [],
+      serviceOptions: [
+        { id: 'nav-en-2', label: 'Fixture', destination: { kind: 'internal', routeId: 'route-en-1' } },
+      ],
+    },
+  ],
+  shellContent: [
+    {
+      locale: 'vi',
+      headerCta: { label: 'Fixture CTA', routeId: 'route-1' },
+      footerCta: { headingLines: ['Fixture Heading'], targetRouteId: 'route-1' },
+      copyright: 'Copyright © 2026 {{site.companyName}} | All Rights Reserved.',
+      themeCredit: 'Flatsome Theme',
+      languageLabels: { vi: 'VI', en: 'EN' },
+    },
+    {
+      locale: 'en',
+      headerCta: { label: 'Fixture CTA EN', routeId: 'route-en-1' },
+      footerCta: { headingLines: ['Fixture Heading EN'], targetRouteId: 'route-en-1' },
+      copyright: 'Copyright © 2026 {{site.companyName}} | All Rights Reserved.',
+      themeCredit: 'Flatsome Theme',
+      languageLabels: { vi: 'VI', en: 'EN' },
+    },
   ],
   routes: [
-    { id: 'route-1', locale: 'vi', path: '/', kind: 'home', aliases: [], source: sources[0] },
+    { id: 'route-1', locale: 'vi', path: '/', kind: 'home', counterpartId: 'route-en-1', aliases: [], source: sources[0] },
+    { id: 'route-en-1', locale: 'en', path: '/en/home/', kind: 'home', counterpartId: 'route-1', aliases: [], source: sources[0] },
+    { id: 'route-no-counterpart', locale: 'vi', path: '/fixture-no-counterpart/', kind: 'about', aliases: [], source: sources[0] },
   ],
   services: [
     {
@@ -159,6 +190,14 @@ export const fixtures: ContentData = {
       status: 'local',
       sources,
     },
+    {
+      id: 'asset-b',
+      src: '/fixture-b.png',
+      alt: 'Brand B',
+      kind: 'image',
+      status: 'local',
+      sources,
+    },
   ],
   homePages: [
     {
@@ -216,3 +255,36 @@ export const missingMediaFixtures: ContentData = {
   ...fixtures,
   assets: fixtures.assets.map((asset) => ({ ...asset, status: 'missing' })),
 };
+
+export const variantBFixtures: ContentData = {
+  ...fixtures,
+  siteSettings: [
+    {
+      locale: 'vi',
+      companyName: 'Brand B Corp',
+      wordmark: 'Brand B',
+      address: '456 Second St, Hanoi',
+      phones: [{ label: '0999 888 777', href: 'tel:0999888777' }],
+      email: 'contact@brand-b.example.com',
+      socialLinks: [{ label: 'Facebook', href: 'https://facebook.com/brand-b' }],
+      messengerHref: 'https://example.com/messenger-b',
+      zaloHref: 'https://example.com/zalo-b',
+      mapEmbedUrl: '',
+      logoIds: ['asset-b'],
+    },
+    {
+      locale: 'en',
+      companyName: 'Brand B Corp',
+      wordmark: 'Brand B',
+      address: '456 Second St, Hanoi',
+      phones: [{ label: '0999 888 777', href: 'tel:0999888777' }],
+      email: 'contact@brand-b.example.com',
+      socialLinks: [{ label: 'Facebook', href: 'https://facebook.com/brand-b' }],
+      messengerHref: 'https://example.com/messenger-b',
+      zaloHref: 'https://example.com/zalo-b',
+      mapEmbedUrl: '',
+      logoIds: ['asset-b'],
+    },
+  ],
+};
+

@@ -12,5 +12,8 @@ export default defineConfig({
     command: `npm run start -- --port ${port}`,
     url: `http://localhost:${port}/`,
     reuseExistingServer: !process.env.CI,
+    env: {
+      FIXTURE_HARNESS: '1',
+    },
   },
 });
