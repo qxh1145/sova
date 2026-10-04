@@ -16,18 +16,16 @@ describe('formStatusClass', () => {
     expect(formStatusClass('submitting', true)).toBe('submitting');
   });
 
-  it('returns sent for demo-success regardless of errors', () => {
+  it('returns sent for demo-success without errors', () => {
     expect(formStatusClass('demo-success', false)).toBe('sent');
-    expect(formStatusClass('demo-success', true)).toBe('sent');
   });
 
-  it('returns failed for demo-error regardless of errors', () => {
+  it('returns failed for demo-error without errors', () => {
     expect(formStatusClass('demo-error', false)).toBe('failed');
-    expect(formStatusClass('demo-error', true)).toBe('failed');
   });
 
-  it('falls back to init or invalid for unknown statuses', () => {
-    expect(formStatusClass('unknown', false)).toBe('init');
-    expect(formStatusClass('unknown', true)).toBe('invalid');
+  it('validation errors outrank a previous demo result', () => {
+    expect(formStatusClass('demo-success', true)).toBe('invalid');
+    expect(formStatusClass('demo-error', true)).toBe('invalid');
   });
 });

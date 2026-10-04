@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/ui/FormField';
-import { FormResponse, formStatusClass } from '@/components/ui/FormResponse';
+import { FormResponse, ScreenReaderResponse, formStatusClass } from '@/components/ui/FormResponse';
 import { useSubmitAdapter } from '@/lib/forms/SubmitAdapterContext';
 import {
   consultSchema,
@@ -19,7 +19,7 @@ export interface ConsultFormProps {
 
 export function ConsultForm({ labels, locale }: ConsultFormProps) {
   const adapter = useSubmitAdapter<ConsultFormValues>();
-  const { status, isSubmitting, submit } = useSubmitStatus(adapter);
+  const { status, isSubmitting, submit, reset } = useSubmitStatus(adapter);
 
   const {
     register,
@@ -37,18 +37,16 @@ export function ConsultForm({ labels, locale }: ConsultFormProps) {
     },
   });
 
+  // A failed validation clears any earlier demo result, like CF7 swapping to `invalid`.
   const onSubmit = handleSubmit(async (data) => {
     await submit(data);
-  });
+  }, reset);
 
   const statusClass = formStatusClass(status, Object.keys(errors).length > 0);
 
   return (
     <div className="wpcf7" id="wpcf7-consult-drawer" lang={locale} dir="ltr">
-      <div className="screen-reader-response">
-        <p role="status" aria-live="polite" aria-atomic="true" />
-        <ul />
-      </div>
+      <ScreenReaderResponse status={status} labels={labels} />
 
       <form
         onSubmit={onSubmit}
@@ -70,6 +68,7 @@ export function ConsultForm({ labels, locale }: ConsultFormProps) {
                 {...register('phone')}
                 type="tel"
                 size={40}
+                maxLength={400}
                 className="wpcf7-form-control wpcf7-tel wpcf7-validates-as-required wpcf7-text wpcf7-validates-as-tel"
                 aria-required="true"
                 placeholder={labels.placeholder}

@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/ui/FormField';
-import { FormResponse, formStatusClass } from '@/components/ui/FormResponse';
+import { FormResponse, ScreenReaderResponse, formStatusClass } from '@/components/ui/FormResponse';
 import { createMockTransport } from '@/lib/forms/mock-transport';
 import {
   consultSchema,
@@ -42,7 +42,7 @@ export function FormFixture({ variant }: FormFixtureProps) {
     });
   }, [variant, deferred]);
 
-  const { status, isSubmitting, submit } = useSubmitStatus(adapter);
+  const { status, isSubmitting, submit, reset } = useSubmitStatus(adapter);
 
   const {
     register,
@@ -60,18 +60,22 @@ export function FormFixture({ variant }: FormFixtureProps) {
     },
   });
 
+  // A failed validation clears any earlier demo result, like CF7 swapping to `invalid`.
   const onSubmit = handleSubmit(async (data) => {
     await submit(data);
-  });
+  }, reset);
+
+  const responseLabels = {
+    success: FIXTURE_FORM_LABELS.successMessage,
+    error: FIXTURE_FORM_LABELS.errorMessage,
+    demoBadge: FIXTURE_FORM_LABELS.demoBadge,
+  };
 
   const statusClass = formStatusClass(status, Object.keys(errors).length > 0);
 
   return (
     <div className="wpcf7" id="wpcf7-f11-p0-o1" lang="vi" dir="ltr">
-      <div className="screen-reader-response">
-        <p role="status" aria-live="polite" aria-atomic="true"></p>
-        <ul></ul>
-      </div>
+      <ScreenReaderResponse status={status} labels={responseLabels} />
 
       <form
         onSubmit={onSubmit}
@@ -109,14 +113,7 @@ export function FormFixture({ variant }: FormFixtureProps) {
           <span className="wpcf7-spinner" aria-hidden="true" />
         </p>
 
-        <FormResponse
-          status={status}
-          labels={{
-            success: FIXTURE_FORM_LABELS.successMessage,
-            error: FIXTURE_FORM_LABELS.errorMessage,
-            demoBadge: FIXTURE_FORM_LABELS.demoBadge,
-          }}
-        />
+        <FormResponse status={status} labels={responseLabels} />
       </form>
 
       <button
