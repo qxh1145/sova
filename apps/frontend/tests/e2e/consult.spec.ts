@@ -102,7 +102,7 @@ test.describe('ConsultForm and drawer demo flow contract', () => {
         await page.setViewportSize({ width: vp.width, height: vp.height });
         await page.goto(route.path);
 
-        const trigger = page.locator('a[aria-controls="main-menu"]:visible');
+        const trigger = page.locator('.flex-col a[aria-controls="main-menu"]:visible');
         await expect(trigger).toBeVisible();
         await trigger.focus();
         await page.keyboard.press('Enter');
@@ -193,7 +193,7 @@ test.describe('ConsultForm and drawer demo flow contract', () => {
       await page.setViewportSize({ width: 390, height: 844 });
       await page.goto(`/dev-fixtures/shell/consult-error?locale=${locale}`);
 
-      const trigger = page.locator('a[aria-controls="main-menu"]:visible');
+      const trigger = page.locator('.flex-col a[aria-controls="main-menu"]:visible');
       await trigger.focus();
       await page.keyboard.press('Enter');
 
@@ -258,7 +258,7 @@ test.describe('ConsultForm and drawer demo flow contract', () => {
       await page.setViewportSize({ width: 390, height: 844 });
       await page.goto(`/dev-fixtures/shell/consult-success?locale=${locale}`);
 
-      const trigger = page.locator('a[aria-controls="main-menu"]:visible');
+      const trigger = page.locator('.flex-col a[aria-controls="main-menu"]:visible');
       await trigger.focus();
       await page.keyboard.press('Enter');
 

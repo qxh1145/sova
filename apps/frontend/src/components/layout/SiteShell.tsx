@@ -5,6 +5,8 @@ import { Header } from './Header';
 import { ShellOverlayProvider } from './ShellOverlayProvider';
 import { MobileMenuDrawer } from './MobileMenu';
 import { MobileMenuPanel } from './MobileMenuPanel';
+import { MobileContactBar } from './MobileContactBar';
+import { FloatingContactActions } from './FloatingContactActions';
 
 export interface SiteShellProps {
   locale: Locale;
@@ -32,6 +34,8 @@ export function SiteShell({
   logoAsset,
   children,
 }: SiteShellProps) {
+  const contactHref = headerCtas[locale]?.href ?? (locale === 'en' ? '/en/contact-us/' : '/lien-he/');
+
   return (
     <ShellOverlayProvider>
       <div id="wrapper">
@@ -66,6 +70,15 @@ export function SiteShell({
           logoAsset={logoAsset}
         />
       </MobileMenuDrawer>
+      <MobileContactBar
+        labels={shellContent.contactBar}
+        settings={settings}
+        contactHref={contactHref}
+      />
+      <FloatingContactActions
+        labels={shellContent.floatingContacts}
+        settings={settings}
+      />
     </ShellOverlayProvider>
   );
 }

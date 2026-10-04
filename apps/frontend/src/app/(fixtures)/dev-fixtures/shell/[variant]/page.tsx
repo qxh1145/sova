@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { SiteShell } from '@/components/layout/SiteShell';
-import { fixtures, missingMediaFixtures, variantBFixtures } from '@/dev/fixtures';
+import { fixtures, missingMediaFixtures, noPhonesFixtures, variantBFixtures } from '@/dev/fixtures';
 import { getShellProps } from '@/lib/queries/site';
 import { createMockRepository } from '@/lib/repositories/mock';
 import type { ContentData } from '@/lib/repositories/contracts';
@@ -18,6 +18,7 @@ const VARIANTS: Record<string, ContentData> = {
   'variant-b': variantBFixtures,
   'missing-logo': missingMediaFixtures,
   'no-counterpart': fixtures,
+  'no-phones': noPhonesFixtures,
   'consult-success': fixtures,
   'consult-error': fixtures,
 };

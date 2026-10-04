@@ -101,6 +101,22 @@ export const fixtures: ContentData = {
         demoBadge: 'Bản demo — chưa gửi thông tin',
         note: 'Đăng ký để nhận những thông tin mới nhất về các chương trình ưu đãi của {{site.companyName}}',
       },
+      contactBar: {
+        menu: 'Menu',
+        contact: 'Liên hệ',
+        call: 'Gọi ngay',
+        messenger: 'Messenger',
+        zalo: 'Zalo',
+      },
+      floatingContacts: {
+        buttonText: 'Contact us',
+        menuHeader: 'Xin chào, Chúng tôi có thể giúp gì cho bạn.',
+        hours: '(7h30 - 23h00)',
+        hotline: 'Hotline',
+        messenger: 'Messenger',
+        zalo: 'Chat Zalo',
+        email: 'Email us',
+      },
     },
     {
       locale: 'en',
@@ -128,6 +144,22 @@ export const fixtures: ContentData = {
         error: 'An error occurred while sending. Please try again.',
         demoBadge: 'Demo — no data was sent',
         note: "Register to receive the latest information about {{site.companyName}}'s promotional programs",
+      },
+      contactBar: {
+        menu: 'Menu',
+        contact: 'Contact',
+        call: 'Call now',
+        messenger: 'Messenger',
+        zalo: 'Zalo',
+      },
+      floatingContacts: {
+        buttonText: 'Contact us',
+        menuHeader: 'How would you like to contact us?',
+        hours: '(7h30 - 23h00)',
+        hotline: 'Hotline',
+        messenger: 'Messenger',
+        zalo: 'Chat Zalo',
+        email: 'Email us',
       },
     },
   ],
@@ -326,5 +358,10 @@ export const variantBFixtures: ContentData = {
       logoIds: ['asset-b'],
     },
   ],
+};
+
+export const noPhonesFixtures: ContentData = {
+  ...fixtures,
+  siteSettings: fixtures.siteSettings.map((s) => ({ ...s, phones: [] })),
 };
 
