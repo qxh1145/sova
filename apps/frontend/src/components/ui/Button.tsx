@@ -43,7 +43,7 @@ export function Button({
 
   if (href) {
     const disabledStyle: CSSProperties = disabled
-      ? { pointerEvents: 'none', cursor: 'not-allowed', opacity: 0.6, ...style }
+      ? { ...style, pointerEvents: 'none', cursor: 'not-allowed', opacity: 0.6 }
       : (style ?? {});
 
     return (

@@ -8,24 +8,22 @@ vi.mock('next/navigation', () => ({
 }));
 
 describe('FixtureShellPage', () => {
-  const originalEnv = process.env.FIXTURE_HARNESS;
-
   afterEach(() => {
-    process.env.FIXTURE_HARNESS = originalEnv;
+    vi.unstubAllEnvs();
     vi.clearAllMocks();
   });
 
   it('invokes notFound() when FIXTURE_HARNESS is not "1"', async () => {
     const { notFound } = await import('next/navigation');
 
-    process.env.FIXTURE_HARNESS = undefined;
+    vi.stubEnv('FIXTURE_HARNESS', undefined);
     await expect(
       FixtureShellPage({ params: Promise.resolve({ variant: 'default' }) }),
     ).rejects.toThrow('NEXT_NOT_FOUND');
     expect(notFound).toHaveBeenCalled();
 
     vi.clearAllMocks();
-    process.env.FIXTURE_HARNESS = '0';
+    vi.stubEnv('FIXTURE_HARNESS', '0');
     await expect(
       FixtureShellPage({ params: Promise.resolve({ variant: 'default' }) }),
     ).rejects.toThrow('NEXT_NOT_FOUND');
@@ -35,7 +33,7 @@ describe('FixtureShellPage', () => {
   it('invokes notFound() on unknown variant even when FIXTURE_HARNESS is "1"', async () => {
     const { notFound } = await import('next/navigation');
 
-    process.env.FIXTURE_HARNESS = '1';
+    vi.stubEnv('FIXTURE_HARNESS', '1');
     await expect(
       FixtureShellPage({ params: Promise.resolve({ variant: 'unknown' }) }),
     ).rejects.toThrow('NEXT_NOT_FOUND');
@@ -43,7 +41,7 @@ describe('FixtureShellPage', () => {
   });
 
   it('renders successfully when FIXTURE_HARNESS is "1" and variant is valid', async () => {
-    process.env.FIXTURE_HARNESS = '1';
+    vi.stubEnv('FIXTURE_HARNESS', '1');
     const result = await FixtureShellPage({
       params: Promise.resolve({ variant: 'default' }),
     });
