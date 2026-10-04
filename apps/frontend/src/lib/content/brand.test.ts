@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { applyBrandTerms, decodeEscapes, rewriteEraLinks } from './brand';
+import { applyBrandTerms, BRAND_LEAK_RE, decodeEscapes, rewriteEraLinks } from './brand';
 
 test.each([
   ['Eras Việt Nam hoạt động', 'Sova hoạt động', 1],
@@ -11,6 +11,11 @@ test.each([
     'Eras Vietnam’s SEO, ErasVietnam, Eras Viet Nam and Eras.',
     'Sova’s SEO, Sova, Sova and Sova.',
     4,
+  ],
+  [
+    'ERAS VIET NAM, ERAS VIETNAM, ERAS VIỆT NAM, ERAS Vietnam, ERAS Viet Nam',
+    'Sova, Sova, Sova, Sova, Sova',
+    5,
   ],
 ])('applyBrandTerms(%j)', (input, text, count) => {
   expect(applyBrandTerms(input)).toEqual({ text, count });
@@ -41,3 +46,23 @@ test.each([
 ])('rewriteEraLinks(%j)', (href, expected) => {
   expect(rewriteEraLinks(href, 'https://erasvietnam.vn/en/faq/index.html')).toBe(expected);
 });
+
+test.each([
+  ['ERASkhuyến', 'ERAS'],
+  ['ERAS VIET NAM', 'ERAS'],
+  ['ERASx', 'ERAS'],
+  ['/login-eras/', 'eras/'],
+  ['porfolio-eras-vietnam', 'eras-'],
+  ['route-login-eras', 'eras'],
+  ['Eras', 'Eras'],
+  ['erasvietnam.vn', 'erasvietnam'],
+])('BRAND_LEAK_RE flags %j as %j', (text, match) => {
+  expect(text.match(BRAND_LEAK_RE)?.[0]).toBe(match);
+});
+
+test.each(['/assets/ERAS-THUMB-1.jpg', 'cameras', 'Sova', 'erasmus'])(
+  'BRAND_LEAK_RE passes %j',
+  (text) => {
+    expect(text.match(BRAND_LEAK_RE)).toBeNull();
+  },
+);

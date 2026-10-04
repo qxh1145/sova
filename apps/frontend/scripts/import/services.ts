@@ -61,7 +61,7 @@ interface Ctx {
   stats: Stats;
 }
 
-export const unescape = (text: string) =>
+const unescape = (text: string) =>
   text.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 
 /** Visible text of an element (br -> space) through the text pipeline. */

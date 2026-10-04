@@ -1,7 +1,9 @@
 import { assets } from '@/data/assets';
+import { utilityContent } from '@/data/content';
 import { faqs, faqTopics } from '@/data/faq';
-import { listingSettings } from '@/data/listings';
+import { listingSettings, listingSnapshots } from '@/data/listings';
 import { navigation } from '@/data/navigation';
+import { shellContent } from '@/data/shell';
 import { aboutPages } from '@/data/pages/about';
 import { contactPages } from '@/data/pages/contact';
 import { homePages } from '@/data/pages/home';
@@ -28,7 +30,8 @@ import { websiteServices } from '@/data/services/website';
 import { siteSettings } from '@/data/site';
 import { stats } from '@/data/stats';
 import { testimonials } from '@/data/testimonials';
-import type { EntityId, PageResult } from '@/types/content';
+import { resolveDeep } from '@/lib/queries/tokens';
+import type { EntityId, Locale, PageResult } from '@/types/content';
 import type { ContentData, ContentRepository } from './contracts';
 
 function paginate<T>(items: T[], page: number, pageSize: number): PageResult<T> {
@@ -56,7 +59,42 @@ function required<T>(record: T | undefined, what: string): T {
   return record;
 }
 
+const RAW = new Set(['getSiteSettings', 'listRoutes']);
+const isLocale = (value: unknown): value is Locale => value === 'vi' || value === 'en';
+const localeOf = (value: unknown) =>
+  value && typeof value === 'object' && 'locale' in value && isLocale(value.locale)
+    ? value.locale
+    : undefined;
+
+/**
+ * The token-resolution boundary: every query, test and scenario reads through here, so every
+ * method but getSiteSettings/listRoutes returns copy with `{{site.*}}` resolved. The locale is the
+ * method's locale argument (or `input.locale`), else the result's, else VI.
+ */
+function withSiteTokens(repository: ContentRepository, data: ContentData): ContentRepository {
+  const wrap =
+    (method: (...args: unknown[]) => Promise<unknown>) =>
+    async (...args: unknown[]) => {
+      const result = await method(...args);
+      if (!JSON.stringify(result ?? null).includes('{{site.')) return result;
+      const locale =
+        args.find(isLocale) ?? args.map(localeOf).find(Boolean) ?? localeOf(result) ?? 'vi';
+      const settings = data.siteSettings.find((s) => s.locale === locale);
+      return settings ? resolveDeep(result, settings) : result;
+    };
+  return Object.fromEntries(
+    Object.entries(repository).map(([name, method]) => [
+      name,
+      RAW.has(name) ? method : wrap(method),
+    ]),
+  ) as unknown as ContentRepository;
+}
+
 export function createMockRepository(data: ContentData): ContentRepository {
+  return withSiteTokens(createRawRepository(data), data);
+}
+
+function createRawRepository(data: ContentData): ContentRepository {
   return {
     async getSiteSettings(locale) {
       return required(
@@ -68,6 +106,12 @@ export function createMockRepository(data: ContentData): ContentRepository {
       return required(
         data.navigation.find((n) => n.locale === locale),
         `Navigation for locale "${locale}"`,
+      );
+    },
+    async getShellContent(locale) {
+      return required(
+        data.shellContent.find((s) => s.locale === locale),
+        `ShellContent for locale "${locale}"`,
       );
     },
     async getService(key, locale) {
@@ -141,6 +185,12 @@ export function createMockRepository(data: ContentData): ContentRepository {
     async getListingSettings(routeId) {
       return data.listingSettings.find((l) => l.routeId === routeId) ?? null;
     },
+    async getListingSnapshot(routeId, page) {
+      return data.listingSnapshots.find((s) => s.routeId === routeId && s.page === page) ?? null;
+    },
+    async getUtilityContent(id) {
+      return data.utilityContent.find((c) => c.id === id) ?? null;
+    },
     async listRoutes() {
       return data.routes;
     },
@@ -150,6 +200,7 @@ export function createMockRepository(data: ContentData): ContentRepository {
 export const mockRepository = createMockRepository({
   siteSettings,
   navigation,
+  shellContent,
   routes,
   services: [
     ...websiteServices,
@@ -179,4 +230,6 @@ export const mockRepository = createMockRepository({
   paymentGuides,
   profiles,
   listingSettings,
+  listingSnapshots,
+  utilityContent,
 });

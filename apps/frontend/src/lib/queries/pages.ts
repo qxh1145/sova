@@ -8,11 +8,12 @@ import type {
   HomePageContent,
   LegalPage,
   ListingSettings,
+  ListingSnapshot,
   Locale,
   PaymentGuideContent,
   ServiceKey,
+  UtilityContent,
 } from '@/types/content';
-import { withSiteTokens } from './site';
 
 const SERVICE_KEYS: ServiceKey[] = [
   'website',
@@ -34,7 +35,7 @@ function assertResolved(pageId: EntityId, missing: EntityId[]) {
 }
 
 /**
- * The home page with its shared stats filled and tokens resolved; null when missing. Throws naming
+ * The home page with its shared stats filled; null when missing. Throws naming
  * the page and ids when a stat, service or placement does not resolve.
  */
 export async function getHomePage(locale: Locale): Promise<HomePageContent | null> {
@@ -63,10 +64,10 @@ export async function getHomePage(locale: Locale): Promise<HomePageContent | nul
       services.flatMap((service) => service ?? []),
     ),
   ]);
-  return withSiteTokens({ ...page, stats }, locale);
+  return { ...page, stats };
 }
 
-/** The about page with its shared stats filled and tokens resolved; throws on dangling ids. */
+/** The about page with its shared stats filled; throws on dangling ids. */
 export async function getAboutPage(locale: Locale): Promise<AboutPageContent | null> {
   const repository = getRepository();
   const record = await repository.getAboutPage(locale);
@@ -82,30 +83,38 @@ export async function getAboutPage(locale: Locale): Promise<AboutPageContent | n
     ...missingIds(record.testimonialIds, testimonials),
     ...missingIds(record.partnerIds, partners),
   ]);
-  return withSiteTokens({ ...page, stats }, locale);
+  return { ...page, stats };
 }
 
-export async function getContactPage(locale: Locale): Promise<ContactPageContent | null> {
-  return withSiteTokens(await getRepository().getContactPage(locale), locale);
+export function getContactPage(locale: Locale): Promise<ContactPageContent | null> {
+  return getRepository().getContactPage(locale);
 }
 
-export async function getProfile(locale: Locale): Promise<CompanyProfileContent | null> {
-  return withSiteTokens(await getRepository().getProfile(locale), locale);
+export function getProfile(locale: Locale): Promise<CompanyProfileContent | null> {
+  return getRepository().getProfile(locale);
 }
 
-export async function getLegalPage(path: string, locale: Locale): Promise<LegalPage | null> {
-  return withSiteTokens(await getRepository().getLegalPage(path, locale), locale);
+export function getLegalPage(path: string, locale: Locale): Promise<LegalPage | null> {
+  return getRepository().getLegalPage(path, locale);
 }
 
-export async function getPaymentGuide(locale: Locale): Promise<PaymentGuideContent | null> {
-  return withSiteTokens(await getRepository().getPaymentGuide(locale), locale);
+export function getPaymentGuide(locale: Locale): Promise<PaymentGuideContent | null> {
+  return getRepository().getPaymentGuide(locale);
 }
 
-/** Tokens resolve with the settings of the route's locale (VI when the route is unknown). */
-export async function getListingSettings(routeId: EntityId): Promise<ListingSettings | null> {
-  const repository = getRepository();
-  const settings = await repository.getListingSettings(routeId);
-  if (!JSON.stringify(settings).includes('{{site.')) return settings;
-  const route = (await repository.listRoutes()).find((r) => r.id === routeId);
-  return withSiteTokens(settings, route?.locale ?? 'vi');
+export function getListingSettings(routeId: EntityId): Promise<ListingSettings | null> {
+  return getRepository().getListingSettings(routeId);
+}
+
+/** One captured listing page (card order and pagination links); null when not captured. */
+export function getListingSnapshot(
+  routeId: EntityId,
+  page: number,
+): Promise<ListingSnapshot | null> {
+  return getRepository().getListingSnapshot(routeId, page);
+}
+
+/** Utility copy or project delivery terms (Project.deliveryTermsId); null when missing. */
+export function getUtilityContent(id: EntityId): Promise<UtilityContent | null> {
+  return getRepository().getUtilityContent(id);
 }

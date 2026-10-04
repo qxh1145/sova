@@ -41,6 +41,8 @@ function rebaseUrl(url: string, sourceUrlPath: string): string | null {
     target = new URL(url, `https://source.invalid${sourceUrlPath}`);
   }
   if (/^logo-eras-/i.test(target.pathname.split('/').pop() ?? '')) return null;
+  // WordPress core files are never copied (verify:assets fails on a /wp-includes/ ref).
+  if (target.pathname.startsWith('/wp-includes/')) return null;
   return target.pathname + target.search + target.hash;
 }
 

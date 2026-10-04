@@ -115,6 +115,7 @@ export interface Project extends LocalizedIdentity {
   displayDate?: string;
   clientName?: string;
   metadata: { label: string; value: string }[];
+  /** A `UtilityContent` id. */
   deliveryTermsId?: EntityId;
   relatedProjectIds: EntityId[];
   seo: SEO;
@@ -288,11 +289,33 @@ export interface RouteEntry {
 }
 
 export interface ListingSnapshot {
+  /** A registry route id. */
   routeId: EntityId;
   page: number;
   orderedIds: EntityId[];
   previousPath?: PublicPath;
   nextPath?: PublicPath;
+}
+
+/** Utility copy (thank-you page) and project delivery terms. */
+export interface UtilityContent {
+  id: EntityId;
+  body: RichContent;
+}
+
+export interface ShellContent {
+  locale: Locale;
+  headerCta: {
+    label: string;
+    routeId: EntityId;
+  };
+  footerCta: {
+    headingLines: string[];
+    targetRouteId: EntityId;
+  };
+  copyright: string;
+  themeCredit: string;
+  languageLabels: Record<Locale, string>;
 }
 
 export interface SiteSettings {
