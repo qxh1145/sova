@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import { FIXTURE_FORM_LABELS } from '../../src/app/(fixtures)/dev-fixtures/form/[variant]/constants';
 import { expect, test } from './fixtures';
 
 test.describe('FormField and deterministic SubmitAdapter fixture contract', () => {
@@ -33,8 +34,9 @@ test.describe('FormField and deterministic SubmitAdapter fixture contract', () =
       await submitBtn.click();
 
       const tip = page.locator('.wpcf7-not-valid-tip');
-      await expect(tip).toBeVisible();
+      await expect(tip).toHaveText(FIXTURE_FORM_LABELS.phoneRequired);
       await expect(tip).toHaveAttribute('role', 'alert');
+      await expect(input).toBeFocused();
       const tipId = await tip.getAttribute('id');
       expect(tipId).toBeTruthy();
 
@@ -46,7 +48,7 @@ test.describe('FormField and deterministic SubmitAdapter fixture contract', () =
       await input.fill('invalid-phone');
       await submitBtn.click();
 
-      await expect(tip).toBeVisible();
+      await expect(tip).toHaveText(FIXTURE_FORM_LABELS.phoneInvalid);
       await expect(input).toHaveAttribute('aria-invalid', 'true');
     });
   }
@@ -116,6 +118,8 @@ test.describe('FormField and deterministic SubmitAdapter fixture contract', () =
     await submitBtn.click();
     await expect(submitBtn).toBeDisabled();
     await releaseBtn.click();
+    await expect(page.locator('form.wpcf7-form')).toHaveClass(/failed/);
+    await expect(submitBtn).toBeEnabled();
     await expect(input).toHaveValue('0988606539');
   });
 
@@ -130,6 +134,7 @@ test.describe('FormField and deterministic SubmitAdapter fixture contract', () =
 
     await input.fill('0988606539');
     await submitBtn.click();
+    await expect(submitBtn).toBeDisabled();
     await releaseBtn.click();
     await expect(page.locator('.wpcf7-response-output')).toBeVisible();
 
