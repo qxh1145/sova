@@ -2,6 +2,9 @@ import type { ReactNode } from 'react';
 import type { AssetRef, Locale, Navigation, RouteEntry, ShellContent, SiteSettings } from '@/types/content';
 import { Footer } from './Footer';
 import { Header } from './Header';
+import { ShellOverlayProvider } from './ShellOverlayProvider';
+import { MobileMenuDrawer } from './MobileMenu';
+import { MobileMenuPanel } from './MobileMenuPanel';
 
 export interface SiteShellProps {
   locale: Locale;
@@ -30,26 +33,39 @@ export function SiteShell({
   children,
 }: SiteShellProps) {
   return (
-    <div id="wrapper">
-      <Header
-        locale={locale}
-        settings={settings}
-        navigation={navigation}
-        routes={routes}
-        shellContent={shellContent}
-        headerCtas={headerCtas}
-        counterparts={counterparts}
-        logoAsset={logoAsset}
-      />
-      {children}
-      <Footer
-        locale={locale}
-        settings={settings}
-        navigation={navigation}
-        routes={routes}
-        shellContent={shellContent}
-        logoAsset={logoAsset}
-      />
-    </div>
+    <ShellOverlayProvider>
+      <div id="wrapper">
+        <Header
+          locale={locale}
+          settings={settings}
+          navigation={navigation}
+          routes={routes}
+          shellContent={shellContent}
+          headerCtas={headerCtas}
+          counterparts={counterparts}
+          logoAsset={logoAsset}
+        />
+        {children}
+        <Footer
+          locale={locale}
+          settings={settings}
+          navigation={navigation}
+          routes={routes}
+          shellContent={shellContent}
+          logoAsset={logoAsset}
+        />
+      </div>
+      <MobileMenuDrawer labels={shellContent.mobileMenu}>
+        <MobileMenuPanel
+          locale={locale}
+          settings={settings}
+          navigation={navigation}
+          routes={routes}
+          shellContent={shellContent}
+          counterparts={counterparts}
+          logoAsset={logoAsset}
+        />
+      </MobileMenuDrawer>
+    </ShellOverlayProvider>
   );
 }
