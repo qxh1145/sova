@@ -41,6 +41,7 @@ test.describe('Custom cursor island', () => {
 
   test('Movement and ring convergence', async ({ page }) => {
     await page.goto('/');
+    await expect(page.locator('html')).toHaveClass(/has-custom-cursor/);
 
     const dot = page.locator('.cursor-dot');
     const ring = page.locator('.cursor-ring');
@@ -64,6 +65,7 @@ test.describe('Custom cursor island', () => {
 
   test('Hover interactive expansion to 60px and contraction to 40px', async ({ page }) => {
     await page.goto('/');
+    await expect(page.locator('html')).toHaveClass(/has-custom-cursor/);
 
     const ring = page.locator('.cursor-ring');
 
@@ -85,6 +87,48 @@ test.describe('Custom cursor island', () => {
     await expect(ring).toHaveCSS('height', '40px');
   });
 
+  test('Hover on a button added after mount; ring resets when it unmounts', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('html')).toHaveClass(/has-custom-cursor/);
+
+    const ring = page.locator('.cursor-ring');
+    await page.evaluate(() => {
+      const button = document.createElement('button');
+      button.id = 'cursor-test-button';
+      button.textContent = 'Test';
+      button.style.cssText = 'position:fixed;left:300px;top:300px;width:120px;height:60px;z-index:10000';
+      document.body.append(button);
+    });
+
+    await page.locator('#cursor-test-button').hover();
+    await expect(ring).toHaveCSS('width', '60px');
+
+    // Removed under the pointer: no mouseout fires, the next mouseover must reset the ring.
+    await page.evaluate(() => document.getElementById('cursor-test-button')?.remove());
+    await page.mouse.move(310, 310);
+    await page.mouse.move(320, 320);
+    await expect(ring).toHaveCSS('width', '40px');
+    await expect(ring).toHaveCSS('height', '40px');
+  });
+
+  test('Media change at runtime starts and stops the island with the native cursor', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
+    await expect(page.locator('body')).toHaveCSS('cursor', 'auto');
+    await expect(page.locator('.custom-cursor')).toHaveCSS('display', 'none');
+
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await expect(page.locator('body')).toHaveCSS('cursor', 'none');
+    await page.mouse.move(250, 250);
+    await expect(page.locator('.cursor-dot')).toHaveCSS('left', '250px');
+
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await expect(page.locator('body')).toHaveCSS('cursor', 'auto');
+    await expect(page.locator('.custom-cursor')).toHaveCSS('display', 'none');
+  });
+
   test('Delegated hover works after client navigation', async ({ page }) => {
     await page.goto('/');
 
@@ -94,6 +138,7 @@ test.describe('Custom cursor island', () => {
     const enSwitcher = page.locator('.lang-switcher-inline a');
     await enSwitcher.click();
     await page.waitForURL('**/en/home/');
+    await expect(page.locator('html')).toHaveClass(/has-custom-cursor/);
 
     // Hover an interactive element on the new page
     const linkOnNewPage = page.locator('#logo a, #masthead a').first();

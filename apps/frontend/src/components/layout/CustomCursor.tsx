@@ -2,21 +2,22 @@
 
 import { useEffect, useRef } from 'react';
 
+const QUERY = '(pointer: fine) and (prefers-reduced-motion: no-preference)';
+const INTERACTIVE = 'a, button, .hover-target';
+// Set on <html> only while the island runs; globals.css hides the native cursor under it.
+const ACTIVE_CLASS = 'has-custom-cursor';
+
 export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const mediaQuery = window.matchMedia(
-      '(pointer: fine) and (prefers-reduced-motion: no-preference)',
-    );
-    if (!mediaQuery.matches) return;
-
     const dot = dotRef.current;
     const ring = ringRef.current;
     if (!dot || !ring) return;
+
+    const mediaQuery = window.matchMedia(QUERY);
+    const root = document.documentElement;
 
     let mouseX = 0;
     let mouseY = 0;
@@ -37,52 +38,54 @@ export function CustomCursor() {
       rafId = requestAnimationFrame(updateCursor);
     };
 
+    const setHover = (hover: boolean) => {
+      ring.style.width = hover ? '60px' : '40px';
+      ring.style.height = hover ? '60px' : '40px';
+      ring.style.borderColor = hover ? '#fff' : 'white';
+    };
+
     const onMouseMove = (e: MouseEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
     };
 
+    // Decide on every mouseover so a hovered element that unmounts (no mouseout) cannot leave the ring at 60px.
     const onMouseOver = (e: MouseEvent) => {
-      const target =
-        e.target instanceof Element ? e.target.closest('a, button, .hover-target') : null;
-      if (!target) return;
-      const related =
-        e.relatedTarget instanceof Element
-          ? e.relatedTarget.closest('a, button, .hover-target')
-          : null;
-      if (target === related) return;
-      ring.style.width = '60px';
-      ring.style.height = '60px';
-      ring.style.borderColor = '#fff';
+      setHover(e.target instanceof Element && e.target.closest(INTERACTIVE) !== null);
     };
 
+    // Leaving the window fires mouseout with no relatedTarget and no following mouseover.
     const onMouseOut = (e: MouseEvent) => {
-      const target =
-        e.target instanceof Element ? e.target.closest('a, button, .hover-target') : null;
-      if (!target) return;
-      const related =
-        e.relatedTarget instanceof Element
-          ? e.relatedTarget.closest('a, button, .hover-target')
-          : null;
-      if (target === related) return;
-      ring.style.width = '40px';
-      ring.style.height = '40px';
-      ring.style.borderColor = 'white';
+      if (!e.relatedTarget) setHover(false);
     };
 
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseover', onMouseOver);
-    document.addEventListener('mouseout', onMouseOut);
+    const start = () => {
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseover', onMouseOver);
+      document.addEventListener('mouseout', onMouseOut);
+      rafId = requestAnimationFrame(updateCursor);
+      root.classList.add(ACTIVE_CLASS);
+    };
 
-    rafId = requestAnimationFrame(updateCursor);
-
-    return () => {
+    const stop = () => {
+      root.classList.remove(ACTIVE_CLASS);
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseover', onMouseOver);
       document.removeEventListener('mouseout', onMouseOut);
       if (rafId !== null) {
         cancelAnimationFrame(rafId);
+        rafId = null;
       }
+    };
+
+    const onMediaChange = () => (mediaQuery.matches ? start() : stop());
+
+    if (mediaQuery.matches) start();
+    mediaQuery.addEventListener('change', onMediaChange);
+
+    return () => {
+      mediaQuery.removeEventListener('change', onMediaChange);
+      stop();
     };
   }, []);
 
