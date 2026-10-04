@@ -14,7 +14,7 @@ export const ERAS_CONTACTS = {
   zalo: 'zalo.me/0988606539',
 };
 
-const PHONE = String.raw`(?<!\d)(?:\(\+84\)\s?|\+84\s?|84)?0?988[.\s]?606[.\s]?539(?!\d)`;
+const PHONE = String.raw`(?<!\d)(?:\(\+84\)\s?|\+84\s?|84)?0?988[.\s-]?606[.\s-]?539(?!\d)`;
 const EMAIL = String.raw`(?:info|support|contact)@erasvietnam\.vn`;
 
 /** Order matters: links before the bare phone/email they contain. */
@@ -34,9 +34,9 @@ export const SCRUB_RULES: [pattern: RegExp, token: string][] = [
     /No\. 33,? (?:Alley|Lane) 165,? Cau Giay Street,(?: Cau Giay (?:Ward|District),)? Hanoi(?: City)?,? Vietnam/g,
     '{{site.address}}',
   ],
-  // The bare domain as text (e.g. "tên miền “erasvietnam.vn”", "…@erasvietnam.vn"); URLs are left
-  // to rewriteEraLinks.
-  [/(?<![\w/.-])erasvietnam\.vn(?![\w/-])/gi, '{{site.domain}}'],
+  // The bare domain as text (e.g. "tên miền “erasvietnam.vn”", "…@erasvietnam.vn",
+  // "www.erasvietnam.com"); URLs are left to rewriteEraLinks.
+  [/(?<![\w/.-])(?:www\.)?erasvietnam\.(?:vn|com)(?![\w/-])/gi, '{{site.domain}}'],
 ];
 
 export function scrubContacts(text: string): { text: string; count: number } {

@@ -1,6 +1,11 @@
 import { HTMLElement, parse, TextNode, type Node } from 'node-html-parser';
-import { applyBrandTerms, decodeEscapes, rewriteEraLinks } from '../../src/lib/content/brand.ts';
-import { scrubContacts } from '../../src/lib/content/scrub.ts';
+import {
+  applyBrandTerms,
+  BRAND_LEAK_RE,
+  decodeEscapes,
+  rewriteEraLinks,
+} from '../../src/lib/content/brand.ts';
+import { SCRUB_RULES, scrubContacts } from '../../src/lib/content/scrub.ts';
 
 export interface Stats {
   brand: number;
@@ -24,6 +29,22 @@ export function processHref(raw: string, file: string, line: number, stats: Stat
   if (href !== scrubbed.text)
     console.log(`link ${file}:${line} ${raw} -> ${href ?? '(unwrapped)'}`);
   return href;
+}
+
+/**
+ * Output guard (writeTs runs it on every generated file): no Eras word or raw Eras contact value
+ * may reach src/data. SourceRef files, route ids and public paths (the route registry keeps some
+ * source slugs; asset names keep ERAS-THUMB-*) are not text and are skipped.
+ */
+export function assertNoLeak(file: string, body: string): void {
+  const text = body.replace(/"file":"[^"]*"|(?<!\\)"(?:\/|route-)[^"\s]*"/g, '""');
+  for (const pattern of [BRAND_LEAK_RE, ...SCRUB_RULES.map(([p]) => p)]) {
+    const found = new RegExp(pattern.source, pattern.flags.replace('g', '')).exec(text);
+    if (found)
+      throw new Error(
+        `${file}: output contains ${JSON.stringify(found[0])} in …${text.slice(Math.max(0, found.index - 60), found.index + 40)}…`,
+      );
+  }
 }
 
 export function parseHtml(source: string): HTMLElement {

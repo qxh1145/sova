@@ -5,7 +5,7 @@ import { faqs } from '@/data/faq';
 import { navigation } from '@/data/navigation';
 import { contactPages } from '@/data/pages/contact';
 import { homePages } from '@/data/pages/home';
-import { legalPages } from '@/data/pages/legal';
+import { legalPages, paymentGuides } from '@/data/pages/legal';
 import { partners } from '@/data/partners';
 import { posts } from '@/data/posts';
 import { projects } from '@/data/projects';
@@ -21,8 +21,9 @@ import { stats } from '@/data/stats';
 import { testimonials } from '@/data/testimonials';
 import type { ContactPageContent, SiteSettings } from '@/types/content';
 import { getFAQs } from './faq';
-import { getContactPage, getHomePage, getLegalPage } from './pages';
-import { getServicePage } from './services';
+import { getContactPage, getHomePage, getLegalPage, getPaymentGuide } from './pages';
+import { getPost } from './posts';
+import { getPricing, getService, getServicePage } from './services';
 import { getNavigation } from './site';
 
 let repository: ContentRepository;
@@ -65,6 +66,7 @@ const repoWith = (data: Partial<ContentData> = {}) =>
     homePages,
     contactPages: [contactWithPhone],
     legalPages,
+    paymentGuides,
     ...data,
   } as unknown as ContentData);
 
@@ -83,6 +85,34 @@ test('phone change: contact, legal warranty, FAQs and service page all show the 
     await getLegalPage(warranty.path, 'vi'),
     await getFAQs([faqId], 'vi'),
     await getServicePage('website', 'vi'),
+  ];
+  for (const result of results) {
+    expect(JSON.stringify(result)).toContain(phone);
+    expect(JSON.stringify(result)).not.toContain('{{site.');
+  }
+});
+
+test('phone change: post, service, pricing, payment guide and FAQ all show the new phone', async () => {
+  const phone = '1111 222 333';
+  const edited: SiteSettings = {
+    ...viSettings,
+    phones: [{ label: phone, href: 'tel:1111222333' }],
+  };
+  // No committed pricing carries a phone token, so the test plants one.
+  const pricing = websitePricing.find((p) => p.locale === 'vi')!;
+  repository = repoWith({
+    siteSettings: [edited],
+    pricing: [{ ...pricing, heading: `${pricing.heading} {{site.phone}}` }],
+  });
+  const post = posts.find((p) => p.body.html.includes('{{site.phone}}'))!;
+  const faqId = faqs.find((f) => f.locale === 'vi' && f.answer.html.includes('{{site.phone}}'))!.id;
+  expect(JSON.stringify(paymentGuides.find((p) => p.locale === 'vi'))).toContain('{{site.phone}}');
+  const results = [
+    await getPost(post.slug),
+    await getService('website', 'vi'),
+    await getPricing(pricing.id, 'vi'),
+    await getPaymentGuide('vi'),
+    await getFAQs([faqId], 'vi'),
   ];
   for (const result of results) {
     expect(JSON.stringify(result)).toContain(phone);

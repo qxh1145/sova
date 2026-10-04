@@ -31,7 +31,7 @@ const child = (el: HTMLElement, test: (c: HTMLElement) => boolean) =>
   el.childNodes.find((n): n is HTMLElement => n instanceof HTMLElement && test(n));
 
 /** Link -> destination; null drops the item (excluded path or unwrapped Eras host). */
-export function destinationOf(a: HTMLElement, ctx: NavCtx): NavigationItem['destination'] | null {
+function destinationOf(a: HTMLElement, ctx: NavCtx): NavigationItem['destination'] | null {
   const raw = a.getAttribute('href') ?? '';
   const line = ctx.lineOf(a.range[0]);
   const href = processHref(raw, ctx.file, line, ctx.stats);
@@ -87,7 +87,7 @@ export function readHeader(root: HTMLElement, ctx: NavCtx): NavigationItem[] {
 }
 
 /** Footer link groups, each labelled by the heading of its column. */
-export function readFooter(root: HTMLElement, ctx: NavCtx): Navigation['footerGroups'] {
+function readFooter(root: HTMLElement, ctx: NavCtx): Navigation['footerGroups'] {
   const menus = root.querySelectorAll('footer#footer .ux-menu.stack');
   if (menus.length !== FOOTER_GROUPS.length)
     throw new Error(`Source drift: ${ctx.file} has ${menus.length} footer menus`);

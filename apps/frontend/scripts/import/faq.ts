@@ -89,7 +89,7 @@ function readOccurrences(
 }
 
 /** Dedupe key: number prefix stripped, trimmed, whitespace collapsed, lowercased. */
-export const normalizeQuestion = (question: string) =>
+const normalizeQuestion = (question: string) =>
   question
     .replace(/^\s*\d+\s*[.)]\s*/, '')
     .trim()

@@ -10,7 +10,7 @@ export const ERAS_CLONE_DIR = path.resolve(
 export const hasSource = existsSync(path.join(ERAS_CLONE_DIR, 'index.html'));
 export const missingSourceMessage = `Source mirror not found at ${ERAS_CLONE_DIR} (set ERAS_CLONE_DIR)`;
 export const BASELINE_DIR = path.join(__dirname, '../../baseline');
-export const SOURCE_ORIGIN = 'https://erasvietnam.vn';
+const SOURCE_ORIGIN = 'https://erasvietnam.vn';
 
 const SOURCE_HOSTS = ['erasvietnam.vn', 'www.erasvietnam.vn'];
 const ALIASES: Record<string, string> = {
@@ -56,7 +56,7 @@ function sourceFile(pathname: string, search: string): string | undefined {
 }
 
 /** Fulfil erasvietnam.vn from ../eras-clone; abort every other host. `overrides` maps pathname -> mirror file. */
-export async function serveSource(
+async function serveSource(
   context: BrowserContext,
   evidence: Evidence,
   overrides: Record<string, string> = {},

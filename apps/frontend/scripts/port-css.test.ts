@@ -30,6 +30,16 @@ test('logo-eras and non-Eras external urls become none', () => {
   expect(transforms).toEqual({ 'url-none': 2 });
 });
 
+test('/wp-includes/ urls become none (never copied)', () => {
+  const { css, transforms } = transformCss(
+    `a{background:url("../../../../wp-includes/js/mediaelement/mejs-controls.svg")}` +
+      `b{background:url(/wp-includes/images/x.png)}`,
+    CHILD,
+  );
+  expect(css).toBe(`a{background:none}b{background:none}`);
+  expect(transforms).toEqual({ 'url-none': 2 });
+});
+
 test('drops webfont @font-face and font-host @import, keeps icon fonts', () => {
   const input =
     `@import url("https://fonts.googleapis.com/css2?family=Moul&wght@0;1&display=swap");` +

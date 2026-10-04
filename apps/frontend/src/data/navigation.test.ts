@@ -108,6 +108,7 @@ test('no Eras word or raw Eras contact value in page, stat, listing or navigatio
     ),
   );
   expect([...text.matchAll(BRAND_LEAK_RE)].map((m) => m[0])).toEqual([]);
-  expect(text.match(/\bERAS\b/g)).toBeNull();
   for (const [pattern] of SCRUB_RULES) expect(text.match(pattern)).toBeNull();
+  // Source typo "yêu cầu ERASkhuyến nghị" (refund policy) gets the targeted importer rule.
+  expect(text).toContain('yêu cầu Sova khuyến nghị');
 });

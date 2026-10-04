@@ -1,8 +1,9 @@
 // Media allowlist: `npm run copy:assets` copies every local AssetRef (src/data/assets.ts) and every
 // root-absolute url() in src/styles/legacy/**/*.css from ../eras-clone (read-only) to the same
 // path under public/; fl-icons are port:css's. `npm run verify:assets` (CI-safe, no mirror needed)
-// checks each copied file's sha256 against tests/baseline/source-hash.json (and the mirror when
-// present) and that public/wp-content/ holds nothing else.
+// checks each copied file and fl-icon's sha256 against tests/baseline/source-hash.json (and the
+// mirror when present), that every local AssetRef is in the source, that no /wp-includes/ url()
+// remains, and that public/wp-content/ holds nothing else. CSS comments are not refs.
 import { createHash } from 'node:crypto';
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -26,7 +27,14 @@ export function buildAllowlist(
 ): string[] {
   const refs = assets.filter((a) => a.status === 'local').map((a) => a.src);
   for (const css of cssTexts)
-    for (const m of css.matchAll(/url\(\s*(["']?)(.*?)\1\s*\)/gi)) refs.push(m[2].trim());
+    for (const m of css
+      .replace(/\/\*[\s\S]*?(?:\*\/|$)/g, '')
+      .matchAll(/url\(\s*(["']?)(.*?)\1\s*\)/gi))
+      refs.push(m[2].trim());
+  // port:css blanks /wp-includes/ url()s; one left would 404 (it is never copied).
+  const wpIncludes = refs.filter((ref) => ref.split(/[?#]/)[0].startsWith('/wp-includes/'));
+  if (wpIncludes.length)
+    throw new Error(`Forbidden /wp-includes/ refs in asset allowlist:\n${wpIncludes.join('\n')}`);
   const icons = new Set(iconPaths);
   const list = [
     ...new Set(refs.map(toRel).filter((rel): rel is string => rel !== null && !icons.has(rel))),
@@ -93,11 +101,20 @@ async function main() {
   ) as Record<string, string>;
   const failures: string[] = [];
   let checked = 0;
-  for (const rel of allowlist) {
+  const localRels = new Set(
+    assets
+      .filter((a) => a.status === 'local')
+      .map((a) => toRel(a.src))
+      .filter((rel) => rel !== null),
+  );
+  for (const rel of [...allowlist, ...icons]) {
     const target = path.join(PUBLIC, rel);
-    // Not in the source hash = not in the mirror: the AssetRef is `missing`, nothing to copy.
+    // Not in the source hash = not in the mirror: a CSS url() the source never shipped; nothing to
+    // copy. A `local` AssetRef must be in the source (a `missing` one is never allowlisted).
     if (!expected[rel]) {
-      if (existsSync(target)) failures.push(`not in source-hash.json: public/${rel}`);
+      if (localRels.has(rel))
+        failures.push(`local AssetRef not in source-hash.json: public/${rel}`);
+      else if (existsSync(target)) failures.push(`not in source-hash.json: public/${rel}`);
       continue;
     }
     if (!existsSync(target)) {
@@ -123,8 +140,9 @@ async function main() {
     process.exit(1);
   }
   console.log(
-    `verify:assets: ${checked} files match source-hash.json${hasMirror ? ' and the mirror' : ''}, ` +
-      `${allowlist.length - checked} allowlisted refs absent from source, no stray files`,
+    `verify:assets: ${checked} files (${icons.length} fl-icons) match source-hash.json` +
+      `${hasMirror ? ' and the mirror' : ''}, ` +
+      `${allowlist.length + icons.length - checked} CSS refs absent from source, no stray files`,
   );
 }
 
