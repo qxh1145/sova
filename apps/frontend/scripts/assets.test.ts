@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { existsSync, rmSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test } from 'vitest';
 import { buildAllowlist } from './assets.ts';
@@ -35,6 +35,7 @@ test('ignores missing, remote and non-wp-content AssetRefs; decodes % escapes', 
 test.each([
   '/wp-content/uploads/2025/08/logo-eras-White-1.svg',
   '/wp-content/plugins/x/script.js',
+  '/wp-content/plugins/x/style.css',
   '/wp-content/dist/a.png',
   '/wp-content/uploads/Trang_files/a.png',
   '/wp-content/../index.html',
@@ -69,7 +70,36 @@ test('verify passes without the mirror and fails on a stray file', () => {
   }
 }, 60_000);
 
-test.skipIf(!existsSync(path.resolve(APP, '../../../eras-clone')))(
+test('verify fails on a changed public byte', () => {
+  const file = path.join(APP, 'public/wp-content/uploads/2025/04/tiktok.png');
+  const original = readFileSync(file);
+  appendFileSync(file, 'x');
+  try {
+    const r = run(['--verify'], { ERAS_CLONE_DIR: '/nonexistent-eras-clone' });
+    expect(r.status).toBe(1);
+    expect(r.stderr).toContain('hash mismatch vs source-hash.json');
+  } finally {
+    writeFileSync(file, original);
+  }
+}, 60_000);
+
+test('verify fails on a dropped Eras logo', () => {
+  const logo = path.join(APP, 'public/wp-content/uploads/logo-eras-x.svg');
+  writeFileSync(logo, '<svg/>');
+  try {
+    const r = run(['--verify'], { ERAS_CLONE_DIR: '/nonexistent-eras-clone' });
+    expect(r.status).toBe(1);
+    expect(r.stderr).toContain('Eras logo:');
+  } finally {
+    rmSync(logo);
+  }
+}, 60_000);
+
+const MIRROR = path.resolve(
+  process.env.ERAS_CLONE_DIR ?? path.join(import.meta.dirname, '../../../../eras-clone'),
+);
+
+test.skipIf(!existsSync(MIRROR))(
   'copy re-run against the mirror writes nothing',
   () => {
     const r = run([]);
