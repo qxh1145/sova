@@ -17,6 +17,14 @@ export const shellContent: ShellContent[] = [
       vi: 'VI',
       en: 'EN',
     },
+    mobileMenu: {
+      trigger: 'Menu',
+      close: 'Đóng',
+      tagline: 'Thấu hiểu, đồng hành và thiết kế trải nghiệm digital toàn diện',
+      menuHeading: 'Menu',
+      contactHeading: 'Liên hệ',
+      toggleSubmenu: 'Mở rộng menu con',
+    },
   },
   {
     locale: 'en',
@@ -33,6 +41,14 @@ export const shellContent: ShellContent[] = [
     languageLabels: {
       vi: 'VI',
       en: 'EN',
+    },
+    mobileMenu: {
+      trigger: 'Menu',
+      close: 'Close',
+      tagline: 'Understand, accompany, and design a comprehensive digital experience.',
+      menuHeading: 'Menu',
+      contactHeading: 'Contact',
+      toggleSubmenu: 'Toggle submenu',
     },
   },
 ];

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { SiteShell } from '@/components/layout/SiteShell';
 import { fixtures, missingMediaFixtures, variantBFixtures } from '@/dev/fixtures';
@@ -36,7 +37,10 @@ export default async function FixtureShellPage({
 
   return (
     <SiteShell {...shell}>
-      <main id="main" />
+      <main id="main" style={{ paddingTop: 120 }}>
+        <Link href="/dev-fixtures/overlay/single" data-testid="fixture-client-nav">Nav {/* business-text-ok: fixture nav */}</Link>
+        <div style={{ height: 2500 }} />
+      </main>
     </SiteShell>
   );
 }

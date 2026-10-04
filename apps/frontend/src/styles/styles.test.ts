@@ -58,6 +58,7 @@ test('globals.css imports tokens then the cascade in manifest order', () => {
     './tokens.css',
     ...manifest.cascade.map((e) => `./legacy/${e.file}`),
     './carousel.css',
+    './mobile-menu.css',
   ]);
 });
 

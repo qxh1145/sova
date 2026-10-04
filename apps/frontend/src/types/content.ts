@@ -316,6 +316,14 @@ export interface ShellContent {
   copyright: string;
   themeCredit: string;
   languageLabels: Record<Locale, string>;
+  mobileMenu: {
+    trigger: string;
+    close: string;
+    tagline: string;
+    menuHeading: string;
+    contactHeading: string;
+    toggleSubmenu: string;
+  };
 }
 
 export interface SiteSettings {
