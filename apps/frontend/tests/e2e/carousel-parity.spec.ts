@@ -1,19 +1,12 @@
 import { expect, test } from './fixtures';
-import {
-  freeze,
-  hasSource,
-  missingSourceMessage,
-  openSource,
-} from '../baseline/source';
+import { freeze, hasSource, missingSourceMessage, openSource } from '../baseline/source';
 
 test.describe('Carousel source parity comparison', () => {
   test.beforeEach(() => {
     test.skip(!hasSource, missingSourceMessage);
   });
 
-  test('Testimonials prototype geometry comparison against eras-clone source', async ({
-    page,
-  }) => {
+  test('Testimonials prototype geometry comparison against eras-clone source', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
 
     // Measure eras-clone source
@@ -44,15 +37,11 @@ test.describe('Carousel source parity comparison', () => {
 
     const sovaMetrics = await page.evaluate(() => {
       const slider = document.querySelector('#slider-1717467276');
-      const firstSlide = document.querySelector(
-        '#slider-1717467276 .flickity-slider > .flickity-cell',
-      );
+      const firstSlide = document.querySelector('#slider-1717467276 .flickity-slider > *');
       const prevBtn = document.querySelector(
         '#slider-1717467276 .flickity-prev-next-button.previous',
       );
-      const nextBtn = document.querySelector(
-        '#slider-1717467276 .flickity-prev-next-button.next',
-      );
+      const nextBtn = document.querySelector('#slider-1717467276 .flickity-prev-next-button.next');
       const dot = document.querySelector('#slider-1717467276 .flickity-page-dots .dot');
 
       const sRect = slider?.getBoundingClientRect();
@@ -95,9 +84,7 @@ test.describe('Carousel source parity comparison', () => {
     expect(sovaMetrics.dot).not.toBeNull();
   });
 
-  test('THP project gallery geometry comparison against eras-clone source', async ({
-    page,
-  }) => {
+  test('THP project gallery geometry comparison against eras-clone source', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
 
     // Measure eras-clone source
@@ -128,7 +115,7 @@ test.describe('Carousel source parity comparison', () => {
 
     const sovaMetrics = await page.evaluate(() => {
       const slider = document.querySelector('#slider-duan');
-      const firstSlide = document.querySelector('#slider-duan .flickity-slider > .flickity-cell');
+      const firstSlide = document.querySelector('#slider-duan .flickity-slider > *');
       const prevBtn = document.querySelector('#slider-duan .flickity-prev-next-button.previous');
       const nextBtn = document.querySelector('#slider-duan .flickity-prev-next-button.next');
       const dot = document.querySelector('#slider-duan .flickity-page-dots .dot');
@@ -170,9 +157,7 @@ test.describe('Carousel source parity comparison', () => {
     expect(sovaMetrics.firstSlide!.width).toBeCloseTo(1050, -1);
   });
 
-  test('Mobile pricing geometry comparison against eras-clone source', async ({
-    page,
-  }) => {
+  test('Mobile pricing geometry comparison against eras-clone source', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
 
     // Measure eras-clone source
@@ -203,9 +188,7 @@ test.describe('Carousel source parity comparison', () => {
 
     const sovaMetrics = await page.evaluate(() => {
       const slider = document.querySelector('#slider-74016963');
-      const firstSlide = document.querySelector(
-        '#slider-74016963 .flickity-slider > .flickity-cell',
-      );
+      const firstSlide = document.querySelector('#slider-74016963 .flickity-slider > *');
       const prevBtn = document.querySelector(
         '#slider-74016963 .flickity-prev-next-button.previous',
       );

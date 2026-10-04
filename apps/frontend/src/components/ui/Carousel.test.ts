@@ -76,7 +76,7 @@ describe('getCarouselPlugins', () => {
   });
 
   it('creates Autoplay plugin when autoplayMs is positive and slideCount > 1', () => {
-    const plugins = getCarouselPlugins({ autoplayMs: 6000, pauseOnHover: true }, 3);
+    const plugins = getCarouselPlugins({ autoplayMs: 6000 }, 3);
     expect(plugins).toHaveLength(1);
     expect(plugins[0].name).toBe('autoplay');
   });
