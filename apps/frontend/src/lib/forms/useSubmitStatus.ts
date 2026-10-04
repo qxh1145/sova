@@ -14,10 +14,10 @@ export interface SubmitState {
 }
 
 export type SubmitAction =
-  | { type: 'SUBMIT_START' | 'start' }
-  | { type: 'SUBMIT_SUCCESS' | 'success'; result: SubmitResult }
-  | { type: 'SUBMIT_ERROR' | 'error'; error?: unknown; result?: SubmitResult }
-  | { type: 'RESET' | 'reset' };
+  | { type: 'SUBMIT_START' }
+  | { type: 'SUBMIT_SUCCESS'; result: SubmitResult }
+  | { type: 'SUBMIT_ERROR'; error?: unknown; result?: SubmitResult }
+  | { type: 'RESET' };
 
 export function submitStatusReducer(
   state: SubmitState,
@@ -25,7 +25,6 @@ export function submitStatusReducer(
 ): SubmitState {
   switch (action.type) {
     case 'SUBMIT_START':
-    case 'start':
       // Ignores submit while already submitting
       if (state.status === 'submitting') {
         return state;
@@ -36,8 +35,7 @@ export function submitStatusReducer(
         error: undefined,
       };
 
-    case 'SUBMIT_SUCCESS':
-    case 'success': {
+    case 'SUBMIT_SUCCESS': {
       const outcome = action.result.outcome;
       return {
         status: outcome === 'error' ? 'demo-error' : 'demo-success',
@@ -46,8 +44,7 @@ export function submitStatusReducer(
       };
     }
 
-    case 'SUBMIT_ERROR':
-    case 'error': {
+    case 'SUBMIT_ERROR': {
       return {
         status: 'demo-error',
         result: action.result,
@@ -56,7 +53,6 @@ export function submitStatusReducer(
     }
 
     case 'RESET':
-    case 'reset':
       return {
         status: 'idle',
         result: undefined,
@@ -68,6 +64,8 @@ export function submitStatusReducer(
   }
 }
 
+// Mock-only: every outcome maps to a demo-* status and thrown errors become
+// mock results. A live adapter needs its own statuses before it can use this.
 export function useSubmitStatus<T = unknown>(adapter?: SubmitAdapter<T>) {
   const [state, dispatch] = useReducer(submitStatusReducer, { status: 'idle' });
   const isSubmittingRef = useRef(false);
@@ -111,6 +109,5 @@ export function useSubmitStatus<T = unknown>(adapter?: SubmitAdapter<T>) {
     isSubmitting: state.status === 'submitting',
     submit,
     reset,
-    dispatch,
   };
 }

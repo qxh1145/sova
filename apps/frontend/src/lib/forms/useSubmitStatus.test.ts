@@ -104,18 +104,6 @@ describe('submitStatusReducer', () => {
       error: undefined,
     });
   });
-
-  it('supports lowercase action types', () => {
-    const next1 = submitStatusReducer(idleState, { type: 'start' });
-    expect(next1.status).toBe('submitting');
-
-    const result: SubmitResult = { mode: 'mock', outcome: 'success', message: 'ok' };
-    const next2 = submitStatusReducer(next1, { type: 'success', result });
-    expect(next2.status).toBe('demo-success');
-
-    const next3 = submitStatusReducer(next2, { type: 'reset' });
-    expect(next3.status).toBe('idle');
-  });
 });
 
 describe('useSubmitStatus', () => {
@@ -160,5 +148,34 @@ describe('useSubmitStatus', () => {
     const result1 = await call1;
     expect(result1?.outcome).toBe('success');
     expect(adapterCalls).toBe(1);
+  });
+
+  it('resolves to a mock error result and releases the guard when the adapter rejects', async () => {
+    const React = await import('react');
+    const { renderToStaticMarkup } = await import('react-dom/server');
+    const { useSubmitStatus } = await import('./useSubmitStatus');
+
+    let hookResult!: ReturnType<typeof useSubmitStatus>;
+    let adapterCalls = 0;
+    const failingAdapter = async (): Promise<SubmitResult> => {
+      adapterCalls++;
+      throw new Error('boom');
+    };
+
+    function TestComponent() {
+      hookResult = useSubmitStatus(failingAdapter);
+      return null;
+    }
+
+    renderToStaticMarkup(React.createElement(TestComponent));
+
+    await expect(hookResult.submit({})).resolves.toEqual({
+      mode: 'mock',
+      outcome: 'error',
+      message: 'boom',
+    });
+
+    await hookResult.submit({});
+    expect(adapterCalls).toBe(2);
   });
 });

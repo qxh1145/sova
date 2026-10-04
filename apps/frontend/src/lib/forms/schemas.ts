@@ -1,14 +1,14 @@
 import { z } from 'zod';
 
 export { zodResolver } from '@hookform/resolvers/zod';
-export { z } from 'zod';
 
 export interface PhoneValidationMessages {
   required: string;
   invalid: string;
 }
 
-const PHONE_CHARS_REGEX = /^[+\d\s().-]+$/;
+// Single optional leading `+`, bare or as `(+`.
+const PHONE_CHARS_REGEX = /^(?:\+|\(\+)?[\d\s().-]+$/;
 
 export function phoneSchema(messages: PhoneValidationMessages) {
   return z
@@ -26,26 +26,9 @@ export function phoneSchema(messages: PhoneValidationMessages) {
     );
 }
 
-export type ConsultValidationMessages =
-  | PhoneValidationMessages
-  | { phoneRequired: string; phoneInvalid: string }
-  | { phone: PhoneValidationMessages };
-
-export function consultSchema(messages: ConsultValidationMessages) {
-  let phoneMessages: PhoneValidationMessages;
-  if ('phone' in messages) {
-    phoneMessages = messages.phone;
-  } else if ('phoneRequired' in messages) {
-    phoneMessages = {
-      required: messages.phoneRequired,
-      invalid: messages.phoneInvalid,
-    };
-  } else {
-    phoneMessages = messages;
-  }
-
+export function consultSchema(messages: PhoneValidationMessages) {
   return z.object({
-    phone: phoneSchema(phoneMessages),
+    phone: phoneSchema(messages),
   });
 }
 

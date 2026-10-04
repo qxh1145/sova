@@ -34,6 +34,8 @@ describe('form schemas', () => {
         'phone: 0988606539',
         '12345678', // only 8 digits
         '1234567890123456', // 16 digits (too long)
+        '++84988606539',
+        '0988+606+539',
       ];
 
       for (const input of invalidCases) {
@@ -80,27 +82,6 @@ describe('form schemas', () => {
       expect(validResult.success).toBe(true);
       if (validResult.success) {
         expect(validResult.data.phone).toBe('0988606539');
-      }
-    });
-
-    it('supports alternative consult message parameter signatures', () => {
-      const schemaNamed = consultSchema({
-        phoneRequired: 'Named required',
-        phoneInvalid: 'Named invalid',
-      });
-      const resNamed = schemaNamed.safeParse({ phone: 'bad' });
-      expect(resNamed.success).toBe(false);
-      if (!resNamed.success) {
-        expect(resNamed.error.format().phone?._errors[0]).toBe('Named invalid');
-      }
-
-      const schemaNested = consultSchema({
-        phone: { required: 'Nested required', invalid: 'Nested invalid' },
-      });
-      const resNested = schemaNested.safeParse({ phone: '' });
-      expect(resNested.success).toBe(false);
-      if (!resNested.success) {
-        expect(resNested.error.format().phone?._errors[0]).toBe('Nested required');
       }
     });
   });
