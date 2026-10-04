@@ -208,6 +208,8 @@ export const fixtures: ContentData = {
   ],
   profiles: [{ ...page('profile-1', '/fixture-profile'), pdfAssetId: 'asset-1' }],
   listingSettings: [{ routeId: 'route-1', heading: { title: 'Fixture' } }],
+  listingSnapshots: [{ routeId: 'route-1', page: 1, orderedIds: ['post-1'] }],
+  utilityContent: [{ id: 'utility-1', body: rich }],
 };
 
 export const missingMediaFixtures: ContentData = {

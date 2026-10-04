@@ -48,7 +48,8 @@ interface Row {
 }
 type EntityRef = { id: EntityId; path: PublicPath };
 
-const routeId = (p: string) =>
+/** Registry route id of a public path (`/a/b/` -> `route-a--b`). */
+export const routeId = (p: string) =>
   p === '/' ? 'route-root' : `route-${p.split('/').filter(Boolean).join('--')}`;
 
 /** Source href (relative to `file`) -> public folder path; `index.mirror-*.html` counts as its folder. */

@@ -19,6 +19,7 @@ import {
   type Stats,
 } from './html.ts';
 import type { AssetRegistry } from './assets.ts';
+import { routeId } from './routes.ts';
 
 /** Blog listings: public path -> page count. `/goc-nhin/` (all posts) first. */
 const LISTINGS: [PublicPath, number][] = [
@@ -69,9 +70,9 @@ export function importPosts(erasDir: string, registry: AssetRegistry, stats: Sta
   const cardCounts = new Map<PublicPath, number>();
   let sidebar: { root: HTMLElement; file: string; lineOf: (o: number) => number } | undefined;
 
-  for (const [routeId, pages] of LISTINGS) {
+  for (const [listingPath, pages] of LISTINGS) {
     for (let page = 1; page <= pages; page++) {
-      const file = `${routeId.slice(1)}${page > 1 ? `page/${page}/` : ''}index.html`;
+      const file = `${listingPath.slice(1)}${page > 1 ? `page/${page}/` : ''}index.html`;
       const source = readFileSync(path.join(erasDir, file), 'utf8');
       const lineOf = lineLookup(source);
       const root = parseHtml(source);
@@ -82,7 +83,7 @@ export function importPosts(erasDir: string, registry: AssetRegistry, stats: Sta
         if (!href) throw new Error(`${file}:${lineOf(article.range[0])}: card has no link`);
         const postId = article.id;
         orderedIds.push(postId);
-        if (routeId !== '/goc-nhin/') {
+        if (listingPath !== '/goc-nhin/') {
           if (!cards.has(postId))
             throw new Error(`Source drift: ${file}: ${postId} is not on /goc-nhin/`);
           continue;
@@ -115,13 +116,17 @@ export function importPosts(erasDir: string, registry: AssetRegistry, stats: Sta
           : ((processHref(raw, file, lineOf(a.range[0]), stats) ?? undefined) as
               PublicPath | undefined);
       };
-      const snapshot: ListingSnapshot = { routeId, page, orderedIds };
+      const snapshot: ListingSnapshot = {
+        routeId: routeId(listingPath),
+        page,
+        orderedIds,
+      };
       const previousPath = link('a.prev.page-numbers');
       const nextPath = link('a.next.page-numbers');
       if (previousPath) snapshot.previousPath = previousPath;
       if (nextPath) snapshot.nextPath = nextPath;
       snapshots.push(snapshot);
-      cardCounts.set(routeId, (cardCounts.get(routeId) ?? 0) + orderedIds.length);
+      cardCounts.set(listingPath, (cardCounts.get(listingPath) ?? 0) + orderedIds.length);
     }
   }
   if (cards.size !== EXPECTED_POSTS)

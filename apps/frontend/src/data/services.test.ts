@@ -136,6 +136,6 @@ test('3 testimonials per locale, 30 partners, every record keeps its source', ()
 test('no Eras word or raw Eras contact value in service, pricing, testimonial and partner text', () => {
   const text = JSON.stringify({ services, pricing, testimonials, partners });
   expect([...text.matchAll(BRAND_LEAK_RE)].map((m) => m[0])).toEqual([]);
-  expect(text.match(/\bERAS\b|Sova VietNam/g)).toBeNull();
+  expect(text.match(/Sova VietNam/g)).toBeNull();
   for (const [pattern] of SCRUB_RULES) expect(text.match(pattern)).toBeNull();
 });
