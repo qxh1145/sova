@@ -17,7 +17,7 @@ import {
 } from '@/lib/queries/pages';
 import { getPost, listPosts } from '@/lib/queries/posts';
 import { getProject, listProjects } from '@/lib/queries/projects';
-import { getNavigation, getSiteSettings, listRoutes } from '@/lib/queries/site';
+import { getNavigation, getShellContent, getSiteSettings, listRoutes } from '@/lib/queries/site';
 import { getPricing, getService } from '@/lib/queries/services';
 import { getPartners, getStats, getTestimonials } from '@/lib/queries/social-proof';
 import type { PageResult } from '@/types/content';
@@ -35,7 +35,8 @@ const queries: [
 ][] = [
   ['getSiteSettings', 'shell', 'vi', () => getSiteSettings('vi')],
   ['getNavigation', 'shell', 'vi', () => getNavigation('vi')],
-  ['listRoutes', 'list', ['route-1'], () => listRoutes()],
+  ['getShellContent', 'shell', 'vi', () => getShellContent('vi')],
+  ['listRoutes', 'list', ['route-1', 'route-en-1', 'route-no-counterpart'], () => listRoutes()],
   ['getService', 'single', 'service-1', () => getService('website', 'vi')],
   ['getPricing', 'single', 'pricing-1', () => getPricing('pricing-1', 'vi')],
   ['getProject', 'single', 'project-1', () => getProject('fixture-project')],
@@ -153,7 +154,12 @@ test('production ignores CONTENT_SCENARIO', async () => {
 test('src/dev is imported only by lib/repositories/index.ts', () => {
   const src = join(__dirname, '..');
   const importers = readdirSync(src, { recursive: true, encoding: 'utf8' })
-    .filter((file) => /\.tsx?$/.test(file) && !file.startsWith('dev/'))
+    .filter(
+      (file) =>
+        /\.tsx?$/.test(file) &&
+        !file.startsWith('dev/') &&
+        file !== 'app/(fixtures)/dev-fixtures/shell/[variant]/page.tsx',
+    )
     .filter((file) => /['"](@\/dev|(\.\.?\/)+dev)\//.test(readFileSync(join(src, file), 'utf8')));
   expect(importers).toEqual(['lib/repositories/index.ts']);
 });
