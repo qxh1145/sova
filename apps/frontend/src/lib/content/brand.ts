@@ -33,13 +33,18 @@ export function decodeEscapes(text: string): string {
 
 // Longest first so "Eras Việt Nam" wins over "Eras".
 // Uppercase ERAS only as a whole phrase: bare "ERAS" stays (asset paths such as ERAS-THUMB-*).
-export const BRAND_TERMS = [
+const BRAND_TERMS = [
   'Eras Việt Nam',
   'Eras Vietnam',
   'Eras VietNam',
   'Eras Viet Nam',
   'ErasVietnam',
   'ERAS Việt Nam',
+  'ERAS VIỆT NAM',
+  'ERAS VIET NAM',
+  'ERAS VIETNAM',
+  'ERAS Vietnam',
+  'ERAS Viet Nam',
   'ERAS VietNam',
   'Eras',
 ]
@@ -61,8 +66,13 @@ export function applyBrandTerms(text: string): { text: string; count: number } {
   return { text: out, count };
 }
 
-/** What the post-build grep treats as an Eras leak. */
-export const BRAND_LEAK_RE = /Eras|eras-|erasvietnam/g;
+/**
+ * What the import output guard and the post-build grep treat as an Eras leak. Alternation order
+ * matters: `eras-`/`eras/` win over a trailing `eras` so brand-exceptions.json can name them.
+ * `ERAS-THUMB-*` asset names pass; `cameras` passes (a letter precedes `eras`).
+ */
+export const BRAND_LEAK_RE =
+  /Eras|eras-|eras\/|erasvietnam|ERAS(?!-THUMB)|(?<!\p{L})eras(?!\p{L})/gu;
 
 const SITE_HOSTS = ['erasvietnam.vn', 'www.erasvietnam.vn'];
 

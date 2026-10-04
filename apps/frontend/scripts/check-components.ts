@@ -1,6 +1,7 @@
-// Guard (CI, after lint): business text belongs in src/data, not in src/components. Flags JSX text
-// with a letter, alt/title/aria-label/placeholder string literals with a letter, and Eras strings or
-// contact values. A line carrying `// business-text-ok: <reason>` is skipped. No components dir passes.
+// Guard (CI, after lint): business text belongs in src/data, not in src/components or src/app. Flags
+// JSX text with a letter, alt/title/aria-label/placeholder string literals with a letter, and Eras
+// strings or contact values. A line carrying `// business-text-ok: <reason>` is skipped. A missing
+// dir passes. COMPONENTS_DIR (path-delimiter separated) overrides the scanned dirs.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
@@ -8,7 +9,12 @@ import { BRAND_LEAK_RE } from '../src/lib/content/brand.ts';
 import { SCRUB_RULES } from '../src/lib/content/scrub.ts';
 
 const here = import.meta.dirname;
-const DIR = path.resolve(process.env.COMPONENTS_DIR ?? path.join(here, '../src/components'));
+const DIRS = (
+  process.env.COMPONENTS_DIR?.split(path.delimiter) ?? [
+    path.join(here, '../src/components'),
+    path.join(here, '../src/app'),
+  ]
+).map((dir) => path.resolve(dir));
 const TEXT_ATTRIBUTES = new Set(['alt', 'title', 'aria-label', 'placeholder']);
 const PATTERNS = [BRAND_LEAK_RE, ...SCRUB_RULES.map(([pattern]) => pattern)];
 const LETTER = /\p{L}/u;
@@ -42,16 +48,19 @@ function scan(text: string): [number, string, string][] {
   return found;
 }
 
-const files = existsSync(DIR)
-  ? readdirSync(DIR, { recursive: true, encoding: 'utf8' })
-      .filter((f) => f.endsWith('.tsx'))
-      .sort()
-  : [];
+const files = DIRS.flatMap((dir) =>
+  existsSync(dir)
+    ? readdirSync(dir, { recursive: true, encoding: 'utf8' })
+        .filter((f) => f.endsWith('.tsx'))
+        .sort()
+        .map((f) => path.join(dir, f))
+    : [],
+);
 const report: string[] = [];
-for (const rel of files) {
-  const text = readFileSync(path.join(DIR, rel), 'utf8');
+for (const abs of files) {
+  const text = readFileSync(abs, 'utf8');
   const lines = text.split('\n');
-  const file = path.relative(process.cwd(), path.join(DIR, rel)).split(path.sep).join('/');
+  const file = path.relative(process.cwd(), abs).split(path.sep).join('/');
   for (const [offset, kind, value] of scan(text)) {
     const line = text.slice(0, offset).split('\n').length;
     if (!ALLOW.test(lines[line - 1]))

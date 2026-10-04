@@ -10,7 +10,7 @@ import { seoServices } from '@/data/services/seo';
 import { websiteServices } from '@/data/services/website';
 import { testimonials } from '@/data/testimonials';
 import type { Pricing, SiteSettings } from '@/types/content';
-import { getServicePage } from './services';
+import { getPricing, getServicePage } from './services';
 
 let repository: ContentRepository;
 vi.mock('@/lib/repositories', () => ({ getRepository: () => repository }));
@@ -132,4 +132,7 @@ test('contact in CTA: the pricing Zalo token resolves to SiteSettings.zaloHref; 
     vi.plans.map(() => 'https://example.com/zalo?a=1&b=2'),
   );
   expect(page?.pricing?.heading).toBe('Gọi {{site.unknown}}');
+  expect((await getPricing(vi.id, 'vi'))?.plans[0].cta.href).toBe(
+    'https://example.com/zalo?a=1&b=2',
+  );
 });

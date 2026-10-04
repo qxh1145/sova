@@ -9,6 +9,7 @@ import type {
   HomePageRecord,
   LegalPage,
   ListingSettings,
+  ListingSnapshot,
   Locale,
   Navigation,
   PageResult,
@@ -22,16 +23,24 @@ import type {
   RouteEntry,
   Service,
   ServiceKey,
+  ShellContent,
   SiteSettings,
   Stat,
   Testimonial,
+  UtilityContent,
 } from '@/types/content';
 
+/**
+ * Every method but getSiteSettings and listRoutes returns copy with `{{site.*}}` tokens resolved
+ * from that locale's SiteSettings (createMockRepository is the resolution boundary).
+ */
 export interface ContentRepository {
-  /** Throws when the locale has no record. */
+  /** Raw settings; throws when the locale has no record. */
   getSiteSettings(locale: Locale): Promise<SiteSettings>;
   /** Throws when the locale has no record. */
   getNavigation(locale: Locale): Promise<Navigation>;
+  /** Throws when the locale has no record. */
+  getShellContent(locale: Locale): Promise<ShellContent>;
   getService(key: ServiceKey, locale: Locale): Promise<Service | null>;
   getProject(slug: string): Promise<Project | null>;
   listProjects(input: {
@@ -60,6 +69,9 @@ export interface ContentRepository {
   getLegalPage(path: string, locale: Locale): Promise<LegalPage | null>;
   getPaymentGuide(locale: Locale): Promise<PaymentGuideContent | null>;
   getListingSettings(routeId: EntityId): Promise<ListingSettings | null>;
+  getListingSnapshot(routeId: EntityId, page: number): Promise<ListingSnapshot | null>;
+  /** Utility copy or project delivery terms (Project.deliveryTermsId). */
+  getUtilityContent(id: EntityId): Promise<UtilityContent | null>;
   listRoutes(): Promise<RouteEntry[]>;
 }
 
@@ -67,6 +79,7 @@ export interface ContentRepository {
 export interface ContentData {
   siteSettings: SiteSettings[];
   navigation: Navigation[];
+  shellContent: ShellContent[];
   routes: RouteEntry[];
   services: Service[];
   projects: Project[];
@@ -87,4 +100,6 @@ export interface ContentData {
   paymentGuides: PaymentGuideContent[];
   profiles: CompanyProfileContent[];
   listingSettings: ListingSettings[];
+  listingSnapshots: ListingSnapshot[];
+  utilityContent: UtilityContent[];
 }

@@ -9,6 +9,8 @@ test.each([
   ['(+84) 988.606.539', '{{site.phone}}'],
   ['(+84) 988 606 539', '{{site.phone}}'],
   ['84988606539', '{{site.phone}}'],
+  ['0988-606-539', '{{site.phone}}'],
+  ['tel:0988-606-539', '{{site.phoneHref}}'],
   ['hotline: 0988.606.539.', 'hotline: {{site.phone}}.'],
   ['tel:0988606539', '{{site.phoneHref}}'],
   ['support@erasvietnam.vn', '{{site.email}}'],
@@ -24,6 +26,9 @@ test.each([
   ['zalo://conversation?phone=0988606539', '{{site.zaloHref}}'],
   ['định dạng “…@erasvietnam.vn”', 'định dạng “…@{{site.domain}}”'],
   ['tên miền “erasvietnam.vn”', 'tên miền “{{site.domain}}”'],
+  ['www.erasvietnam.vn', '{{site.domain}}'],
+  ['erasvietnam.com', '{{site.domain}}'],
+  ['Website: www.erasvietnam.com.', 'Website: {{site.domain}}.'],
   ['https://erasvietnam.vn/x/', 'https://erasvietnam.vn/x/'],
   ['10988606539 and 09886065390', '10988606539 and 09886065390'],
 ])('scrubContacts(%j)', (input, expected) => {

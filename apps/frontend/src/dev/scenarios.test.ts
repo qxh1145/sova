@@ -10,12 +10,14 @@ import {
   getHomePage,
   getLegalPage,
   getListingSettings,
+  getListingSnapshot,
   getPaymentGuide,
   getProfile,
+  getUtilityContent,
 } from '@/lib/queries/pages';
 import { getPost, listPosts } from '@/lib/queries/posts';
 import { getProject, listProjects } from '@/lib/queries/projects';
-import { getNavigation, getSiteSettings, listRoutes } from '@/lib/queries/site';
+import { getNavigation, getShellContent, getSiteSettings, listRoutes } from '@/lib/queries/site';
 import { getPricing, getService } from '@/lib/queries/services';
 import { getPartners, getStats, getTestimonials } from '@/lib/queries/social-proof';
 import type { PageResult } from '@/types/content';
@@ -33,7 +35,8 @@ const queries: [
 ][] = [
   ['getSiteSettings', 'shell', 'vi', () => getSiteSettings('vi')],
   ['getNavigation', 'shell', 'vi', () => getNavigation('vi')],
-  ['listRoutes', 'list', ['route-1'], () => listRoutes()],
+  ['getShellContent', 'shell', 'vi', () => getShellContent('vi')],
+  ['listRoutes', 'list', ['route-1', 'route-en-1', 'route-no-counterpart'], () => listRoutes()],
   ['getService', 'single', 'service-1', () => getService('website', 'vi')],
   ['getPricing', 'single', 'pricing-1', () => getPricing('pricing-1', 'vi')],
   ['getProject', 'single', 'project-1', () => getProject('fixture-project')],
@@ -63,6 +66,8 @@ const queries: [
   ['getLegalPage', 'single', 'legal-1', () => getLegalPage('/fixture-legal', 'vi')],
   ['getPaymentGuide', 'single', 'payment-1', () => getPaymentGuide('vi')],
   ['getListingSettings', 'single', 'route-1', () => getListingSettings('route-1')],
+  ['getListingSnapshot', 'single', 'route-1', () => getListingSnapshot('route-1', 1)],
+  ['getUtilityContent', 'single', 'utility-1', () => getUtilityContent('utility-1')],
 ];
 
 type Identified = { id?: string; routeId?: string; locale?: string } | null;
@@ -149,7 +154,12 @@ test('production ignores CONTENT_SCENARIO', async () => {
 test('src/dev is imported only by lib/repositories/index.ts', () => {
   const src = join(__dirname, '..');
   const importers = readdirSync(src, { recursive: true, encoding: 'utf8' })
-    .filter((file) => /\.tsx?$/.test(file) && !file.startsWith('dev/'))
+    .filter(
+      (file) =>
+        /\.tsx?$/.test(file) &&
+        !file.startsWith('dev/') &&
+        file !== 'app/(fixtures)/dev-fixtures/shell/[variant]/page.tsx',
+    )
     .filter((file) => /['"](@\/dev|(\.\.?\/)+dev)\//.test(readFileSync(join(src, file), 'utf8')));
   expect(importers).toEqual(['lib/repositories/index.ts']);
 });

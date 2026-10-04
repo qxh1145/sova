@@ -43,6 +43,16 @@ test.each([
   expect(() => buildAllowlist([local(src)], [], [])).toThrow(/Forbidden/);
 });
 
+test('commented-out url()s are not refs', () => {
+  const css = `/* a{background:url(/wp-content/uploads/old.png)} */b{background:url(/wp-content/uploads/new.png)}`;
+  expect(buildAllowlist([], [css], [])).toEqual(['wp-content/uploads/new.png']);
+});
+
+test('throws on a remaining /wp-includes/ url()', () => {
+  const css = `a{background:url("/wp-includes/js/mediaelement/mejs-controls.svg")}`;
+  expect(() => buildAllowlist([], [css], [])).toThrow(/Forbidden \/wp-includes\//);
+});
+
 // CLI rows of the plan's matrix: run the real script against the committed public/ files.
 const run = (args: string[], env: Record<string, string> = {}) =>
   spawnSync(process.execPath, ['--disable-warning=MODULE_TYPELESS_PACKAGE_JSON', SCRIPT, ...args], {
@@ -108,3 +118,33 @@ test.skipIf(!existsSync(MIRROR))(
   },
   60_000,
 );
+
+test('verify fails on a changed fl-icons byte', () => {
+  const file = path.join(APP, 'public', ICON);
+  const original = readFileSync(file);
+  appendFileSync(file, 'x');
+  try {
+    const r = run(['--verify'], { ERAS_CLONE_DIR: '/nonexistent-eras-clone' });
+    expect(r.status).toBe(1);
+    expect(r.stderr).toContain(`hash mismatch vs source-hash.json: public/${ICON}`);
+  } finally {
+    writeFileSync(file, original);
+  }
+}, 60_000);
+
+test('verify fails on a local AssetRef absent from the source hash', () => {
+  const file = path.join(APP, 'tests/baseline/source-hash.json');
+  const original = readFileSync(file, 'utf8');
+  const rel = 'wp-content/uploads/2023/10/ERAS-THUMB-WEBSITE-1.webp';
+  const hashes = JSON.parse(original) as Record<string, string>;
+  expect(hashes[rel]).toBeDefined();
+  delete hashes[rel];
+  writeFileSync(file, JSON.stringify(hashes));
+  try {
+    const r = run(['--verify'], { ERAS_CLONE_DIR: '/nonexistent-eras-clone' });
+    expect(r.status).toBe(1);
+    expect(r.stderr).toContain(`local AssetRef not in source-hash.json: public/${rel}`);
+  } finally {
+    writeFileSync(file, original);
+  }
+}, 60_000);

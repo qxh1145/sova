@@ -10,7 +10,6 @@ import type {
   Testimonial,
 } from '@/types/content';
 import { getFAQs } from './faq';
-import { resolveDeep } from './tokens';
 
 export function getService(key: ServiceKey, locale: Locale): Promise<Service | null> {
   return getRepository().getService(key, locale);
@@ -61,7 +60,7 @@ export async function getServicePage(key: ServiceKey, locale: Locale): Promise<S
   ];
   if (missing.length)
     throw new Error(`${service.id} references missing ids: ${missing.join(', ')}`);
-  const page: ServicePage = {
+  return {
     service,
     faqs: faqs.map((faq) => {
       const revisionId = placements.find((p) => p.faqId === faq.id)?.sourceRevisionId;
@@ -71,14 +70,5 @@ export async function getServicePage(key: ServiceKey, locale: Locale): Promise<S
     testimonials,
     projects,
     pricing,
-  };
-  const { service: s, pricing: p, testimonials: t } = page;
-  if (!JSON.stringify({ s, p, t }).includes('{{site.')) return page;
-  const settings = await repository.getSiteSettings(locale);
-  return {
-    ...page,
-    service: resolveDeep(s, settings),
-    testimonials: resolveDeep(t, settings),
-    pricing: resolveDeep(p, settings),
   };
 }

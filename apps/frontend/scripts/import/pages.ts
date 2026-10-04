@@ -22,7 +22,6 @@ import type {
   Stat,
 } from '../../src/types/content.ts';
 import { applyBrandTerms, BRAND_LEAK_RE } from '../../src/lib/content/brand.ts';
-import { SCRUB_RULES } from '../../src/lib/content/scrub.ts';
 import { ALLOWED, processHref, processText, sanitize, type Stats } from './html.ts';
 import type { AssetRegistry } from './assets.ts';
 import { slug } from './faq.ts';
@@ -43,6 +42,8 @@ const DEMO_ACCOUNT: Record<Locale, { bank: string; holder: string; accountNumber
 const HOLDER_NAME = /V[ŨU] H[ỒO]NG D[ŨU]NG/gi;
 /** Bare uppercase ERAS naming the company in legal copy (the shared brand map keeps it for asset names). */
 const BARE_ERAS = /(?<![\p{L}\p{N}_-])ERAS(?![\p{L}\p{N}_-])/gu;
+/** Source typo with no space after the brand ("yêu cầu ERASkhuyến nghị"). */
+const ERAS_TYPO = /ERASkhuyến/gu;
 
 export interface PageRefs {
   routes: RouteEntry[];
@@ -82,6 +83,10 @@ function hooks(page: Page, line: number, stats: Stats) {
         .replace(BARE_ERAS, () => {
           stats.brand++;
           return 'Sova';
+        })
+        .replace(ERAS_TYPO, () => {
+          stats.brand++;
+          return 'Sova khuyến';
         }),
     href: (raw: string) => {
       const href = processHref(raw, page.file, line, stats);
@@ -615,7 +620,7 @@ export function importPages(
     sources: [{ file: homeVi.file, line: homeVi.lineOf(logo.range[0]) }],
   };
 
-  const result = {
+  return {
     homePages,
     aboutPages,
     contactPages: pages('contact').map((p) => contact(p, registry, stats)),
@@ -629,17 +634,4 @@ export function importPages(
     thankYou: pages('thank-you').map((p) => thankYou(p, stats)),
     wordmark,
   };
-
-  // Output guard: no Eras word or raw Eras contact value may reach the generated files. Source
-  // refs and public paths (the route registry keeps some source slugs) are not text.
-  const text = refs.routes.reduce(
-    (acc, r) => acc.replaceAll(`"${r.path}"`, '""'),
-    JSON.stringify(result, (key, value: unknown) => (key === 'sources' ? undefined : value)),
-  );
-  for (const pattern of [BRAND_LEAK_RE, /\bERAS\b/g, ...SCRUB_RULES.map(([p]) => p)]) {
-    const found = new RegExp(pattern.source, pattern.flags.replace('g', '')).exec(text);
-    if (found)
-      throw new Error(`pages: output contains …${text.slice(found.index - 60, found.index + 40)}…`);
-  }
-  return result;
 }

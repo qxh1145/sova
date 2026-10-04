@@ -8,6 +8,8 @@ import { assets } from './assets';
 import { listingSnapshots } from './listings';
 import { postCategories } from './post-categories';
 import { posts } from './posts';
+import { routes } from './routes';
+import { siteSettings } from './site';
 
 const PAGE_SIZE = 6;
 const postIds = new Set(posts.map((p) => p.id));
@@ -45,22 +47,30 @@ test('category, related and snapshot ids resolve', () => {
     postCategories.reduce((n, c) => n + c.sourceDisplayCount!, 0),
   );
   expect(posts.some((p) => p.categoryIds.length > 1)).toBe(true);
-  for (const snapshot of listingSnapshots)
+  const routeIds = new Set(routes.map((r) => r.id));
+  for (const snapshot of listingSnapshots) {
+    expect(routeIds).toContain(snapshot.routeId);
     for (const id of snapshot.orderedIds) expect(postIds).toContain(id);
+  }
 });
 
 test('listPosts reproduces every captured listing page and total', async () => {
-  const repo = createMockRepository({ posts, postCategories } as unknown as ContentData);
+  const repo = createMockRepository({
+    posts,
+    postCategories,
+    siteSettings,
+  } as unknown as ContentData);
   const totals: Record<string, number> = { '/goc-nhin/': 27 };
   for (const c of postCategories) totals[c.path] = c.sourceDisplayCount!;
   for (const { routeId, page, orderedIds } of listingSnapshots) {
-    const category = routeId === '/goc-nhin/' ? undefined : routeId.slice(1, -1);
+    const routePath = routes.find((r) => r.id === routeId)!.path;
+    const category = routePath === '/goc-nhin/' ? undefined : routePath.slice(1, -1);
     const result = await repo.listPosts({ locale: 'vi', category, page, pageSize: PAGE_SIZE });
     expect(
       result.items.map((p) => p.id),
       `${routeId} page ${page}`,
     ).toEqual(orderedIds);
-    expect(result.total).toBe(totals[routeId]);
+    expect(result.total).toBe(totals[routePath]);
   }
 });
 
