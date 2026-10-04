@@ -324,6 +324,18 @@ export interface ShellContent {
     contactHeading: string;
     toggleSubmenu: string;
   };
+  consult: {
+    heading: string;
+    placeholder: string;
+    submit: string;
+    submitting: string;
+    required: string;
+    invalid: string;
+    success: string;
+    error: string;
+    demoBadge: string;
+    note: string;
+  };
 }
 
 export interface SiteSettings {

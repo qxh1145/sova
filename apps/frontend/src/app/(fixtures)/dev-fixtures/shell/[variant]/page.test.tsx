@@ -47,4 +47,19 @@ describe('FixtureShellPage', () => {
     });
     expect(result).toBeDefined();
   });
+
+  it('renders consult-success and consult-error variants with ConsultScenario', async () => {
+    vi.stubEnv('FIXTURE_HARNESS', '1');
+    const successResult = await FixtureShellPage({
+      params: Promise.resolve({ variant: 'consult-success' }),
+      searchParams: Promise.resolve({ locale: 'en' }),
+    });
+    expect(successResult).toBeDefined();
+
+    const errorResult = await FixtureShellPage({
+      params: Promise.resolve({ variant: 'consult-error' }),
+      searchParams: Promise.resolve({ locale: 'vi' }),
+    });
+    expect(errorResult).toBeDefined();
+  });
 });
