@@ -23,6 +23,17 @@ npx playwright install chromium && npm run test:e2e  # chạy trên production b
 
 E2E specs import `test` từ `apps/frontend/tests/e2e/fixtures.ts`: network guard fail-closed, chặn mọi host ngoài localhost và `MAPS_EMBED_ALLOWLIST`.
 
+## Dữ liệu
+
+Output đã commit; chỉ chạy lại khi nguồn đổi. Cần mirror `../eras-clone` (`ERAS_CLONE_DIR`); `import` còn cần `docs/` local (`DOCS_DIR`, không có trong git). Chạy lại trên output hiện tại không đổi file nào.
+
+```bash
+npm run import         # dữ liệu mock từ mirror + docs/evidence
+npm run port:css       # CSS legacy + manifest
+npm run copy:assets    # copy media trong allowlist
+npm run verify:assets  # không cần mirror: so public/ với source-hash.json (chạy trong CI)
+```
+
 ## Baseline
 
 Ảnh gốc từ `../eras-clone` để so pixel với trang Sova. Chạy offline: request tới `https://erasvietnam.vn/**` được trả từ file mirror; hai file GSAP 3.12.2 trên cdnjs được trả từ bản copy giống hệt trong mirror (log `local`); mọi host khác bị chặn và ghi log. Không chạy `serve.py`/`build.py`. Không thuộc `test:e2e` hay CI.
