@@ -1,5 +1,11 @@
+import { spawnSync } from 'node:child_process';
+import { existsSync, rmSync, writeFileSync } from 'node:fs';
+import path from 'node:path';
 import { expect, test } from 'vitest';
 import { buildAllowlist } from './assets.ts';
+
+const APP = path.resolve(import.meta.dirname, '..');
+const SCRIPT = path.join(APP, 'scripts/assets.ts');
 
 const ICON = 'wp-content/themes/flatsome/assets/css/icons/fl-icons__q_924b4500d740.svg';
 const local = (src: string) => ({ src, status: 'local' as const });
@@ -35,3 +41,40 @@ test.each([
 ])('throws on forbidden path %s', (src) => {
   expect(() => buildAllowlist([local(src)], [], [])).toThrow(/Forbidden/);
 });
+
+// CLI rows of the plan's matrix: run the real script against the committed public/ files.
+const run = (args: string[], env: Record<string, string> = {}) =>
+  spawnSync(process.execPath, ['--disable-warning=MODULE_TYPELESS_PACKAGE_JSON', SCRIPT, ...args], {
+    encoding: 'utf8',
+    env: { ...process.env, ...env },
+  });
+
+test('copy fails fast without the mirror', () => {
+  const r = run([], { ERAS_CLONE_DIR: '/nonexistent-eras-clone' });
+  expect(r.status).toBe(1);
+  expect(r.stderr).toContain('/nonexistent-eras-clone');
+});
+
+test('verify passes without the mirror and fails on a stray file', () => {
+  const env = { ERAS_CLONE_DIR: '/nonexistent-eras-clone' };
+  expect(run(['--verify'], env).status).toBe(0);
+  const stray = path.join(APP, 'public/wp-content/uploads/__stray-test.png');
+  writeFileSync(stray, 'x');
+  try {
+    const r = run(['--verify'], env);
+    expect(r.status).toBe(1);
+    expect(r.stderr).toContain('not allowlisted: public/wp-content/uploads/__stray-test.png');
+  } finally {
+    rmSync(stray);
+  }
+}, 60_000);
+
+test.skipIf(!existsSync(path.resolve(APP, '../../../eras-clone')))(
+  'copy re-run against the mirror writes nothing',
+  () => {
+    const r = run([]);
+    expect(r.status).toBe(0);
+    expect(r.stdout).toMatch(/, 0 written,/);
+  },
+  60_000,
+);
