@@ -85,3 +85,8 @@ export function resolvePath(
   const aliased = routes.find((r) => r.aliases.includes(normalized));
   return aliased ? { route: aliased, redirect: true } : null;
 }
+
+/** Looks up a route by its entity id and returns its canonical public path. */
+export function pathForRouteId(routes: RouteEntry[], id: string): PublicPath | undefined {
+  return routes.find((r) => r.id === id)?.path;
+}

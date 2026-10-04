@@ -14,13 +14,7 @@
 @import './legacy/12-wp-custom.css';
 /* port:css end */
 
-/* Shell-pending overrides: the source paints the background on #wrapper/#main (flatsome paints
-   html #4d4d4d) and hides the pointer for a custom cursor. Remove both when the site shell and the
-   Cursor component land. */
-html,
-body {
-  background-color: var(--color-bg);
-}
 body {
   cursor: auto;
 }
+
