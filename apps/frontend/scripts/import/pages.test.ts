@@ -1,8 +1,8 @@
 import { expect, test } from 'vitest';
 import type { RouteEntry } from '../../src/types/content';
-import { lineLookup, parseHtml } from './html';
+import { lineLookup, parseHtml, processHref } from './html';
 import { readHeader, type NavCtx } from './navigation';
-import { readStats } from './pages';
+import { matchServiceByTitle, readStats, resolveServiceCard } from './pages';
 
 const parsed = (body: string) => {
   const source = `<html><body>${body}</body></html>`;
@@ -96,4 +96,57 @@ test('nav: excluded paths and other Eras hosts are dropped and logged; a custom 
 test('nav: an internal href that resolves to no route throws naming it', () => {
   const { items } = header(li('khong-ton-tai/index.html', 'Lạc'));
   expect(items).toThrow(/khong-ton-tai\/index\.html/);
+});
+
+test('services: title matching resolves cards across case and diacritics', () => {
+  const services = [
+    { id: 'service-website-vi', title: 'Thiết kế website' },
+    { id: 'service-mobile-vi', title: 'Thiết kế App Mobile' },
+    { id: 'service-seo-vi', title: 'SEO từ khoá website' },
+    { id: 'service-mobile-en', title: 'App Mobile Development' },
+    { id: 'service-website-en', title: 'Website Development' },
+  ];
+
+  expect(matchServiceByTitle('Thiết kế website', services)?.id).toBe('service-website-vi');
+  expect(matchServiceByTitle('Thiết kế App mobile', services)?.id).toBe('service-mobile-vi');
+  expect(matchServiceByTitle('SEO từ khóa website ', services)?.id).toBe('service-seo-vi');
+  expect(matchServiceByTitle('App Mobile Development', services)?.id).toBe('service-mobile-en');
+  expect(matchServiceByTitle('Unknown Service', services)).toBeUndefined();
+});
+
+test('services: unmatched card title throws Source drift error in home card resolution', () => {
+  const { root } = parsed(
+    `<div id="content"><div class="hide-for-small"><div class="text dich_vu"><p class="name_dv">Dịch vụ lạ lẫm<br></p></div></div></div>`,
+  );
+  const localeServices = [{ id: 'service-website-vi', title: 'Thiết kế website' }];
+  const card = root.querySelector('.dich_vu')!;
+  const nameEl = card.querySelector('.name_dv')!;
+  const rawTitle = nameEl.childNodes[0]?.rawText.trim() ?? '';
+  expect(() => resolveServiceCard(rawTitle, localeServices, 'index.html')).toThrow(
+    /Source drift: index.html: service card "Dịch vụ lạ lẫm" does not match any service/,
+  );
+});
+
+test('services: EN card 2 resolves to mobile service while keeping website arrow href', () => {
+  const enServices = [
+    { id: 'service-website-en', title: 'Website Development', path: '/en/website-development/' },
+    { id: 'service-mobile-en', title: 'App Mobile Development', path: '/en/app-mobile-development/' },
+  ];
+
+  const { root, lineOf } = parsed(
+    `<div class="text dich_vu">
+       <p class="name_dv">App Mobile Development<br></p>
+       <p class="mta_dv">Our mobile solutions...</p>
+       <p class="nut_xthem"><a href="../website-development/index.html">→</a></p>
+     </div>`,
+  );
+
+  const card = root.querySelector('.dich_vu')!;
+  const rawTitle = card.querySelector('.name_dv')!.childNodes[0]?.rawText.trim() ?? '';
+  const service = matchServiceByTitle(rawTitle, enServices);
+  expect(service?.id).toBe('service-mobile-en');
+
+  const arrowEl = card.querySelector('.nut_xthem a')!;
+  const arrowHref = processHref(arrowEl.getAttribute('href') ?? '', 'en/home/index.html', lineOf(arrowEl.range[0]), stats());
+  expect(arrowHref).toBe('/en/website-development/');
 });

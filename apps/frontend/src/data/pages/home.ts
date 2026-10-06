@@ -47,6 +47,7 @@ export const homePages: HomePageRecord[] = [
       'service-email-vi',
     ],
     marqueeText: ['Development', 'UI/UX', 'Sova', 'Branding', 'Writer', 'Mobile'],
+    marqueeSeparatorId: 'asset-400b882328',
     projectPlacements: [
       { entityId: 'project-2348', order: 1 },
       { entityId: 'project-2182', order: 2 },
@@ -132,13 +133,14 @@ export const homePages: HomePageRecord[] = [
     },
     serviceIds: [
       'service-website-en',
-      'service-website-en',
+      'service-mobile-en',
       'service-seo-en',
       'service-branding-en',
       'service-storage-en',
       'service-email-en',
     ],
     marqueeText: ['Development', 'UI/UX', 'Sova', 'Branding', 'Writer', 'Mobile'],
+    marqueeSeparatorId: 'asset-400b882328',
     projectPlacements: [],
     partnerPlacements: [
       { entityId: 'partner-logo-wisdomland', order: 1 },
