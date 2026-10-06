@@ -1,5 +1,25 @@
 import { describe, expect, it } from 'vitest';
-import { paginationItems } from './pagination';
+import { clampPage, paginationItems } from './paginationItems';
+
+describe('clampPage', () => {
+  it('clamps values below 1 to 1', () => {
+    expect(clampPage(0, 5)).toBe(1);
+    expect(clampPage(-5, 5)).toBe(1);
+  });
+
+  it('clamps values above total to total', () => {
+    expect(clampPage(6, 5)).toBe(5);
+    expect(clampPage(100, 5)).toBe(5);
+  });
+
+  it('preserves valid in-range integer values', () => {
+    expect(clampPage(3, 5)).toBe(3);
+  });
+
+  it('floors fractional page inputs', () => {
+    expect(clampPage(2.7, 5)).toBe(2);
+  });
+});
 
 describe('paginationItems', () => {
   it('handles page 1 of 5 (1 2 3 … 5)', () => {

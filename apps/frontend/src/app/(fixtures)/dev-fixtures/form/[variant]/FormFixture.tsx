@@ -1,46 +1,23 @@
 'use client';
 
-import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/ui/FormField';
 import { FormResponse, ScreenReaderResponse, formStatusClass } from '@/components/ui/FormResponse';
-import { createMockTransport } from '@/lib/forms/mock-transport';
 import {
   consultSchema,
   zodResolver,
   type ConsultFormValues,
 } from '@/lib/forms/schemas';
 import { useSubmitStatus } from '@/lib/forms/useSubmitStatus';
+import { useGatedMockAdapter } from '@/app/(fixtures)/dev-fixtures/gatedMockAdapter';
 import { FIXTURE_FORM_LABELS, type FormVariant } from './constants';
-
-function createDeferred<T = void>() {
-  let resolve!: (value: T | PromiseLike<T>) => void;
-  let reject!: (reason?: unknown) => void;
-  const promise = new Promise<T>((res, rej) => {
-    resolve = res;
-    reject = rej;
-  });
-  return { promise, resolve, reject };
-}
 
 export interface FormFixtureProps {
   variant: FormVariant;
 }
 
 export function FormFixture({ variant }: FormFixtureProps) {
-  const [deferred, setDeferred] = useState(() => createDeferred());
-
-  const handleRelease = () => {
-    deferred.resolve();
-    setDeferred(createDeferred());
-  };
-
-  const adapter = useMemo(() => {
-    return createMockTransport<ConsultFormValues>({
-      scenario: variant,
-      gate: deferred.promise,
-    });
-  }, [variant, deferred]);
+  const { adapter, release } = useGatedMockAdapter<ConsultFormValues>(variant);
 
   const { status, isSubmitting, submit, reset } = useSubmitStatus(adapter);
 
@@ -119,7 +96,7 @@ export function FormFixture({ variant }: FormFixtureProps) {
       <button
         type="button"
         data-testid="fixture-release"
-        onClick={handleRelease}
+        onClick={release}
       >
         {FIXTURE_FORM_LABELS.releaseButton}
       </button>

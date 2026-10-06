@@ -17,6 +17,4 @@ export const FIXTURE_PAGINATION_LABELS_EN = {
   next: 'Next',
 };
 
-export const FIXTURE_FAQ_LABELS = {
-  toggle: 'Chuyển đổi',
-};
+export { FIXTURE_FAQ_LABELS } from '@/app/(fixtures)/dev-fixtures/faq/[variant]/constants';

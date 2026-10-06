@@ -1,20 +1,4 @@
-import type { Page } from '@playwright/test';
-import { expect, test } from './fixtures';
-
-async function expectNoDuplicateIds(page: Page) {
-  const ids = await page.evaluate(() => {
-    const els = Array.from(document.querySelectorAll('[id]'));
-    return els.map((el) => el.id).filter(Boolean);
-  });
-  const unique = new Set(ids);
-  expect(
-    ids.length,
-    `Duplicate ids found: ${ids.filter((id, i) => ids.indexOf(id) !== i).join(', ')}`,
-  ).toBe(unique.size);
-}
-
-const getBodyOverflow = (page: Page) =>
-  page.evaluate(() => window.getComputedStyle(document.body).overflow);
+import { expect, expectNoDuplicateIds, getBodyOverflow, test } from './fixtures';
 
 test.describe('Overlay primitive and shell coordinator contract checks', () => {
   test.beforeEach(async ({ page }) => {
@@ -371,5 +355,30 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
   test('Matrix 11: Guard off / unknown variant — returns 404', async ({ page }) => {
     const response = await page.goto('/dev-fixtures/overlay/unknown-variant');
     expect(response?.status()).toBe(404);
+  });
+
+  test.fixme('Probe C4: Tall lightbox content scrolls with mouse wheel (deferred C4)', async ({
+    page,
+  }) => {
+    // .mfp-wrap sits outside Radix RemoveScroll's content shard (Dialog.tsx:65-67),
+    // so wheel events are cancelled by RemoveScroll and scrollTop remains 0.
+    // Owner: epic-collections.
+    await page.goto('/dev-fixtures/overlay/single');
+    await page.locator('[data-testid="single-trigger"]').click();
+    const dialog = page.locator('#single-dialog');
+    await expect(dialog).toBeVisible();
+
+    await page.evaluate(() => {
+      const content = document.querySelector('[data-testid="single-dialog-content"]') as HTMLElement;
+      content.style.height = '3000px';
+    });
+
+    const wrap = page.locator('.mfp-wrap');
+    await page.mouse.move(500, 300);
+    await page.mouse.wheel(0, 500);
+    await page.waitForTimeout(100);
+
+    const newScrollTop = await wrap.evaluate((el) => el.scrollTop);
+    expect(newScrollTop).toBeGreaterThan(0);
   });
 });

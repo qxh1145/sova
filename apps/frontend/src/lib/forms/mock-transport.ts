@@ -9,7 +9,7 @@ export interface CreateMockTransportOptions {
 }
 
 export const createMockTransport = <T = unknown>(
-  options: CreateMockTransportOptions = { scenario: 'success' },
+  options: CreateMockTransportOptions = {},
 ): SubmitAdapter<T> => {
   const scenario = options.scenario ?? 'success';
   return async (): Promise<SubmitResult> => {

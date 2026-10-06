@@ -1,4 +1,4 @@
-import { expect, test } from './fixtures';
+import { expect, installRafCounter, test } from './fixtures';
 
 test.describe('Custom cursor island', () => {
   test('Fine pointer: renders one cursor island, hides native cursor', async ({ page }) => {
@@ -156,15 +156,7 @@ test.describe('Custom cursor island', () => {
   test('Reduced motion fallback: native cursor auto, cursor hidden, no RAF loop', async ({
     page,
   }) => {
-    await page.addInitScript(() => {
-      let count = 0;
-      const nativeRaf = window.requestAnimationFrame.bind(window);
-      window.requestAnimationFrame = (cb) => {
-        count++;
-        return nativeRaf(cb);
-      };
-      (window as unknown as { __getRafCount: () => number }).__getRafCount = () => count;
-    });
+    await installRafCounter(page);
 
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');
@@ -181,27 +173,16 @@ test.describe('Custom cursor island', () => {
   });
 
   test('Navigation persistence: one cursor node and single RAF loop', async ({ page }) => {
-    await page.addInitScript(() => {
-      let rafCalls = 0;
-      const nativeRaf = window.requestAnimationFrame.bind(window);
-      window.requestAnimationFrame = (cb) => {
-        rafCalls++;
-        return nativeRaf(cb);
-      };
-      (window as unknown as { __getRafCalls: () => number }).__getRafCalls = () => rafCalls;
-      (window as unknown as { __resetRafCalls: () => void }).__resetRafCalls = () => {
-        rafCalls = 0;
-      };
-    });
+    await installRafCounter(page);
 
     await page.goto('/');
     await expect(page.locator('.custom-cursor')).toHaveCount(1);
 
     // Measure initial RAF loop rate
-    await page.evaluate(() => (window as unknown as { __resetRafCalls: () => void }).__resetRafCalls());
+    await page.evaluate(() => (window as unknown as { __resetRafCount: () => void }).__resetRafCount());
     await page.waitForTimeout(200);
     const initialRate = await page.evaluate(() =>
-      (window as unknown as { __getRafCalls: () => number }).__getRafCalls(),
+      (window as unknown as { __getRafCount: () => number }).__getRafCount(),
     );
     expect(initialRate).toBeGreaterThan(0);
 
@@ -214,10 +195,10 @@ test.describe('Custom cursor island', () => {
     await expect(page.locator('.custom-cursor')).toHaveCount(1);
 
     // Measure RAF rate after navigation
-    await page.evaluate(() => (window as unknown as { __resetRafCalls: () => void }).__resetRafCalls());
+    await page.evaluate(() => (window as unknown as { __resetRafCount: () => void }).__resetRafCount());
     await page.waitForTimeout(200);
     const postRate = await page.evaluate(() =>
-      (window as unknown as { __getRafCalls: () => number }).__getRafCalls(),
+      (window as unknown as { __getRafCount: () => number }).__getRafCount(),
     );
 
     // Single RAF loop persists without spawning an extra loop
@@ -230,15 +211,7 @@ test.describe('Coarse pointer fallback', () => {
   test.use({ hasTouch: true, isMobile: true });
 
   test('Coarse pointer: native cursor auto, cursor hidden, no RAF loop', async ({ page }) => {
-    await page.addInitScript(() => {
-      let count = 0;
-      const nativeRaf = window.requestAnimationFrame.bind(window);
-      window.requestAnimationFrame = (cb) => {
-        count++;
-        return nativeRaf(cb);
-      };
-      (window as unknown as { __getRafCount: () => number }).__getRafCount = () => count;
-    });
+    await installRafCounter(page);
 
     await page.goto('/');
 

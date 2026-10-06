@@ -1,7 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
 import type { ShellContent, SiteSettings } from '@/types/content';
-import { MobileBarMenuTrigger } from './MobileBarMenuTrigger';
+import { CONTACT_ICON_SRC } from './floatingContacts';
+import { MobileMenuTrigger } from './MobileMenu';
 
 export interface MobileContactBarProps {
   labels: ShellContent['contactBar'];
@@ -15,12 +16,12 @@ export function MobileContactBar({ labels, settings, contactHref }: MobileContac
   return (
     <section id="azt-contact-footer-outer">
       <div id="azt-contact-footer">
-        <MobileBarMenuTrigger label={labels.menu}>
+        <MobileMenuTrigger label={labels.menu}>
           <span>
             <img src="/wp-content/uploads/2025/04/menu-bar-1.png" alt={labels.menu} />
             <span className="azt-contact-footer-btn-label">{labels.menu}</span>
           </span>
-        </MobileBarMenuTrigger>
+        </MobileMenuTrigger>
 
         <Link href={contactHref}>
           <span>
@@ -33,7 +34,7 @@ export function MobileContactBar({ labels, settings, contactHref }: MobileContac
           <a id="azt-contact-footer-btn-center" href={primaryPhone.href}>
             <span className="azt-contact-footer-btn-center-icon">
               <span className="phone-vr-circle-fill" />
-              <img src="/wp-content/uploads/2025/04/call-111.png" alt={labels.call} />
+              <img src={CONTACT_ICON_SRC.call} alt={labels.call} />
             </span>
             <span>
               <span className="azt-contact-footer-btn-label">
@@ -46,7 +47,7 @@ export function MobileContactBar({ labels, settings, contactHref }: MobileContac
         {settings.messengerHref && (
           <a href={settings.messengerHref} target="_blank" rel="noopener noreferrer">
             <span>
-              <img src="/wp-content/uploads/2025/04/messenger-111.png" alt={labels.messenger} />
+              <img src={CONTACT_ICON_SRC.messenger} alt={labels.messenger} />
               <span className="azt-contact-footer-btn-label">{labels.messenger}</span>
             </span>
           </a>
@@ -56,7 +57,7 @@ export function MobileContactBar({ labels, settings, contactHref }: MobileContac
           <a href={settings.zaloHref} target="_blank" rel="noopener noreferrer">
             <span>
               <img
-                src="/wp-content/uploads/2025/04/zalo-111.png"
+                src={CONTACT_ICON_SRC.zalo}
                 alt={labels.zalo}
                 className="zalo-icon"
               />

@@ -1,20 +1,4 @@
-import type { Page } from '@playwright/test';
-import { expect, test } from './fixtures';
-
-async function expectNoDuplicateIds(page: Page) {
-  const ids = await page.evaluate(() => {
-    const els = Array.from(document.querySelectorAll('[id]'));
-    return els.map((el) => el.id).filter(Boolean);
-  });
-  const unique = new Set(ids);
-  expect(
-    ids.length,
-    `Duplicate ids found: ${ids.filter((id, i) => ids.indexOf(id) !== i).join(', ')}`,
-  ).toBe(unique.size);
-}
-
-const getBodyOverflow = (page: Page) =>
-  page.evaluate(() => window.getComputedStyle(document.body).overflow);
+import { expect, expectNoDuplicateIds, getBodyOverflow, test } from './fixtures';
 
 test.describe('Mobile menu drawer and accordion navigation', () => {
   test.beforeEach(async ({ page }) => {
@@ -49,6 +33,7 @@ test.describe('Mobile menu drawer and accordion navigation', () => {
     const trigger = page.locator('.flex-col.show-for-medium a[aria-controls="main-menu"]');
     await expect(trigger).toBeVisible();
     await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    await expect(trigger).toHaveAttribute('aria-haspopup', 'dialog');
 
     await trigger.focus();
     await page.keyboard.press('Enter');
@@ -79,6 +64,7 @@ test.describe('Mobile menu drawer and accordion navigation', () => {
     const trigger = page.locator('.flex-col.hide-for-medium a[aria-controls="main-menu"]');
     await expect(trigger).toBeVisible();
     await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    await expect(trigger).toHaveAttribute('aria-haspopup', 'dialog');
 
     await trigger.focus();
     await page.keyboard.press('Enter');
