@@ -75,6 +75,39 @@ describe('LatestPosts component', () => {
       '/bai-viet-2',
       '/bai-viet-3',
     ]);
+
+    const gridImgs = root.querySelectorAll('#text-386464690 img.wp-post-image');
+    expect(gridImgs).toHaveLength(1);
+    const img = gridImgs[0];
+    expect(img.getAttribute('src')).toBe(mockAssets[0].src);
+    expect(img.getAttribute('width')).toBe('960');
+    expect(img.getAttribute('height')).toBe('540');
+    expect(img.getAttribute('alt')).toBe('');
+    expect(img.getAttribute('loading')).toBe('lazy');
+    expect(img.getAttribute('decoding')).toBe('async');
+    expect(img.classList.contains('attachment-post-thumbnail')).toBe(true);
+    expect(img.classList.contains('size-post-thumbnail')).toBe(true);
+    expect(root.querySelectorAll('#text-1494522260 img.wp-post-image')).toHaveLength(1);
+  });
+
+  it('renders heading column: eyebrow, title lines, divider and view-all link', () => {
+    const posts: Post[] = [createPost('post-1', '/bai-viet-1/', 'Bài viết 1')];
+    const root = parse(
+      renderToStaticMarkup(
+        <LatestPosts
+          posts={posts}
+          copy={{ ...mockCopy, titleLines: ['Theo dõi', 'tin tức mới nhất'] }}
+        />,
+      ),
+    );
+
+    expect(root.querySelector('#text-2718069597 h4 strong')?.text).toBe('GÓC NHÌN');
+    const h2 = root.querySelector('#text-2917652779 h2');
+    expect(h2?.innerHTML).toBe('Theo dõi<br>tin tức mới nhất');
+    expect(root.querySelector('#col-1323995894 .is-divider.divider')).not.toBeNull();
+    const link = root.querySelector('#text-578526168 a.but-lh');
+    expect(link?.getAttribute('href')?.replace(/\/$/, '')).toBe('/goc-nhin');
+    expect(link?.text).toBe('Khám phá thêm →');
   });
 
   it('dedupes posts by path, keeping the first occurrence and preserving order', () => {
