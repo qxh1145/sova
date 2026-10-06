@@ -1,5 +1,6 @@
 import { getRepository } from '@/lib/repositories';
-import type { PageResult, Project } from '@/types/content';
+import type { ContentRepository } from '@/lib/repositories/contracts';
+import type { PageResult, Project, ProjectCategory } from '@/types/content';
 
 export function getProject(slug: string): Promise<Project | null> {
   return getRepository().getProject(slug);
@@ -12,3 +13,10 @@ export function listProjects(input: {
 }): Promise<PageResult<Project>> {
   return getRepository().listProjects(input);
 }
+
+export function getProjectCategories(
+  repository: ContentRepository = getRepository(),
+): Promise<ProjectCategory[]> {
+  return repository.getProjectCategories();
+}
+

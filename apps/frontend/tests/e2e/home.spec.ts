@@ -250,4 +250,235 @@ test.describe('Home query, hero and stats', () => {
     );
     errors.splice(0, errors.length, ...unexpected);
   });
+
+  test('Six featured project cards render in placement order on VI, and none on EN', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    const section = page.locator('.horizontal-scroll-section');
+    await expect(section).toBeVisible();
+
+    const items = section.locator('.scroll-item');
+    await expect(items).toHaveCount(6);
+
+    const expectedProjects = [
+      {
+        path: '/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/',
+        title: 'Công ty Cổ phần Phát triển Công nghệ THP',
+        category: 'Branding',
+        image: 'blight-02',
+      },
+      {
+        path: '/featured_item/flexius-cong-ty-co-phan-the-gioi-bang/',
+        title: 'FLEXIUS – Công ty Cổ phần Thế Giới Bảng',
+        category: 'Website',
+        image: 'Flexius-01',
+      },
+      {
+        path: '/featured_item/sencom-home-decor-lighting-design/',
+        title: 'SENCOM – Home decor – Lighting – Design',
+        category: 'Website',
+        image: 'sencom-01',
+      },
+      {
+        path: '/featured_item/so-y-te-benh-vien-mat-ha-giang/',
+        title: 'Sở Y Tế Bệnh Viện Mắt Hà Giang',
+        category: 'Website',
+        image: 'benh-vien-mat-ha-giang-01-scaled-1',
+      },
+      {
+        path: '/featured_item/cong-ty-tnhh-konnertec-viet-nam/',
+        title: 'Công ty TNHH Konnertec Việt Nam',
+        category: 'Website',
+        image: 'konnertec-01',
+      },
+      {
+        path: '/featured_item/cong-ty-co-phan-square-orange/',
+        title: 'CÔNG TY CỔ PHẦN SQUARE ORANGE',
+        category: 'Website',
+        image: 'squareorange-01-min',
+      },
+    ];
+
+    for (const [idx, expected] of expectedProjects.entries()) {
+      const item = items.nth(idx);
+      const link = item.locator('a.item-link');
+      await expect(link).toHaveAttribute('href', expected.path);
+      await expect(item.locator('.item-title')).toHaveText(expected.title);
+      await expect(item.locator('.item-categories .item-term')).toHaveText(expected.category);
+      const content = item.locator('.item-content');
+      const bgStyle = await content.evaluate((el) => el.style.backgroundImage);
+      expect(bgStyle).toContain(expected.image);
+    }
+
+    // On EN home, no .horizontal-scroll-section
+    await page.goto('/en/home/');
+    await expect(page.locator('.horizontal-scroll-section')).toHaveCount(0);
+  });
+
+  for (const width of [1440, 390]) {
+    test(`Horizontal projects pin and scrub at width ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/');
+
+      const section = page.locator('.horizontal-scroll-section');
+      await expect(section).toBeVisible();
+
+      const { startY, distance } = await page.evaluate(() => {
+        const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
+        const pinSpacer = document.querySelector('.pin-spacer') as HTMLElement;
+        const sec = document.querySelector('.horizontal-scroll-section') as HTMLElement;
+        const trigger = pinSpacer ?? sec;
+        const rect = trigger.getBoundingClientRect();
+        return {
+          startY: window.scrollY + rect.top,
+          distance: wrapper.scrollWidth - window.innerWidth,
+        };
+      });
+
+      // Scroll to 50% of distance
+      await page.evaluate((y) => window.scrollTo(0, y), startY + 0.5 * distance);
+      await page.waitForTimeout(300);
+
+      const halfData = await page.evaluate(() => {
+        const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
+        const pinSpacer = document.querySelector('.pin-spacer') as HTMLElement;
+        const transform = window.getComputedStyle(wrapper).transform;
+        const matrix = transform && transform !== 'none' ? new DOMMatrixReadOnly(transform) : null;
+        return {
+          hasPinSpacer: Boolean(pinSpacer),
+          translateX: matrix ? matrix.m41 : 0,
+        };
+      });
+
+      expect(halfData.hasPinSpacer).toBe(true);
+      expect(Math.abs(halfData.translateX - (-0.5 * distance))).toBeLessThanOrEqual(25);
+
+      // Scroll to end of distance
+      await page.evaluate((y) => window.scrollTo(0, y), startY + distance);
+      await page.waitForTimeout(300);
+
+      const endData = await page.evaluate(() => {
+        const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
+        const transform = window.getComputedStyle(wrapper).transform;
+        const matrix = transform && transform !== 'none' ? new DOMMatrixReadOnly(transform) : null;
+        return {
+          translateX: matrix ? matrix.m41 : 0,
+        };
+      });
+
+      expect(Math.abs(endData.translateX - (-distance))).toBeLessThanOrEqual(25);
+    });
+  }
+
+  test('Client navigation away from / removes .pin-spacer and cleans up ScrollTrigger', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    const section = page.locator('.horizontal-scroll-section');
+    await expect(section).toBeVisible();
+
+    // Verify ScrollTrigger exists if test hook is available
+    const initialTriggers = await page.evaluate(() => {
+      const st = (window as unknown as { ScrollTrigger?: { getAll: () => unknown[] } })
+        .ScrollTrigger;
+      return st ? st.getAll().length : null;
+    });
+    if (initialTriggers !== null) {
+      expect(initialTriggers).toBeGreaterThan(0);
+    }
+
+    // Client navigate away using the language switcher link (/en/home/)
+    await page.locator('#header a[href="/en/home/"]').click();
+    await page.waitForURL('**/en/home/**');
+
+    // Verify no pin-spacer remains
+    await expect(page.locator('.pin-spacer')).toHaveCount(0);
+
+    // Verify ScrollTrigger.getAll().length === 0
+    const liveTriggers = await page.evaluate(() => {
+      const st = (window as unknown as { ScrollTrigger?: { getAll: () => unknown[] } })
+        .ScrollTrigger;
+      return st ? st.getAll().length : 0;
+    });
+    expect(liveTriggers).toBe(0);
+  });
+
+  test('Under reduced motion, pin and translation still occur and hover leaves scale at 1', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
+
+    const section = page.locator('.horizontal-scroll-section');
+    await expect(section).toBeVisible();
+
+    const { startY, distance } = await page.evaluate(() => {
+      const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
+      const pinSpacer = document.querySelector('.pin-spacer') as HTMLElement;
+      const sec = document.querySelector('.horizontal-scroll-section') as HTMLElement;
+      const trigger = pinSpacer ?? sec;
+      const rect = trigger.getBoundingClientRect();
+      return {
+        startY: window.scrollY + rect.top,
+        distance: wrapper.scrollWidth - window.innerWidth,
+      };
+    });
+
+    // Hover over first card while at start (inside viewport)
+    await page.evaluate((y) => window.scrollTo(0, y), startY);
+    await page.waitForTimeout(300);
+    const firstCard = page.locator('.scroll-item').first();
+    await firstCard.hover();
+    await page.waitForTimeout(350);
+
+    const scale = await firstCard.evaluate((el) => {
+      const style = window.getComputedStyle(el);
+      const transform = style.transform;
+      if (!transform || transform === 'none') return 1;
+      const matrix = new DOMMatrixReadOnly(transform);
+      return matrix.a; // matrix.a is scaleX
+    });
+
+    expect(scale).toBe(1);
+
+    // Scroll to 50%
+    await page.evaluate((y) => window.scrollTo(0, y), startY + 0.5 * distance);
+    await page.waitForTimeout(300);
+
+    const halfData = await page.evaluate(() => {
+      const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
+      const pinSpacer = document.querySelector('.pin-spacer') as HTMLElement;
+      const transform = window.getComputedStyle(wrapper).transform;
+      const matrix = transform && transform !== 'none' ? new DOMMatrixReadOnly(transform) : null;
+      return {
+        hasPinSpacer: Boolean(pinSpacer),
+        translateX: matrix ? matrix.m41 : 0,
+      };
+    });
+
+    expect(halfData.hasPinSpacer).toBe(true);
+    expect(Math.abs(halfData.translateX - (-0.5 * distance))).toBeLessThanOrEqual(25);
+  });
+
+  test('Hover over card scales up to 1.05 under normal motion', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/');
+
+    const firstCard = page.locator('.scroll-item').first();
+    await firstCard.scrollIntoViewIfNeeded();
+    await firstCard.hover();
+    await page.waitForTimeout(400);
+
+    const scale = await firstCard.evaluate((el) => {
+      const style = window.getComputedStyle(el);
+      const transform = style.transform;
+      if (!transform || transform === 'none') return 1;
+      const matrix = new DOMMatrixReadOnly(transform);
+      return Math.round(matrix.a * 100) / 100;
+    });
+
+    expect(scale).toBe(1.05);
+  });
 });
+
