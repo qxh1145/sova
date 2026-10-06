@@ -10,7 +10,7 @@ import type { Locale } from '@/types/content';
 
 export const dynamic = 'force-dynamic';
 
-const VALID_VARIANTS = new Set(['empty', 'error']);
+const VALID_VARIANTS = new Set(['empty', 'error', 'missing-media']);
 
 export default async function DevFixtureHomePage({
   params,
@@ -36,14 +36,14 @@ export default async function DevFixtureHomePage({
     await getHomePage(locale, createScenarioRepository('error'));
   }
 
-  const emptyRepo = createScenarioRepository('empty');
+  const repo = createScenarioRepository(variant === 'missing-media' ? 'missing-media' : 'empty');
   const [shell, content] = await Promise.all([
-    getShellProps(locale, emptyRepo),
-    getHomePage(locale, emptyRepo),
+    getShellProps(locale, repo),
+    getHomePage(locale, repo),
   ]);
 
   const [videoAsset] = content?.hero.videoId
-    ? await getAssets([content.hero.videoId], emptyRepo)
+    ? await getAssets([content.hero.videoId], repo)
     : [];
   const galleryAssetIds = (content?.projects ?? [])
     .map((p) => p.galleryIds[0])
@@ -52,12 +52,17 @@ export default async function DevFixtureHomePage({
   const testimonialAvatarIds = (content?.testimonials ?? [])
     .map((t) => t.avatarId)
     .filter((id): id is string => Boolean(id));
-  const [projectAssets, categories, partnerAssets, testimonialAssets] = await Promise.all([
-    galleryAssetIds.length ? getAssets(galleryAssetIds, emptyRepo) : Promise.resolve([]),
-    getProjectCategories(emptyRepo),
-    partnerLogoIds.length ? getAssets(partnerLogoIds, emptyRepo) : Promise.resolve([]),
-    testimonialAvatarIds.length ? getAssets(testimonialAvatarIds, emptyRepo) : Promise.resolve([]),
-  ]);
+  const postThumbnailIds = (content?.posts ?? [])
+    .map((p) => p.thumbnailId)
+    .filter((id): id is string => Boolean(id));
+  const [projectAssets, categories, partnerAssets, testimonialAssets, postAssets] =
+    await Promise.all([
+      galleryAssetIds.length ? getAssets(galleryAssetIds, repo) : Promise.resolve([]),
+      getProjectCategories(repo),
+      partnerLogoIds.length ? getAssets(partnerLogoIds, repo) : Promise.resolve([]),
+      testimonialAvatarIds.length ? getAssets(testimonialAvatarIds, repo) : Promise.resolve([]),
+      postThumbnailIds.length ? getAssets(postThumbnailIds, repo) : Promise.resolve([]),
+    ]);
 
   return (
     <SiteShell {...shell}>
@@ -69,6 +74,7 @@ export default async function DevFixtureHomePage({
         projectCategories={categories}
         partnerAssets={partnerAssets}
         testimonialAssets={testimonialAssets}
+        postAssets={postAssets}
       />
     </SiteShell>
   );
