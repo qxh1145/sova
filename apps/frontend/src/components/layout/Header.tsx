@@ -1,8 +1,18 @@
 import Link from 'next/link';
-import type { AssetRef, Locale, Navigation, NavigationItem, RouteEntry, ShellContent, SiteSettings } from '@/types/content';
-import { pathForRouteId } from '@/lib/routes';
+import type {
+  AssetRef,
+  Locale,
+  Navigation,
+  NavigationItem,
+  RouteEntry,
+  ShellContent,
+  SiteSettings,
+} from '@/types/content';
+import { homeHref as homeHrefFor, resolveDestination } from '@/lib/routes';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { LogoLink } from './LogoLink';
+import { HeaderMotion } from './HeaderMotion';
+import { MobileMenuTrigger } from './MobileMenu';
 
 export interface HeaderProps {
   locale: Locale;
@@ -18,34 +28,13 @@ export interface HeaderProps {
   logoAsset?: AssetRef | null;
 }
 
-export function resolveDestination(
-  destination: NavigationItem['destination'],
-  routes: RouteEntry[],
-): string | undefined {
-  if (!destination) return undefined;
-  if (destination.kind === 'internal') {
-    return pathForRouteId(routes, destination.routeId) ?? '#';
-  }
-  if (destination.kind === 'external') {
-    return destination.href;
-  }
-  return destination.hash;
-}
-
 function renderSubItem(child: NavigationItem, routes: RouteEntry[]) {
   const childHref = resolveDestination(child.destination, routes);
 
   if (child.children && child.children.length > 0) {
     return (
-      <li
-        key={child.id}
-        className="menu-item menu-item-has-children nav-dropdown-col"
-      >
-        {childHref ? (
-          <Link href={childHref}>{child.label}</Link>
-        ) : (
-          <span>{child.label}</span>
-        )}
+      <li key={child.id} className="menu-item menu-item-has-children nav-dropdown-col">
+        {childHref ? <Link href={childHref}>{child.label}</Link> : <span>{child.label}</span>}
         <ul className="sub-menu nav-column nav-dropdown-simple dark">
           {child.children.map((grandchild) => {
             const grandHref = resolveDestination(grandchild.destination, routes) ?? '#';
@@ -110,14 +99,16 @@ export function Header({
   counterparts,
   logoAsset,
 }: HeaderProps) {
-  const homeRouteId = locale === 'en' ? 'route-en--home' : 'route-root';
-  const homeHref = pathForRouteId(routes, homeRouteId) ?? (locale === 'en' ? '/en/home/' : '/');
+  const homeHref = homeHrefFor(routes, locale);
 
   return (
-    <header id="header" className="header transparent has-transparent has-sticky sticky-jump">
+    <HeaderMotion>
       <div className="header-wrapper">
         <div id="masthead" className="header-main nav-dark">
-          <div className="header-inner flex-row container logo-left medium-logo-left" role="navigation">
+          <div
+            className="header-inner flex-row container logo-left medium-logo-left"
+            role="navigation"
+          >
             {/* Logo */}
             <div id="logo" className="flex-col logo">
               <LogoLink
@@ -174,6 +165,9 @@ export function Header({
                     </Link>
                   </div>
                 </li>
+                <li className="nav-icon has-icon">
+                  <MobileMenuTrigger label={shellContent.mobileMenu.trigger} />
+                </li>
               </ul>
             </div>
 
@@ -202,6 +196,9 @@ export function Header({
                     </Link>
                   </div>
                 </li>
+                <li className="nav-icon has-icon">
+                  <MobileMenuTrigger label={shellContent.mobileMenu.trigger} />
+                </li>
               </ul>
             </div>
           </div>
@@ -216,6 +213,6 @@ export function Header({
           <div className="header-bg-color fill" />
         </div>
       </div>
-    </header>
+    </HeaderMotion>
   );
 }

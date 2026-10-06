@@ -155,6 +155,32 @@ test.describe('Site shell and primitives', () => {
     await expect(page.locator('footer#footer')).toContainText('contact@brand-b.example.com');
     await expect(page.locator('#text-1252042670 a')).toHaveText('Brand B Corp');
 
+    // Mobile contact bar and floating contacts should show Variant B contact hrefs
+    await expect(page.locator('#azt-contact-footer-btn-center')).toHaveAttribute(
+      'href',
+      'tel:0999888777',
+    );
+    await expect(
+      page.locator('#azt-contact-footer a[href="https://example.com/messenger-b"]'),
+    ).toHaveCount(1);
+    await expect(
+      page.locator('#azt-contact-footer a[href="https://example.com/zalo-b"]'),
+    ).toHaveCount(1);
+
+    await expect(page.locator('#msg-item-10')).toHaveAttribute('href', 'tel:0999888777');
+    await expect(page.locator('#msg-item-11')).toHaveAttribute(
+      'href',
+      'https://example.com/messenger-b',
+    );
+    await expect(page.locator('#msg-item-12')).toHaveAttribute(
+      'href',
+      'https://example.com/zalo-b',
+    );
+    await expect(page.locator('#msg-item-13')).toHaveAttribute(
+      'href',
+      'mailto:contact@brand-b.example.com',
+    );
+
     // None of Variant A values should appear
     const bodyText = await page.locator('body').innerText();
     expect(bodyText).not.toContain('Fixture Co');

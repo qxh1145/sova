@@ -14,8 +14,24 @@
 @import './legacy/12-wp-custom.css';
 /* port:css end */
 @import './carousel.css';
+@import './mobile-menu.css';
 
 body {
   cursor: auto;
+}
+
+.custom-cursor {
+  display: none;
+}
+
+/* CustomCursor sets the class only while it runs (fine pointer, no reduced motion). */
+html.has-custom-cursor body {
+  cursor: none;
+}
+
+html.has-custom-cursor .custom-cursor,
+html.has-custom-cursor .cursor-dot,
+html.has-custom-cursor .cursor-ring {
+  display: block;
 }
 
