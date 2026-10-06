@@ -12,6 +12,9 @@ export const hostingServices: Service[] = [
     key: 'hosting',
     summary:
       'Dịch vụ lưu trữ dành cho website PHP/MySQL, tích hợp sẵn bảng điều khiển với tính năng cài đặt tự động hơn 400 mã nguồn phổ biến như WordPress, Joomla, Drupal,… Hệ thống sử dụng 100% ổ cứng SSD Server Enterprise kết hợp công nghệ CloudLinux, đảm bảo tốc độ cao, bảo mật và ổn định cho website.',
+    homeSummary: '',
+    subServices: [],
+    arrowHref: '',
     parentKey: 'storage',
     hero: {
       headingLines: ['Dịch vụ', 'Business Hosting'],
@@ -135,6 +138,9 @@ export const hostingServices: Service[] = [
     key: 'hosting',
     summary:
       'A premium hosting solution for PHP/MySQL-based websites, featuring a built-in control panel with one-click installation for over 400 popular platforms such as WordPress, Joomla, and Drupal. Powered by 100% Enterprise SSD storage and CloudLinux technology, our system delivers high performance, enhanced security, and rock-solid stability for your website.',
+    homeSummary: '',
+    subServices: [],
+    arrowHref: '',
     parentKey: 'storage',
     hero: {
       headingLines: ['Business Hosting', 'Service'],

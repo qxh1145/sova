@@ -69,9 +69,14 @@ export interface HeroContent {
 export type ServiceKey =
   'website' | 'mobile' | 'seo' | 'branding' | 'storage' | 'email' | 'hosting' | 'vps';
 
+export type Asset = AssetRef;
+
 export interface Service extends LocalizedIdentity {
   key: ServiceKey;
   summary: string;
+  homeSummary: string;
+  subServices: { label: string; href: string }[];
+  arrowHref: string;
   parentKey?: ServiceKey;
   hero: HeroContent;
   benefits: Feature[];
@@ -415,15 +420,17 @@ export interface HomePageContent extends LocalizedIdentity {
     SectionCopy
   >;
   marqueeText: string[];
+  marqueeSeparator: Asset;
 }
 
 /** Stored home record: raw ids and placements; queries fill resolved arrays. */
 export type HomePageRecord = Omit<
   HomePageContent,
-  'stats' | 'services' | 'projects' | 'partners' | 'testimonials' | 'posts'
+  'stats' | 'services' | 'projects' | 'partners' | 'testimonials' | 'posts' | 'marqueeSeparator'
 > & {
   statIds: EntityId[];
   serviceIds: EntityId[];
+  marqueeSeparatorId: EntityId;
   projectPlacements: CollectionPlacement[];
   partnerPlacements: CollectionPlacement[];
   testimonialPlacements: CollectionPlacement[];
