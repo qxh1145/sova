@@ -212,6 +212,7 @@ export const fixtures: ContentData = {
       ...page('post-1', '/fixture-post'),
       slug: 'fixture-post',
       categoryIds: ['post-category-1'],
+      thumbnailId: 'asset-1',
       excerpt: 'Fixture',
       body: rich,
       author: { id: 'author-1', name: 'Fixture' },
@@ -298,7 +299,7 @@ export const fixtures: ContentData = {
       projectPlacements: [{ entityId: 'project-1', order: 1 }],
       partnerPlacements: [],
       testimonialPlacements: [],
-      postPlacements: [],
+      postPlacements: [{ entityId: 'post-1', order: 1 }],
     },
   ],
   aboutPages: [

@@ -12,6 +12,7 @@ import {
   TESTIMONIALS_IDS_VI,
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
+import { LatestPosts } from '@/components/blog/LatestPosts';
 
 export interface HomeViewProps {
   content: HomePageContent | null;
@@ -21,6 +22,7 @@ export interface HomeViewProps {
   projectCategories?: ProjectCategory[];
   partnerAssets?: AssetRef[];
   testimonialAssets?: AssetRef[];
+  postAssets?: AssetRef[];
 }
 
 export function HomeView({
@@ -31,6 +33,7 @@ export function HomeView({
   projectCategories,
   partnerAssets,
   testimonialAssets,
+  postAssets,
 }: HomeViewProps) {
   if (!content) {
     return <main id="main" />;
@@ -188,6 +191,11 @@ export function HomeView({
         art={content.testimonialArt}
         ids={isEn ? TESTIMONIALS_IDS_EN : TESTIMONIALS_IDS_VI}
         labels={TESTIMONIALS_LABELS[locale]}
+      />
+      <LatestPosts
+        posts={content.posts}
+        copy={content.sectionCopy.posts}
+        assets={postAssets}
       />
     </main>
   );
