@@ -16,24 +16,17 @@ export function HomeHero({ hero, locale, videoAsset }: HomeHeroProps) {
   const gapId1 = isEn ? 'gap-1761289960' : 'gap-1931009694';
   const gapId2 = isEn ? 'gap-704649320' : 'gap-1261674524';
 
-  const videoSrc = videoAsset?.src ?? '/wp-content/uploads/2025/04/video-banner-2.mp4';
 
   return (
     <div className="banner has-hover has-video" id={bannerId}>
       <div className="banner-inner fill">
         <div className="banner-bg fill">
           <div className="video-overlay no-click fill visible" />
-          <video
-            className="video-bg fill visible"
-            preload="auto"
-            playsInline
-            autoPlay
-            muted
-            loop
-            src={videoSrc}
-          >
-            <source src={videoSrc} type="video/mp4" />
-          </video>
+          {videoAsset && (
+            <video className="video-bg fill visible" preload="auto" playsInline autoPlay muted loop>
+              <source src={videoAsset.src} type="video/mp4" />
+            </video>
+          )}
         </div>
 
         <div className="banner-layers container">

@@ -1,7 +1,8 @@
 'use client';
 
-import { HomeError } from '@/components/home/HomeError';
+import { PageError } from '@/components/layout/PageError';
+import { pageErrors } from '@/data/errors';
 
-export default function ViHomeError({ reset }: { reset: () => void }) {
-  return <HomeError locale="vi" reset={reset} />;
+export default function ViError({ reset }: { reset: () => void }) {
+  return <PageError copy={pageErrors.vi} reset={reset} />;
 }

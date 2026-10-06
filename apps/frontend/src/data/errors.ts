@@ -1,10 +1,6 @@
-export interface ErrorCopy {
-  title: string;
-  description: string;
-  retry: string;
-}
+import type { ErrorCopy, Locale } from '@/types/content';
 
-export const homeErrors: Record<'vi' | 'en', ErrorCopy> = {
+export const pageErrors: Record<Locale, ErrorCopy> = {
   vi: {
     title: 'Đã có lỗi xảy ra',
     description: 'Vui lòng thử lại sau.',

@@ -201,6 +201,8 @@ test('dangling testimonial id throws naming the page and id', async () => {
 });
 
 test('getHomePage accepts optional repository parameter', async () => {
+  // The default repository has no home page, so a resolved page proves the parameter is used.
+  repository = repoWith({ homePages: [] });
   const customRepo = repoWith();
   const page = await getHomePage('vi', customRepo);
   expect(page?.locale).toBe('vi');
