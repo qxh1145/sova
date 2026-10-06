@@ -10,10 +10,32 @@ export const MAPS_EMBED_ALLOWLIST = [
 
 const LOCAL_HOSTS = ['localhost', '127.0.0.1', '[::1]'];
 
-export function isAllowedUrl(url: string): boolean {
-  const { protocol, hostname } = new URL(url);
-  if (protocol !== 'http:' && protocol !== 'https:') return true; // data:, blob:, etc.
-  return LOCAL_HOSTS.includes(hostname) || MAPS_EMBED_ALLOWLIST.includes(hostname);
+export const STAGING = Boolean(process.env.STAGING_URL);
+
+function extractHostname(input?: string | null): string | null {
+  if (!input) return null;
+  try {
+    return new URL(input.includes('://') ? input : `http://${input}`).hostname;
+  } catch {
+    return null;
+  }
+}
+
+const defaultStagingHost = extractHostname(process.env.STAGING_URL);
+
+export function isAllowedUrl(url: string, overrideStagingHost?: string | null): boolean {
+  try {
+    const { protocol, hostname } = new URL(url);
+    if (protocol !== 'http:' && protocol !== 'https:') return true; // data:, blob:, etc.
+    const effectiveStagingHost =
+      overrideStagingHost !== undefined ? extractHostname(overrideStagingHost) : defaultStagingHost;
+    if (effectiveStagingHost && hostname === effectiveStagingHost) {
+      return true;
+    }
+    return LOCAL_HOSTS.includes(hostname) || MAPS_EMBED_ALLOWLIST.includes(hostname);
+  } catch {
+    return false;
+  }
 }
 
 export async function expectNoDuplicateIds(page: Page) {
