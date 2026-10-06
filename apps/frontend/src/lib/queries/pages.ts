@@ -50,6 +50,7 @@ export async function getHomePage(
     statIds,
     serviceIds,
     marqueeSeparatorId,
+    testimonialArtIds,
     projectPlacements,
     partnerPlacements,
     testimonialPlacements,
@@ -57,7 +58,7 @@ export async function getHomePage(
     ...page
   } = record;
   // ponytail: no get-by-ids for projects/posts in the repository; one full page is fine for mock data.
-  const [stats, testimonials, partners, projects, posts, services, [marqueeSeparator]] = await Promise.all([
+  const [stats, testimonials, partners, projects, posts, services, artAssets] = await Promise.all([
     repository.getStats(statIds),
     repository.getTestimonials(idsOf(testimonialPlacements), locale),
     repository.getPartners(idsOf(partnerPlacements)),
@@ -65,7 +66,12 @@ export async function getHomePage(
     postPlacements.length ? repository.listPosts({ locale, ...ALL }) : null,
     // Matched by id over every key, so the check does not depend on the id format.
     Promise.all(SERVICE_KEYS.map((key) => repository.getService(key, locale))),
-    repository.getAssets([marqueeSeparatorId]),
+    repository.getAssets([
+      marqueeSeparatorId,
+      testimonialArtIds.photoId,
+      testimonialArtIds.quoteIconId,
+      testimonialArtIds.lineId,
+    ]),
   ]);
   const servicesList = services.filter((s): s is Service => s !== null);
   assertResolved(record.id, [
@@ -75,11 +81,23 @@ export async function getHomePage(
     ...missingIds(idsOf(testimonialPlacements), testimonials),
     ...missingIds(idsOf(postPlacements), posts?.items),
     ...missingIds(serviceIds, servicesList),
-    ...missingIds([marqueeSeparatorId], marqueeSeparator ? [marqueeSeparator] : []),
+    ...missingIds(
+      [
+        marqueeSeparatorId,
+        testimonialArtIds.photoId,
+        testimonialArtIds.quoteIconId,
+        testimonialArtIds.lineId,
+      ],
+      artAssets,
+    ),
   ]);
 
   const projectItems = projects?.items ?? [];
   const postItems = posts?.items ?? [];
+  const marqueeSeparator = artAssets.find((a) => a.id === marqueeSeparatorId);
+  const photo = artAssets.find((a) => a.id === testimonialArtIds.photoId);
+  const quoteIcon = artAssets.find((a) => a.id === testimonialArtIds.quoteIconId);
+  const line = artAssets.find((a) => a.id === testimonialArtIds.lineId);
 
   return {
     ...page,
@@ -89,7 +107,12 @@ export async function getHomePage(
     partners: idsOf(partnerPlacements).map((id) => partners.find((p) => p.id === id)!),
     testimonials: idsOf(testimonialPlacements).map((id) => testimonials.find((t) => t.id === id)!),
     posts: idsOf(postPlacements).map((id) => postItems.find((p) => p.id === id)!),
-    marqueeSeparator,
+    marqueeSeparator: marqueeSeparator!,
+    testimonialArt: {
+      photo: photo!,
+      quoteIcon: quoteIcon!,
+      line: line!,
+    },
   };
 }
 
