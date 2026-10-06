@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Carousel } from '@/components/ui/Carousel';
+import { TestimonialCard } from '@/components/testimonials/TestimonialCard';
 import { mockRepository } from '@/lib/repositories/mock';
 import { FIXTURE_CAROUSEL_LABELS } from './constants';
 import '@/styles/legacy/sections/route-root.css';
@@ -61,45 +62,13 @@ export default async function FixtureCarouselPage({
             dragThreshold={10}
             labels={FIXTURE_CAROUSEL_LABELS}
           >
-            {items.map((t) => {
-              const avatar = t.avatarId ? assetMap.get(t.avatarId) : undefined;
-              return (
-                <div key={t.id} className="row row-collapse row-full-width" id={`row-${t.id}`}>
-                  <div className="col small-12 large-12">
-                    <div className="col-inner">
-                      <div
-                        className="text nd-kh"
-                        dangerouslySetInnerHTML={{ __html: t.quote.html }}
-                      />
-                      <div className="icon-box featured-box icon-kh icon-box-left text-left">
-                        {avatar && (
-                          <div className="icon-box-img" style={{ width: '106px' }}>
-                            <div className="icon">
-                              <div className="icon-inner">
-                                <img
-                                  src={avatar.src}
-                                  alt={avatar.alt}
-                                  width={avatar.width ?? 400}
-                                  height={avatar.height ?? 400}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                        <div className="icon-box-text last-reset">
-                          <div className="text">
-                            <h3>
-                              <strong>{t.person}</strong>
-                            </h3>
-                            <p style={{ color: '#9e9e9e' }}>{t.role}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            {items.map((t) => (
+              <TestimonialCard
+                key={t.id}
+                testimonial={t}
+                avatar={t.avatarId ? assetMap.get(t.avatarId) : undefined}
+              />
+            ))}
           </Carousel>
         </div>
         {/* Client-side navigation target for the unmount/cleanup e2e check. */}
