@@ -4,6 +4,7 @@ import { HomeView } from '@/components/home/HomeView';
 import { getShellProps } from '@/lib/queries/site';
 import { getHomePage } from '@/lib/queries/pages';
 import { getAssets } from '@/lib/queries/assets';
+import { getProjectCategories } from '@/lib/queries/projects';
 import { createScenarioRepository } from '@/dev/scenarios';
 import type { Locale } from '@/types/content';
 
@@ -44,10 +45,24 @@ export default async function DevFixtureHomePage({
   const [videoAsset] = content?.hero.videoId
     ? await getAssets([content.hero.videoId], emptyRepo)
     : [];
+  const galleryAssetIds = (content?.projects ?? [])
+    .map((p) => p.galleryIds[0])
+    .filter((id): id is string => Boolean(id));
+  const [projectAssets, categories] = await Promise.all([
+    galleryAssetIds.length ? getAssets(galleryAssetIds, emptyRepo) : Promise.resolve([]),
+    getProjectCategories(emptyRepo),
+  ]);
 
   return (
     <SiteShell {...shell}>
-      <HomeView content={content} locale={locale} videoAsset={videoAsset} />
+      <HomeView
+        content={content}
+        locale={locale}
+        videoAsset={videoAsset}
+        projectAssets={projectAssets}
+        projectCategories={categories}
+      />
     </SiteShell>
   );
 }
+

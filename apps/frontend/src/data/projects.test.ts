@@ -106,3 +106,10 @@ test('no Eras word or raw Eras contact value in project, category and terms text
   expect([...text.matchAll(BRAND_LEAK_RE)].map((m) => m[0])).toEqual([]);
   for (const [pattern] of SCRUB_RULES) expect(text.match(pattern)).toBeNull();
 });
+
+test('getProjectCategories returns all project categories', async () => {
+  const repo = createMockRepository({ projectCategories } as unknown as ContentData);
+  const categories = await repo.getProjectCategories();
+  expect(categories).toEqual(projectCategories);
+});
+
