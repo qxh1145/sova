@@ -1,4 +1,4 @@
-import { expect, installRafCounter, test } from './fixtures';
+import { expect, installRafCounter, STAGING, test } from './fixtures';
 
 test.describe('Custom cursor island', () => {
   test('Fine pointer: renders one cursor island, hides native cursor', async ({ page }) => {
@@ -211,9 +211,10 @@ test.describe('Coarse pointer fallback', () => {
   test.use({ hasTouch: true, isMobile: true });
 
   test('Coarse pointer: native cursor auto, cursor hidden, no RAF loop', async ({ page }) => {
+    test.skip(STAGING, 'Dev fixtures are not deployed to staging');
     await installRafCounter(page);
 
-    await page.goto('/');
+    await page.goto('/dev-fixtures/shell/default/');
 
     await expect(page.locator('body')).toHaveCSS('cursor', 'auto');
     await expect(page.locator('.custom-cursor')).toHaveCSS('display', 'none');

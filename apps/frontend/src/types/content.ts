@@ -405,20 +405,37 @@ export interface HomePageContent extends LocalizedIdentity {
   hero: HeroContent;
   seo: SEO;
   stats: Stat[];
+  services: Service[];
+  projects: Project[];
+  partners: Partner[];
+  testimonials: Testimonial[];
+  posts: Post[];
   sectionCopy: Record<
     'achievements' | 'services' | 'projects' | 'partners' | 'testimonials' | 'posts',
     SectionCopy
   >;
-  serviceIds: EntityId[];
   marqueeText: string[];
+}
+
+/** Stored home record: raw ids and placements; queries fill resolved arrays. */
+export type HomePageRecord = Omit<
+  HomePageContent,
+  'stats' | 'services' | 'projects' | 'partners' | 'testimonials' | 'posts'
+> & {
+  statIds: EntityId[];
+  serviceIds: EntityId[];
   projectPlacements: CollectionPlacement[];
   partnerPlacements: CollectionPlacement[];
   testimonialPlacements: CollectionPlacement[];
   postPlacements: CollectionPlacement[];
-}
+};
 
-/** Stored home record: stats are shared records referenced by id; the query fills `stats`. */
-export type HomePageRecord = Omit<HomePageContent, 'stats'> & { statIds: EntityId[] };
+/** Localized copy for a route error state. */
+export interface ErrorCopy {
+  title: string;
+  description: string;
+  retry: string;
+}
 
 export interface AboutPageContent extends LocalizedIdentity {
   hero: HeroContent;
