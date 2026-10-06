@@ -405,6 +405,23 @@ export interface HomePageContent extends LocalizedIdentity {
   hero: HeroContent;
   seo: SEO;
   stats: Stat[];
+  services: Service[];
+  projects: Project[];
+  partners: Partner[];
+  testimonials: Testimonial[];
+  posts: Post[];
+  sectionCopy: Record<
+    'achievements' | 'services' | 'projects' | 'partners' | 'testimonials' | 'posts',
+    SectionCopy
+  >;
+  marqueeText: string[];
+}
+
+/** Stored home record: raw ids and placements; queries fill resolved arrays. */
+export interface HomePageRecord extends LocalizedIdentity {
+  hero: HeroContent;
+  seo: SEO;
+  statIds: EntityId[];
   sectionCopy: Record<
     'achievements' | 'services' | 'projects' | 'partners' | 'testimonials' | 'posts',
     SectionCopy
@@ -416,9 +433,6 @@ export interface HomePageContent extends LocalizedIdentity {
   testimonialPlacements: CollectionPlacement[];
   postPlacements: CollectionPlacement[];
 }
-
-/** Stored home record: stats are shared records referenced by id; the query fills `stats`. */
-export type HomePageRecord = Omit<HomePageContent, 'stats'> & { statIds: EntityId[] };
 
 export interface AboutPageContent extends LocalizedIdentity {
   hero: HeroContent;

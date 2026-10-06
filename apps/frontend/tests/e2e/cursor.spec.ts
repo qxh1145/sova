@@ -213,7 +213,7 @@ test.describe('Coarse pointer fallback', () => {
   test('Coarse pointer: native cursor auto, cursor hidden, no RAF loop', async ({ page }) => {
     await installRafCounter(page);
 
-    await page.goto('/');
+    await page.goto('/dev-fixtures/shell/default/');
 
     await expect(page.locator('body')).toHaveCSS('cursor', 'auto');
     await expect(page.locator('.custom-cursor')).toHaveCSS('display', 'none');
