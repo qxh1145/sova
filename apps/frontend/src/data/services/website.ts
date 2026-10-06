@@ -140,11 +140,24 @@ export const websiteServices: Service[] = [
       benefits: {
         eyebrow: 'Thiết kế Website tại Sova',
         title: 'Phát triển lợi thế doanh nghiệp của bạn trên nền tảng số',
+        titleLines: ['Phát triển lợi thế doanh nghiệp', 'của bạn trên nền tảng số'],
       },
       pricing: { eyebrow: 'Bảng giá dịch vụ', title: 'Thiết kế website' },
-      offerings: { eyebrow: 'Why choose us', title: 'Tại sao nên chọn Sova' },
-      projects: { eyebrow: 'Sova', title: 'Dự án chứa đựng Tâm huyết Sáng tạo' },
-      testimonials: { eyebrow: 'Sova', title: 'Khách hàng nhận xét về chúng tôi' },
+      offerings: {
+        eyebrow: 'Why choose us',
+        title: 'Tại sao nên chọn Sova',
+        titleLines: ['Tại sao nên chọn', 'Sova'],
+      },
+      projects: {
+        eyebrow: 'Sova',
+        title: 'Dự án chứa đựng Tâm huyết Sáng tạo',
+        titleLines: ['Dự án chứa đựng', 'Tâm huyết Sáng tạo'],
+      },
+      testimonials: {
+        eyebrow: 'Sova',
+        title: 'Khách hàng nhận xét về chúng tôi',
+        titleLines: ['Khách hàng nhận xét', 'về chúng tôi'],
+      },
       faq: { title: 'Những câu hỏi thường gặp' },
       contact: {
         eyebrow: '100 MÃ ƯU ĐÃI THÁNG NÀY',
@@ -287,7 +300,11 @@ export const websiteServices: Service[] = [
       },
       pricing: { eyebrow: 'Service Pricing Table', title: 'Website Development' },
       offerings: { eyebrow: 'Why choose us', title: 'Why Choose Sova ?' },
-      projects: { eyebrow: 'Sova', title: 'Some Recent Works We’re Really Proud Of.' },
+      projects: {
+        eyebrow: 'Sova',
+        title: 'Some Recent Works We’re Really Proud Of.',
+        titleLines: ['Some Recent Works', 'We’re Really Proud Of.'],
+      },
       testimonials: { eyebrow: 'Sova', title: 'Customer Reviews' },
       faq: { title: 'Frequently Asked Questions' },
       contact: {

@@ -1,16 +1,18 @@
 import { notFound } from 'next/navigation';
 import { SiteShell } from '@/components/layout/SiteShell';
 import { HomeView } from '@/components/home/HomeView';
+import { FeaturedProjects } from '@/components/projects/FeaturedProjects';
 import { getShellProps } from '@/lib/queries/site';
 import { getHomePage } from '@/lib/queries/pages';
 import { getAssets } from '@/lib/queries/assets';
 import { getProjectCategories } from '@/lib/queries/projects';
 import { createScenarioRepository } from '@/dev/scenarios';
 import type { Locale } from '@/types/content';
+import { UnmountToggle } from './UnmountToggle';
 
 export const dynamic = 'force-dynamic';
 
-const VALID_VARIANTS = new Set(['empty', 'error', 'missing-media']);
+const VALID_VARIANTS = new Set(['empty', 'error', 'missing-media', 'unmount']);
 
 export default async function DevFixtureHomePage({
   params,
@@ -30,6 +32,27 @@ export default async function DevFixtureHomePage({
 
   const { locale: rawLocale } = (await searchParams) ?? {};
   const locale: Locale = rawLocale === 'en' ? 'en' : 'vi';
+
+  // Real VI projects inside a client toggle: e2e unmounts the island without navigating.
+  if (variant === 'unmount') {
+    const home = await getHomePage('vi');
+    if (!home) notFound();
+    const { projects } = home;
+    const [assets, categories] = await Promise.all([
+      getAssets(projects.map((p) => p.galleryIds[0]).filter((id): id is string => Boolean(id))),
+      getProjectCategories(),
+    ]);
+    return (
+      <UnmountToggle>
+        <FeaturedProjects
+          projects={projects}
+          copy={home.sectionCopy.projects}
+          assets={assets}
+          categories={categories}
+        />
+      </UnmountToggle>
+    );
+  }
 
   // The error repository rejects, so getHomePage throws into the sibling error.tsx.
   if (variant === 'error') {
@@ -79,4 +102,3 @@ export default async function DevFixtureHomePage({
     </SiteShell>
   );
 }
-

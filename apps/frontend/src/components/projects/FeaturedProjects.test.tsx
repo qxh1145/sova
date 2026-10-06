@@ -33,14 +33,21 @@ describe('FeaturedProjects and ProjectShowcaseItem edge cases', () => {
     title: 'Featured Projects',
   };
 
+  it('renders titleLines with <br /> between lines like the source h2', () => {
+    const html = renderToStaticMarkup(
+      <FeaturedProjects
+        projects={[mockProject]}
+        copy={{ ...mockCopy, titleLines: ['Dự án chứa đựng', 'Tâm huyết Sáng tạo'] }}
+      />,
+    );
+    expect(html).toContain('Dự án chứa đựng<br/>Tâm huyết Sáng tạo</h2>');
+  });
+
   it('renders card without background image when project has no gallery asset (no throw)', () => {
     let html = '';
     expect(() => {
       html = renderToStaticMarkup(
-        <ProjectShowcaseItem
-          project={mockProject}
-          categoryLabel="Website"
-        />,
+        <ProjectShowcaseItem project={mockProject} categoryLabel="Website" />,
       );
     }).not.toThrow();
 
@@ -68,9 +75,7 @@ describe('FeaturedProjects and ProjectShowcaseItem edge cases', () => {
   });
 
   it('returns null when projects list is empty', () => {
-    const html = renderToStaticMarkup(
-      <FeaturedProjects projects={[]} copy={mockCopy} />,
-    );
+    const html = renderToStaticMarkup(<FeaturedProjects projects={[]} copy={mockCopy} />);
     expect(html).toBe('');
   });
 });
