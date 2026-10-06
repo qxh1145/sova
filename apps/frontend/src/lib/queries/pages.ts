@@ -2,6 +2,7 @@ import { getRepository } from '@/lib/repositories';
 import type { ContentRepository } from '@/lib/repositories/contracts';
 import type {
   AboutPageContent,
+  AssetRef,
   CollectionPlacement,
   CompanyProfileContent,
   ContactPageContent,
@@ -12,6 +13,7 @@ import type {
   ListingSnapshot,
   Locale,
   PaymentGuideContent,
+  ProjectCategory,
   Service,
   ServiceKey,
   UtilityContent,
@@ -113,6 +115,70 @@ export async function getHomePage(
       quoteIcon: quoteIcon!,
       line: line!,
     },
+  };
+}
+
+export interface HomeAssets {
+  videoAsset: AssetRef | null;
+  projectAssets: AssetRef[];
+  projectCategories: ProjectCategory[];
+  partnerAssets: AssetRef[];
+  testimonialAssets: AssetRef[];
+  postAssets: AssetRef[];
+}
+
+/**
+ * Resolves all assets and categories required for the Home view in parallel.
+ */
+export async function getHomeAssets(
+  content: HomePageContent | null,
+  repository: ContentRepository = getRepository(),
+): Promise<HomeAssets> {
+  if (!content) {
+    return {
+      videoAsset: null,
+      projectAssets: [],
+      projectCategories: [],
+      partnerAssets: [],
+      testimonialAssets: [],
+      postAssets: [],
+    };
+  }
+
+  const galleryAssetIds = (content.projects ?? [])
+    .map((p) => p.galleryIds[0])
+    .filter((id): id is string => Boolean(id));
+  const partnerLogoIds = (content.partners ?? []).map((p) => p.logoId);
+  const testimonialAvatarIds = (content.testimonials ?? [])
+    .map((t) => t.avatarId)
+    .filter((id): id is string => Boolean(id));
+  const postThumbnailIds = (content.posts ?? [])
+    .map((p) => p.thumbnailId)
+    .filter((id): id is string => Boolean(id));
+
+  const [
+    videoAssets,
+    projectAssets,
+    categories,
+    partnerAssets,
+    testimonialAssets,
+    postAssets,
+  ] = await Promise.all([
+    content.hero.videoId ? repository.getAssets([content.hero.videoId]) : Promise.resolve([]),
+    galleryAssetIds.length ? repository.getAssets(galleryAssetIds) : Promise.resolve([]),
+    repository.getProjectCategories(),
+    partnerLogoIds.length ? repository.getAssets(partnerLogoIds) : Promise.resolve([]),
+    testimonialAvatarIds.length ? repository.getAssets(testimonialAvatarIds) : Promise.resolve([]),
+    postThumbnailIds.length ? repository.getAssets(postThumbnailIds) : Promise.resolve([]),
+  ]);
+
+  return {
+    videoAsset: videoAssets[0] ?? null,
+    projectAssets,
+    projectCategories: categories,
+    partnerAssets,
+    testimonialAssets,
+    postAssets,
   };
 }
 

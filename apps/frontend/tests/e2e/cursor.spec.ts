@@ -166,6 +166,9 @@ test.describe('Custom cursor island', () => {
     await expect(page.locator('.custom-cursor')).toHaveCSS('display', 'none');
     await expect(page.locator('.custom-cursor')).not.toBeVisible();
 
+    await page.evaluate(() => {
+      (window as unknown as { __resetRafCount: () => void }).__resetRafCount();
+    });
     await page.waitForTimeout(100);
     const rafCalls = await page.evaluate(() =>
       (window as unknown as { __getRafCount: () => number }).__getRafCount(),

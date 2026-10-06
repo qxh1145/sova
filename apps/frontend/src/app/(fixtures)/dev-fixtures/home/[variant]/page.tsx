@@ -3,7 +3,7 @@ import { SiteShell } from '@/components/layout/SiteShell';
 import { HomeView } from '@/components/home/HomeView';
 import { FeaturedProjects } from '@/components/projects/FeaturedProjects';
 import { getShellProps } from '@/lib/queries/site';
-import { getHomePage } from '@/lib/queries/pages';
+import { getHomeAssets, getHomePage } from '@/lib/queries/pages';
 import { getAssets } from '@/lib/queries/assets';
 import { getProjectCategories } from '@/lib/queries/projects';
 import { createScenarioRepository } from '@/dev/scenarios';
@@ -65,39 +65,14 @@ export default async function DevFixtureHomePage({
     getHomePage(locale, repo),
   ]);
 
-  const [videoAsset] = content?.hero.videoId
-    ? await getAssets([content.hero.videoId], repo)
-    : [];
-  const galleryAssetIds = (content?.projects ?? [])
-    .map((p) => p.galleryIds[0])
-    .filter((id): id is string => Boolean(id));
-  const partnerLogoIds = (content?.partners ?? []).map((p) => p.logoId);
-  const testimonialAvatarIds = (content?.testimonials ?? [])
-    .map((t) => t.avatarId)
-    .filter((id): id is string => Boolean(id));
-  const postThumbnailIds = (content?.posts ?? [])
-    .map((p) => p.thumbnailId)
-    .filter((id): id is string => Boolean(id));
-  const [projectAssets, categories, partnerAssets, testimonialAssets, postAssets] =
-    await Promise.all([
-      galleryAssetIds.length ? getAssets(galleryAssetIds, repo) : Promise.resolve([]),
-      getProjectCategories(repo),
-      partnerLogoIds.length ? getAssets(partnerLogoIds, repo) : Promise.resolve([]),
-      testimonialAvatarIds.length ? getAssets(testimonialAvatarIds, repo) : Promise.resolve([]),
-      postThumbnailIds.length ? getAssets(postThumbnailIds, repo) : Promise.resolve([]),
-    ]);
+  const homeAssets = await getHomeAssets(content, repo);
 
   return (
     <SiteShell {...shell}>
       <HomeView
         content={content}
         locale={locale}
-        videoAsset={videoAsset}
-        projectAssets={projectAssets}
-        projectCategories={categories}
-        partnerAssets={partnerAssets}
-        testimonialAssets={testimonialAssets}
-        postAssets={postAssets}
+        {...homeAssets}
       />
     </SiteShell>
   );
