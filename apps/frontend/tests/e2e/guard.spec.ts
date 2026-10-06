@@ -31,3 +31,37 @@ test('guard records the blocked URL', async ({ page, networkGuard }) => {
   expect(networkGuard).toEqual(['https://www.googletagmanager.com/gtm.js']);
   networkGuard.length = 0; // cleared so teardown passes
 });
+
+test('staging allowlist allows exact staging host only', () => {
+  const stagingHost = 'sova-landing-stage.vercel.app';
+  expect(isAllowedUrl('https://sova-landing-stage.vercel.app/', stagingHost)).toBe(true);
+  expect(isAllowedUrl('https://sova-landing-stage.vercel.app/en/home/', stagingHost)).toBe(true);
+  expect(isAllowedUrl('http://sova-landing-stage.vercel.app:8080/path', stagingHost)).toBe(true);
+
+  // local and maps still allowed
+  expect(isAllowedUrl('http://localhost:3100/', stagingHost)).toBe(true);
+  expect(isAllowedUrl('https://maps.googleapis.com/maps/api/js', stagingHost)).toBe(true);
+});
+
+test('staging allowlist blocks lookalike and subdomain attack hosts', () => {
+  const stagingHost = 'sova-landing-stage.vercel.app';
+  expect(isAllowedUrl('https://sova-landing-stage.vercel.app.evil.com/', stagingHost)).toBe(false);
+  expect(isAllowedUrl('https://evil-sova-landing-stage.vercel.app/', stagingHost)).toBe(false);
+  expect(
+    isAllowedUrl('https://sova-landing-stage.vercel.app.attacker.com/bypass', stagingHost),
+  ).toBe(false);
+  expect(isAllowedUrl('https://x-sova-landing-stage.vercel.app/', stagingHost)).toBe(false);
+});
+
+test('staging allowlist keeps third-party and wordpress hosts blocked', () => {
+  const stagingHost = 'sova-landing-stage.vercel.app';
+  for (const url of [
+    'https://erasvietnam.com/',
+    'https://erasvietnam.com/wp-json/wp/v2/pages',
+    'https://www.googletagmanager.com/gtm.js',
+    'https://connect.facebook.net/en_US/fbevents.js',
+    'https://analytics.tiktok.com/i18n/pixel/events.js',
+  ]) {
+    expect(isAllowedUrl(url, stagingHost), url).toBe(false);
+  }
+});

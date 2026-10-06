@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { expect, test } from 'vitest';
@@ -81,4 +81,63 @@ test('by default src/components and src/app are both scanned', () => {
     { env, encoding: 'utf8' },
   );
   expect(stdout).toContain(`check:components: ${count} files clean`);
+});
+
+test('forbidden import of @/data or @/dev fails in component subdirs', () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'check-components-'));
+  const uiDir = path.join(dir, 'ui');
+  mkdirSync(uiDir, { recursive: true });
+  writeFileSync(
+    path.join(uiDir, 'Button.tsx'),
+    `import { routes } from '@/data/routes';\nexport const Button = () => <button>Click</button>; // business-text-ok: test\n`,
+  );
+  const { status, stderr } = spawnSync(
+    process.execPath,
+    ['--disable-warning=MODULE_TYPELESS_PACKAGE_JSON', SCRIPT],
+    {
+      env: { ...process.env, COMPONENTS_DIR: dir },
+      encoding: 'utf8',
+    },
+  );
+  expect(status).toBe(1);
+  expect(stderr).toMatch(/Button\.tsx:1: forbidden import "@\/data\/routes"/);
+});
+
+test('unanchored imports like @/database or @/devices do not trigger false positive', () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'check-components-'));
+  const uiDir = path.join(dir, 'ui');
+  mkdirSync(uiDir, { recursive: true });
+  writeFileSync(
+    path.join(uiDir, 'Card.tsx'),
+    `import { db } from '@/database';\nimport { dev } from '@/devices';\nexport const Card = () => <div />;\n`,
+  );
+  const { status, stderr } = spawnSync(
+    process.execPath,
+    ['--disable-warning=MODULE_TYPELESS_PACKAGE_JSON', SCRIPT],
+    {
+      env: { ...process.env, COMPONENTS_DIR: dir },
+      encoding: 'utf8',
+    },
+  );
+  expect(status).toBe(0);
+});
+
+test('COMPONENTS_DIR pointing directly to a component subdir is scanned for forbidden imports', () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'check-components-'));
+  const formsDir = path.join(dir, 'forms');
+  mkdirSync(formsDir, { recursive: true });
+  writeFileSync(
+    path.join(formsDir, 'MyForm.tsx'),
+    `import { fixtures } from '@/dev/fixtures';\nexport const MyForm = () => <form />;\n`,
+  );
+  const { status, stderr } = spawnSync(
+    process.execPath,
+    ['--disable-warning=MODULE_TYPELESS_PACKAGE_JSON', SCRIPT],
+    {
+      env: { ...process.env, COMPONENTS_DIR: formsDir },
+      encoding: 'utf8',
+    },
+  );
+  expect(status).toBe(1);
+  expect(stderr).toMatch(/MyForm\.tsx:1: forbidden import "@\/dev\/fixtures"/);
 });
