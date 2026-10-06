@@ -2,22 +2,17 @@ import { defineConfig, devices } from '@playwright/test';
 
 const port = 3100;
 const stagingUrl = process.env.STAGING_URL;
-const bypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+
+if (process.env.npm_lifecycle_event === 'test:e2e:staging' && !stagingUrl) {
+  throw new Error('test:e2e:staging requires STAGING_URL');
+}
 
 export default defineConfig({
   testDir: './tests/e2e',
-  preserveOutput: 'always',
   forbidOnly: !!process.env.CI,
   reporter: process.env.CI ? 'github' : 'list',
   use: {
     baseURL: stagingUrl || `http://localhost:${port}`,
-    ...(bypassSecret
-      ? {
-          extraHTTPHeaders: {
-            'x-vercel-protection-bypass': bypassSecret,
-          },
-        }
-      : {}),
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   ...(stagingUrl

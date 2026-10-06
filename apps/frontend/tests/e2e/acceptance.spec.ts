@@ -18,6 +18,15 @@ test.describe('Acceptance: Site shell on real routes', () => {
     page.on('pageerror', (err) => {
       consoleErrors.push(err.message);
     });
+    // The console 404 line carries no URL, so 404s are checked here. Only RSC prefetches of nav
+    // routes that later epics build are expected; a missing asset or page document still fails.
+    // ponytail: blanket _rsc allowance; drop it once every nav route exists (epic-fidelity).
+    page.on('response', (res) => {
+      if (res.status() !== 404) return;
+      const url = new URL(res.url());
+      if (url.pathname.startsWith('/dev-fixtures/') || url.searchParams.has('_rsc')) return;
+      consoleErrors.push(`404 ${res.url()}`);
+    });
     (page as unknown as { __consoleErrors: string[] }).__consoleErrors = consoleErrors;
   });
 
@@ -164,34 +173,36 @@ test.describe('Acceptance: Site shell on real routes', () => {
       await page.goto(route);
 
       const trigger = page.locator('.flex-col.show-for-medium a[aria-controls="main-menu"]');
-      await trigger.click();
       const drawer = page.locator('#main-menu');
-      await expect(drawer).toBeVisible();
-
       const form = drawer.locator('form.wpcf7-form');
       const input = form.locator('input.wpcf7-tel');
       const submitBtn = form.locator('input.wpcf7-submit');
+      const responseOutput = form.locator('.wpcf7-response-output');
 
+      // Each iteration reopens the drawer, so the second submit runs on a fresh form.
       for (let i = 0; i < 2; i++) {
+        await trigger.click();
+        await expect(drawer).toBeVisible();
+        await expect(form).not.toHaveClass(/sent/);
+
         await input.fill('0988606539');
         await submitBtn.click();
 
-        const responseOutput = form.locator('.wpcf7-response-output');
         await expect(responseOutput).toBeVisible();
         await expect(responseOutput).toHaveClass(/sent/);
         await expect(responseOutput).toContainText(demoBadge);
         await expect(form).toHaveClass(/sent/);
         // Input retains value per existing behavior
         await expect(input).toHaveValue('0988606539');
-      }
 
-      await page.keyboard.press('Escape');
-      await expect(drawer).toHaveCount(0);
-      expect(await getBodyOverflow(page)).not.toBe('hidden');
+        await page.keyboard.press('Escape');
+        await expect(drawer).toHaveCount(0);
+        expect(await getBodyOverflow(page)).not.toBe('hidden');
+      }
     }
   });
 
-  test('Client navigation between locales preserves overlay operation and scroll restoration', async ({
+  test('Client navigation between locales preserves overlay operation and restores body overflow', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
@@ -208,7 +219,8 @@ test.describe('Acceptance: Site shell on real routes', () => {
     await expect(enTrigger).toBeVisible();
     const enDrawer = page.locator('#main-menu');
     await expect(async () => {
-      await enTrigger.click();
+      // Re-click only while closed: a slow first open must not be toggled shut.
+      if ((await enTrigger.getAttribute('aria-expanded')) !== 'true') await enTrigger.click();
       await expect(enDrawer).toBeVisible({ timeout: 1000 });
     }).toPass();
 
@@ -224,7 +236,7 @@ test.describe('Acceptance: Site shell on real routes', () => {
     const viLink = page.locator('.header-nav-main .lang-switcher-inline a');
     await expect(viLink).toHaveText('VI');
     await viLink.click();
-    await expect(page).toHaveURL(/\/(?:#.*)?$/);
+    await expect(page).toHaveURL((url) => url.pathname === '/');
     await expect(page.locator('.header-nav-main .lang-switcher-inline a')).toHaveText('EN');
 
     // Desktop menu overlay on VI
@@ -232,7 +244,8 @@ test.describe('Acceptance: Site shell on real routes', () => {
     await expect(viTrigger).toBeVisible();
     const viDrawer = page.locator('#main-menu');
     await expect(async () => {
-      await viTrigger.click();
+      // Re-click only while closed: a slow first open must not be toggled shut.
+      if ((await viTrigger.getAttribute('aria-expanded')) !== 'true') await viTrigger.click();
       await expect(viDrawer).toBeVisible({ timeout: 1000 });
     }).toPass();
     await expect(page.locator('body')).toHaveAttribute('data-scroll-locked');

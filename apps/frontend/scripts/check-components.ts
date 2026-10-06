@@ -2,6 +2,9 @@
 // JSX text with a letter, alt/title/aria-label/placeholder string literals with a letter, and Eras
 // strings or contact values. A line carrying `// business-text-ok: <reason>` is skipped. A missing
 // dir passes. COMPONENTS_DIR (path-delimiter separated) overrides the scanned dirs.
+// Second guard: .ts/.tsx files under ui/, forms/, layout/ and faq/ must not import, re-export,
+// import() or require() business data or dev fixtures (@/data, @/dev, src/data, src/dev, ../data).
+// Prints "<n> files clean, <m> files checked for imports" on success.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
