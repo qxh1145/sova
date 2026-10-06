@@ -352,7 +352,7 @@ test.describe('Home query, hero and stats', () => {
       });
 
       expect(halfData.hasPinSpacer).toBe(true);
-      expect(Math.abs(halfData.translateX - (-0.5 * distance))).toBeLessThanOrEqual(25);
+      expect(Math.abs(halfData.translateX - -0.5 * distance)).toBeLessThanOrEqual(25);
 
       // Scroll to end of distance
       await page.evaluate((y) => window.scrollTo(0, y), startY + distance);
@@ -367,41 +367,36 @@ test.describe('Home query, hero and stats', () => {
         };
       });
 
-      expect(Math.abs(endData.translateX - (-distance))).toBeLessThanOrEqual(25);
+      expect(Math.abs(endData.translateX - -distance)).toBeLessThanOrEqual(25);
     });
   }
 
-  test('Client navigation away from / removes .pin-spacer and cleans up ScrollTrigger', async ({
+  // Every route change from / crosses a root layout (full reload), so unmount is driven in place.
+  test('Unmounting the island removes .pin-spacer and kills its ScrollTrigger', async ({
     page,
   }) => {
-    await page.goto('/');
-    const section = page.locator('.horizontal-scroll-section');
-    await expect(section).toBeVisible();
+    const liveTriggers = () =>
+      page.evaluate(() => {
+        const st = (window as unknown as { ScrollTrigger?: { getAll: () => unknown[] } })
+          .ScrollTrigger;
+        return st ? st.getAll().length : null;
+      });
 
-    // Verify ScrollTrigger exists if test hook is available
-    const initialTriggers = await page.evaluate(() => {
-      const st = (window as unknown as { ScrollTrigger?: { getAll: () => unknown[] } })
-        .ScrollTrigger;
-      return st ? st.getAll().length : null;
-    });
-    if (initialTriggers !== null) {
-      expect(initialTriggers).toBeGreaterThan(0);
-    }
+    await page.goto('/dev-fixtures/home/unmount');
+    await expect(page.locator('.horizontal-scroll-section')).toBeVisible();
+    await expect(page.locator('.pin-spacer')).toHaveCount(1);
+    const initialTriggers = await liveTriggers();
+    expect(
+      initialTriggers,
+      'window.ScrollTrigger missing: build with NEXT_PUBLIC_E2E=1',
+    ).not.toBeNull();
+    expect(initialTriggers).toBeGreaterThan(0);
 
-    // Client navigate away using the language switcher link (/en/home/)
-    await page.locator('#header a[href="/en/home/"]').click();
-    await page.waitForURL('**/en/home/**');
+    await page.locator('#unmount-toggle').click();
 
-    // Verify no pin-spacer remains
+    await expect(page.locator('.horizontal-scroll-section')).toHaveCount(0);
     await expect(page.locator('.pin-spacer')).toHaveCount(0);
-
-    // Verify ScrollTrigger.getAll().length === 0
-    const liveTriggers = await page.evaluate(() => {
-      const st = (window as unknown as { ScrollTrigger?: { getAll: () => unknown[] } })
-        .ScrollTrigger;
-      return st ? st.getAll().length : 0;
-    });
-    expect(liveTriggers).toBe(0);
+    expect(await liveTriggers()).toBe(0);
   });
 
   test('Under reduced motion, pin and translation still occur and hover leaves scale at 1', async ({
@@ -458,7 +453,7 @@ test.describe('Home query, hero and stats', () => {
     });
 
     expect(halfData.hasPinSpacer).toBe(true);
-    expect(Math.abs(halfData.translateX - (-0.5 * distance))).toBeLessThanOrEqual(25);
+    expect(Math.abs(halfData.translateX - -0.5 * distance)).toBeLessThanOrEqual(25);
   });
 
   test('Hover over card scales up to 1.05 under normal motion', async ({ page }) => {
@@ -481,4 +476,3 @@ test.describe('Home query, hero and stats', () => {
     expect(scale).toBe(1.05);
   });
 });
-

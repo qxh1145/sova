@@ -25,16 +25,26 @@ export const homePages: HomePageRecord[] = [
     sectionCopy: {
       achievements: {
         title: 'Thành tựu chúng tôi đạt được',
+        titleLines: ['Thành tựu', 'chúng tôi đạt được'],
         description:
           'Đối với Sova xem mỗi dự án không chỉ là cơ hội tạo ra giá trị cho doanh nghiệp mà còn là sự đồng hành cùng doanh nghiệp, mang lại giá trị cộng hưởng cho khách hàng thông qua từng sản phẩm trải nghiệm số.',
       },
       services: { eyebrow: 'Dịch vụ', title: 'Dịch vụ tại Sova' },
-      projects: { eyebrow: 'Sova', title: 'Dự án chứa đựng Tâm huyết Sáng tạo' },
+      projects: {
+        eyebrow: 'Sova',
+        title: 'Dự án chứa đựng Tâm huyết Sáng tạo',
+        titleLines: ['Dự án chứa đựng', 'Tâm huyết Sáng tạo'],
+      },
       partners: { eyebrow: 'Khách hàng', title: 'Đối tác tin cậy' },
-      testimonials: { eyebrow: 'Sova', title: 'Khách hàng nhận xét về chúng tôi' },
+      testimonials: {
+        eyebrow: 'Sova',
+        title: 'Khách hàng nhận xét về chúng tôi',
+        titleLines: ['Khách hàng nhận xét', 'về chúng tôi'],
+      },
       posts: {
         eyebrow: 'GÓC NHÌN',
         title: 'Theo dõi tin tức mới nhất',
+        titleLines: ['Theo dõi tin tức', 'mới nhất'],
         description: 'Khám phá thêm →',
       },
     },
@@ -125,7 +135,11 @@ export const homePages: HomePageRecord[] = [
           'Sova see every project as more than just a task — it’s a chance to co-create value with our clients, delivering meaningful digital experiences that drive impact and foster lasting partnerships.',
       },
       services: { eyebrow: 'Service', title: 'Our Services' },
-      projects: { eyebrow: 'Sova', title: 'Some Recent Works We’re Really Proud Of.' },
+      projects: {
+        eyebrow: 'Sova',
+        title: 'Some Recent Works We’re Really Proud Of.',
+        titleLines: ['Some Recent Works', 'We’re Really Proud Of.'],
+      },
       partners: { eyebrow: 'Customers', title: 'Our Clients' },
       testimonials: { eyebrow: 'Sova', title: 'Customer Reviews' },
       posts: { eyebrow: 'INSIGHT', title: 'Get the Latest Updates', description: 'Explore More →' },

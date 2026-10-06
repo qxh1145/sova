@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import type { AssetRef, Project, ProjectCategory, SectionCopy } from '@/types/content';
 import { HorizontalProjects } from './HorizontalProjects';
 import { ProjectShowcaseItem } from './ProjectShowcaseItem';
@@ -33,7 +34,16 @@ export function FeaturedProjects({
               </div>
             )}
             <div id="text-3520817437" className="text">
-              <h2 style={{ textAlign: 'center' }}>{copy.title}</h2>
+              <h2 style={{ textAlign: 'center' }}>
+                {copy.titleLines
+                  ? copy.titleLines.map((line, i) => (
+                      <Fragment key={i}>
+                        {i > 0 && <br />}
+                        {line}
+                      </Fragment>
+                    ))
+                  : copy.title}
+              </h2>
             </div>
             <div
               className="is-divider divider clearfix"
