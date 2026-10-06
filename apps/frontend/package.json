@@ -23,13 +23,19 @@
     "verify:assets": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/assets.ts --verify"
   },
   "dependencies": {
+    "@hookform/resolvers": "5.9.1",
+    "@radix-ui/react-accordion": "1.2.20",
+    "@radix-ui/react-dialog": "1.1.23",
+    "@radix-ui/react-tabs": "1.1.22",
     "embla-carousel": "8.6.0",
     "embla-carousel-auto-height": "8.6.0",
     "embla-carousel-autoplay": "8.6.0",
     "embla-carousel-react": "8.6.0",
     "next": "16.3.8",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "react-hook-form": "7.89.0",
+    "zod": "4.6.5"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

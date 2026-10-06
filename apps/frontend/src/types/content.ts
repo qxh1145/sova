@@ -316,6 +316,42 @@ export interface ShellContent {
   copyright: string;
   themeCredit: string;
   languageLabels: Record<Locale, string>;
+  mobileMenu: {
+    trigger: string;
+    close: string;
+    tagline: string;
+    menuHeading: string;
+    contactHeading: string;
+    toggleSubmenu: string;
+  };
+  consult: {
+    heading: string;
+    placeholder: string;
+    submit: string;
+    submitting: string;
+    required: string;
+    invalid: string;
+    success: string;
+    error: string;
+    demoBadge: string;
+    note: string;
+  };
+  contactBar: {
+    menu: string;
+    contact: string;
+    call: string;
+    messenger: string;
+    zalo: string;
+  };
+  floatingContacts: {
+    buttonText: string;
+    menuHeader: string;
+    hours: string;
+    hotline: string;
+    messenger: string;
+    zalo: string;
+    email: string;
+  };
 }
 
 export interface SiteSettings {

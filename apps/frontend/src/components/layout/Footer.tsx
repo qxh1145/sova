@@ -1,8 +1,14 @@
 import Link from 'next/link';
-import type { AssetRef, Locale, Navigation, RouteEntry, ShellContent, SiteSettings } from '@/types/content';
-import { pathForRouteId } from '@/lib/routes';
+import type {
+  AssetRef,
+  Locale,
+  Navigation,
+  RouteEntry,
+  ShellContent,
+  SiteSettings,
+} from '@/types/content';
+import { homeHref as homeHrefFor, pathForRouteId, resolveDestination } from '@/lib/routes';
 import { FooterCTA } from './FooterCTA';
-import { resolveDestination } from './Header';
 import { LogoLink } from './LogoLink';
 
 export interface FooterProps {
@@ -22,13 +28,14 @@ export function Footer({
   shellContent,
   logoAsset,
 }: FooterProps) {
-  const homeRouteId = locale === 'en' ? 'route-en--home' : 'route-root';
-  const homeHref = pathForRouteId(routes, homeRouteId) ?? (locale === 'en' ? '/en/home/' : '/');
+  const homeHref = homeHrefFor(routes, locale);
   const targetHref =
     pathForRouteId(routes, shellContent.footerCta.targetRouteId) ??
     (locale === 'en' ? '/en/contact-us/' : '/lien-he/');
 
-  const companyAt = settings.companyName ? shellContent.copyright.indexOf(settings.companyName) : -1;
+  const companyAt = settings.companyName
+    ? shellContent.copyright.indexOf(settings.companyName)
+    : -1;
   const hasCompanyInCopyright = companyAt >= 0;
   const copyrightBefore = shellContent.copyright.slice(0, Math.max(companyAt, 0));
   const copyrightAfter = shellContent.copyright.slice(companyAt + settings.companyName.length);
@@ -151,9 +158,7 @@ export function Footer({
             {/* Columns 2-4: Navigation Groups */}
             {navigation.footerGroups.map((group, groupIndex) => {
               const colClass =
-                groupIndex === 2
-                  ? 'col medium-2 small-12 large-2'
-                  : 'col medium-3 small-6 large-3';
+                groupIndex === 2 ? 'col medium-2 small-12 large-2' : 'col medium-3 small-6 large-3';
               return (
                 <div key={group.id} className={colClass}>
                   <div className="col-inner">

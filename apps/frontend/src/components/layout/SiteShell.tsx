@@ -2,6 +2,12 @@ import type { ReactNode } from 'react';
 import type { AssetRef, Locale, Navigation, RouteEntry, ShellContent, SiteSettings } from '@/types/content';
 import { Footer } from './Footer';
 import { Header } from './Header';
+import { ShellOverlayProvider } from './ShellOverlayProvider';
+import { MobileMenuDrawer } from './MobileMenu';
+import { MobileMenuPanel } from './MobileMenuPanel';
+import { MobileContactBar } from './MobileContactBar';
+import { FloatingContactActions } from './FloatingContactActions';
+import { CustomCursor } from './CustomCursor';
 
 export interface SiteShellProps {
   locale: Locale;
@@ -29,27 +35,52 @@ export function SiteShell({
   logoAsset,
   children,
 }: SiteShellProps) {
+  const contactHref = headerCtas[locale]?.href ?? (locale === 'en' ? '/en/contact-us/' : '/lien-he/');
+
   return (
-    <div id="wrapper">
-      <Header
-        locale={locale}
+    <ShellOverlayProvider>
+      <div id="wrapper">
+        <Header
+          locale={locale}
+          settings={settings}
+          navigation={navigation}
+          routes={routes}
+          shellContent={shellContent}
+          headerCtas={headerCtas}
+          counterparts={counterparts}
+          logoAsset={logoAsset}
+        />
+        {children}
+        <Footer
+          locale={locale}
+          settings={settings}
+          navigation={navigation}
+          routes={routes}
+          shellContent={shellContent}
+          logoAsset={logoAsset}
+        />
+      </div>
+      <MobileMenuDrawer labels={shellContent.mobileMenu}>
+        <MobileMenuPanel
+          locale={locale}
+          settings={settings}
+          navigation={navigation}
+          routes={routes}
+          shellContent={shellContent}
+          counterparts={counterparts}
+          logoAsset={logoAsset}
+        />
+      </MobileMenuDrawer>
+      <MobileContactBar
+        labels={shellContent.contactBar}
         settings={settings}
-        navigation={navigation}
-        routes={routes}
-        shellContent={shellContent}
-        headerCtas={headerCtas}
-        counterparts={counterparts}
-        logoAsset={logoAsset}
+        contactHref={contactHref}
       />
-      {children}
-      <Footer
-        locale={locale}
+      <FloatingContactActions
+        labels={shellContent.floatingContacts}
         settings={settings}
-        navigation={navigation}
-        routes={routes}
-        shellContent={shellContent}
-        logoAsset={logoAsset}
       />
-    </div>
+      <CustomCursor />
+    </ShellOverlayProvider>
   );
 }

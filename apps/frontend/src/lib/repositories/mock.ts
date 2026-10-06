@@ -197,7 +197,7 @@ function createRawRepository(data: ContentData): ContentRepository {
   };
 }
 
-export const mockRepository = createMockRepository({
+export const defaultContentData: ContentData = {
   siteSettings,
   navigation,
   shellContent,
@@ -232,4 +232,6 @@ export const mockRepository = createMockRepository({
   listingSettings,
   listingSnapshots,
   utilityContent,
-});
+};
+
+export const mockRepository = createMockRepository(defaultContentData);

@@ -9,7 +9,7 @@ import type {
   ServiceKey,
   Testimonial,
 } from '@/types/content';
-import { getFAQs } from './faq';
+import { applyFAQPlacements, getFAQs } from './faq';
 
 export function getService(key: ServiceKey, locale: Locale): Promise<Service | null> {
   return getRepository().getService(key, locale);
@@ -62,11 +62,7 @@ export async function getServicePage(key: ServiceKey, locale: Locale): Promise<S
     throw new Error(`${service.id} references missing ids: ${missing.join(', ')}`);
   return {
     service,
-    faqs: faqs.map((faq) => {
-      const revisionId = placements.find((p) => p.faqId === faq.id)?.sourceRevisionId;
-      const revision = faq.sourceRevisions?.find((r) => r.id === revisionId);
-      return revision ? { ...faq, answer: revision.answer } : faq;
-    }),
+    faqs: applyFAQPlacements(faqs, placements),
     testimonials,
     projects,
     pricing,
