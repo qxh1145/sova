@@ -31,8 +31,8 @@ export function ServicesAccordion({ services, id }: ServicesAccordionProps) {
           const isOpen = openIndex === idx;
           const isLast = idx === services.length - 1;
           const num = `${String(idx + 1).padStart(2, '0')}/`;
-          const panelId = `acc-panel-${idx}`;
-          const triggerId = `acc-trigger-${idx}`;
+          const panelId = `${id ?? 'acc'}-panel-${idx}`;
+          const triggerId = `${id ?? 'acc'}-trigger-${idx}`;
 
           return (
             <div
@@ -46,12 +46,6 @@ export function ServicesAccordion({ services, id }: ServicesAccordionProps) {
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 onClick={() => toggle(idx)}
-                onKeyDown={(e) => {
-                  if (e.key === ' ' || e.key === 'Spacebar') {
-                    e.preventDefault();
-                    toggle(idx);
-                  }
-                }}
                 style={{
                   width: '100%',
                   textAlign: 'left',

@@ -88,16 +88,16 @@ describe('ServicesAccordion markup and initial render', () => {
     // Item 0 is open
     expect(items[0].classList.contains('is-active')).toBe(true);
     const btn0 = items[0].querySelector('button.accordion-title');
-    expect(btn0).toBeDefined();
+    expect(btn0).not.toBeNull();
     expect(btn0!.classList.contains('active')).toBe(true);
     expect(btn0!.getAttribute('aria-expanded')).toBe('true');
-    expect(btn0!.getAttribute('aria-controls')).toBe('acc-panel-0');
+    expect(btn0!.getAttribute('aria-controls')).toBe('acc-test-panel-0');
     expect(items[0].querySelector('.acc-num')?.text).toBe('01/');
     expect(items[0].querySelector('.acc-title')?.text).toBe('Dịch vụ 1');
 
     const panel0 = items[0].querySelector('.accordion-inner');
-    expect(panel0).toBeDefined();
-    expect(panel0!.getAttribute('id')).toBe('acc-panel-0');
+    expect(panel0).not.toBeNull();
+    expect(panel0!.getAttribute('id')).toBe('acc-test-panel-0');
     expect(panel0!.getAttribute('style')).toContain('display:block');
     expect(panel0!.querySelector('.mta_dv')?.text).toBe('Home Summary 1');
     expect(panel0!.querySelector('.nut_xthem a')?.getAttribute('href')).toBe('/serv-1/');

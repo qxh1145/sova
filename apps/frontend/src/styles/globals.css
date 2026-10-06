@@ -110,3 +110,9 @@ html.has-custom-cursor .cursor-ring {
   opacity: 0.9;
 }
 
+/* Not in source: stop the home marquee for users who ask for reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .cs-moving_text {
+    animation-play-state: paused;
+  }
+}

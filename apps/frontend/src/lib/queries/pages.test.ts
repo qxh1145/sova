@@ -144,11 +144,12 @@ test('dangling stat or placement ids throw naming the page and ids', async () =>
         serviceIds: [...home.serviceIds, 'service-gone-vi'],
         projectPlacements: [{ entityId: 'project-gone', order: 1 }],
         partnerPlacements: [{ entityId: 'partner-gone', order: 1 }],
+        marqueeSeparatorId: 'asset-gone',
       },
     ],
   });
   await expect(getHomePage('vi')).rejects.toThrow(
-    'home-vi references missing ids: stat-gone, project-gone, partner-gone, service-gone-vi',
+    'home-vi references missing ids: stat-gone, project-gone, partner-gone, service-gone-vi, asset-gone',
   );
 });
 
@@ -165,6 +166,8 @@ test('VI home query resolves all collections in record order', async () => {
   );
   expect(page?.posts.map((p) => p.id)).toEqual(home.postPlacements.map((p) => p.entityId));
   expect(page?.stats.map((s) => s.id)).toEqual(home.statIds);
+  expect(page?.marqueeSeparator.id).toBe(home.marqueeSeparatorId);
+  expect(page?.marqueeSeparator.src).toBe('/wp-content/uploads/2024/02/Ellipse-2351.svg');
   expect(page?.services).toHaveLength(6);
   expect(page?.projects).toHaveLength(6);
   expect(page?.partners).toHaveLength(30);
@@ -181,6 +184,7 @@ test('EN home query resolves services and empty lists', async () => {
   expect(page?.services.map((s) => s.id)).toEqual(home.serviceIds);
   expect(page?.services[0].id).toBe('service-website-en');
   expect(page?.services[1].id).toBe('service-mobile-en');
+  expect(page?.marqueeSeparator.id).toBe(home.marqueeSeparatorId);
   expect(page?.projects).toEqual([]);
   expect(page?.posts).toEqual([]);
   expect(page?.partners).toHaveLength(30);
