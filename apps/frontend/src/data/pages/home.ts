@@ -31,7 +31,11 @@ export const homePages: HomePageRecord[] = [
       services: { eyebrow: 'Dịch vụ', title: 'Dịch vụ tại Sova' },
       projects: { eyebrow: 'Sova', title: 'Dự án chứa đựng Tâm huyết Sáng tạo' },
       partners: { eyebrow: 'Khách hàng', title: 'Đối tác tin cậy' },
-      testimonials: { eyebrow: 'Sova', title: 'Khách hàng nhận xét về chúng tôi' },
+      testimonials: {
+        eyebrow: 'Sova',
+        title: 'Khách hàng nhận xét về chúng tôi',
+        titleLines: ['Khách hàng nhận xét', 'về chúng tôi'],
+      },
       posts: {
         eyebrow: 'GÓC NHÌN',
         title: 'Theo dõi tin tức mới nhất',

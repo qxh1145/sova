@@ -403,6 +403,8 @@ export interface CollectionPlacement {
 export interface SectionCopy {
   eyebrow?: string;
   title: string;
+  /** Source `<br>` line breaks of `title`, set only when the heading has more than one line. */
+  titleLines?: string[];
   description?: string;
 }
 

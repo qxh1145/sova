@@ -902,6 +902,18 @@ test.describe('Testimonials section', () => {
         await expect(section.locator('.col-inner h4 strong').first()).toHaveText(copy.eyebrow);
       }
       await expect(section.locator('.col-inner h2').first()).toHaveText(copy.title);
+      await expect(section.locator('.col-inner h2').first().locator('br')).toHaveCount(
+        (copy.titleLines?.length ?? 1) - 1,
+      );
+
+      // Decorative art resolved from the record's asset ids
+      const art = homePages[c.localeIndex].testimonialArtIds;
+      const artSrc = (id: string) => assetMap.get(id)!.src;
+      await expect(section.locator('.img-inner img')).toHaveAttribute('src', artSrc(art.photoId));
+      await expect(section.locator(`p:has(+ ${c.sliderId}) img`)).toHaveAttribute(
+        'src',
+        artSrc(art.quoteIconId),
+      );
 
       // 3 cards in placement order
       const homeRecord = homePages[c.localeIndex];
@@ -913,15 +925,14 @@ test.describe('Testimonials section', () => {
         const item = testimonialMap.get(`${c.locale}:${placements[i].entityId}`)!;
         const slide = slides.nth(i);
         await expect(slide).toHaveAttribute('id', c.slideIds[i]);
-        await expect(slide.locator('.nd-kh')).toBeVisible();
+        await expect(slide.locator('.nd-kh')).toHaveText(item.quote.html);
+        await expect(slide.locator('.nd-kh + .text img')).toHaveAttribute('src', artSrc(art.lineId));
         await expect(slide.locator('.icon-box h3 strong')).toHaveText(item.person);
-        if (item.role) {
-          await expect(slide.locator('.icon-box p')).toHaveText(item.role);
-        }
-        if (item.avatarId) {
-          const avatar = assetMap.get(item.avatarId)!;
-          await expect(slide.locator('.icon-box-img img')).toHaveAttribute('src', avatar.src);
-        }
+        await expect(slide.locator('.icon-box p')).toHaveText(item.role!);
+        await expect(slide.locator('.icon-box-img img')).toHaveAttribute(
+          'src',
+          assetMap.get(item.avatarId!)!.src,
+        );
       }
 
       await expectNoDuplicateIds(page);

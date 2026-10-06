@@ -12,7 +12,7 @@ export interface TestimonialSlideIds {
 export interface TestimonialCardProps {
   testimonial: Testimonial;
   avatar?: AssetRef;
-  lineArt?: AssetRef;
+  lineArt: AssetRef;
   ids?: TestimonialSlideIds;
 }
 
@@ -40,10 +40,10 @@ export function TestimonialCard({
                 decoding="async"
                 className="alignnone wp-image-3103 size-full"
                 role="img"
-                src={lineArt?.src ?? '/wp-content/uploads/2024/02/Vector-268.svg'}
-                alt={lineArt?.alt ?? ''}
-                width={lineArt?.width ?? 726}
-                height={lineArt?.height ?? 57}
+                src={lineArt.src}
+                alt={lineArt.alt}
+                width={lineArt.width}
+                height={lineArt.height}
               />
             </p>
           </div>
@@ -57,6 +57,7 @@ export function TestimonialCard({
                       width={avatar.width ?? 400}
                       height={avatar.height ?? 400}
                       src={avatar.src}
+                      className="attachment-medium size-medium"
                       alt={avatar.alt ?? ''}
                       loading="lazy"
                     />
