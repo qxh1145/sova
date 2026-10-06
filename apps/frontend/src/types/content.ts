@@ -398,6 +398,7 @@ export interface CollectionPlacement {
 export interface SectionCopy {
   eyebrow?: string;
   title: string;
+  titleLines?: string[];
   description?: string;
 }
 

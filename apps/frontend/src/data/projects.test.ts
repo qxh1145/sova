@@ -112,4 +112,3 @@ test('getProjectCategories returns all project categories', async () => {
   const categories = await repo.getProjectCategories();
   expect(categories).toEqual(projectCategories);
 });
-
