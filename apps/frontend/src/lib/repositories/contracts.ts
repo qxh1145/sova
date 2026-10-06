@@ -43,6 +43,7 @@ export interface ContentRepository {
   getShellContent(locale: Locale): Promise<ShellContent>;
   getService(key: ServiceKey, locale: Locale): Promise<Service | null>;
   getProject(slug: string): Promise<Project | null>;
+  getProjectCategories(): Promise<ProjectCategory[]>;
   listProjects(input: {
     category?: string;
     page: number;
