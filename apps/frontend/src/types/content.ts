@@ -421,16 +421,33 @@ export interface HomePageContent extends LocalizedIdentity {
   >;
   marqueeText: string[];
   marqueeSeparator: Asset;
+  testimonialArt: {
+    photo: Asset;
+    quoteIcon: Asset;
+    line: Asset;
+  };
 }
 
 /** Stored home record: raw ids and placements; queries fill resolved arrays. */
 export type HomePageRecord = Omit<
   HomePageContent,
-  'stats' | 'services' | 'projects' | 'partners' | 'testimonials' | 'posts' | 'marqueeSeparator'
+  | 'stats'
+  | 'services'
+  | 'projects'
+  | 'partners'
+  | 'testimonials'
+  | 'posts'
+  | 'marqueeSeparator'
+  | 'testimonialArt'
 > & {
   statIds: EntityId[];
   serviceIds: EntityId[];
   marqueeSeparatorId: EntityId;
+  testimonialArtIds: {
+    photoId: EntityId;
+    quoteIconId: EntityId;
+    lineId: EntityId;
+  };
   projectPlacements: CollectionPlacement[];
   partnerPlacements: CollectionPlacement[];
   testimonialPlacements: CollectionPlacement[];

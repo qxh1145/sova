@@ -6,6 +6,12 @@ import { ServicesAccordion } from '@/components/services/ServicesAccordion';
 import { Marquee } from '@/components/motion/Marquee';
 import { FeaturedProjects } from '@/components/projects/FeaturedProjects';
 import { PartnerLogos } from '@/components/partners/PartnerLogos';
+import {
+  Testimonials,
+  TESTIMONIALS_IDS_EN,
+  TESTIMONIALS_IDS_VI,
+  TESTIMONIALS_LABELS,
+} from '@/components/testimonials/Testimonials';
 
 export interface HomeViewProps {
   content: HomePageContent | null;
@@ -14,6 +20,7 @@ export interface HomeViewProps {
   projectAssets?: AssetRef[];
   projectCategories?: ProjectCategory[];
   partnerAssets?: AssetRef[];
+  testimonialAssets?: AssetRef[];
 }
 
 export function HomeView({
@@ -23,6 +30,7 @@ export function HomeView({
   projectAssets,
   projectCategories,
   partnerAssets,
+  testimonialAssets,
 }: HomeViewProps) {
   if (!content) {
     return <main id="main" />;
@@ -173,6 +181,14 @@ export function HomeView({
           />
         </>
       )}
+      <Testimonials
+        testimonials={content.testimonials}
+        avatars={testimonialAssets}
+        copy={content.sectionCopy.testimonials}
+        art={content.testimonialArt}
+        ids={isEn ? TESTIMONIALS_IDS_EN : TESTIMONIALS_IDS_VI}
+        labels={TESTIMONIALS_LABELS[locale]}
+      />
     </main>
   );
 }

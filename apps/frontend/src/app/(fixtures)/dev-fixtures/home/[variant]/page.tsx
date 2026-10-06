@@ -49,10 +49,14 @@ export default async function DevFixtureHomePage({
     .map((p) => p.galleryIds[0])
     .filter((id): id is string => Boolean(id));
   const partnerLogoIds = (content?.partners ?? []).map((p) => p.logoId);
-  const [projectAssets, categories, partnerAssets] = await Promise.all([
+  const testimonialAvatarIds = (content?.testimonials ?? [])
+    .map((t) => t.avatarId)
+    .filter((id): id is string => Boolean(id));
+  const [projectAssets, categories, partnerAssets, testimonialAssets] = await Promise.all([
     galleryAssetIds.length ? getAssets(galleryAssetIds, emptyRepo) : Promise.resolve([]),
     getProjectCategories(emptyRepo),
     partnerLogoIds.length ? getAssets(partnerLogoIds, emptyRepo) : Promise.resolve([]),
+    testimonialAvatarIds.length ? getAssets(testimonialAvatarIds, emptyRepo) : Promise.resolve([]),
   ]);
 
   return (
@@ -64,6 +68,7 @@ export default async function DevFixtureHomePage({
         projectAssets={projectAssets}
         projectCategories={categories}
         partnerAssets={partnerAssets}
+        testimonialAssets={testimonialAssets}
       />
     </SiteShell>
   );

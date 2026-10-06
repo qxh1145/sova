@@ -216,6 +216,30 @@ function home(page: Page, registry: AssetRegistry, stats: Stats, refs: PageRefs)
     'marquee separator asset',
   );
 
+  const ssKh = must(content.querySelector('.ss-kh'), page, 'testimonials section');
+  const photoImg = must(
+    ssKh.querySelector('[id^="image_"] img, .img img'),
+    page,
+    'testimonials photo image',
+  );
+  const photoId = must(registry.image(photoImg, file, lineOf), page, 'testimonial side photo asset');
+  const quoteIconImg = must(
+    ssKh.querySelector('img[src*="Group.svg"]'),
+    page,
+    'testimonials quote icon image',
+  );
+  const quoteIconId = must(
+    registry.image(quoteIconImg, file, lineOf),
+    page,
+    'testimonial quote icon asset',
+  );
+  const lineImg = must(
+    ssKh.querySelector('img[src*="Vector-268.svg"]'),
+    page,
+    'testimonials line image',
+  );
+  const lineId = must(registry.image(lineImg, file, lineOf), page, 'testimonial line asset');
+
   const projectIds = content.querySelectorAll('.scroll-item a.item-link').map((a) => {
     const id = refs.projectIdBySlug.get(projectSlug(a.getAttribute('href'), file));
     if (!id) throw new Error(`Source drift: ${file}: ${a.getAttribute('href')} is not a project`);
@@ -288,6 +312,11 @@ function home(page: Page, registry: AssetRegistry, stats: Stats, refs: PageRefs)
     serviceIds,
     marqueeText,
     marqueeSeparatorId,
+    testimonialArtIds: {
+      photoId,
+      quoteIconId,
+      lineId,
+    },
     projectPlacements: placements(projectIds),
     partnerPlacements: placements(partnerIds),
     testimonialPlacements: placements(readSlides(root, file).map((s) => s.id)),

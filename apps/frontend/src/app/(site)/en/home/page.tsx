@@ -10,13 +10,18 @@ export default async function EnHomePage() {
     .map((p) => p.galleryIds[0])
     .filter((id): id is string => Boolean(id));
   const partnerLogoIds = (content?.partners ?? []).map((p) => p.logoId);
+  const testimonialAvatarIds = (content?.testimonials ?? [])
+    .map((t) => t.avatarId)
+    .filter((id): id is string => Boolean(id));
 
-  const [[videoAsset], projectAssets, categories, partnerAssets] = await Promise.all([
-    content?.hero.videoId ? getAssets([content.hero.videoId]) : Promise.resolve([]),
-    galleryAssetIds.length ? getAssets(galleryAssetIds) : Promise.resolve([]),
-    getProjectCategories(),
-    partnerLogoIds.length ? getAssets(partnerLogoIds) : Promise.resolve([]),
-  ]);
+  const [[videoAsset], projectAssets, categories, partnerAssets, testimonialAssets] =
+    await Promise.all([
+      content?.hero.videoId ? getAssets([content.hero.videoId]) : Promise.resolve([]),
+      galleryAssetIds.length ? getAssets(galleryAssetIds) : Promise.resolve([]),
+      getProjectCategories(),
+      partnerLogoIds.length ? getAssets(partnerLogoIds) : Promise.resolve([]),
+      testimonialAvatarIds.length ? getAssets(testimonialAvatarIds) : Promise.resolve([]),
+    ]);
 
   return (
     <HomeView
@@ -26,6 +31,7 @@ export default async function EnHomePage() {
       projectAssets={projectAssets}
       projectCategories={categories}
       partnerAssets={partnerAssets}
+      testimonialAssets={testimonialAssets}
     />
   );
 }

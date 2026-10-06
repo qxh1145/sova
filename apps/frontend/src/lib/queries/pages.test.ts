@@ -174,6 +174,9 @@ test('VI home query resolves all collections in record order', async () => {
   expect(page?.testimonials).toHaveLength(3);
   expect(page?.posts).toHaveLength(3);
   expect(page?.stats).toHaveLength(4);
+  expect(page?.testimonialArt.photo.id).toBe(home.testimonialArtIds.photoId);
+  expect(page?.testimonialArt.quoteIcon.id).toBe(home.testimonialArtIds.quoteIconId);
+  expect(page?.testimonialArt.line.id).toBe(home.testimonialArtIds.lineId);
 });
 
 test('EN home query resolves services and empty lists', async () => {
@@ -185,6 +188,9 @@ test('EN home query resolves services and empty lists', async () => {
   expect(page?.services[0].id).toBe('service-website-en');
   expect(page?.services[1].id).toBe('service-mobile-en');
   expect(page?.marqueeSeparator.id).toBe(home.marqueeSeparatorId);
+  expect(page?.testimonialArt.photo.id).toBe(home.testimonialArtIds.photoId);
+  expect(page?.testimonialArt.quoteIcon.id).toBe(home.testimonialArtIds.quoteIconId);
+  expect(page?.testimonialArt.line.id).toBe(home.testimonialArtIds.lineId);
   expect(page?.projects).toEqual([]);
   expect(page?.posts).toEqual([]);
   expect(page?.partners).toHaveLength(30);
@@ -203,6 +209,24 @@ test('dangling testimonial id throws naming the page and id', async () => {
   });
   await expect(getHomePage('vi')).rejects.toThrow(
     'home-vi references missing ids: testimonial-gone',
+  );
+});
+
+test('dangling testimonial art id throws naming the page and id', async () => {
+  const home = homePages.find((p) => p.locale === 'vi')!;
+  repository = repoWith({
+    homePages: [
+      {
+        ...home,
+        testimonialArtIds: {
+          ...home.testimonialArtIds,
+          photoId: 'asset-gone-photo',
+        },
+      },
+    ],
+  });
+  await expect(getHomePage('vi')).rejects.toThrow(
+    'home-vi references missing ids: asset-gone-photo',
   );
 });
 
