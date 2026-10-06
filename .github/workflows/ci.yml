@@ -25,6 +25,8 @@ jobs:
       - run: npx prettier --check .
       - run: npm test
       - run: npm run build
+        env:
+          NEXT_PUBLIC_E2E: '1'
       - run: npm run check:brand
       - run: npm run verify:assets
       - run: npx playwright install --with-deps chromium
