@@ -111,7 +111,7 @@ test('unanchored imports like @/database or @/devices do not trigger false posit
     path.join(uiDir, 'Card.tsx'),
     `import { db } from '@/database';\nimport { dev } from '@/devices';\nexport const Card = () => <div />;\n`,
   );
-  const { status, stderr } = spawnSync(
+  const { status } = spawnSync(
     process.execPath,
     ['--disable-warning=MODULE_TYPELESS_PACKAGE_JSON', SCRIPT],
     {
@@ -140,4 +140,43 @@ test('COMPONENTS_DIR pointing directly to a component subdir is scanned for forb
   );
   expect(status).toBe(1);
   expect(stderr).toMatch(/MyForm\.tsx:1: forbidden import "@\/dev\/fixtures"/);
+});
+
+test.each([
+  ['export from', `export { x } from '@/data/x';`, /forbidden export from "@\/data\/x"/],
+  [
+    'dynamic import()',
+    `export const load = () => import('@/dev/x');`,
+    /forbidden dynamic import "@\/dev\/x"/,
+  ],
+  ['require()', `export const d = require('@/data');`, /forbidden dynamic import "@\/data"/],
+  [
+    'relative path',
+    `import r from '../../data/routes';`,
+    /forbidden import "\.\.\/\.\.\/data\/routes"/,
+  ],
+  ['src/ specifier', `import f from 'src/dev/x';`, /forbidden import "src\/dev\/x"/],
+])('forbidden %s is reported', (_name, line, message) => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'check-components-'));
+  mkdirSync(path.join(dir, 'ui'));
+  writeFileSync(path.join(dir, 'ui', 'Mod.ts'), `${line}\n`);
+  const { status, stderr } = spawnSync(
+    process.execPath,
+    ['--disable-warning=MODULE_TYPELESS_PACKAGE_JSON', SCRIPT],
+    { env: { ...process.env, COMPONENTS_DIR: dir }, encoding: 'utf8' },
+  );
+  expect(status).toBe(1);
+  expect(stderr).toMatch(message);
+});
+
+test('a relative import outside data/dev passes', () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'check-components-'));
+  mkdirSync(path.join(dir, 'ui'));
+  writeFileSync(path.join(dir, 'ui', 'Mod.ts'), `import u from '../../lib/utils';\n`);
+  const { status } = spawnSync(
+    process.execPath,
+    ['--disable-warning=MODULE_TYPELESS_PACKAGE_JSON', SCRIPT],
+    { env: { ...process.env, COMPONENTS_DIR: dir }, encoding: 'utf8' },
+  );
+  expect(status).toBe(0);
 });

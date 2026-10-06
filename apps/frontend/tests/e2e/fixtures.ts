@@ -22,6 +22,7 @@ function extractHostname(input?: string | null): string | null {
 }
 
 const defaultStagingHost = extractHostname(process.env.STAGING_URL);
+const bypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
 
 export function isAllowedUrl(url: string, overrideStagingHost?: string | null): boolean {
   try {
@@ -77,7 +78,13 @@ export const test = base.extend<{ networkGuard: string[] }>({
     async ({ context }, use) => {
       const blocked: string[] = [];
       await context.route('**/*', (route) => {
-        const url = route.request().url();
+        const request = route.request();
+        const url = request.url();
+        // Bypass secret goes to the staging host only, never to allowlisted third parties.
+        if (bypassSecret && defaultStagingHost && extractHostname(url) === defaultStagingHost)
+          return route.continue({
+            headers: { ...request.headers(), 'x-vercel-protection-bypass': bypassSecret },
+          });
         if (isAllowedUrl(url)) return route.continue();
         blocked.push(url);
         return route.abort('blockedbyclient');
