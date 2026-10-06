@@ -328,9 +328,11 @@ export function importServices(
 ) {
   const services: Service[] = [];
   const pricing: Pricing[] = [];
+  // Home pages are already counted by pages.ts home(); keep their text out of the import stats.
+  const cardStats: Stats = { brand: 0, scrub: 0 };
   const homeCards: Record<Locale, HomeCardData[]> = {
-    vi: readHomeCards(erasDir, 'vi', stats),
-    en: readHomeCards(erasDir, 'en', stats),
+    vi: readHomeCards(erasDir, 'vi', cardStats),
+    en: readHomeCards(erasDir, 'en', cardStats),
   };
 
   for (const locale of ['vi', 'en'] as const) {
