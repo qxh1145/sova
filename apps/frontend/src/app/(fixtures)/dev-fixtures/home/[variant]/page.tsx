@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
 import { SiteShell } from '@/components/layout/SiteShell';
 import { HomeView } from '@/components/home/HomeView';
-import { HomeError } from '@/components/home/HomeError';
 import { getShellProps } from '@/lib/queries/site';
 import { getHomePage } from '@/lib/queries/pages';
 import { getAssets } from '@/lib/queries/assets';
@@ -31,14 +30,9 @@ export default async function DevFixtureHomePage({
   const { locale: rawLocale } = (await searchParams) ?? {};
   const locale: Locale = rawLocale === 'en' ? 'en' : 'vi';
 
+  // The error repository rejects, so getHomePage throws into the sibling error.tsx.
   if (variant === 'error') {
-    const fallbackRepo = createScenarioRepository('happy-path');
-    const shell = await getShellProps(locale, fallbackRepo);
-    return (
-      <SiteShell {...shell}>
-        <HomeError locale={locale} />
-      </SiteShell>
-    );
+    await getHomePage(locale, createScenarioRepository('error'));
   }
 
   const emptyRepo = createScenarioRepository('empty');

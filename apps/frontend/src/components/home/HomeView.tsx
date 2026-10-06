@@ -16,13 +16,7 @@ export function HomeView({ content, locale, videoAsset }: HomeViewProps) {
   return (
     <main id="main">
       <HomeHero hero={content.hero} locale={locale} videoAsset={videoAsset} />
-      {content.stats && content.stats.length > 0 && (
-        <HomeStats
-          stats={content.stats}
-          copy={content.sectionCopy.achievements}
-          locale={locale}
-        />
-      )}
+      <HomeStats stats={content.stats} copy={content.sectionCopy.achievements} locale={locale} />
     </main>
   );
 }

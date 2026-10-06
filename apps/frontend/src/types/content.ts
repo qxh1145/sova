@@ -418,20 +418,23 @@ export interface HomePageContent extends LocalizedIdentity {
 }
 
 /** Stored home record: raw ids and placements; queries fill resolved arrays. */
-export interface HomePageRecord extends LocalizedIdentity {
-  hero: HeroContent;
-  seo: SEO;
+export type HomePageRecord = Omit<
+  HomePageContent,
+  'stats' | 'services' | 'projects' | 'partners' | 'testimonials' | 'posts'
+> & {
   statIds: EntityId[];
-  sectionCopy: Record<
-    'achievements' | 'services' | 'projects' | 'partners' | 'testimonials' | 'posts',
-    SectionCopy
-  >;
   serviceIds: EntityId[];
-  marqueeText: string[];
   projectPlacements: CollectionPlacement[];
   partnerPlacements: CollectionPlacement[];
   testimonialPlacements: CollectionPlacement[];
   postPlacements: CollectionPlacement[];
+};
+
+/** Localized copy for a route error state. */
+export interface ErrorCopy {
+  title: string;
+  description: string;
+  retry: string;
 }
 
 export interface AboutPageContent extends LocalizedIdentity {
