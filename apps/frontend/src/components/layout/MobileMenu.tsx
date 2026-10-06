@@ -29,7 +29,7 @@ export function MobileMenuTrigger({
       href="#main-menu"
       data-open="#main-menu"
       data-pos="right"
-      {...(dataColor !== undefined ? { 'data-color': dataColor } : {})}
+      data-color={dataColor}
       className="is-small"
       aria-label={label}
       aria-controls="main-menu"
