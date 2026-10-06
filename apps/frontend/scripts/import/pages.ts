@@ -27,7 +27,7 @@ import type { AssetRegistry } from './assets.ts';
 import { slug } from './faq.ts';
 import { ERAS_URL_TEXT } from './posts.ts';
 import { load, projectSlug } from './projects.ts';
-import { linkModel, plain, sectionCopy, trimBreaks } from './services.ts';
+import { linkModel, matchServiceByTitle, plain, sectionCopy, trimBreaks } from './services.ts';
 import { imageStem, readSlides } from './social.ts';
 
 const STAT_KEYS = ['clients', 'projects', 'members', 'years'];
@@ -49,8 +49,21 @@ export interface PageRefs {
   routes: RouteEntry[];
   projectIdBySlug: Map<string, EntityId>;
   postIdBySlug: Map<string, EntityId>;
-  services: { id: EntityId; path: PublicPath }[];
+  services: { id: EntityId; path: PublicPath; title: string; locale: Locale }[];
   partnerIds: Set<EntityId>;
+}
+
+export { matchServiceByTitle } from './services.ts';
+
+export function resolveServiceCard<T extends { title: string }>(
+  rawTitle: string,
+  localeServices: T[],
+  file: string,
+): T {
+  const service = matchServiceByTitle(rawTitle, localeServices);
+  if (!service)
+    throw new Error(`Source drift: ${file}: service card "${rawTitle}" does not match any service`);
+  return service;
 }
 
 interface Page {
@@ -177,15 +190,17 @@ function home(page: Page, registry: AssetRegistry, stats: Stats, refs: PageRefs)
   const copy = (el: HTMLElement, what: string): SectionCopy =>
     must(sectionCopy(el, stats), page, `${what} copy`);
 
-  // Services in card order (desktop cards), each resolved by its link path.
-  const serviceIds = must(
-    content.querySelectorAll('.hide-for-small .dich_vu .nut_xthem a'),
+  // Services in card order (desktop cards), each resolved by title.
+  const serviceCards = must(
+    content.querySelectorAll('.hide-for-small .dich_vu'),
     page,
     'service cards',
-  ).map((a) => {
-    const href = processHref(a.getAttribute('href') ?? '', file, lineOf(a.range[0]), stats);
-    const service = refs.services.find((s) => s.path === href);
-    if (!service) throw new Error(`Source drift: ${file}: service card ${href} is not a service`);
+  );
+  const localeServices = refs.services.filter((s) => s.locale === locale);
+  const serviceIds = serviceCards.map((card) => {
+    const nameEl = must(card.querySelector('.name_dv'), page, 'card name');
+    const rawTitle = nameEl.childNodes[0]?.rawText.trim() ?? '';
+    const service = resolveServiceCard(rawTitle, localeServices, file);
     return service.id;
   });
 
@@ -194,6 +209,12 @@ function home(page: Page, registry: AssetRegistry, stats: Stats, refs: PageRefs)
     .filter((n): n is TextNode => n instanceof TextNode)
     .map((n) => processText(n.rawText, stats).trim())
     .filter(Boolean);
+  const separatorImg = must(marquee.querySelector('img'), page, 'marquee separator image');
+  const marqueeSeparatorId = must(
+    registry.image(separatorImg, file, lineOf),
+    page,
+    'marquee separator asset',
+  );
 
   const projectIds = content.querySelectorAll('.scroll-item a.item-link').map((a) => {
     const id = refs.projectIdBySlug.get(projectSlug(a.getAttribute('href'), file));
@@ -217,6 +238,13 @@ function home(page: Page, registry: AssetRegistry, stats: Stats, refs: PageRefs)
     if (!refs.partnerIds.has(id)) throw new Error(`Source drift: ${file}: ${id} is not a partner`);
     return id;
   });
+
+  const footerBar = root.querySelector('#azt-contact-footer');
+  if (footerBar) {
+    for (const img of footerBar.querySelectorAll('img')) {
+      registry.image(img, file, lineOf);
+    }
+  }
 
   const seo = seoOf(page, registry, stats);
   const servicesSection = section(content.querySelector('.dich_vu'), 'services');
@@ -259,6 +287,7 @@ function home(page: Page, registry: AssetRegistry, stats: Stats, refs: PageRefs)
     },
     serviceIds,
     marqueeText,
+    marqueeSeparatorId,
     projectPlacements: placements(projectIds),
     partnerPlacements: placements(partnerIds),
     testimonialPlacements: placements(readSlides(root, file).map((s) => s.id)),

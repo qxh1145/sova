@@ -12,6 +12,9 @@ export const vpsServices: Service[] = [
     key: 'vps',
     summary:
       'Phù hợp với người dùng có khả năng tự quản trị máy chủ và cần lưu trữ dung lượng lớn. Tiết kiệm đến 90% chi phí so với thuê máy chủ riêng, bạn hoàn toàn có thể sở hữu máy chủ ảo ổn định với quyền quản trị cao nhất..',
+    homeSummary: '',
+    subServices: [],
+    arrowHref: '',
     parentKey: 'storage',
     hero: {
       headingLines: ['Dịch vụ', 'Cloud VPS'],
@@ -136,6 +139,9 @@ export const vpsServices: Service[] = [
     key: 'vps',
     summary:
       'Ideal for users who have the capability to manage their own servers and require large storage. Save up to 90% of costs compared to renting a dedicated server, while still enjoying a stable virtual server with full administrative privileges.',
+    homeSummary: '',
+    subServices: [],
+    arrowHref: '',
     parentKey: 'storage',
     hero: {
       headingLines: ['Cloud VPS', 'Service'],

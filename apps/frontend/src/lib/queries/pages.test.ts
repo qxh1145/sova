@@ -1,6 +1,7 @@
 import { expect, test, vi } from 'vitest';
 import type { ContentData, ContentRepository } from '@/lib/repositories/contracts';
 import { createMockRepository } from '@/lib/repositories/mock';
+import { assets } from '@/data/assets';
 import { faqs } from '@/data/faq';
 import { navigation } from '@/data/navigation';
 import { contactPages } from '@/data/pages/contact';
@@ -63,6 +64,7 @@ const repoWith = (data: Partial<ContentData> = {}) =>
     postCategories: [],
     stats,
     pricing: websitePricing,
+    assets,
     homePages,
     contactPages: [contactWithPhone],
     legalPages,
@@ -171,14 +173,14 @@ test('VI home query resolves all collections in record order', async () => {
   expect(page?.stats).toHaveLength(4);
 });
 
-test('EN home query preserves repeated service id and empty lists', async () => {
+test('EN home query resolves services and empty lists', async () => {
   repository = repoWith();
   const home = homePages.find((p) => p.locale === 'en')!;
   const page = await getHomePage('en');
   expect(page).not.toBeNull();
   expect(page?.services.map((s) => s.id)).toEqual(home.serviceIds);
   expect(page?.services[0].id).toBe('service-website-en');
-  expect(page?.services[1].id).toBe('service-website-en');
+  expect(page?.services[1].id).toBe('service-mobile-en');
   expect(page?.projects).toEqual([]);
   expect(page?.posts).toEqual([]);
   expect(page?.partners).toHaveLength(30);

@@ -269,6 +269,57 @@ export function featuredProjects(root: HTMLElement, file: string, idBySlug: Map<
   });
 }
 
+export function matchServiceByTitle<T extends { title: string }>(
+  cardTitle: string,
+  services: T[],
+): T | undefined {
+  const norm = (s: string) =>
+    s
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd')
+      .replace(/[^a-z0-9]/g, '');
+  const target = norm(cardTitle);
+  return services.find((s) => norm(s.title) === target);
+}
+
+interface HomeCardData {
+  title: string;
+  subServices: { label: string; href: string }[];
+  arrowHref: string;
+  homeSummary: string;
+}
+
+const HOME_PAGES: Record<Locale, string> = {
+  vi: 'index.html',
+  en: 'en/home/index.html',
+};
+
+function readHomeCards(erasDir: string, locale: Locale, stats: Stats): HomeCardData[] {
+  const file = HOME_PAGES[locale];
+  const { root, lineOf } = load(erasDir, file);
+  const cardEls = root.querySelectorAll('.hide-for-small .dich_vu');
+  return cardEls.map((card) => {
+    const nameEl = card.querySelector('.name_dv');
+    const title = nameEl?.childNodes[0]?.rawText.trim() ?? '';
+    const subServices = card.querySelectorAll('.name_dv span a').map((a) => {
+      const href = processHref(a.getAttribute('href') ?? '', file, lineOf(a.range[0]), stats) ?? '';
+      return {
+        label: processText(a.text.trim(), stats),
+        href,
+      };
+    });
+    const arrowEl = card.querySelector('.nut_xthem a');
+    const arrowHref = arrowEl
+      ? (processHref(arrowEl.getAttribute('href') ?? '', file, lineOf(arrowEl.range[0]), stats) ?? '')
+      : '';
+    const mtaEl = card.querySelector('.mta_dv');
+    const homeSummary = mtaEl ? processText(mtaEl.text.trim(), stats) : '';
+    return { title, subServices, arrowHref, homeSummary };
+  });
+}
+
 export function importServices(
   erasDir: string,
   registry: AssetRegistry,
@@ -277,6 +328,10 @@ export function importServices(
 ) {
   const services: Service[] = [];
   const pricing: Pricing[] = [];
+  const homeCards: Record<Locale, HomeCardData[]> = {
+    vi: readHomeCards(erasDir, 'vi', stats),
+    en: readHomeCards(erasDir, 'en', stats),
+  };
 
   for (const locale of ['vi', 'en'] as const) {
     for (const [key, file] of PAGES[locale].services) {
@@ -463,16 +518,24 @@ export function importServices(
         /<body[^>]*\sclass="([^"]*)"/.exec(source)?.[1] ?? '',
       )?.[1];
 
+      const serviceTitle = seoTitle.split(' - ')[0];
+      const matchedCard = homeCards[locale].find((c) =>
+        matchServiceByTitle(c.title, [{ title: serviceTitle }]),
+      );
+
       // Undefined optional fields are dropped by JSON.stringify in the generated file.
       services.push({
         id,
         locale,
         path: pagePath,
-        title: seoTitle.split(' - ')[0],
+        title: serviceTitle,
         translationKey: `service-${key}`,
         sources: [{ file, line: heroLine, sourceId: wpId }],
         key,
         summary: descriptionHtml ? unescape(visibleText(descriptionHtml)) : '',
+        homeSummary: matchedCard ? matchedCard.homeSummary : '',
+        subServices: matchedCard ? matchedCard.subServices : [],
+        arrowHref: matchedCard ? matchedCard.arrowHref : '',
         parentKey: PARENT[key],
         hero,
         benefits,
@@ -508,6 +571,16 @@ export function importServices(
         const href = a.getAttribute('href')!;
         if (href === 'index.html' || href.includes('cloud-vps'))
           odd(`mobile copy link ${href} (mobile copies are not imported)`);
+      }
+    }
+  }
+  for (const locale of ['vi', 'en'] as const) {
+    const localeServices = services.filter((s) => s.locale === locale);
+    for (const card of homeCards[locale]) {
+      if (!matchServiceByTitle(card.title, localeServices)) {
+        throw new Error(
+          `Source drift: ${HOME_PAGES[locale]}: service card "${card.title}" does not match any service`,
+        );
       }
     }
   }
