@@ -1,5 +1,21 @@
 import type { Page } from '@playwright/test';
 import { expect, expectNoDuplicateIds, STAGING, test } from './fixtures';
+import { homePages } from '../../src/data/pages/home';
+import { brandingServices } from '../../src/data/services/branding';
+import { emailServices } from '../../src/data/services/email';
+import { mobileServices } from '../../src/data/services/mobile';
+import { seoServices } from '../../src/data/services/seo';
+import { storageServices } from '../../src/data/services/storage';
+import { websiteServices } from '../../src/data/services/website';
+
+const HOME_SERVICES = [
+  ...websiteServices,
+  ...mobileServices,
+  ...seoServices,
+  ...brandingServices,
+  ...storageServices,
+  ...emailServices,
+];
 
 const WIDTHS = [390, 549, 550, 575, 768, 849, 850, 1199, 1280, 1380, 1440];
 const STAT_VALUES = ['3500', '1500', '40', '09'];
@@ -486,11 +502,17 @@ test.describe('Services list, accordion and marquee', () => {
   test('Six services and accordion items render in order with matching titles, summaries and arrow hrefs', async ({
     page,
   }) => {
-    for (const [path, expectedArrow2] of [
-      ['/', '/thiet-ke-app-mobile/'],
-      ['/en/home/', '/en/website-development/'],
+    for (const [path, locale, expectedArrow2, expectedTitle2] of [
+      ['/', 'vi', '/thiet-ke-app-mobile/', 'Thiết kế App Mobile'],
+      ['/en/home/', 'en', '/en/website-development/', 'App Mobile Development'],
     ] as const) {
       await page.goto(path);
+      const home = homePages.find((p) => p.locale === locale)!;
+      const expected = home.serviceIds.map((id) => HOME_SERVICES.find((s) => s.id === id)!);
+
+      const section = page.locator('section', { has: page.locator('.dich_vu') });
+      await expect(section.locator('.tt_dvu p')).toHaveText(home.sectionCopy.services.eyebrow!);
+      await expect(section.locator('h2')).toHaveText(home.sectionCopy.services.title);
 
       const desktopCards = page.locator('.hide-for-small .dich_vu');
       await expect(desktopCards).toHaveCount(6);
@@ -504,6 +526,25 @@ test.describe('Services list, accordion and marquee', () => {
 
       const accordionItem2Arrow = accordionItems.nth(1).locator('.nut_xthem a');
       await expect(accordionItem2Arrow).toHaveAttribute('href', expectedArrow2);
+
+      // EN card 2 is the mobile service even though its arrow points at the website page.
+      await expect(accordionItems.nth(1).locator('.acc-title')).toHaveText(expectedTitle2);
+
+      // Titles, summaries and arrows follow serviceIds order in both views.
+      for (let i = 0; i < 6; i++) {
+        await expect(desktopCards.nth(i).locator('.name_dv')).toContainText(expected[i].title);
+        await expect(desktopCards.nth(i).locator('.mta_dv')).toHaveText(expected[i].homeSummary);
+        await expect(desktopCards.nth(i).locator('.nut_xthem a')).toHaveAttribute(
+          'href',
+          expected[i].arrowHref,
+        );
+        await expect(accordionItems.nth(i).locator('.acc-title')).toHaveText(expected[i].title);
+        await expect(accordionItems.nth(i).locator('.mta_dv')).toHaveText(expected[i].homeSummary);
+        await expect(accordionItems.nth(i).locator('.nut_xthem a')).toHaveAttribute(
+          'href',
+          expected[i].arrowHref,
+        );
+      }
 
       // Verify desktop titles match accordion titles
       for (let i = 0; i < 6; i++) {
@@ -582,8 +623,8 @@ test.describe('Services list, accordion and marquee', () => {
 
     const trigger1 = page.locator('.acc_dvu button.accordion-title').nth(0);
     const trigger2 = page.locator('.acc_dvu button.accordion-title').nth(1);
-    const panel1 = page.locator('#acc-panel-0');
-    const panel2 = page.locator('#acc-panel-1');
+    const panel1 = page.locator('.acc_dvu .accordion-inner').nth(0);
+    const panel2 = page.locator('.acc_dvu .accordion-inner').nth(1);
 
     // Initial state: item 1 open, item 2 closed
     await expect(trigger1).toHaveAttribute('aria-expanded', 'true');
@@ -631,7 +672,16 @@ test.describe('Services list, accordion and marquee', () => {
 
       const tracks = wrap.locator('.cs-moving_text');
       await expect(tracks).toHaveCount(2);
+      await expect(tracks.nth(0)).not.toHaveAttribute('aria-hidden');
       await expect(tracks.nth(1)).toHaveAttribute('aria-hidden', 'true');
+
+      const separators = tracks.nth(0).locator('img');
+      await expect(separators).toHaveCount(homePages[0].marqueeText.length);
+      await expect(separators.first()).toHaveAttribute(
+        'src',
+        '/wp-content/uploads/2024/02/Ellipse-2351.svg',
+      );
+      await expect(separators.first()).toHaveAttribute('alt', '');
     });
   }
 });
