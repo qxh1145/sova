@@ -8,6 +8,17 @@ export const MAPS_EMBED_ALLOWLIST = [
   'maps.gstatic.com',
 ];
 
+export const KNOWN_ABSENT_CSS_ASSETS = new Set([
+  '/wp-content/uploads/2024/02/Deco-1-1.svg',
+  '/wp-content/uploads/2024/02/Deco-1-3-1.svg',
+  '/wp-content/uploads/2024/02/Deco-1-3.svg',
+  '/wp-content/uploads/2024/02/Vector.svg',
+  '/wp-content/uploads/2024/02/svgexport-7.svg',
+  '/wp-content/uploads/2024/03/bg_td.png',
+  '/wp-content/uploads/2025/02/a067a9c40c98e463438f8a4ef6f20af3.png',
+  '/wp-content/uploads/2025/04/7baaead6a082fd23a17276ebd3294f66.png',
+]);
+
 const LOCAL_HOSTS = ['localhost', '127.0.0.1', '[::1]'];
 
 export const STAGING = Boolean(process.env.STAGING_URL);

@@ -1,4 +1,11 @@
-import { expect, expectNoDuplicateIds, getBodyOverflow, STAGING, test } from './fixtures';
+import {
+  expect,
+  expectNoDuplicateIds,
+  getBodyOverflow,
+  KNOWN_ABSENT_CSS_ASSETS,
+  STAGING,
+  test,
+} from './fixtures';
 
 const WIDTHS = [390, 549, 550, 768, 849, 850, 1280, 1440];
 
@@ -24,7 +31,12 @@ test.describe('Acceptance: Site shell on real routes', () => {
     page.on('response', (res) => {
       if (res.status() !== 404) return;
       const url = new URL(res.url());
-      if (url.pathname.startsWith('/dev-fixtures/') || url.searchParams.has('_rsc')) return;
+      if (
+        url.pathname.startsWith('/dev-fixtures/') ||
+        KNOWN_ABSENT_CSS_ASSETS.has(url.pathname) ||
+        url.searchParams.has('_rsc')
+      )
+        return;
       consoleErrors.push(`404 ${res.url()}`);
     });
     (page as unknown as { __consoleErrors: string[] }).__consoleErrors = consoleErrors;

@@ -1,4 +1,4 @@
-import { HTMLElement, TextNode, type Node } from 'node-html-parser';
+import { HTMLElement, parse, TextNode, type Node } from 'node-html-parser';
 import type {
   AboutPageRecord,
   AssetRef,
@@ -29,6 +29,15 @@ import { ERAS_URL_TEXT } from './posts.ts';
 import { load, projectSlug } from './projects.ts';
 import { linkModel, matchServiceByTitle, plain, sectionCopy, trimBreaks } from './services.ts';
 import { imageStem, readSlides } from './social.ts';
+
+/** Keeps a heading's `<br>` breaks as `titleLines` when it has more than one line. */
+function withTitleLines(copy: SectionCopy, heading: HTMLElement, stats: Stats): SectionCopy {
+  const lines = heading.innerHTML
+    .split(/<br\s*\/?>/i)
+    .map((html) => plain(parse(html), stats))
+    .filter(Boolean);
+  return lines.length > 1 ? { ...copy, titleLines: lines } : copy;
+}
 
 const STAT_KEYS = ['clients', 'projects', 'members', 'years'];
 const EXPECTED = { goals: 6, purpose: 4, timeline: 9, capabilities: 3, legalRoutes: 10 };
@@ -216,6 +225,30 @@ function home(page: Page, registry: AssetRegistry, stats: Stats, refs: PageRefs)
     'marquee separator asset',
   );
 
+  const ssKh = must(content.querySelector('.ss-kh'), page, 'testimonials section');
+  const photoImg = must(
+    ssKh.querySelector('[id^="image_"] img, .img img'),
+    page,
+    'testimonials photo image',
+  );
+  const photoId = must(registry.image(photoImg, file, lineOf), page, 'testimonial side photo asset');
+  const quoteIconImg = must(
+    ssKh.querySelector('img[src*="Group.svg"]'),
+    page,
+    'testimonials quote icon image',
+  );
+  const quoteIconId = must(
+    registry.image(quoteIconImg, file, lineOf),
+    page,
+    'testimonial quote icon asset',
+  );
+  const lineImg = must(
+    ssKh.querySelector('img[src*="Vector-268.svg"]'),
+    page,
+    'testimonials line image',
+  );
+  const lineId = must(registry.image(lineImg, file, lineOf), page, 'testimonial line asset');
+
   const projectIds = content.querySelectorAll('.scroll-item a.item-link').map((a) => {
     const id = refs.projectIdBySlug.get(projectSlug(a.getAttribute('href'), file));
     if (!id) throw new Error(`Source drift: ${file}: ${a.getAttribute('href')} is not a project`);
@@ -278,7 +311,11 @@ function home(page: Page, registry: AssetRegistry, stats: Stats, refs: PageRefs)
       },
       projects: copy(section(content.querySelector('.ss-decor'), 'projects'), 'projects'),
       partners: copy(section(logos[0], 'partners'), 'partners'),
-      testimonials: copy(section(content.querySelector('.ss-kh'), 'testimonials'), 'testimonials'),
+      testimonials: withTitleLines(
+        copy(section(ssKh, 'testimonials'), 'testimonials'),
+        must(ssKh.querySelector('h2'), page, 'testimonials title'),
+        stats,
+      ),
       // The news teaser is the last section (EN has no cards in it).
       posts: copy(
         must(root.querySelectorAll('#content > section.section').at(-1), page, 'posts section'),
@@ -288,6 +325,11 @@ function home(page: Page, registry: AssetRegistry, stats: Stats, refs: PageRefs)
     serviceIds,
     marqueeText,
     marqueeSeparatorId,
+    testimonialArtIds: {
+      photoId,
+      quoteIconId,
+      lineId,
+    },
     projectPlacements: placements(projectIds),
     partnerPlacements: placements(partnerIds),
     testimonialPlacements: placements(readSlides(root, file).map((s) => s.id)),

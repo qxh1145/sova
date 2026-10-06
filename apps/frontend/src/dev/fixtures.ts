@@ -290,6 +290,11 @@ export const fixtures: ContentData = {
       serviceIds: ['service-1'],
       marqueeText: [],
       marqueeSeparatorId: 'asset-1',
+      testimonialArtIds: {
+        photoId: 'asset-1',
+        quoteIconId: 'asset-1',
+        lineId: 'asset-1',
+      },
       projectPlacements: [{ entityId: 'project-1', order: 1 }],
       partnerPlacements: [],
       testimonialPlacements: [],
