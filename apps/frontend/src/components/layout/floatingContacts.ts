@@ -1,5 +1,13 @@
 import type { ShellContent, SiteSettings } from '@/types/content';
 
+export const CONTACT_ICON_SRC = {
+  call: '/wp-content/uploads/2025/04/call-111.png',
+  messenger: '/wp-content/uploads/2025/04/messenger-111.png',
+  zalo: '/wp-content/uploads/2025/04/zalo-111.png',
+} as const;
+
+export const FLOATING_CONTACT_COLOR = '#2A63D7';
+
 export interface ContactItem {
   id: string;
   title: string;
@@ -22,7 +30,7 @@ export function buildContactItems(
       title: labels.hotline,
       subtitle: labels.hours,
       href: primaryPhone.href,
-      iconSrc: '/wp-content/uploads/2025/04/call-111.png',
+      iconSrc: CONTACT_ICON_SRC.call,
       target: '_blank',
     });
   }
@@ -33,7 +41,7 @@ export function buildContactItems(
       title: labels.messenger,
       subtitle: labels.hours,
       href: settings.messengerHref,
-      iconSrc: '/wp-content/uploads/2025/04/messenger-111.png',
+      iconSrc: CONTACT_ICON_SRC.messenger,
       target: '_blank',
     });
   }
@@ -44,7 +52,7 @@ export function buildContactItems(
       title: labels.zalo,
       subtitle: labels.hours,
       href: settings.zaloHref,
-      iconSrc: '/wp-content/uploads/2025/04/zalo-111.png',
+      iconSrc: CONTACT_ICON_SRC.zalo,
       target: '_blank',
     });
   }

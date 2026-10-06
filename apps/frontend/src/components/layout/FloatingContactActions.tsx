@@ -3,8 +3,8 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ShellContent, SiteSettings } from '@/types/content';
-import { useShellOverlay } from '@/components/layout/ShellOverlayProvider';
-import { buildContactItems } from './floatingContacts';
+import { useShellOverlay } from './ShellOverlayProvider';
+import { buildContactItems, FLOATING_CONTACT_COLOR } from './floatingContacts';
 
 export interface FloatingContactActionsProps {
   labels: ShellContent['floatingContacts'];
@@ -105,7 +105,7 @@ export function FloatingContactActions({ labels, settings }: FloatingContactActi
         className={`messangers-block arcuAnimated has-header${isOpen ? ' arcu-show' : ''}`}
         id="arcu-menu"
       >
-        <div className="arcu-menu-header arcu-icon-center" style={{ backgroundColor: '#2A63D7' }}>
+        <div className="arcu-menu-header arcu-icon-center" style={{ backgroundColor: FLOATING_CONTACT_COLOR }}>
           <div className="arcu-menu-header-content arcu-text-center">{labels.menuHeader}</div>
         </div>
         <div className="messangers-list-container">
@@ -155,7 +155,7 @@ export function FloatingContactActions({ labels, settings }: FloatingContactActi
         tabIndex={0}
         ref={buttonRef}
         className="arcu-message-button"
-        style={{ backgroundColor: '#2A63D7' }}
+        style={{ backgroundColor: FLOATING_CONTACT_COLOR }}
         aria-expanded={isOpen}
         aria-controls="arcu-menu"
         aria-label={labels.buttonText}
@@ -207,7 +207,7 @@ export function FloatingContactActions({ labels, settings }: FloatingContactActi
               style={lineX === null ? undefined : { transform: `translate(${lineX}px, 0px)` }}
             >
               {items.map((item) => (
-                <span key={item.id} style={{ color: '#2A63D7' }}>
+                <span key={item.id} style={{ color: FLOATING_CONTACT_COLOR }}>
                   {item.iconSrc && (
                     <img
                       width={500}
@@ -246,11 +246,11 @@ export function FloatingContactActions({ labels, settings }: FloatingContactActi
         </div>
         <div
           className={`pulsation${isOpen ? ' stop' : ''}`}
-          style={{ backgroundColor: '#2A63D7' }}
+          style={{ backgroundColor: FLOATING_CONTACT_COLOR }}
         />
         <div
           className={`pulsation${isOpen ? ' stop' : ''}`}
-          style={{ backgroundColor: '#2A63D7' }}
+          style={{ backgroundColor: FLOATING_CONTACT_COLOR }}
         />
       </div>
 

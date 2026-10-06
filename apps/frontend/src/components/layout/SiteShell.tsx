@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { AssetRef, Locale, Navigation, RouteEntry, ShellContent, SiteSettings } from '@/types/content';
 import { Footer } from './Footer';
-import { Header } from './Header';
+import { Header, type HeaderProps } from './Header';
 import { ShellOverlayProvider } from './ShellOverlayProvider';
 import { MobileMenuDrawer } from './MobileMenu';
 import { MobileMenuPanel } from './MobileMenuPanel';
@@ -15,10 +15,7 @@ export interface SiteShellProps {
   navigation: Navigation;
   routes: RouteEntry[];
   shellContent: ShellContent;
-  headerCtas: {
-    vi: { label: string; href: string };
-    en: { label: string; href: string };
-  };
+  headerCtas: HeaderProps['headerCtas'];
   counterparts: Record<string, string>;
   logoAsset?: AssetRef | null;
   children?: ReactNode;
@@ -35,7 +32,7 @@ export function SiteShell({
   logoAsset,
   children,
 }: SiteShellProps) {
-  const contactHref = headerCtas[locale]?.href ?? (locale === 'en' ? '/en/contact-us/' : '/lien-he/');
+  const contactHref = headerCtas[locale].href;
 
   return (
     <ShellOverlayProvider>

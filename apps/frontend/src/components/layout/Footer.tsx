@@ -29,9 +29,7 @@ export function Footer({
   logoAsset,
 }: FooterProps) {
   const homeHref = homeHrefFor(routes, locale);
-  const targetHref =
-    pathForRouteId(routes, shellContent.footerCta.targetRouteId) ??
-    (locale === 'en' ? '/en/contact-us/' : '/lien-he/');
+  const targetHref = pathForRouteId(routes, shellContent.footerCta.targetRouteId) ?? '#';
 
   const companyAt = settings.companyName
     ? shellContent.copyright.indexOf(settings.companyName)

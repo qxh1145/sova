@@ -1,4 +1,11 @@
 /**
+ * Clamps page number to [1, total].
+ */
+export function clampPage(current: number, total: number): number {
+  return Math.min(Math.max(1, Math.floor(current)), Math.floor(total));
+}
+
+/**
  * Computes the list of page numbers and dots for pagination.
  * Reproduces WordPress `paginate_links` output with `end_size = 1, mid_size = 2`.
  *
@@ -11,7 +18,7 @@ export function paginationItems(current: number, total: number): (number | 'dots
     return [];
   }
 
-  const clamped = Math.min(Math.max(1, Math.floor(current)), Math.floor(total));
+  const clamped = clampPage(current, total);
   const endSize = 1;
   const midSize = 2;
 
