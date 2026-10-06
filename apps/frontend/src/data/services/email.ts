@@ -12,6 +12,10 @@ export const emailServices: Service[] = [
     key: 'email',
     summary:
       'Email Doanh Nghiệp là dịch vụ lưu trữ email sử dụng chính tên miền riêng của bạn. Chẳng hạn, với tên miền “{{site.domain}}”, email doanh nghiệp sẽ có định dạng “…@{{site.domain}}”. So với email miễn phí, email theo tên miền mang đến sự chuyên nghiệp hơn, giúp nâng cao uy tín và khẳng định thương hiệu, đó cũng là lý do hầu hết doanh nghiệp và doanh nhân lựa chọn sử dụng.',
+    homeSummary:
+      'Sử dụng E-mail doanh nghiệp giúp người dùng thể hiện sự chuyên nghiệp của mình, đảm bảo được tính an toàn cao, dung lượng lớn và có bộ lọc spam, mã hóa email tối ưu',
+    subServices: [],
+    arrowHref: '/e-mail-doanh-nghiep/',
     hero: {
       headingLines: ['Dịch vụ', 'Email doanh nghiệp'],
       description: {
@@ -133,6 +137,10 @@ export const emailServices: Service[] = [
     key: 'email',
     summary:
       'Business Email is a service that allows you to host email accounts using your own domain name. For example, with the domain “{{site.domain}}”, your business email will have the format “…@{{site.domain}}”. Compared to free email services, domain-based email offers a more professional image, enhances credibility, and reinforces your brand — which is why most businesses and professionals choose to use it.',
+    homeSummary:
+      'Custom domain-based email enhances your brand’s professionalism. Our solutions offer high security, large storage capacity, spam filtering, and advanced email encryption.',
+    subServices: [],
+    arrowHref: '/en/business-e-mail/',
     hero: {
       headingLines: ['Business', 'Email Service'],
       description: {

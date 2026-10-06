@@ -1,6 +1,7 @@
 import { expect, test, vi } from 'vitest';
 import type { ContentData, ContentRepository } from '@/lib/repositories/contracts';
 import { createMockRepository } from '@/lib/repositories/mock';
+import { assets } from '@/data/assets';
 import { faqs } from '@/data/faq';
 import { navigation } from '@/data/navigation';
 import { contactPages } from '@/data/pages/contact';
@@ -63,6 +64,7 @@ const repoWith = (data: Partial<ContentData> = {}) =>
     postCategories: [],
     stats,
     pricing: websitePricing,
+    assets,
     homePages,
     contactPages: [contactWithPhone],
     legalPages,
@@ -142,11 +144,12 @@ test('dangling stat or placement ids throw naming the page and ids', async () =>
         serviceIds: [...home.serviceIds, 'service-gone-vi'],
         projectPlacements: [{ entityId: 'project-gone', order: 1 }],
         partnerPlacements: [{ entityId: 'partner-gone', order: 1 }],
+        marqueeSeparatorId: 'asset-gone',
       },
     ],
   });
   await expect(getHomePage('vi')).rejects.toThrow(
-    'home-vi references missing ids: stat-gone, project-gone, partner-gone, service-gone-vi',
+    'home-vi references missing ids: stat-gone, project-gone, partner-gone, service-gone-vi, asset-gone',
   );
 });
 
@@ -163,6 +166,8 @@ test('VI home query resolves all collections in record order', async () => {
   );
   expect(page?.posts.map((p) => p.id)).toEqual(home.postPlacements.map((p) => p.entityId));
   expect(page?.stats.map((s) => s.id)).toEqual(home.statIds);
+  expect(page?.marqueeSeparator.id).toBe(home.marqueeSeparatorId);
+  expect(page?.marqueeSeparator.src).toBe('/wp-content/uploads/2024/02/Ellipse-2351.svg');
   expect(page?.services).toHaveLength(6);
   expect(page?.projects).toHaveLength(6);
   expect(page?.partners).toHaveLength(30);
@@ -171,14 +176,15 @@ test('VI home query resolves all collections in record order', async () => {
   expect(page?.stats).toHaveLength(4);
 });
 
-test('EN home query preserves repeated service id and empty lists', async () => {
+test('EN home query resolves services and empty lists', async () => {
   repository = repoWith();
   const home = homePages.find((p) => p.locale === 'en')!;
   const page = await getHomePage('en');
   expect(page).not.toBeNull();
   expect(page?.services.map((s) => s.id)).toEqual(home.serviceIds);
   expect(page?.services[0].id).toBe('service-website-en');
-  expect(page?.services[1].id).toBe('service-website-en');
+  expect(page?.services[1].id).toBe('service-mobile-en');
+  expect(page?.marqueeSeparator.id).toBe(home.marqueeSeparatorId);
   expect(page?.projects).toEqual([]);
   expect(page?.posts).toEqual([]);
   expect(page?.partners).toHaveLength(30);
