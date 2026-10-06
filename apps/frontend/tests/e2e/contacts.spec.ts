@@ -189,6 +189,7 @@ test.describe('Floating contacts and mobile contact bar', () => {
     await page.goto('/');
 
     const barMenu = page.locator('#azt-contact-footer a[data-open="#main-menu"]');
+    await expect(barMenu).toHaveAttribute('aria-haspopup', 'dialog');
     await barMenu.click();
 
     const drawer = page.locator('#main-menu');

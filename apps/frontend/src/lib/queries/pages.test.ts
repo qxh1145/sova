@@ -49,9 +49,9 @@ const repoWith = (data: Partial<ContentData> = {}) =>
   createMockRepository({
     siteSettings,
     navigation,
-    // Every service the home page places; the VI website one carries the planted token.
     services: [
       websiteWithPhone,
+      ...websiteServices.filter((s) => s.locale !== 'vi'),
       ...[mobileServices, seoServices, brandingServices, storageServices, emailServices].flat(),
     ],
     faqs,
@@ -148,6 +148,64 @@ test('dangling stat or placement ids throw naming the page and ids', async () =>
   await expect(getHomePage('vi')).rejects.toThrow(
     'home-vi references missing ids: stat-gone, project-gone, partner-gone, service-gone-vi',
   );
+});
+
+test('VI home query resolves all collections in record order', async () => {
+  repository = repoWith();
+  const home = homePages.find((p) => p.locale === 'vi')!;
+  const page = await getHomePage('vi');
+  expect(page).not.toBeNull();
+  expect(page?.services.map((s) => s.id)).toEqual(home.serviceIds);
+  expect(page?.projects.map((p) => p.id)).toEqual(home.projectPlacements.map((p) => p.entityId));
+  expect(page?.partners.map((p) => p.id)).toEqual(home.partnerPlacements.map((p) => p.entityId));
+  expect(page?.testimonials.map((t) => t.id)).toEqual(
+    home.testimonialPlacements.map((p) => p.entityId),
+  );
+  expect(page?.posts.map((p) => p.id)).toEqual(home.postPlacements.map((p) => p.entityId));
+  expect(page?.stats.map((s) => s.id)).toEqual(home.statIds);
+  expect(page?.services).toHaveLength(6);
+  expect(page?.projects).toHaveLength(6);
+  expect(page?.partners).toHaveLength(30);
+  expect(page?.testimonials).toHaveLength(3);
+  expect(page?.posts).toHaveLength(3);
+  expect(page?.stats).toHaveLength(4);
+});
+
+test('EN home query preserves repeated service id and empty lists', async () => {
+  repository = repoWith();
+  const home = homePages.find((p) => p.locale === 'en')!;
+  const page = await getHomePage('en');
+  expect(page).not.toBeNull();
+  expect(page?.services.map((s) => s.id)).toEqual(home.serviceIds);
+  expect(page?.services[0].id).toBe('service-website-en');
+  expect(page?.services[1].id).toBe('service-website-en');
+  expect(page?.projects).toEqual([]);
+  expect(page?.posts).toEqual([]);
+  expect(page?.partners).toHaveLength(30);
+  expect(page?.testimonials).toHaveLength(3);
+});
+
+test('dangling testimonial id throws naming the page and id', async () => {
+  const home = homePages.find((p) => p.locale === 'vi')!;
+  repository = repoWith({
+    homePages: [
+      {
+        ...home,
+        testimonialPlacements: [{ entityId: 'testimonial-gone', order: 1 }],
+      },
+    ],
+  });
+  await expect(getHomePage('vi')).rejects.toThrow(
+    'home-vi references missing ids: testimonial-gone',
+  );
+});
+
+test('getHomePage accepts optional repository parameter', async () => {
+  // The default repository has no home page, so a resolved page proves the parameter is used.
+  repository = repoWith({ homePages: [] });
+  const customRepo = repoWith();
+  const page = await getHomePage('vi', customRepo);
+  expect(page?.locale).toBe('vi');
 });
 
 test('navigation resolves without tokens left', async () => {

@@ -89,6 +89,27 @@ function DesktopNavItem({ item, routes }: { item: NavigationItem; routes: RouteE
   );
 }
 
+const CTA_CONFIG = [
+  { key: 'vi' as const, className: 'html header-button-1' },
+  { key: 'en' as const, className: 'html header-button-2' },
+];
+
+function renderCtas(headerCtas: HeaderProps['headerCtas']) {
+  return CTA_CONFIG.map(({ key, className }) => (
+    <li key={key} className={className}>
+      <div className="header-button">
+        <Link
+          href={headerCtas[key].href}
+          className="button primary"
+          style={{ borderRadius: 9 }}
+        >
+          <span>{headerCtas[key].label}</span>
+        </Link>
+      </div>
+    </li>
+  ));
+}
+
 export function Header({
   locale,
   settings,
@@ -143,30 +164,9 @@ export function Header({
                     counterparts={counterparts}
                   />
                 </li>
-                <li className="html header-button-1">
-                  <div className="header-button">
-                    <Link
-                      href={headerCtas.vi.href}
-                      className="button primary"
-                      style={{ borderRadius: 9 }}
-                    >
-                      <span>{headerCtas.vi.label}</span>
-                    </Link>
-                  </div>
-                </li>
-                <li className="html header-button-2">
-                  <div className="header-button">
-                    <Link
-                      href={headerCtas.en.href}
-                      className="button primary"
-                      style={{ borderRadius: 9 }}
-                    >
-                      <span>{headerCtas.en.label}</span>
-                    </Link>
-                  </div>
-                </li>
+                {renderCtas(headerCtas)}
                 <li className="nav-icon has-icon">
-                  <MobileMenuTrigger label={shellContent.mobileMenu.trigger} />
+                  <MobileMenuTrigger label={shellContent.mobileMenu.trigger} dataColor="" />
                 </li>
               </ul>
             </div>
@@ -174,30 +174,9 @@ export function Header({
             {/* Mobile Right Elements */}
             <div className="flex-col show-for-medium flex-right">
               <ul className="mobile-nav nav nav-right">
-                <li className="html header-button-1">
-                  <div className="header-button">
-                    <Link
-                      href={headerCtas.vi.href}
-                      className="button primary"
-                      style={{ borderRadius: 9 }}
-                    >
-                      <span>{headerCtas.vi.label}</span>
-                    </Link>
-                  </div>
-                </li>
-                <li className="html header-button-2">
-                  <div className="header-button">
-                    <Link
-                      href={headerCtas.en.href}
-                      className="button primary"
-                      style={{ borderRadius: 9 }}
-                    >
-                      <span>{headerCtas.en.label}</span>
-                    </Link>
-                  </div>
-                </li>
+                {renderCtas(headerCtas)}
                 <li className="nav-icon has-icon">
-                  <MobileMenuTrigger label={shellContent.mobileMenu.trigger} />
+                  <MobileMenuTrigger label={shellContent.mobileMenu.trigger} dataColor="" />
                 </li>
               </ul>
             </div>

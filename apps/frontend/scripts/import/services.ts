@@ -1,4 +1,4 @@
-import { HTMLElement } from 'node-html-parser';
+import { HTMLElement, parse } from 'node-html-parser';
 import type {
   EntityId,
   FAQPlacement,
@@ -119,6 +119,12 @@ export function sectionCopy(section: HTMLElement, stats: Stats): SectionCopy | u
         const title = plain(el, stats);
         if (!title) continue;
         copy = eyebrow ? { eyebrow, title } : { title };
+        // Keep source line breaks; throwaway stats so text is not counted twice.
+        const lines = el.innerHTML
+          .split(/<br\s*\/?>/i)
+          .map((html) => plain(parse(html), { brand: 0, scrub: 0 }))
+          .filter(Boolean);
+        if (lines.length > 1) copy.titleLines = lines;
         titleRow = el.closest('.row');
       } else if (!eyebrow && (tag === 'h4' || strongOnly)) {
         eyebrow = plain(el, stats) || undefined;

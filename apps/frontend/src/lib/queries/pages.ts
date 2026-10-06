@@ -1,4 +1,5 @@
 import { getRepository } from '@/lib/repositories';
+import type { ContentRepository } from '@/lib/repositories/contracts';
 import type {
   AboutPageContent,
   CollectionPlacement,
@@ -11,6 +12,7 @@ import type {
   ListingSnapshot,
   Locale,
   PaymentGuideContent,
+  Service,
   ServiceKey,
   UtilityContent,
 } from '@/types/content';
@@ -35,36 +37,56 @@ function assertResolved(pageId: EntityId, missing: EntityId[]) {
 }
 
 /**
- * The home page with its shared stats filled; null when missing. Throws naming
- * the page and ids when a stat, service or placement does not resolve.
+ * The home page with its shared stats and entities resolved; null when missing. Throws
+ * naming the page and ids when a stat, service or placement does not resolve.
  */
-export async function getHomePage(locale: Locale): Promise<HomePageContent | null> {
-  const repository = getRepository();
+export async function getHomePage(
+  locale: Locale,
+  repository: ContentRepository = getRepository(),
+): Promise<HomePageContent | null> {
   const record = await repository.getHomePage(locale);
   if (!record) return null;
-  const { statIds, ...page } = record;
+  const {
+    statIds,
+    serviceIds,
+    projectPlacements,
+    partnerPlacements,
+    testimonialPlacements,
+    postPlacements,
+    ...page
+  } = record;
   // ponytail: no get-by-ids for projects/posts in the repository; one full page is fine for mock data.
   const [stats, testimonials, partners, projects, posts, services] = await Promise.all([
     repository.getStats(statIds),
-    repository.getTestimonials(idsOf(record.testimonialPlacements), locale),
-    repository.getPartners(idsOf(record.partnerPlacements)),
-    record.projectPlacements.length ? repository.listProjects(ALL) : null,
-    record.postPlacements.length ? repository.listPosts({ locale, ...ALL }) : null,
+    repository.getTestimonials(idsOf(testimonialPlacements), locale),
+    repository.getPartners(idsOf(partnerPlacements)),
+    projectPlacements.length ? repository.listProjects(ALL) : null,
+    postPlacements.length ? repository.listPosts({ locale, ...ALL }) : null,
     // Matched by id over every key, so the check does not depend on the id format.
     Promise.all(SERVICE_KEYS.map((key) => repository.getService(key, locale))),
   ]);
+  const servicesList = services.filter((s): s is Service => s !== null);
   assertResolved(record.id, [
     ...missingIds(statIds, stats),
-    ...missingIds(idsOf(record.projectPlacements), projects?.items),
-    ...missingIds(idsOf(record.partnerPlacements), partners),
-    ...missingIds(idsOf(record.testimonialPlacements), testimonials),
-    ...missingIds(idsOf(record.postPlacements), posts?.items),
-    ...missingIds(
-      record.serviceIds,
-      services.flatMap((service) => service ?? []),
-    ),
+    ...missingIds(idsOf(projectPlacements), projects?.items),
+    ...missingIds(idsOf(partnerPlacements), partners),
+    ...missingIds(idsOf(testimonialPlacements), testimonials),
+    ...missingIds(idsOf(postPlacements), posts?.items),
+    ...missingIds(serviceIds, servicesList),
   ]);
-  return { ...page, stats };
+
+  const projectItems = projects?.items ?? [];
+  const postItems = posts?.items ?? [];
+
+  return {
+    ...page,
+    stats: statIds.map((id) => stats.find((s) => s.id === id)!),
+    services: serviceIds.map((id) => servicesList.find((s) => s.id === id)!),
+    projects: idsOf(projectPlacements).map((id) => projectItems.find((p) => p.id === id)!),
+    partners: idsOf(partnerPlacements).map((id) => partners.find((p) => p.id === id)!),
+    testimonials: idsOf(testimonialPlacements).map((id) => testimonials.find((t) => t.id === id)!),
+    posts: idsOf(postPlacements).map((id) => postItems.find((p) => p.id === id)!),
+  };
 }
 
 /** The about page with its shared stats filled; throws on dangling ids. */
