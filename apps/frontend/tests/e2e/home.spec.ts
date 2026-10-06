@@ -121,7 +121,7 @@ test.describe('Home query, hero and stats', () => {
       await page.goto(path);
 
       await expect(page.locator('main h1 .typewriter')).toHaveText([...copy.lines]);
-      const cta = page.locator('.link_banner a.home-hero-cta');
+      const cta = page.locator('.link_banner a');
       await expect(cta).toHaveText(copy.cta.label);
       await expect(cta).toHaveAttribute('href', copy.cta.href);
 
