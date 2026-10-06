@@ -9,11 +9,13 @@ export default async function EnHomePage() {
   const galleryAssetIds = (content?.projects ?? [])
     .map((p) => p.galleryIds[0])
     .filter((id): id is string => Boolean(id));
+  const partnerLogoIds = (content?.partners ?? []).map((p) => p.logoId);
 
-  const [[videoAsset], projectAssets, categories] = await Promise.all([
+  const [[videoAsset], projectAssets, categories, partnerAssets] = await Promise.all([
     content?.hero.videoId ? getAssets([content.hero.videoId]) : Promise.resolve([]),
     galleryAssetIds.length ? getAssets(galleryAssetIds) : Promise.resolve([]),
     getProjectCategories(),
+    partnerLogoIds.length ? getAssets(partnerLogoIds) : Promise.resolve([]),
   ]);
 
   return (
@@ -23,6 +25,7 @@ export default async function EnHomePage() {
       videoAsset={videoAsset}
       projectAssets={projectAssets}
       projectCategories={categories}
+      partnerAssets={partnerAssets}
     />
   );
 }
