@@ -1,22 +1,6 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import type { Page } from '@playwright/test';
-import { expect, test } from './fixtures';
-
-async function expectNoDuplicateIds(page: Page) {
-  const ids = await page.evaluate(() => {
-    const els = Array.from(document.querySelectorAll('[id]'));
-    return els.map((el) => el.id).filter(Boolean);
-  });
-  const unique = new Set(ids);
-  expect(
-    ids.length,
-    `Duplicate ids found: ${ids.filter((id, i) => ids.indexOf(id) !== i).join(', ')}`,
-  ).toBe(unique.size);
-}
-
-const getBodyOverflow = (page: Page) =>
-  page.evaluate(() => window.getComputedStyle(document.body).overflow);
+import { expect, expectNoDuplicateIds, getBodyOverflow, test } from './fixtures';
 
 const COPIES = {
   vi: {

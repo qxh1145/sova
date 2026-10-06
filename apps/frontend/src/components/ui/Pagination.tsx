@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { paginationItems } from './pagination';
+import { clampPage, paginationItems } from './paginationItems';
 
 export interface PaginationLabels {
   nav: string;
@@ -33,7 +33,7 @@ export function Pagination(props: PaginationProps) {
     return null;
   }
 
-  const clampedCurrent = Math.min(Math.max(1, Math.floor(current)), Math.floor(total));
+  const clampedCurrent = clampPage(current, total);
   const items = paginationItems(clampedCurrent, total);
   const isLinkMode = 'hrefForPage' in props && typeof props.hrefForPage === 'function';
 

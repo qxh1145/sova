@@ -2,14 +2,20 @@
 
 import { type MouseEvent, type ReactNode } from 'react';
 import { Dialog } from '@/components/ui/Dialog';
-import { useShellOverlay } from '@/components/layout/ShellOverlayProvider';
+import { useShellOverlay } from './ShellOverlayProvider';
 import type { ShellContent } from '@/types/content';
 
 export interface MobileMenuTriggerProps {
   label: string;
+  dataColor?: string;
+  children?: ReactNode;
 }
 
-export function MobileMenuTrigger({ label }: MobileMenuTriggerProps) {
+export function MobileMenuTrigger({
+  label,
+  dataColor,
+  children = <i className="icon-menu" aria-hidden="true" />,
+}: MobileMenuTriggerProps) {
   const { isOpen, open } = useShellOverlay();
   const openState = isOpen('menu');
 
@@ -23,14 +29,15 @@ export function MobileMenuTrigger({ label }: MobileMenuTriggerProps) {
       href="#main-menu"
       data-open="#main-menu"
       data-pos="right"
-      data-color=""
+      {...(dataColor !== undefined ? { 'data-color': dataColor } : {})}
       className="is-small"
       aria-label={label}
       aria-controls="main-menu"
+      aria-haspopup="dialog"
       aria-expanded={openState}
       onClick={handleClick}
     >
-      <i className="icon-menu" aria-hidden="true" />
+      {children}
     </a>
   );
 }
