@@ -152,6 +152,61 @@ test.describe('Tabs and Pagination primitives', () => {
     await expect(tablist.locator('> li').nth(totalTabs - 1)).not.toHaveClass(/active/);
   });
 
+  test('Tabs: mouse click activates without changing the URL hash', async ({ page }) => {
+    await page.goto('/dev-fixtures/primitives/tabs');
+
+    const tablist = page.locator('.tabbed-content ul[role="tablist"]');
+    const secondTrigger = tablist.locator('a[role="tab"]').nth(1);
+    const panels = page.locator('.tab-panels > div[role="tabpanel"]');
+
+    await secondTrigger.click();
+    await expect(secondTrigger).toHaveAttribute('aria-selected', 'true');
+    await expect(tablist.locator('> li').nth(1)).toHaveClass(/active/);
+    await expect(panels.nth(1)).toHaveClass(/active/);
+    await expect(tablist.locator('> li').nth(0)).not.toHaveClass(/active/);
+    await expect(panels.nth(0)).not.toHaveClass(/active/);
+    expect(page.url()).not.toContain('#tab_');
+  });
+
+  const paginationLabelCases = [
+    { name: 'VI', query: 'page=2', nav: 'Phân trang', prev: 'Trang trước', next: 'Trang sau' },
+    { name: 'EN', query: 'locale=en&page=2', nav: 'Pagination', prev: 'Previous', next: 'Next' },
+  ];
+
+  for (const { name, query, nav, prev, next } of paginationLabelCases) {
+    test(`Pagination ${name}: accessible names come from labels in both modes`, async ({ page }) => {
+      await page.goto(`/dev-fixtures/primitives/pagination?${query}`);
+
+      const linkRoot = page.locator('[data-testid="link-pagination-section"] nav.pagination');
+      await expect(linkRoot).toHaveAttribute('aria-label', nav);
+      await expect(linkRoot.locator('a.prev')).toHaveAttribute('aria-label', prev);
+      await expect(linkRoot.locator('a.next')).toHaveAttribute('aria-label', next);
+
+      const actionRoot = page.locator('[data-testid="action-pagination-section"] nav.pagination');
+      await expect(actionRoot).toHaveAttribute('aria-label', nav);
+      await expect(actionRoot.locator('button.prev')).toHaveAttribute('aria-label', prev);
+      await expect(actionRoot.locator('button.next')).toHaveAttribute('aria-label', next);
+
+      if (name === 'EN') {
+        await expect(linkRoot.locator('a.next')).toHaveAttribute('href', /locale=en/);
+      }
+    });
+  }
+
+  test('Pagination: out-of-range page is clamped by the component', async ({ page }) => {
+    await page.goto('/dev-fixtures/primitives/pagination?page=99');
+    const highRoot = page.locator('[data-testid="link-pagination-section"] .pagination');
+    await expect(highRoot.locator('span.page-numbers.current')).toHaveText('5');
+    await expect(highRoot.locator('a.next')).toHaveCount(0);
+    await expect(highRoot.locator('a.prev')).toHaveAttribute('href', /page=4/);
+
+    await page.goto('/dev-fixtures/primitives/pagination?page=-3');
+    const lowRoot = page.locator('[data-testid="link-pagination-section"] .pagination');
+    await expect(lowRoot.locator('span.page-numbers.current')).toHaveText('1');
+    await expect(lowRoot.locator('a.prev')).toHaveCount(0);
+    await expect(lowRoot.locator('a.next')).toHaveAttribute('href', /page=2/);
+  });
+
   test('Pagination: link sequences and aria-current for pages 1, 2 and 5', async ({ page }) => {
     // Page 1 of 5
     await page.goto('/dev-fixtures/primitives/pagination?page=1');
