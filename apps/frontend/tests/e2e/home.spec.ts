@@ -1028,8 +1028,9 @@ test.describe('Testimonials section', () => {
 
 test.describe('Latest posts', () => {
   const postMap = new Map(posts.map((p) => [p.id, p]));
+  const assetMap = new Map(assets.map((a) => [a.id, a]));
 
-  test('Grid holds 3 a.plain links matching placement posts, routes return 200, no duplicate IDs', async ({
+  test('Grid holds 3 a.plain links matching placement posts, hrefs resolve to post-detail routes, thumbnails render, no duplicate IDs', async ({
     page,
   }) => {
     await page.goto('/');
@@ -1061,6 +1062,16 @@ test.describe('Latest posts', () => {
         }
       }
     }
+
+    const expectedThumbSrcs = homePages[0].postPlacements.map((p) => {
+      const thumbnailId = postMap.get(p.entityId)!.thumbnailId!;
+      return assetMap.get(thumbnailId)!.src;
+    });
+    const imgs = grid.locator('img.wp-post-image');
+    await expect(imgs).toHaveCount(3);
+    expect(await imgs.evaluateAll((els) => els.map((el) => el.getAttribute('src')))).toEqual(
+      expectedThumbSrcs,
+    );
 
     await expectNoDuplicateIds(page);
   });
@@ -1098,10 +1109,11 @@ test.describe('Latest posts', () => {
   }
 
   for (const width of [549, 390]) {
-    test(`Slider is visible, grid is hidden, arrows and 3 dots show, no autoplay at ${width}px, wrapping works`, async ({
+    test(`Slider is visible, grid is hidden, arrows mounted (CSS-hidden), 3 dots, no autoplay at ${width}px, wrapping works`, async ({
       page,
     }) => {
       await page.setViewportSize({ width, height: 900 });
+      await page.clock.install();
       await page.goto('/');
 
       const grid = page.locator('#text-386464690');
@@ -1112,18 +1124,21 @@ test.describe('Latest posts', () => {
 
       const prevBtn = slider.locator('.flickity-prev-next-button.previous');
       const nextBtn = slider.locator('.flickity-prev-next-button.next');
+      // Arrows are mounted but hidden below 550px by Flatsome's
+      // `.slider-wrapper .flickity-prev-next-button{display:none}`, as on the source.
       await expect(prevBtn).toBeAttached();
       await expect(nextBtn).toBeAttached();
+      await expect(prevBtn).toBeHidden();
 
       const dots = slider.locator('.flickity-page-dots .dot');
       await expect(dots).toHaveCount(3);
       await expect(dots.nth(0)).toHaveClass(/is-selected/);
 
       // After 7s with no input, selected dot is unchanged (no autoplay)
-      await page.waitForTimeout(7000);
+      await page.clock.runFor(7000);
       await expect(dots.nth(0)).toHaveClass(/is-selected/);
 
-      // Clicking next from the last slide wraps to the first
+      // Next advances 0 -> 1 -> 2, then wraps from the last slide back to the first
       await nextBtn.dispatchEvent('click');
       await expect(dots.nth(1)).toHaveClass(/is-selected/);
       await nextBtn.dispatchEvent('click');
