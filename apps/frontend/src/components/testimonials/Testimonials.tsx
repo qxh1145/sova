@@ -1,12 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
+import { Fragment } from 'react';
 import type { AssetRef, Locale, SectionCopy, Testimonial } from '@/types/content';
 import { Carousel, type CarouselLabels } from '@/components/ui/Carousel';
 import { TestimonialCard, type TestimonialSlideIds } from './TestimonialCard';
 
 export interface TestimonialsArt {
-  photo?: AssetRef;
-  quoteIcon?: AssetRef;
-  line?: AssetRef;
+  photo: AssetRef;
+  quoteIcon: AssetRef;
+  line: AssetRef;
 }
 
 export interface TestimonialsIds {
@@ -100,13 +101,11 @@ export const TESTIMONIALS_LABELS: Record<Locale, CarouselLabels> = {
     prev: 'Trước',
     next: 'Tiếp theo',
     goTo: 'Chuyển tới slide {index}',
-    region: 'Khách hàng nhận xét về chúng tôi',
   },
   en: {
     prev: 'Previous',
     next: 'Next',
     goTo: 'Go to slide {index}',
-    region: 'Customer Reviews',
   },
 };
 
@@ -114,9 +113,56 @@ export interface TestimonialsProps {
   testimonials: Testimonial[];
   avatars?: AssetRef[];
   copy: SectionCopy;
-  art?: TestimonialsArt;
+  art: TestimonialsArt;
   ids: TestimonialsIds;
   labels: CarouselLabels;
+}
+
+export interface TestimonialsSliderProps {
+  testimonials: Testimonial[];
+  avatars?: AssetRef[];
+  lineArt: AssetRef;
+  id: string;
+  slideIds?: TestimonialSlideIds[];
+  labels: CarouselLabels;
+}
+
+/** The `.slide-kh` slider: shared by the section and the story-2.2 carousel fixture. */
+export function TestimonialsSlider({
+  testimonials,
+  avatars = [],
+  lineArt,
+  id,
+  slideIds,
+  labels,
+}: TestimonialsSliderProps) {
+  const avatarMap = new Map(avatars.map((a) => [a.id, a]));
+  return (
+    <div className="slider-wrapper relative slide-kh" id={id}>
+      <Carousel
+        className="slider slider-nav-simple slider-nav-large slider-nav-light slider-style-normal slider-show-nav"
+        align="center"
+        loop
+        autoplayMs={6000}
+        pauseOnHover
+        adaptiveHeight
+        arrows
+        dots
+        dragThreshold={10}
+        labels={labels}
+      >
+        {testimonials.map((t, index) => (
+          <TestimonialCard
+            key={t.id}
+            testimonial={t}
+            avatar={t.avatarId ? avatarMap.get(t.avatarId) : undefined}
+            lineArt={lineArt}
+            ids={slideIds?.[index]}
+          />
+        ))}
+      </Carousel>
+    </div>
+  );
 }
 
 export function Testimonials({
@@ -131,8 +177,6 @@ export function Testimonials({
     return null;
   }
 
-  const avatarMap = new Map(avatars.map((a) => [a.id, a]));
-
   return (
     <section className="section ss-kh" id={ids.section}>
       <div className="section-bg fill" />
@@ -144,11 +188,11 @@ export function Testimonials({
                 <div className="img-inner dark">
                   <img
                     decoding="async"
-                    width={art?.photo?.width ?? 700}
-                    height={art?.photo?.height ?? 461}
-                    src={art?.photo?.src ?? '/wp-content/uploads/2025/08/A8-Feedback-122.webp'}
+                    width={art.photo.width}
+                    height={art.photo.height}
+                    src={art.photo.src}
                     className="attachment-original size-original"
-                    alt={art?.photo?.alt ?? ''}
+                    alt={art.photo.alt}
                     loading="lazy"
                   />
                 </div>
@@ -165,7 +209,20 @@ export function Testimonials({
                 </div>
               )}
               <div id={ids.titleText} className="text">
-                <h2>{copy.title}</h2>
+                <h2>
+                  {(copy.titleLines ?? [copy.title]).map((line, i) => (
+                    <Fragment key={i}>
+                      {/* Source: `nhận xét <br />về` keeps the space before the break. */}
+                      {i > 0 && (
+                        <>
+                          {' '}
+                          <br />
+                        </>
+                      )}
+                      {line}
+                    </Fragment>
+                  ))}
+                </h2>
               </div>
               <div
                 className="is-divider divider clearfix"
@@ -176,39 +233,20 @@ export function Testimonials({
                   decoding="async"
                   className="alignnone wp-image-3102 size-thumbnail"
                   role="img"
-                  src={art?.quoteIcon?.src ?? '/wp-content/uploads/2024/02/Group.svg'}
-                  alt={art?.quoteIcon?.alt ?? ''}
-                  width={art?.quoteIcon?.width ?? 55}
-                  height={art?.quoteIcon?.height ?? 55}
+                  src={art.quoteIcon.src}
+                  alt={art.quoteIcon.alt}
+                  width={art.quoteIcon.width}
+                  height={art.quoteIcon.height}
                 />
               </p>
-              <div className="slider-wrapper relative slide-kh" id={ids.sliderWrapper}>
-                <Carousel
-                  className="slider slider-nav-simple slider-nav-large slider-nav-light slider-style-normal slider-show-nav"
-                  align="center"
-                  loop
-                  autoplayMs={6000}
-                  pauseOnHover
-                  adaptiveHeight
-                  arrows
-                  dots
-                  dragThreshold={10}
-                  labels={labels}
-                >
-                  {testimonials.map((t, index) => {
-                    const avatar = t.avatarId ? avatarMap.get(t.avatarId) : undefined;
-                    return (
-                      <TestimonialCard
-                        key={t.id}
-                        testimonial={t}
-                        avatar={avatar}
-                        lineArt={art?.line}
-                        ids={ids.slides?.[index]}
-                      />
-                    );
-                  })}
-                </Carousel>
-              </div>
+              <TestimonialsSlider
+                testimonials={testimonials}
+                avatars={avatars}
+                lineArt={art.line}
+                id={ids.sliderWrapper}
+                slideIds={ids.slides}
+                labels={{ ...labels, region: copy.title }}
+              />
               {ids.innerGap && (
                 <div
                   id={ids.innerGap}

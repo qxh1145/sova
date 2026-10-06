@@ -155,8 +155,8 @@ describe('Testimonials component', () => {
     );
 
     // Divider line and quote icon
-    const quoteIcon = root.querySelector('p img[src*="Group.svg"]');
-    expect(quoteIcon).not.toBeNull();
+    const quoteIcon = root.querySelector('#col-55011168 > .col-inner > p img');
+    expect(quoteIcon?.getAttribute('src')).toBe(mockArt.quoteIcon.src);
 
     // 3 slides
     const slider = root.querySelector('#slider-1717467276');
@@ -177,6 +177,9 @@ describe('Testimonials component', () => {
     expect(slideRows[0].querySelector('.icon-box-img img')?.getAttribute('src')).toBe(
       mockAvatars[0].src,
     );
+    expect(slideRows[0].querySelector('.icon-box-img img')?.getAttribute('class')).toBe(
+      'attachment-medium size-medium',
+    );
 
     // Verify slide 1 and 2 ids
     expect(slideRows[1].getAttribute('id')).toBe('row-693377910');
@@ -186,6 +189,27 @@ describe('Testimonials component', () => {
     const allIds = root.querySelectorAll('[id]').map((el) => el.getAttribute('id')!);
     const uniqueIds = new Set(allIds);
     expect(uniqueIds.size).toBe(allIds.length);
+  });
+
+  it('restores title line breaks and names the carousel region after the title', () => {
+    const html = renderToStaticMarkup(
+      <Testimonials
+        testimonials={mockTestimonials}
+        avatars={mockAvatars}
+        copy={{ ...mockCopy, titleLines: ['Khách hàng nhận xét', 'về chúng tôi'] }}
+        art={mockArt}
+        ids={TESTIMONIALS_IDS_VI}
+        labels={TESTIMONIALS_LABELS.vi}
+      />,
+    );
+    const root = parse(html);
+
+    expect(root.querySelector('#text-4267280504 h2')?.innerHTML).toBe(
+      'Khách hàng nhận xét <br>về chúng tôi',
+    );
+    expect(root.querySelector('#slider-1717467276 [aria-label]')?.getAttribute('aria-label')).toBe(
+      mockCopy.title,
+    );
   });
 
   it('renders with EN ids for English locale', () => {

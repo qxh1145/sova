@@ -2,7 +2,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Carousel } from '@/components/ui/Carousel';
-import { TestimonialCard } from '@/components/testimonials/TestimonialCard';
+import { TestimonialsSlider } from '@/components/testimonials/Testimonials';
+import { getHomePage } from '@/lib/queries/pages';
 import { mockRepository } from '@/lib/repositories/mock';
 import { FIXTURE_CAROUSEL_LABELS } from './constants';
 import '@/styles/legacy/sections/route-root.css';
@@ -42,35 +43,22 @@ export default async function FixtureCarouselPage({
       ['testimonial-feedback-ten', 'testimonial-feedback-dong-a', 'testimonial-feedback-vinatex'],
       'vi',
     );
-    const avatarIds = list.map((t) => t.avatarId).filter(Boolean) as string[];
-    const assets = await mockRepository.getAssets(avatarIds);
-    const assetMap = new Map(assets.map((a) => [a.id, a]));
+    const [assets, home] = await Promise.all([
+      mockRepository.getAssets(list.map((t) => t.avatarId).filter(Boolean) as string[]),
+      getHomePage('vi', mockRepository),
+    ]);
+    if (!home) notFound();
     const items = isSingle ? list.slice(0, 1) : list;
 
     return (
       <>
-        <div className="slider-wrapper relative slide-kh" id="slider-1717467276">
-          <Carousel
-            className="slider slider-nav-simple slider-nav-large slider-nav-light slider-style-normal slider-show-nav"
-            align="center"
-            loop
-            autoplayMs={6000}
-            pauseOnHover
-            adaptiveHeight
-            arrows
-            dots
-            dragThreshold={10}
-            labels={FIXTURE_CAROUSEL_LABELS}
-          >
-            {items.map((t) => (
-              <TestimonialCard
-                key={t.id}
-                testimonial={t}
-                avatar={t.avatarId ? assetMap.get(t.avatarId) : undefined}
-              />
-            ))}
-          </Carousel>
-        </div>
+        <TestimonialsSlider
+          testimonials={items}
+          avatars={assets}
+          lineArt={home.testimonialArt.line}
+          id="slider-1717467276"
+          labels={FIXTURE_CAROUSEL_LABELS}
+        />
         {/* Client-side navigation target for the unmount/cleanup e2e check. */}
         <Link href="/dev-fixtures/carousel/thp-gallery" data-testid="fixture-client-nav" />
       </>
