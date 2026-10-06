@@ -41,15 +41,9 @@ export async function installRafCounter(page: Page) {
     };
     const target = window as unknown as {
       __getRafCount: () => number;
-      __getRafCalls: () => number;
-      __resetRafCalls: () => void;
       __resetRafCount: () => void;
     };
     target.__getRafCount = () => count;
-    target.__getRafCalls = () => count;
-    target.__resetRafCalls = () => {
-      count = 0;
-    };
     target.__resetRafCount = () => {
       count = 0;
     };

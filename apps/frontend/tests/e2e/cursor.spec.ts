@@ -179,10 +179,10 @@ test.describe('Custom cursor island', () => {
     await expect(page.locator('.custom-cursor')).toHaveCount(1);
 
     // Measure initial RAF loop rate
-    await page.evaluate(() => (window as unknown as { __resetRafCalls: () => void }).__resetRafCalls());
+    await page.evaluate(() => (window as unknown as { __resetRafCount: () => void }).__resetRafCount());
     await page.waitForTimeout(200);
     const initialRate = await page.evaluate(() =>
-      (window as unknown as { __getRafCalls: () => number }).__getRafCalls(),
+      (window as unknown as { __getRafCount: () => number }).__getRafCount(),
     );
     expect(initialRate).toBeGreaterThan(0);
 
@@ -195,10 +195,10 @@ test.describe('Custom cursor island', () => {
     await expect(page.locator('.custom-cursor')).toHaveCount(1);
 
     // Measure RAF rate after navigation
-    await page.evaluate(() => (window as unknown as { __resetRafCalls: () => void }).__resetRafCalls());
+    await page.evaluate(() => (window as unknown as { __resetRafCount: () => void }).__resetRafCount());
     await page.waitForTimeout(200);
     const postRate = await page.evaluate(() =>
-      (window as unknown as { __getRafCalls: () => number }).__getRafCalls(),
+      (window as unknown as { __getRafCount: () => number }).__getRafCount(),
     );
 
     // Single RAF loop persists without spawning an extra loop

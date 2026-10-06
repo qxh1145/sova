@@ -33,6 +33,7 @@ test.describe('Mobile menu drawer and accordion navigation', () => {
     const trigger = page.locator('.flex-col.show-for-medium a[aria-controls="main-menu"]');
     await expect(trigger).toBeVisible();
     await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    await expect(trigger).toHaveAttribute('aria-haspopup', 'dialog');
 
     await trigger.focus();
     await page.keyboard.press('Enter');
@@ -63,6 +64,7 @@ test.describe('Mobile menu drawer and accordion navigation', () => {
     const trigger = page.locator('.flex-col.hide-for-medium a[aria-controls="main-menu"]');
     await expect(trigger).toBeVisible();
     await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    await expect(trigger).toHaveAttribute('aria-haspopup', 'dialog');
 
     await trigger.focus();
     await page.keyboard.press('Enter');
