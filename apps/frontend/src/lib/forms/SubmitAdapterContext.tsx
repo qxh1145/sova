@@ -5,7 +5,7 @@ import { defaultSubmitAdapter } from './mock-transport';
 import type { SubmitAdapter } from './transport';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SubmitAdapterContext = createContext<SubmitAdapter<any> | null>(null);
+const SubmitAdapterContext = createContext<SubmitAdapter<any> | undefined>(undefined);
 
 export interface SubmitAdapterProviderProps<T = unknown> {
   adapter?: SubmitAdapter<T>;
@@ -18,7 +18,7 @@ export function SubmitAdapterProvider<T = unknown>({
 }: SubmitAdapterProviderProps<T>) {
   return (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    <SubmitAdapterContext.Provider value={(adapter as SubmitAdapter<any>) ?? null}>
+    <SubmitAdapterContext.Provider value={adapter as SubmitAdapter<any>}>
       {children}
     </SubmitAdapterContext.Provider>
   );

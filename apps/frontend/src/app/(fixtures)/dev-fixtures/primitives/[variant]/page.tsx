@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { FAQList } from '@/components/faq/FAQList';
 import { Tabs } from '@/components/ui/Tabs';
-import { Pagination } from '@/components/ui/Pagination.tsx';
+import { Pagination } from '@/components/ui/Pagination';
 import { getFAQTopics, getPlacedFAQs } from '@/lib/queries/faq';
 import { createMockRepository, defaultContentData } from '@/lib/repositories/mock';
 import type { Locale } from '@/types/content';

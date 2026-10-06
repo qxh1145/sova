@@ -75,8 +75,6 @@ test.describe('Carousel source parity comparison', () => {
       description: JSON.stringify(record, null, 2),
     });
 
-    console.log('PARITY RECORD [testimonials]:', JSON.stringify(record, null, 2));
-
     expect(sovaMetrics.slider).not.toBeNull();
     expect(sovaMetrics.firstSlide).not.toBeNull();
     expect(sovaMetrics.prevButton).not.toBeNull();
@@ -119,6 +117,8 @@ test.describe('Carousel source parity comparison', () => {
       const prevBtn = document.querySelector('#slider-duan .flickity-prev-next-button.previous');
       const nextBtn = document.querySelector('#slider-duan .flickity-prev-next-button.next');
       const dot = document.querySelector('#slider-duan .flickity-page-dots .dot');
+      const secondSlide = document.querySelector('#slider-duan .flickity-slider > :nth-child(2)');
+      const secondTransform = secondSlide ? window.getComputedStyle(secondSlide).transform : null;
 
       const sRect = slider?.getBoundingClientRect();
       const fRect = firstSlide?.getBoundingClientRect();
@@ -132,6 +132,7 @@ test.describe('Carousel source parity comparison', () => {
         prevButton: pRect ? { width: pRect.width, height: pRect.height } : null,
         nextButton: nRect ? { width: nRect.width, height: nRect.height } : null,
         dot: dRect ? { width: dRect.width, height: dRect.height } : null,
+        secondTransform,
       };
     });
 
@@ -150,11 +151,11 @@ test.describe('Carousel source parity comparison', () => {
       description: JSON.stringify(record, null, 2),
     });
 
-    console.log('PARITY RECORD [thp-gallery]:', JSON.stringify(record, null, 2));
-
     expect(sovaMetrics.slider).not.toBeNull();
     expect(sovaMetrics.firstSlide).not.toBeNull();
     expect(sovaMetrics.firstSlide!.width).toBeCloseTo(1050, -1);
+    // Probe C6: .slider-style-focus non-selected peek cell retains scale(0.93) transform
+    expect(sovaMetrics.secondTransform).toBe('matrix(0.93, 0, 0, 0.93, 0, 0)');
   });
 
   test('Mobile pricing geometry comparison against eras-clone source', async ({ page }) => {
@@ -224,8 +225,6 @@ test.describe('Carousel source parity comparison', () => {
       type: 'parity-measurement',
       description: JSON.stringify(record, null, 2),
     });
-
-    console.log('PARITY RECORD [pricing-mobile]:', JSON.stringify(record, null, 2));
 
     expect(sovaMetrics.slider).not.toBeNull();
     expect(sovaMetrics.firstSlide).not.toBeNull();

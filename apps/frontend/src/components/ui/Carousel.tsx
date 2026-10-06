@@ -222,12 +222,9 @@ export function Carousel({
       if (typeof goTo === 'function') {
         return goTo(index);
       }
-      if (typeof goTo === 'string') {
-        return goTo.includes('{index}')
-          ? goTo.replace('{index}', String(index))
-          : `${goTo} ${index}`;
-      }
-      return `${index}`;
+      return goTo.includes('{index}')
+        ? goTo.replace('{index}', String(index))
+        : `${goTo} ${index}`;
     },
     [goTo],
   );

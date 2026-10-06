@@ -46,8 +46,10 @@ export function shellOverlayReducer(
         ...state,
         trigger: null,
       };
-    default:
-      return state;
+    default: {
+      const _exhaustive: never = action;
+      return _exhaustive;
+    }
   }
 }
 
