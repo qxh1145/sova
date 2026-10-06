@@ -1,17 +1,15 @@
 'use client';
 
 import { useEffect, useRef, type ReactNode } from 'react';
-import { nextStuck } from './stickyThreshold.ts';
+import { nextStuck } from './stickyThreshold';
 
 export interface HeaderMotionProps {
-  className?: string;
   children: ReactNode;
 }
 
-export function HeaderMotion({
-  className = 'header transparent has-transparent has-sticky sticky-jump',
-  children,
-}: HeaderMotionProps) {
+const HEADER_CLASS = 'header transparent has-transparent has-sticky sticky-jump';
+
+export function HeaderMotion({ children }: HeaderMotionProps) {
   const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -62,7 +60,7 @@ export function HeaderMotion({
   }, []);
 
   return (
-    <header id="header" ref={headerRef} className={className}>
+    <header id="header" ref={headerRef} className={HEADER_CLASS}>
       {children}
     </header>
   );

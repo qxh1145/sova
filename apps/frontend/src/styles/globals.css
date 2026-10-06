@@ -35,3 +35,78 @@ html.has-custom-cursor .cursor-ring {
   display: block;
 }
 
+.banner h1.home-hero-heading,
+.home-hero-heading {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  line-height: 1.2 !important;
+}
+
+@media (max-width: 549px) {
+  .banner h1.home-hero-heading,
+  .home-hero-heading {
+    align-items: center;
+    text-align: center;
+    font-size: clamp(16px, 4.2vw, 22px) !important;
+  }
+}
+
+@media (min-width: 550px) and (max-width: 767px) {
+  .banner h1.home-hero-heading,
+  .home-hero-heading {
+    align-items: flex-start;
+    text-align: left;
+    font-size: clamp(16px, 3vw, 22px) !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .banner h1.home-hero-heading,
+  .home-hero-heading {
+    align-items: flex-start;
+    text-align: left;
+    font-size: clamp(22px, 2.9vw, 34px) !important;
+  }
+}
+
+@media (min-width: 1200px) {
+  .banner h1.home-hero-heading,
+  .home-hero-heading {
+    align-items: flex-start;
+    text-align: left;
+    font-size: clamp(32px, 2.5vw, 36px) !important;
+  }
+}
+
+.home-hero-cta {
+  color: #fff !important;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.3s;
+}
+
+.home-hero-cta:hover {
+  opacity: 0.8;
+}
+
+@media (max-width: 549px) {
+  .link_banner {
+    text-align: center;
+  }
+}
+
+.home-stats-heading h2 {
+  font-size: 1.6rem;
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.home-stats-heading p {
+  font-size: 0.9rem;
+  color: #fff;
+  opacity: 0.9;
+}
+

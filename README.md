@@ -57,6 +57,32 @@ npm run baseline:sova     # cần `npm run build` trước: khởi động `next
 2. Trên Vercel: Import repo, đặt **Root Directory = `apps/frontend`**, framework Next.js, không cần env vars. Mở staging URL và kiểm tra hiển thị "Sova".
 3. Không commit token/secret Vercel hoặc GitHub vào repo.
 
+## Nghiệm thu Staging (Staging acceptance)
+
+Chạy bộ test nghiệm thu staging trỏ trực tiếp vào Vercel (hoặc staging server):
+
+```bash
+cd apps/frontend
+STAGING_URL=https://<staging-app>.vercel.app npm run test:e2e:staging
+```
+
+Nếu staging bật Vercel Deployment Protection:
+
+```bash
+STAGING_URL=https://<staging-app>.vercel.app VERCEL_AUTOMATION_BYPASS_SECRET=<secret> npm run test:e2e:staging
+```
+
+- **Biến môi trường**:
+  - `STAGING_URL`: Origin staging. Khi được đặt, Playwright không khởi động `webServer` local, dùng `STAGING_URL` làm `baseURL`, và network guard chỉ cho phép duy nhất hostname staging này cùng Google Maps allowlist.
+  - `VERCEL_AUTOMATION_BYPASS_SECRET`: Secret bảo vệ preview Vercel (gửi qua header `x-vercel-protection-bypass`). Tuyệt đối không commit secret vào git.
+- **Phạm vi Staging vs Local**:
+  - _Staging-only_: Kiểm tra HTTP 404 cho `/dev-fixtures/shell/default/` (chứng minh dev fixtures không bị lộ trong production build); kiểm tra network guard với staging hostname thực tế.
+  - _Local-only_: Demo error state form tư vấn (được kiểm chứng qua fixture `consult-error` ở local do mock transport trên route thật luôn trả về success).
+- **Screenshots**:
+  - Ảnh chụp viewport ở 8 kích thước (390, 549, 550, 768, 849, 850, 1280, 1440) được đính kèm trong `apps/frontend/test-results/`.
+- **Bảng nghiệm thu**:
+  - Ghi nhận kết quả chạy staging vào bảng 16 dòng (8 kích thước × 2 ngôn ngữ) tại `docs/SHELL_ACCEPTANCE.md`.
+
 ## Quy trình phân nhánh Git (Branching Workflow)
 
 - `main`: Nhánh production. Chỉ merge từ `develop` khi code đã được kiểm thử ổn định (stable) và toàn bộ CI xanh.

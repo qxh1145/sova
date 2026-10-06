@@ -1,4 +1,3 @@
-import type { Page } from '@playwright/test';
 import { expect, test } from './fixtures';
 
 test.describe('Accordion primitive and shared FAQ list', () => {

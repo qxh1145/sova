@@ -11,6 +11,7 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:e2e:staging": "playwright test acceptance guard smoke",
     "baseline": "playwright test -c playwright.baseline.config.ts capture.spec",
     "baseline:compare": "playwright test -c playwright.baseline.config.ts compare.spec",
     "baseline:hash": "playwright test -c playwright.baseline.config.ts source-hash.spec",
@@ -23,6 +24,7 @@
     "verify:assets": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/assets.ts --verify"
   },
   "dependencies": {
+    "@gsap/react": "2.1.2",
     "@hookform/resolvers": "5.9.1",
     "@radix-ui/react-accordion": "1.2.20",
     "@radix-ui/react-dialog": "1.1.23",
@@ -31,6 +33,7 @@
     "embla-carousel-auto-height": "8.6.0",
     "embla-carousel-autoplay": "8.6.0",
     "embla-carousel-react": "8.6.0",
+    "gsap": "3.15.0",
     "next": "16.3.8",
     "react": "19.3.0",
     "react-dom": "19.3.0",

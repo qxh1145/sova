@@ -24,7 +24,7 @@ export interface FormFieldProps {
   labelClassName?: string;
   className?: string;
   wrapClassName?: string;
-  error?: string | ReactNode;
+  error?: ReactNode;
   as?: ElementType;
   children: ReactElement | ((props: FormFieldControlProps) => ReactNode);
 }

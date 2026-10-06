@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import type { SubmitResult } from '@/types/content';
 import { submitStatusReducer, type SubmitState } from './useSubmitStatus';
 
 describe('submitStatusReducer', () => {
@@ -7,102 +6,48 @@ describe('submitStatusReducer', () => {
 
   it('transitions from idle to submitting on SUBMIT_START', () => {
     const next = submitStatusReducer(idleState, { type: 'SUBMIT_START' });
-    expect(next).toEqual({
-      status: 'submitting',
-      result: undefined,
-      error: undefined,
-    });
-  });
-
-  it('ignores submit while submitting', () => {
-    const submittingState: SubmitState = { status: 'submitting' };
-    const next = submitStatusReducer(submittingState, { type: 'SUBMIT_START' });
-    expect(next).toBe(submittingState);
+    expect(next).toEqual({ status: 'submitting' });
   });
 
   it('transitions from submitting to demo-success on successful mock result', () => {
     const submittingState: SubmitState = { status: 'submitting' };
-    const result: SubmitResult = {
-      mode: 'mock',
-      outcome: 'success',
-      message: 'success',
-    };
     const next = submitStatusReducer(submittingState, {
       type: 'SUBMIT_SUCCESS',
-      result,
+      outcome: 'success',
     });
 
-    expect(next).toEqual({
-      status: 'demo-success',
-      result,
-      error: undefined,
-    });
+    expect(next).toEqual({ status: 'demo-success' });
   });
 
   it('transitions from submitting to demo-error on mock error result', () => {
     const submittingState: SubmitState = { status: 'submitting' };
-    const result: SubmitResult = {
-      mode: 'mock',
-      outcome: 'error',
-      message: 'error',
-    };
     const next = submitStatusReducer(submittingState, {
       type: 'SUBMIT_SUCCESS',
-      result,
+      outcome: 'error',
     });
 
-    expect(next).toEqual({
-      status: 'demo-error',
-      result,
-      error: undefined,
-    });
+    expect(next).toEqual({ status: 'demo-error' });
   });
 
   it('transitions to demo-error on SUBMIT_ERROR action', () => {
     const submittingState: SubmitState = { status: 'submitting' };
-    const err = new Error('Network error');
-    const result: SubmitResult = {
-      mode: 'mock',
-      outcome: 'error',
-      message: 'Network error',
-    };
     const next = submitStatusReducer(submittingState, {
       type: 'SUBMIT_ERROR',
-      error: err,
-      result,
     });
 
-    expect(next).toEqual({
-      status: 'demo-error',
-      result,
-      error: err,
-    });
+    expect(next).toEqual({ status: 'demo-error' });
   });
 
   it('allows resubmit from demo-error (form stays editable, resubmit allowed)', () => {
-    const errorState: SubmitState = {
-      status: 'demo-error',
-      result: { mode: 'mock', outcome: 'error', message: 'error' },
-    };
+    const errorState: SubmitState = { status: 'demo-error' };
     const next = submitStatusReducer(errorState, { type: 'SUBMIT_START' });
-    expect(next).toEqual({
-      status: 'submitting',
-      result: undefined,
-      error: undefined,
-    });
+    expect(next).toEqual({ status: 'submitting' });
   });
 
   it('resets to idle on RESET', () => {
-    const errorState: SubmitState = {
-      status: 'demo-error',
-      result: { mode: 'mock', outcome: 'error', message: 'error' },
-    };
+    const errorState: SubmitState = { status: 'demo-error' };
     const next = submitStatusReducer(errorState, { type: 'RESET' });
-    expect(next).toEqual({
-      status: 'idle',
-      result: undefined,
-      error: undefined,
-    });
+    expect(next).toEqual({ status: 'idle' });
   });
 });
 
@@ -157,7 +102,7 @@ describe('useSubmitStatus', () => {
 
     let hookResult!: ReturnType<typeof useSubmitStatus>;
     let adapterCalls = 0;
-    const failingAdapter = async (): Promise<SubmitResult> => {
+    const failingAdapter = async () => {
       adapterCalls++;
       throw new Error('boom');
     };

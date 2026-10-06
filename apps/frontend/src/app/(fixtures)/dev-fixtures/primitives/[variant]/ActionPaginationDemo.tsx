@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Pagination, type PaginationLabels } from '@/components/ui/Pagination.tsx';
+import { Pagination, type PaginationLabels } from '@/components/ui/Pagination';
 
 export interface ActionPaginationDemoProps {
   labels: PaginationLabels;

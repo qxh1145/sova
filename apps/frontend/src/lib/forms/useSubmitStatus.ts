@@ -9,14 +9,12 @@ export type SubmitStatus = 'idle' | 'submitting' | 'demo-success' | 'demo-error'
 
 export interface SubmitState {
   status: SubmitStatus;
-  result?: SubmitResult;
-  error?: unknown;
 }
 
 export type SubmitAction =
   | { type: 'SUBMIT_START' }
-  | { type: 'SUBMIT_SUCCESS'; result: SubmitResult }
-  | { type: 'SUBMIT_ERROR'; error?: unknown; result?: SubmitResult }
+  | { type: 'SUBMIT_SUCCESS'; outcome: SubmitResult['outcome'] }
+  | { type: 'SUBMIT_ERROR' }
   | { type: 'RESET' };
 
 export function submitStatusReducer(
@@ -25,42 +23,23 @@ export function submitStatusReducer(
 ): SubmitState {
   switch (action.type) {
     case 'SUBMIT_START':
-      // Ignores submit while already submitting
-      if (state.status === 'submitting') {
-        return state;
-      }
+      return { status: 'submitting' };
+
+    case 'SUBMIT_SUCCESS':
       return {
-        status: 'submitting',
-        result: undefined,
-        error: undefined,
+        status: action.outcome === 'error' ? 'demo-error' : 'demo-success',
       };
 
-    case 'SUBMIT_SUCCESS': {
-      const outcome = action.result.outcome;
-      return {
-        status: outcome === 'error' ? 'demo-error' : 'demo-success',
-        result: action.result,
-        error: undefined,
-      };
-    }
-
-    case 'SUBMIT_ERROR': {
-      return {
-        status: 'demo-error',
-        result: action.result,
-        error: action.error,
-      };
-    }
+    case 'SUBMIT_ERROR':
+      return { status: 'demo-error' };
 
     case 'RESET':
-      return {
-        status: 'idle',
-        result: undefined,
-        error: undefined,
-      };
+      return { status: 'idle' };
 
-    default:
-      return state;
+    default: {
+      const _exhaustive: never = action;
+      return _exhaustive;
+    }
   }
 }
 
@@ -72,7 +51,7 @@ export function useSubmitStatus<T = unknown>(adapter?: SubmitAdapter<T>) {
 
   const submit = useCallback(
     async (values: T): Promise<SubmitResult | undefined> => {
-      if (isSubmittingRef.current || state.status === 'submitting') {
+      if (isSubmittingRef.current) {
         return undefined;
       }
       isSubmittingRef.current = true;
@@ -80,7 +59,7 @@ export function useSubmitStatus<T = unknown>(adapter?: SubmitAdapter<T>) {
       const submitAdapter = adapter ?? defaultSubmitAdapter;
       try {
         const result = await submitAdapter(values);
-        dispatch({ type: 'SUBMIT_SUCCESS', result });
+        dispatch({ type: 'SUBMIT_SUCCESS', outcome: result.outcome });
         return result;
       } catch (err) {
         const errorResult: SubmitResult = {
@@ -88,13 +67,13 @@ export function useSubmitStatus<T = unknown>(adapter?: SubmitAdapter<T>) {
           outcome: 'error',
           message: err instanceof Error ? err.message : 'Unknown error',
         };
-        dispatch({ type: 'SUBMIT_ERROR', error: err, result: errorResult });
+        dispatch({ type: 'SUBMIT_ERROR' });
         return errorResult;
       } finally {
         isSubmittingRef.current = false;
       }
     },
-    [adapter, state.status],
+    [adapter],
   );
 
   const reset = useCallback(() => {
@@ -104,8 +83,6 @@ export function useSubmitStatus<T = unknown>(adapter?: SubmitAdapter<T>) {
 
   return {
     status: state.status,
-    result: state.result,
-    error: state.error,
     isSubmitting: state.status === 'submitting',
     submit,
     reset,

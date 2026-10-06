@@ -120,6 +120,9 @@ function createRawRepository(data: ContentData): ContentRepository {
     async getProject(slug) {
       return data.projects.find((p) => p.slug === slug) ?? null;
     },
+    async getProjectCategories() {
+      return data.projectCategories;
+    },
     async listProjects({ category, page, pageSize }) {
       const categoryIds = data.projectCategories
         .filter((c) => c.slug === category)
