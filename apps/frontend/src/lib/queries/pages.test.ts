@@ -9,6 +9,7 @@ import { homePages } from '@/data/pages/home';
 import { legalPages, paymentGuides } from '@/data/pages/legal';
 import { partners } from '@/data/partners';
 import { posts } from '@/data/posts';
+import { projectCategories } from '@/data/project-categories';
 import { projects } from '@/data/projects';
 import { websitePricing } from '@/data/pricing/website';
 import { brandingServices } from '@/data/services/branding';
@@ -22,7 +23,7 @@ import { stats } from '@/data/stats';
 import { testimonials } from '@/data/testimonials';
 import type { ContactPageContent, SiteSettings } from '@/types/content';
 import { getFAQs } from './faq';
-import { getContactPage, getHomePage, getLegalPage, getPaymentGuide } from './pages';
+import { getContactPage, getHomeAssets, getHomePage, getLegalPage, getPaymentGuide } from './pages';
 import { getPost } from './posts';
 import { getPricing, getService, getServicePage } from './services';
 import { getNavigation } from './site';
@@ -243,4 +244,65 @@ test('navigation resolves without tokens left', async () => {
   const nav = await getNavigation('en');
   expect(nav.serviceOptions).toHaveLength(6);
   expect(JSON.stringify(nav)).not.toContain('{{site.');
+});
+
+test('getHomeAssets resolves video, projects, categories, partners, testimonials, and posts in order', async () => {
+  repository = repoWith({ projectCategories });
+  const home = await getHomePage('vi');
+  expect(home).not.toBeNull();
+  const result = await getHomeAssets(home);
+
+  expect(result.videoAsset?.id).toBe(home!.hero.videoId);
+  expect(result.projectAssets.map((a) => a.id)).toEqual(
+    home!.projects.map((p) => p.galleryIds[0]).filter(Boolean),
+  );
+  expect(result.projectCategories.map((c) => c.id)).toEqual(projectCategories.map((c) => c.id));
+  expect(result.partnerAssets.map((a) => a.id)).toEqual(home!.partners.map((p) => p.logoId));
+  expect(result.testimonialAssets.map((a) => a.id)).toEqual(
+    home!.testimonials.map((t) => t.avatarId).filter(Boolean),
+  );
+  expect(result.postAssets.map((a) => a.id)).toEqual(
+    home!.posts.map((p) => p.thumbnailId).filter(Boolean),
+  );
+});
+
+test('getHomeAssets handles null content and missing hero video gracefully', async () => {
+  repository = repoWith();
+  const nullResult = await getHomeAssets(null);
+  expect(nullResult).toEqual({
+    videoAsset: null,
+    projectAssets: [],
+    projectCategories: [],
+    partnerAssets: [],
+    testimonialAssets: [],
+    postAssets: [],
+  });
+
+  const home = await getHomePage('vi');
+  expect(home).not.toBeNull();
+  const noVideoHome = {
+    ...home!,
+    hero: { ...home!.hero, videoId: undefined },
+  };
+  const result = await getHomeAssets(noVideoHome);
+  expect(result.videoAsset).toBeNull();
+  expect(result.projectAssets.length).toBeGreaterThan(0);
+});
+
+test('getHomeAssets reads assets from the repository it is given', async () => {
+  repository = repoWith({ homePages: [] });
+  const customRepo = repoWith();
+  const home = await getHomePage('vi', customRepo);
+  expect(home).not.toBeNull();
+
+  const getAssetsSpy = vi.spyOn(customRepo, 'getAssets');
+  const getCategoriesSpy = vi.spyOn(customRepo, 'getProjectCategories');
+  const result = await getHomeAssets(home, customRepo);
+
+  expect(result.videoAsset?.id).toBe(home!.hero.videoId);
+  expect(getAssetsSpy).toHaveBeenCalledWith([home!.hero.videoId]);
+  expect(getAssetsSpy).toHaveBeenCalledWith(
+    home!.projects.map((p) => p.galleryIds[0]).filter(Boolean),
+  );
+  expect(getCategoriesSpy).toHaveBeenCalledOnce();
 });

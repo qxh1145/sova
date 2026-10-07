@@ -7,7 +7,7 @@ import { useGSAP } from '@gsap/react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== 'production' || process.env.NEXT_PUBLIC_E2E === '1') {
     (window as unknown as { ScrollTrigger?: typeof ScrollTrigger }).ScrollTrigger = ScrollTrigger;
   }
 }
@@ -87,15 +87,14 @@ export function HorizontalProjects({ children }: HorizontalProjectsProps) {
               ScrollTrigger.refresh();
             }
           };
-          if (!img.complete) {
-            img.onload = onDone;
-            img.onerror = onDone;
-            cleanups.push(() => {
-              img.onload = null;
-              img.onerror = null;
-            });
-          }
+          img.onload = onDone;
+          img.onerror = onDone;
+          cleanups.push(() => {
+            img.onload = null;
+            img.onerror = null;
+          });
           img.src = match[1];
+          if (img.complete) onDone();
         }
       });
 

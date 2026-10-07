@@ -5,18 +5,12 @@ import { useEffect, useRef, useState } from 'react';
 export interface StatCounterProps {
   value: number;
   minDigits?: number;
-  durationMs?: number;
-  className?: string;
 }
 
+const DURATION_MS = 2000;
 const formatDigits = (v: number, minDigits: number) => String(v).padStart(minDigits, '0');
 
-export function StatCounter({
-  value,
-  minDigits = 2,
-  durationMs = 2000,
-  className = '',
-}: StatCounterProps) {
+export function StatCounter({ value, minDigits = 2 }: StatCounterProps) {
   const [display, setDisplay] = useState(() => formatDigits(value, minDigits));
   const elRef = useRef<HTMLSpanElement>(null);
   const animatedRef = useRef(false);
@@ -42,7 +36,7 @@ export function StatCounter({
           const step = (timestamp: number) => {
             if (startTimestamp === null) startTimestamp = timestamp;
             const elapsed = timestamp - startTimestamp;
-            const progress = Math.min(elapsed / durationMs, 1);
+            const progress = Math.min(elapsed / DURATION_MS, 1);
             // ease-out cubic
             const easeOut = 1 - Math.pow(1 - progress, 3);
             const current = Math.round(easeOut * value);
@@ -70,10 +64,10 @@ export function StatCounter({
         cancelAnimationFrame(rafId);
       }
     };
-  }, [value, minDigits, durationMs]);
+  }, [value, minDigits]);
 
   return (
-    <span ref={elRef} className={`count-up active ${className}`.trim()}>
+    <span ref={elRef} className="count-up active">
       {display}
     </span>
   );

@@ -1,4 +1,4 @@
-import { expect, test } from './fixtures';
+import { expect, KNOWN_ABSENT_CSS_ASSETS, test } from './fixtures';
 
 test.describe('Floating contacts and mobile contact bar', () => {
   test('Mobile 390px (VI): bar visible with 5 links, localized labels; widget button visible', async ({
@@ -265,7 +265,13 @@ test.describe('Floating contacts and mobile contact bar', () => {
     page.on('pageerror', (err) => consoleErrors.push(err.message));
     page.on('response', (res) => {
       // Link prefetches of routes later epics build (`?_rsc=`) 404 today; anything else is a real failure
-      if (res.status() >= 400 && !res.url().includes('_rsc=')) failedResponses.push(res.url());
+      if (
+        res.status() >= 400 &&
+        !res.url().includes('_rsc=') &&
+        !KNOWN_ABSENT_CSS_ASSETS.has(new URL(res.url()).pathname)
+      ) {
+        failedResponses.push(res.url());
+      }
     });
 
     await page.goto('/');

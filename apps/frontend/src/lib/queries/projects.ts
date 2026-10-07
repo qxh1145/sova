@@ -19,4 +19,3 @@ export function getProjectCategories(
 ): Promise<ProjectCategory[]> {
   return repository.getProjectCategories();
 }
-

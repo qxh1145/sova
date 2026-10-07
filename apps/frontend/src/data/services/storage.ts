@@ -93,8 +93,16 @@ export const storageServices: Service[] = [
     ],
     sectionCopy: {
       offerings: { eyebrow: 'Sova cung cấp', title: 'Các dịch vụ lưu trữ' },
-      projects: { eyebrow: 'Sova', title: 'Dự án chứa đựng Tâm huyết Sáng tạo' },
-      testimonials: { eyebrow: 'Sova', title: 'Khách hàng nhận xét về chúng tôi' },
+      projects: {
+        eyebrow: 'Sova',
+        title: 'Dự án chứa đựng Tâm huyết Sáng tạo',
+        titleLines: ['Dự án chứa đựng', 'Tâm huyết Sáng tạo'],
+      },
+      testimonials: {
+        eyebrow: 'Sova',
+        title: 'Khách hàng nhận xét về chúng tôi',
+        titleLines: ['Khách hàng nhận xét', 'về chúng tôi'],
+      },
       faq: { title: 'Những câu hỏi thường gặp' },
     },
   },
@@ -182,7 +190,11 @@ export const storageServices: Service[] = [
     ],
     sectionCopy: {
       offerings: { eyebrow: 'Sova provides', title: 'Storage Services' },
-      projects: { eyebrow: 'Sova', title: 'Some Recent Works We’re Really Proud Of.' },
+      projects: {
+        eyebrow: 'Sova',
+        title: 'Some Recent Works We’re Really Proud Of.',
+        titleLines: ['Some Recent Works', 'We’re Really Proud Of.'],
+      },
       testimonials: { eyebrow: 'Sova', title: 'Customer Reviews' },
       faq: { title: 'Frequently Asked Questions' },
     },

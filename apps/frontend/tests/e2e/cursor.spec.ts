@@ -159,12 +159,16 @@ test.describe('Custom cursor island', () => {
     await installRafCounter(page);
 
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('/');
+    // EN home has no GSAP island; VI home's ScrollTrigger ticker keeps its own rAF running.
+    await page.goto('/en/home/');
 
     await expect(page.locator('body')).toHaveCSS('cursor', 'auto');
     await expect(page.locator('.custom-cursor')).toHaveCSS('display', 'none');
     await expect(page.locator('.custom-cursor')).not.toBeVisible();
 
+    await page.evaluate(() => {
+      (window as unknown as { __resetRafCount: () => void }).__resetRafCount();
+    });
     await page.waitForTimeout(100);
     const rafCalls = await page.evaluate(() =>
       (window as unknown as { __getRafCount: () => number }).__getRafCount(),

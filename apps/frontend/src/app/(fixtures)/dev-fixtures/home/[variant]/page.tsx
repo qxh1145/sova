@@ -1,16 +1,16 @@
 import { notFound } from 'next/navigation';
 import { SiteShell } from '@/components/layout/SiteShell';
 import { HomeView } from '@/components/home/HomeView';
+import { FeaturedProjects } from '@/components/projects/FeaturedProjects';
 import { getShellProps } from '@/lib/queries/site';
-import { getHomePage } from '@/lib/queries/pages';
-import { getAssets } from '@/lib/queries/assets';
-import { getProjectCategories } from '@/lib/queries/projects';
+import { getHomeAssets, getHomePage } from '@/lib/queries/pages';
 import { createScenarioRepository } from '@/dev/scenarios';
 import type { Locale } from '@/types/content';
+import { UnmountToggle } from './UnmountToggle';
 
 export const dynamic = 'force-dynamic';
 
-const VALID_VARIANTS = new Set(['empty', 'error']);
+const VALID_VARIANTS = new Set(['empty', 'error', 'missing-media', 'unmount']);
 
 export default async function DevFixtureHomePage({
   params,
@@ -31,46 +31,39 @@ export default async function DevFixtureHomePage({
   const { locale: rawLocale } = (await searchParams) ?? {};
   const locale: Locale = rawLocale === 'en' ? 'en' : 'vi';
 
+  // Real VI projects inside a client toggle: e2e unmounts the island without navigating.
+  if (variant === 'unmount') {
+    const home = await getHomePage('vi');
+    if (!home) notFound();
+    const { projectAssets, projectCategories } = await getHomeAssets(home);
+    return (
+      <UnmountToggle>
+        <FeaturedProjects
+          projects={home.projects}
+          copy={home.sectionCopy.projects}
+          assets={projectAssets}
+          categories={projectCategories}
+        />
+      </UnmountToggle>
+    );
+  }
+
   // The error repository rejects, so getHomePage throws into the sibling error.tsx.
   if (variant === 'error') {
     await getHomePage(locale, createScenarioRepository('error'));
   }
 
-  const emptyRepo = createScenarioRepository('empty');
+  const repo = createScenarioRepository(variant === 'missing-media' ? 'missing-media' : 'empty');
   const [shell, content] = await Promise.all([
-    getShellProps(locale, emptyRepo),
-    getHomePage(locale, emptyRepo),
+    getShellProps(locale, repo),
+    getHomePage(locale, repo),
   ]);
 
-  const [videoAsset] = content?.hero.videoId
-    ? await getAssets([content.hero.videoId], emptyRepo)
-    : [];
-  const galleryAssetIds = (content?.projects ?? [])
-    .map((p) => p.galleryIds[0])
-    .filter((id): id is string => Boolean(id));
-  const partnerLogoIds = (content?.partners ?? []).map((p) => p.logoId);
-  const testimonialAvatarIds = (content?.testimonials ?? [])
-    .map((t) => t.avatarId)
-    .filter((id): id is string => Boolean(id));
-  const [projectAssets, categories, partnerAssets, testimonialAssets] = await Promise.all([
-    galleryAssetIds.length ? getAssets(galleryAssetIds, emptyRepo) : Promise.resolve([]),
-    getProjectCategories(emptyRepo),
-    partnerLogoIds.length ? getAssets(partnerLogoIds, emptyRepo) : Promise.resolve([]),
-    testimonialAvatarIds.length ? getAssets(testimonialAvatarIds, emptyRepo) : Promise.resolve([]),
-  ]);
+  const homeAssets = await getHomeAssets(content, repo);
 
   return (
     <SiteShell {...shell}>
-      <HomeView
-        content={content}
-        locale={locale}
-        videoAsset={videoAsset}
-        projectAssets={projectAssets}
-        projectCategories={categories}
-        partnerAssets={partnerAssets}
-        testimonialAssets={testimonialAssets}
-      />
+      <HomeView content={content} locale={locale} {...homeAssets} />
     </SiteShell>
   );
 }
-
