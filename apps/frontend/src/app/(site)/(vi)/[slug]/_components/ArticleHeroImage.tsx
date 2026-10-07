@@ -19,6 +19,7 @@ export function ArticleHeroImage({ image }: ArticleHeroImageProps) {
         className="attachment-post-thumbnail size-post-thumbnail wp-post-image"
         alt=""
         decoding="async"
+        fetchPriority="high"
         loading="lazy"
       />
     </div>
