@@ -1,4 +1,4 @@
-import { HTMLElement, parse, TextNode, type Node } from 'node-html-parser';
+import { HTMLElement, TextNode, type Node } from 'node-html-parser';
 import type {
   AboutPageRecord,
   AssetRef,
@@ -29,15 +29,6 @@ import { ERAS_URL_TEXT } from './posts.ts';
 import { load, projectSlug } from './projects.ts';
 import { linkModel, matchServiceByTitle, plain, sectionCopy, trimBreaks } from './services.ts';
 import { imageStem, readSlides } from './social.ts';
-
-/** Keeps a heading's `<br>` breaks as `titleLines` when it has more than one line. */
-function withTitleLines(copy: SectionCopy, heading: HTMLElement, stats: Stats): SectionCopy {
-  const lines = heading.innerHTML
-    .split(/<br\s*\/?>/i)
-    .map((html) => plain(parse(html), stats))
-    .filter(Boolean);
-  return lines.length > 1 ? { ...copy, titleLines: lines } : copy;
-}
 
 const STAT_KEYS = ['clients', 'projects', 'members', 'years'];
 const EXPECTED = { goals: 6, purpose: 4, timeline: 9, capabilities: 3, legalRoutes: 10 };
@@ -231,7 +222,11 @@ function home(page: Page, registry: AssetRegistry, stats: Stats, refs: PageRefs)
     page,
     'testimonials photo image',
   );
-  const photoId = must(registry.image(photoImg, file, lineOf), page, 'testimonial side photo asset');
+  const photoId = must(
+    registry.image(photoImg, file, lineOf),
+    page,
+    'testimonial side photo asset',
+  );
   const quoteIconImg = must(
     ssKh.querySelector('img[src*="Group.svg"]'),
     page,
@@ -311,11 +306,7 @@ function home(page: Page, registry: AssetRegistry, stats: Stats, refs: PageRefs)
       },
       projects: copy(section(content.querySelector('.ss-decor'), 'projects'), 'projects'),
       partners: copy(section(logos[0], 'partners'), 'partners'),
-      testimonials: withTitleLines(
-        copy(section(ssKh, 'testimonials'), 'testimonials'),
-        must(ssKh.querySelector('h2'), page, 'testimonials title'),
-        stats,
-      ),
+      testimonials: copy(section(ssKh, 'testimonials'), 'testimonials'),
       // The news teaser is the last section (EN has no cards in it).
       posts: copy(
         must(root.querySelectorAll('#content > section.section').at(-1), page, 'posts section'),

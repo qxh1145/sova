@@ -2,6 +2,7 @@ import type { Locator, Page } from '@playwright/test';
 import { expect, expectNoDuplicateIds, KNOWN_ABSENT_CSS_ASSETS, STAGING, test } from './fixtures';
 import { homePages } from '../../src/data/pages/home';
 import { partners } from '../../src/data/partners';
+import { posts } from '../../src/data/posts';
 import { testimonials } from '../../src/data/testimonials';
 import { assets } from '../../src/data/assets';
 import { brandingServices } from '../../src/data/services/branding';
@@ -10,6 +11,7 @@ import { mobileServices } from '../../src/data/services/mobile';
 import { seoServices } from '../../src/data/services/seo';
 import { storageServices } from '../../src/data/services/storage';
 import { websiteServices } from '../../src/data/services/website';
+import { resolveRoute } from '../../src/lib/queries/site';
 
 const HOME_SERVICES = [
   ...websiteServices,
@@ -28,12 +30,16 @@ const HOME_COPY = {
     lines: ['Thấu hiểu, đồng hành', 'và thiết kế trải nghiệm', 'digital toàn diện'],
     cta: { label: 'Về chúng tôi →', href: '/gioi-thieu/' },
     statsTitle: 'Thành tựu chúng tôi đạt được',
+    statsBreaks: 1,
+    statsDesc: { id: 'text-718633786', start: 'Đối với Sova xem mỗi dự án' },
     labels: ['Khách hàng hài lòng', 'Dự án hoàn thành', 'Thành viên', 'Năm kinh nghiệm'],
   },
   '/en/home/': {
     lines: ['From Understanding', 'to Innovation', 'We Craft Digital Excellence'],
     cta: { label: 'About us →', href: '/en/about-us/' },
     statsTitle: 'Our Achievements',
+    statsBreaks: 0,
+    statsDesc: { id: 'text-3546826826', start: 'Sova see every project' },
     labels: ['Satisfied Clients', 'Projects Completed', 'Team members', 'Years of experience'],
   },
 } as const;
@@ -119,12 +125,14 @@ test.describe('Home query, hero and stats', () => {
       await page.goto(path);
 
       await expect(page.locator('main h1 .typewriter')).toHaveText([...copy.lines]);
-      const cta = page.locator('.link_banner a.home-hero-cta');
+      const cta = page.locator('.link_banner a');
       await expect(cta).toHaveText(copy.cta.label);
       await expect(cta).toHaveAttribute('href', copy.cta.href);
 
       const stats = page.locator('.col-thanhtuu');
       await expect(stats.locator('h2')).toHaveText(copy.statsTitle);
+      await expect(stats.locator('h2 br')).toHaveCount(copy.statsBreaks);
+      await expect(stats.locator(`#${copy.statsDesc.id} p`)).toContainText(copy.statsDesc.start);
       await expect(stats.locator('.row-num')).toHaveCount(4);
       for (const [idx, label] of copy.labels.entries()) {
         const row = stats.locator('.row-num').nth(idx);
@@ -132,6 +140,15 @@ test.describe('Home query, hero and stats', () => {
         await expect(row).toContainText('+');
       }
     }
+  });
+
+  test('Hero CTA is hidden below 550px (hide-for-small)', async ({ page }) => {
+    await page.goto('/');
+    const cta = page.locator('.link_banner.hide-for-small a');
+    await page.setViewportSize({ width: 390, height: 900 });
+    await expect(cta).toBeHidden();
+    await page.setViewportSize({ width: 550, height: 900 });
+    await expect(cta).toBeVisible();
   });
 
   test('With JS, stats count up once on first intersection and end on server values', async ({
@@ -372,7 +389,7 @@ test.describe('Home query, hero and stats', () => {
       });
 
       expect(halfData.hasPinSpacer).toBe(true);
-      expect(Math.abs(halfData.translateX - (-0.5 * distance))).toBeLessThanOrEqual(25);
+      expect(Math.abs(halfData.translateX - -0.5 * distance)).toBeLessThanOrEqual(25);
 
       // Scroll to end of distance
       await page.evaluate((y) => window.scrollTo(0, y), startY + distance);
@@ -387,41 +404,36 @@ test.describe('Home query, hero and stats', () => {
         };
       });
 
-      expect(Math.abs(endData.translateX - (-distance))).toBeLessThanOrEqual(25);
+      expect(Math.abs(endData.translateX - -distance)).toBeLessThanOrEqual(25);
     });
   }
 
-  test('Client navigation away from / removes .pin-spacer and cleans up ScrollTrigger', async ({
+  // Every route change from / crosses a root layout (full reload), so unmount is driven in place.
+  test('Unmounting the island removes .pin-spacer and kills its ScrollTrigger', async ({
     page,
   }) => {
-    await page.goto('/');
-    const section = page.locator('.horizontal-scroll-section');
-    await expect(section).toBeVisible();
+    const liveTriggers = () =>
+      page.evaluate(() => {
+        const st = (window as unknown as { ScrollTrigger?: { getAll: () => unknown[] } })
+          .ScrollTrigger;
+        return st ? st.getAll().length : null;
+      });
 
-    // Verify ScrollTrigger exists if test hook is available
-    const initialTriggers = await page.evaluate(() => {
-      const st = (window as unknown as { ScrollTrigger?: { getAll: () => unknown[] } })
-        .ScrollTrigger;
-      return st ? st.getAll().length : null;
-    });
-    if (initialTriggers !== null) {
-      expect(initialTriggers).toBeGreaterThan(0);
-    }
+    await page.goto('/dev-fixtures/home/unmount');
+    await expect(page.locator('.horizontal-scroll-section')).toBeVisible();
+    await expect(page.locator('.pin-spacer')).toHaveCount(1);
+    const initialTriggers = await liveTriggers();
+    expect(
+      initialTriggers,
+      'window.ScrollTrigger missing: build with npm run build:e2e',
+    ).not.toBeNull();
+    expect(initialTriggers).toBeGreaterThan(0);
 
-    // Client navigate away using the language switcher link (/en/home/)
-    await page.locator('#header a[href="/en/home/"]').click();
-    await page.waitForURL('**/en/home/**');
+    await page.locator('#unmount-toggle').click();
 
-    // Verify no pin-spacer remains
+    await expect(page.locator('.horizontal-scroll-section')).toHaveCount(0);
     await expect(page.locator('.pin-spacer')).toHaveCount(0);
-
-    // Verify ScrollTrigger.getAll().length === 0
-    const liveTriggers = await page.evaluate(() => {
-      const st = (window as unknown as { ScrollTrigger?: { getAll: () => unknown[] } })
-        .ScrollTrigger;
-      return st ? st.getAll().length : 0;
-    });
-    expect(liveTriggers).toBe(0);
+    expect(await liveTriggers()).toBe(0);
   });
 
   test('Under reduced motion, pin and translation still occur and hover leaves scale at 1', async ({
@@ -478,7 +490,7 @@ test.describe('Home query, hero and stats', () => {
     });
 
     expect(halfData.hasPinSpacer).toBe(true);
-    expect(Math.abs(halfData.translateX - (-0.5 * distance))).toBeLessThanOrEqual(25);
+    expect(Math.abs(halfData.translateX - -0.5 * distance)).toBeLessThanOrEqual(25);
   });
 
   test('Hover over card scales up to 1.05 under normal motion', async ({ page }) => {
@@ -578,14 +590,20 @@ test.describe('Services list, accordion and marquee', () => {
   test('VI item 5 renders sub-services Business Hosting and Cloud VPS', async ({ page }) => {
     await page.goto('/');
 
-    const desktopSubServices = page.locator('.hide-for-small .dich_vu').nth(4).locator('.name_dv span a');
+    const desktopSubServices = page
+      .locator('.hide-for-small .dich_vu')
+      .nth(4)
+      .locator('.name_dv span a');
     await expect(desktopSubServices).toHaveCount(2);
     await expect(desktopSubServices.nth(0)).toHaveText('Business Hosting');
     await expect(desktopSubServices.nth(0)).toHaveAttribute('href', '/hosting-doanh-nghiep/');
     await expect(desktopSubServices.nth(1)).toHaveText('Cloud VPS');
     await expect(desktopSubServices.nth(1)).toHaveAttribute('href', '/vps-doanh-nghiep/');
 
-    const accSubServices = page.locator('.show-for-small .accordion-item').nth(4).locator('.dv-con a');
+    const accSubServices = page
+      .locator('.show-for-small .accordion-item')
+      .nth(4)
+      .locator('.dv-con a');
     await expect(accSubServices).toHaveCount(2);
     await expect(accSubServices.nth(0)).toHaveText('Business Hosting');
     await expect(accSubServices.nth(0)).toHaveAttribute('href', '/hosting-doanh-nghiep/');
@@ -742,7 +760,12 @@ test.describe('Partner logo grid', () => {
   }) => {
     const cases = [
       { path: '/', localeIndex: 0, eyebrowId: '#text-2149017180', titleId: '#text-1007250049' },
-      { path: '/en/home/', localeIndex: 1, eyebrowId: '#text-3114286333', titleId: '#text-3018448185' },
+      {
+        path: '/en/home/',
+        localeIndex: 1,
+        eyebrowId: '#text-3114286333',
+        titleId: '#text-3018448185',
+      },
     ];
 
     for (const { path, localeIndex, eyebrowId, titleId } of cases) {
@@ -773,8 +796,9 @@ test.describe('Partner logo grid', () => {
       await expect(page.locator('.row.gal-doitac a')).toHaveCount(0);
 
       // Logos are decorative: none has an accessible name
-      const accessibleNames = await page.locator('.row.gal-doitac img, .row.gal-doitac a').evaluateAll(
-        (elements) =>
+      const accessibleNames = await page
+        .locator('.row.gal-doitac img, .row.gal-doitac a')
+        .evaluateAll((elements) =>
           elements.map(
             (el) =>
               (el as HTMLElement).innerText ||
@@ -782,7 +806,7 @@ test.describe('Partner logo grid', () => {
               el.getAttribute('alt') ||
               '',
           ),
-      );
+        );
       expect(accessibleNames.every((name) => name === '')).toBe(true);
 
       // Partner names never reach the DOM
@@ -926,7 +950,10 @@ test.describe('Testimonials section', () => {
         const slide = slides.nth(i);
         await expect(slide).toHaveAttribute('id', c.slideIds[i]);
         await expect(slide.locator('.nd-kh')).toHaveText(item.quote.html);
-        await expect(slide.locator('.nd-kh + .text img')).toHaveAttribute('src', artSrc(art.lineId));
+        await expect(slide.locator('.nd-kh + .text img')).toHaveAttribute(
+          'src',
+          artSrc(art.lineId),
+        );
         await expect(slide.locator('.icon-box h3 strong')).toHaveText(item.person);
         await expect(slide.locator('.icon-box p')).toHaveText(item.role!);
         await expect(slide.locator('.icon-box-img img')).toHaveAttribute(
@@ -939,7 +966,9 @@ test.describe('Testimonials section', () => {
     }
   });
 
-  test('Autoplay advances every 6000ms, pauses on hover, and resumes after leave', async ({ page }) => {
+  test('Autoplay advances every 6000ms, pauses on hover, and resumes after leave', async ({
+    page,
+  }) => {
     await openPausedHome(page, '/');
     const slider = '#slider-1717467276';
     const slides = page.locator(`${slider} .flickity-slider > *`);
@@ -1024,3 +1053,154 @@ test.describe('Testimonials section', () => {
   });
 });
 
+test.describe('Latest posts', () => {
+  const postMap = new Map(posts.map((p) => [p.id, p]));
+  const assetMap = new Map(assets.map((a) => [a.id, a]));
+
+  test('Grid holds 3 a.plain links matching placement posts, hrefs resolve to post-detail routes, thumbnails render, no duplicate IDs', async ({
+    page,
+  }) => {
+    await page.goto('/');
+
+    const grid = page.locator('#text-386464690');
+    await expect(grid).toBeVisible();
+
+    const expectedPlacementPaths = homePages[0].postPlacements.map(
+      (p) => postMap.get(p.entityId)!.path,
+    );
+    expect(expectedPlacementPaths).toHaveLength(3);
+
+    const links = grid.locator('a.plain');
+    await expect(links).toHaveCount(3);
+
+    const hrefs = await links.evaluateAll((els) => els.map((el) => el.getAttribute('href')));
+    expect(hrefs).toEqual(expectedPlacementPaths);
+
+    for (const href of hrefs) {
+      if (href) {
+        const resolved = await resolveRoute(href);
+        expect(resolved).not.toBeNull();
+        expect(resolved?.route.kind).toBe('post-detail');
+        if (STAGING) {
+          const res = await page.request.get(href);
+          expect(res.status()).toBe(200);
+        }
+      }
+    }
+
+    const expectedThumbSrcs = homePages[0].postPlacements.map((p) => {
+      const thumbnailId = postMap.get(p.entityId)!.thumbnailId!;
+      return assetMap.get(thumbnailId)!.src;
+    });
+    const imgs = grid.locator('img.wp-post-image');
+    await expect(imgs).toHaveCount(3);
+    expect(await imgs.evaluateAll((els) => els.map((el) => el.getAttribute('src')))).toEqual(
+      expectedThumbSrcs,
+    );
+
+    await expectNoDuplicateIds(page);
+  });
+
+  const GRID_RESPONSIVE = [
+    { width: 1280, expectedPerRow: 3 },
+    { width: 850, expectedPerRow: 3 },
+    { width: 849, expectedPerRow: 1 },
+    { width: 550, expectedPerRow: 1 },
+  ];
+
+  for (const { width, expectedPerRow } of GRID_RESPONSIVE) {
+    test(`Grid shows ${expectedPerRow} cards per row at ${width}px and slider is hidden`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/');
+
+      const grid = page.locator('#text-386464690');
+      const slider = page.locator('#text-1494522260');
+
+      await expect(grid).toBeVisible();
+      await expect(slider).toBeHidden();
+
+      const cards = grid.locator('.post-item-cus');
+      await expect(cards).toHaveCount(3);
+
+      const firstRowCards = await cards.evaluateAll((elements) => {
+        const htmlElements = elements as HTMLElement[];
+        const top = htmlElements[0].offsetTop;
+        return htmlElements.filter((el) => Math.abs(el.offsetTop - top) < 2).length;
+      });
+      expect(firstRowCards).toBe(expectedPerRow);
+    });
+  }
+
+  for (const width of [549, 390]) {
+    test(`Slider is visible, grid is hidden, arrows mounted (CSS-hidden), 3 dots, no autoplay at ${width}px, wrapping works`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.clock.install();
+      await page.goto('/');
+
+      const grid = page.locator('#text-386464690');
+      const slider = page.locator('#text-1494522260');
+
+      await expect(grid).toBeHidden();
+      await expect(slider).toBeVisible();
+
+      const prevBtn = slider.locator('.flickity-prev-next-button.previous');
+      const nextBtn = slider.locator('.flickity-prev-next-button.next');
+      // Arrows are mounted but hidden below 550px by Flatsome's
+      // `.slider-wrapper .flickity-prev-next-button{display:none}`, as on the source.
+      await expect(prevBtn).toBeAttached();
+      await expect(nextBtn).toBeAttached();
+      await expect(prevBtn).toBeHidden();
+
+      const dots = slider.locator('.flickity-page-dots .dot');
+      await expect(dots).toHaveCount(3);
+      await expect(dots.nth(0)).toHaveClass(/is-selected/);
+
+      // After 7s with no input, selected dot is unchanged (no autoplay)
+      await page.clock.runFor(7000);
+      await expect(dots.nth(0)).toHaveClass(/is-selected/);
+
+      // Next advances 0 -> 1 -> 2, then wraps from the last slide back to the first
+      await nextBtn.dispatchEvent('click');
+      await expect(dots.nth(1)).toHaveClass(/is-selected/);
+      await nextBtn.dispatchEvent('click');
+      await expect(dots.nth(2)).toHaveClass(/is-selected/);
+      await nextBtn.dispatchEvent('click');
+      await expect(dots.nth(0)).toHaveClass(/is-selected/);
+    });
+  }
+
+  test('EN home route renders no latest posts section', async ({ page }) => {
+    await page.goto('/en/home/');
+    await expect(page.locator('#section_549960105')).toHaveCount(0);
+  });
+
+  test('Missing-media fixture renders fallback post card with title and link without img', async ({
+    page,
+  }) => {
+    test.skip(STAGING, 'Dev fixtures are not deployed to staging');
+
+    await page.goto('/dev-fixtures/home/missing-media');
+    const cards = page.locator('#text-386464690 .post-item-cus');
+    await expect(cards).toHaveCount(1);
+    await expect(cards.locator('.image-cover')).toBeVisible();
+    await expect(cards.locator('h5.post-tt-cus')).toHaveText('Fixture');
+    await expect(cards.locator('a.plain')).toHaveAttribute('href', /^\/fixture-post\/?$/);
+    await expect(cards.locator('img')).toHaveCount(0);
+
+    const sliderCards = page.locator('#text-1494522260 .post-item-cus');
+    await expect(sliderCards).toHaveCount(1);
+    await expect(sliderCards.locator('img')).toHaveCount(0);
+  });
+
+  test('Empty fixture renders no post cards and no section', async ({ page }) => {
+    test.skip(STAGING, 'Dev fixtures are not deployed to staging');
+
+    await page.goto('/dev-fixtures/home/empty');
+    await expect(page.locator('.post-item-cus')).toHaveCount(0);
+    await expect(page.locator('#section_549960105')).toHaveCount(0);
+  });
+});

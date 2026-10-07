@@ -1,5 +1,4 @@
 import type { AssetRef, HeroContent, Locale } from '@/types/content';
-import { Button } from '@/components/ui/Button';
 
 export interface HomeHeroProps {
   hero: HeroContent;
@@ -15,7 +14,6 @@ export function HomeHero({ hero, locale, videoAsset }: HomeHeroProps) {
   const ctaWrapperId = isEn ? 'text-1541895380' : 'text-3520526105';
   const gapId1 = isEn ? 'gap-1761289960' : 'gap-1931009694';
   const gapId2 = isEn ? 'gap-704649320' : 'gap-1261674524';
-
 
   return (
     <div className="banner has-hover has-video" id={bannerId}>
@@ -61,11 +59,11 @@ export function HomeHero({ hero, locale, videoAsset }: HomeHeroProps) {
                   style={{ display: 'block', height: 'auto' }}
                 />
                 {hero.cta && (
-                  <div id={ctaWrapperId} className="text link_banner">
+                  <div id={ctaWrapperId} className="text link_banner hide-for-small">
                     <p>
-                      <Button href={hero.cta.href} variant="link" className="home-hero-cta">
-                        {hero.cta.label}
-                      </Button>
+                      <a href={hero.cta.href}>
+                        <span>{hero.cta.label}</span>
+                      </a>
                     </p>
                   </div>
                 )}

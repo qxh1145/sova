@@ -97,6 +97,18 @@ test('table: header cells are columns, one row per plan with a monthly VND price
   });
 });
 
+test('sectionCopy keeps h2 <br> breaks as titleLines only for multi-line headings', () => {
+  const { root, ctx } = page(
+    '<section><h2>Khách hàng nhận xét<br>về chúng tôi</h2></section><section><h2>Một dòng</h2></section>',
+  );
+  const [multi, single] = root.querySelectorAll('section');
+  expect(sectionCopy(multi, ctx.stats)).toEqual({
+    title: 'Khách hàng nhận xét về chúng tôi',
+    titleLines: ['Khách hàng nhận xét', 'về chúng tôi'],
+  });
+  expect(sectionCopy(single, ctx.stats)).toEqual({ title: 'Một dòng' });
+});
+
 test('source drift: plan count, card features, price format and unknown projects throw', () => {
   const short = page(table(2));
   expect(() => parsePricing(short.root, 'hosting', 'vi', 'Heading', short.ctx)).toThrow(

@@ -123,8 +123,12 @@ export const hostingServices: Service[] = [
     offerings: [],
     sectionCopy: {
       pricing: { title: 'Bảng giá dịch vụ' },
-      benefits: { title: 'Sử dụng dịch vụ của Sova' },
-      testimonials: { eyebrow: 'Sova', title: 'Khách hàng nhận xét về chúng tôi' },
+      benefits: { title: 'Sử dụng dịch vụ của Sova', titleLines: ['Sử dụng dịch vụ của', 'Sova'] },
+      testimonials: {
+        eyebrow: 'Sova',
+        title: 'Khách hàng nhận xét về chúng tôi',
+        titleLines: ['Khách hàng nhận xét', 'về chúng tôi'],
+      },
       faq: { title: 'Những câu hỏi thường gặp' },
     },
   },
