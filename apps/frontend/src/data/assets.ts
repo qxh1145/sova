@@ -6441,4 +6441,30 @@ export const assets: AssetRef[] = [
     status: 'missing',
     sources: [{ file: 'index.html', line: 474 }],
   },
+  {
+    id: 'asset-b76ca9d44d',
+    src: '/wp-content/uploads/2024/02/svzd-zdfvx-scaled-1.webp',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'thiet-ke-app-mobile/index.html', line: 624 },
+      { file: 'en/app-mobile-development/index.html', line: 624 },
+    ],
+    width: 2560,
+    height: 1394,
+  },
+  {
+    id: 'asset-d68ffd5723',
+    src: '/wp-content/uploads/2024/02/Subtract.svg',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'thiet-ke-app-mobile/index.html', line: 1290 },
+      { file: 'en/app-mobile-development/index.html', line: 1289 },
+    ],
+    width: 1,
+    height: 1,
+  },
 ];

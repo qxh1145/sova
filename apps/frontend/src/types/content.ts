@@ -62,8 +62,10 @@ export interface HeroContent {
   headingLines: string[];
   description?: RichContent;
   imageId?: EntityId;
+  bgImageId?: EntityId;
   videoId?: EntityId;
   cta?: LinkModel;
+  breadcrumb?: { label: string; href?: string }[];
 }
 
 export type ServiceKey =
@@ -98,6 +100,7 @@ export interface OfferingPanel {
   id: EntityId;
   title: string;
   content: RichContent;
+  items?: string[];
   mediaId?: EntityId;
 }
 
