@@ -36,12 +36,18 @@ html.has-custom-cursor .cursor-ring {
 }
 
 .banner h1.home-hero-heading,
-.home-hero-heading {
+.home-hero-heading,
+.banner h1.service-hero-heading,
+.service-hero-heading {
   display: flex;
   flex-direction: column;
   margin: 0;
   padding: 0;
   line-height: 1.2 !important;
+}
+
+.service-hero-heading .typewriter {
+  display: block;
 }
 
 @media (max-width: 549px) {

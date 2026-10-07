@@ -96,6 +96,78 @@ export const TESTIMONIALS_IDS_EN: TestimonialsIds = {
   ],
 };
 
+export const TESTIMONIALS_IDS_MOBILE_VI: TestimonialsIds = {
+  section: 'section_611504284',
+  row: 'row-1744614563',
+  leftCol: 'col-1209418902',
+  imageWrapper: 'image_537706431',
+  rightCol: 'col-747664916',
+  eyebrowText: 'text-725286249',
+  titleText: 'text-1488968211',
+  sliderWrapper: 'slider-1746009011',
+  innerGap: 'gap-1849267319',
+  bottomGap: 'gap-1067076909',
+  slides: [
+    {
+      row: 'row-315631769',
+      col: 'col-818589815',
+      ndKh: 'text-2744278447',
+      line: 'text-2896139581',
+      iconBoxText: 'text-2666594682',
+    },
+    {
+      row: 'row-2024683135',
+      col: 'col-644536123',
+      ndKh: 'text-2009410189',
+      line: 'text-1982626175',
+      iconBoxText: 'text-780003339',
+    },
+    {
+      row: 'row-1787779435',
+      col: 'col-1215656760',
+      ndKh: 'text-830958306',
+      line: 'text-4161399947',
+      iconBoxText: 'text-3716479530',
+    },
+  ],
+};
+
+export const TESTIMONIALS_IDS_MOBILE_EN: TestimonialsIds = {
+  section: 'section_1896637792',
+  row: 'row-920490087',
+  leftCol: 'col-68456414',
+  imageWrapper: 'image_1284626495',
+  rightCol: 'col-975785863',
+  eyebrowText: 'text-970536821',
+  titleText: 'text-233220127',
+  sliderWrapper: 'slider-2023647237',
+  innerGap: 'gap-1942715701',
+  bottomGap: 'gap-636789219',
+  slides: [
+    {
+      row: 'row-2112378752',
+      col: 'col-1978610518',
+      ndKh: 'text-1663926344',
+      line: 'text-2119023388',
+      iconBoxText: 'text-1814777814',
+    },
+    {
+      row: 'row-1342641053',
+      col: 'col-1012808329',
+      ndKh: 'text-509714514',
+      line: 'text-1740085102',
+      iconBoxText: 'text-2166651137',
+    },
+    {
+      row: 'row-150274955',
+      col: 'col-189619842',
+      ndKh: 'text-2039104331',
+      line: 'text-1163562078',
+      iconBoxText: 'text-924829024',
+    },
+  ],
+};
+
 export const TESTIMONIALS_LABELS: Record<Locale, CarouselLabels> = {
   vi: {
     prev: 'Trước',
