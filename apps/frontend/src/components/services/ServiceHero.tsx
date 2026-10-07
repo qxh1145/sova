@@ -6,13 +6,25 @@ import { RichText } from '@/components/ui/RichText';
 export interface ServiceHeroIds {
   banner: string;
   textBox: string;
+  /** Source text-box vertical position class at small widths; defaults to `y15`. */
+  textBoxY?: string;
   row: string;
   leftCol: string;
+  /** Gap before the breadcrumb (hosting). */
+  topGap?: string;
   breadcrumbText?: string;
+  /** `show-for-small` gap after the breadcrumb (VPS). */
+  breadcrumbGap?: string;
   headingText: string;
+  /** Heading wrapper classes; defaults to `text kanit-font page_text_go`. */
+  headingClass?: string;
   gap1?: string;
+  /** Second gap before the description (hosting). */
+  gap1b?: string;
   descText?: string;
   gap2?: string;
+  /** Second, `hide-for-small` gap before the CTA (hosting). */
+  gap2b?: string;
   ctaText?: string;
   rightCol: string;
   imageWrapper: string;
@@ -49,6 +61,80 @@ export const SERVICE_HERO_IDS_EN: ServiceHeroIds = {
   rightCol: 'col-657387381',
   imageWrapper: 'image_1568157091',
   bottomGap: 'gap-9335673',
+};
+
+export const SERVICE_HERO_IDS_HOSTING_VI: ServiceHeroIds = {
+  banner: 'banner-998365047',
+  textBox: 'text-box-406908183',
+  textBoxY: 'y10',
+  row: 'row-1141455233',
+  leftCol: 'col-463553845',
+  topGap: 'gap-115948399',
+  breadcrumbText: 'text-2390842923',
+  headingText: 'text-2679780824',
+  gap1: 'gap-681504858',
+  gap1b: 'gap-1592390700',
+  descText: 'text-3385713525',
+  gap2: 'gap-1203244851',
+  gap2b: 'gap-651893395',
+  ctaText: 'text-1535369985',
+  rightCol: 'col-754232659',
+  imageWrapper: 'image_825881471',
+};
+
+export const SERVICE_HERO_IDS_HOSTING_EN: ServiceHeroIds = {
+  banner: 'banner-1497056567',
+  textBox: 'text-box-121337497',
+  textBoxY: 'y10',
+  row: 'row-2100302859',
+  leftCol: 'col-1032559139',
+  topGap: 'gap-309151223',
+  breadcrumbText: 'text-681251930',
+  headingText: 'text-3165932974',
+  gap1: 'gap-1279046662',
+  gap1b: 'gap-996184528',
+  descText: 'text-2306278201',
+  gap2: 'gap-769956417',
+  gap2b: 'gap-632061963',
+  ctaText: 'text-2891119369',
+  rightCol: 'col-554313480',
+  imageWrapper: 'image_2033633435',
+};
+
+export const SERVICE_HERO_IDS_VPS_VI: ServiceHeroIds = {
+  banner: 'banner-52976556',
+  textBox: 'text-box-764297208',
+  textBoxY: 'y10',
+  row: 'row-92964933',
+  leftCol: 'col-165991089',
+  breadcrumbText: 'text-2194654704',
+  breadcrumbGap: 'gap-1018876921',
+  headingText: 'text-2250113707',
+  headingClass: 'text kanit-font',
+  gap1: 'gap-1825330902',
+  descText: 'text-1964276835',
+  gap2: 'gap-690956082',
+  ctaText: 'text-1502442125',
+  rightCol: 'col-1587479514',
+  imageWrapper: 'image_544125054',
+};
+
+export const SERVICE_HERO_IDS_VPS_EN: ServiceHeroIds = {
+  banner: 'banner-1956119831',
+  textBox: 'text-box-1474432662',
+  textBoxY: 'y10',
+  row: 'row-203167289',
+  leftCol: 'col-1386384679',
+  breadcrumbText: 'text-1352218798',
+  breadcrumbGap: 'gap-449049920',
+  headingText: 'text-2003649022',
+  headingClass: 'text kanit-font',
+  gap1: 'gap-808773722',
+  descText: 'text-3915632723',
+  gap2: 'gap-763879778',
+  ctaText: 'text-311032295',
+  rightCol: 'col-2119694734',
+  imageWrapper: 'image_1196805514',
 };
 
 export interface ServiceHeroProps {
@@ -88,13 +174,20 @@ export function ServiceHero({
             <div className="fill banner-link" />
             <div
               id={ids.textBox}
-              className="text-box banner-layer x50 md-x50 lg-x50 y15 md-y50 lg-y50 res-text"
+              className={`text-box banner-layer x50 md-x50 lg-x50 ${ids.textBoxY ?? 'y15'} md-y50 lg-y50 res-text`}
             >
               <div className="text-box-content text dark">
                 <div className="text-inner text-center">
                   <div className="row align-middle" id={ids.row}>
                     <div id={ids.leftCol} className="col medium-6 small-12 large-6">
                       <div className="col-inner">
+                        {ids.topGap && (
+                          <div
+                            id={ids.topGap}
+                            className="gap-element clearfix"
+                            style={{ display: 'block', height: 'auto' }}
+                          />
+                        )}
                         {breadcrumb && ids.breadcrumbText && (
                           <div id={ids.breadcrumbText} className="text">
                             <p>
@@ -115,7 +208,17 @@ export function ServiceHero({
                             </p>
                           </div>
                         )}
-                        <div id={ids.headingText} className="text kanit-font page_text_go">
+                        {ids.breadcrumbGap && (
+                          <div
+                            id={ids.breadcrumbGap}
+                            className="gap-element clearfix show-for-small"
+                            style={{ display: 'block', height: 'auto' }}
+                          />
+                        )}
+                        <div
+                          id={ids.headingText}
+                          className={ids.headingClass ?? 'text kanit-font page_text_go'}
+                        >
                           <h1 className="service-hero-heading">
                             {hero.headingLines.map((line, idx) => (
                               <span key={idx} className="typewriter">
@@ -131,6 +234,13 @@ export function ServiceHero({
                             style={{ display: 'block', height: 'auto' }}
                           />
                         )}
+                        {ids.gap1b && (
+                          <div
+                            id={ids.gap1b}
+                            className="gap-element clearfix"
+                            style={{ display: 'block', height: 'auto' }}
+                          />
+                        )}
                         {hero.description && ids.descText && (
                           <div id={ids.descText} className="text">
                             <RichText content={hero.description} />
@@ -140,6 +250,13 @@ export function ServiceHero({
                           <div
                             id={ids.gap2}
                             className="gap-element clearfix"
+                            style={{ display: 'block', height: 'auto' }}
+                          />
+                        )}
+                        {ids.gap2b && (
+                          <div
+                            id={ids.gap2b}
+                            className="gap-element clearfix hide-for-small"
                             style={{ display: 'block', height: 'auto' }}
                           />
                         )}
