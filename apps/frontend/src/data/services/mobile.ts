@@ -25,8 +25,14 @@ export const mobileServices: Service[] = [
         sources: [{ file: 'thiet-ke-app-mobile/index.html', line: 688 }],
       },
       imageId: 'asset-d3cafa10e9',
+      bgImageId: 'asset-b76ca9d44d',
       videoId: 'asset-ddbede9293',
       cta: { label: 'Kết nối ngay →', href: '/lien-he/' },
+      breadcrumb: [
+        { label: 'Trang chủ', href: '/' },
+        { label: 'Dịch vụ' },
+        { label: 'Thiết kế App Mobile' },
+      ],
     },
     benefits: [
       {
@@ -113,6 +119,15 @@ export const mobileServices: Service[] = [
           assetIds: [],
           sources: [{ file: 'thiet-ke-app-mobile/index.html', line: 1286 }],
         },
+        items: [
+          'Tăng tính tiện lợi, cạnh tranh',
+          'Cải thiện khả năng tương tác',
+          'Xây dựng thương hiệu mạnh mẽ',
+          'Tăng cường trải nghiệm người dùng',
+          'Tăng khả năng tiếp cận khách hàng',
+          'Thu thập dữ liệu và phân tích hành vi người dùng',
+          'Khả năng kết nối và đồng bộ hóa dễ dàng',
+        ],
       },
       {
         id: 'service-mobile-vi-offering-cam-ket',
@@ -123,6 +138,15 @@ export const mobileServices: Service[] = [
           assetIds: [],
           sources: [{ file: 'thiet-ke-app-mobile/index.html', line: 1535 }],
         },
+        items: [
+          'Hỗ trợ và bảo trì liên tục',
+          'Bảo mật và bảo vệ dữ liệu',
+          'Tối ưu hóa hiệu suất và tốc độ',
+          'Thiết kế chuyên nghiệp và sáng tạo',
+          'Tính năng phù hợp với nhu cầu thực tế',
+          'Ứng dụng hoạt động mượt mà trên mọi nền tảng',
+          'Tối ưu hóa trải nghiệm người dùng (UX/UI)',
+        ],
       },
       {
         id: 'service-mobile-vi-offering-san-pham-nhan-duoc',
@@ -133,6 +157,15 @@ export const mobileServices: Service[] = [
           assetIds: [],
           sources: [{ file: 'thiet-ke-app-mobile/index.html', line: 1784 }],
         },
+        items: [
+          'Hỗ trợ kỹ thuật liên tục 24/7',
+          'Mã nguồn đầy đủ (source code)',
+          'Sản phẩm thân thiện chuyên nghiệp',
+          'Đăng tải lên App Store / Google Play',
+          'Tài liệu hướng dẫn sử dụng & bảo trì',
+          'File thiết kế giao diện (UI/UX Design)',
+          'Tài khoản quản lý app (nếu có upload lên App Store / CH Play)',
+        ],
       },
     ],
     sectionCopy: {
@@ -155,7 +188,10 @@ export const mobileServices: Service[] = [
         title: 'Khách hàng nhận xét về chúng tôi',
         titleLines: ['Khách hàng nhận xét', 'về chúng tôi'],
       },
-      faq: { title: 'Những câu hỏi thường gặp' },
+      faq: {
+        eyebrow: 'GIẢI ĐÁP',
+        title: 'Những câu hỏi thường gặp',
+      },
     },
   },
   {
@@ -181,8 +217,14 @@ export const mobileServices: Service[] = [
         sources: [{ file: 'en/app-mobile-development/index.html', line: 688 }],
       },
       imageId: 'asset-d3cafa10e9',
+      bgImageId: 'asset-b76ca9d44d',
       videoId: 'asset-ddbede9293',
       cta: { label: 'Connect Now →', href: '/en/contact-us/' },
+      breadcrumb: [
+        { label: 'Home', href: '/en/home/' },
+        { label: 'Services' },
+        { label: 'App Mobile Development' },
+      ],
     },
     benefits: [
       {
@@ -263,6 +305,15 @@ export const mobileServices: Service[] = [
           assetIds: [],
           sources: [{ file: 'en/app-mobile-development/index.html', line: 1285 }],
         },
+        items: [
+          'Increased Convenience & Competitiveness',
+          'Improved Interactivity',
+          'Building a Strong Brand',
+          'Enhanced User Experience',
+          'Increased Customer Reach',
+          'Data Collect & User Behavior Analysis',
+          'Easy Connectivity & Synchronization',
+        ],
       },
       {
         id: 'service-mobile-en-offering-commitments',
@@ -273,6 +324,15 @@ export const mobileServices: Service[] = [
           assetIds: [],
           sources: [{ file: 'en/app-mobile-development/index.html', line: 1534 }],
         },
+        items: [
+          'Continuous Support & Maintenance',
+          'Data Security & Protection',
+          'Optimized Performance & Speed',
+          'Professional & Creative Design',
+          'Features Tailored to Real-World Needs',
+          'Smooth Operation Across All Platforms',
+          'Optimized User Experience (UX/UI)',
+        ],
       },
       {
         id: 'service-mobile-en-offering-product-received',
@@ -283,6 +343,15 @@ export const mobileServices: Service[] = [
           assetIds: [],
           sources: [{ file: 'en/app-mobile-development/index.html', line: 1783 }],
         },
+        items: [
+          '24/7 Technical Support',
+          'Full Source Code',
+          'Professional & User-Friendly Product',
+          'App Store / Google Play Publishing',
+          'User & Maintenance Documentation',
+          'UI/UX Design Files',
+          'App Management Account (if uploaded to App Store / Google Play)',
+        ],
       },
     ],
     sectionCopy: {
@@ -290,14 +359,21 @@ export const mobileServices: Service[] = [
         eyebrow: 'Mobile App Design at Sova',
         title: 'Develop Your Business Advantage on Mobile Platforms',
       },
-      offerings: { eyebrow: 'Why choose us?', title: 'Why Choose Sova ?' },
+      offerings: {
+        eyebrow: 'Why choose us?',
+        title: 'Why Choose Sova ?',
+        titleLines: ['Why Choose', 'Sova ?'],
+      },
       projects: {
         eyebrow: 'Sova',
         title: 'Some Recent Works We’re Really Proud Of.',
         titleLines: ['Some Recent Works', 'We’re Really Proud Of.'],
       },
       testimonials: { eyebrow: 'Sova', title: 'Customer Reviews' },
-      faq: { title: 'Frequently Asked Questions' },
+      faq: {
+        eyebrow: 'FAQs',
+        title: 'Frequently Asked Questions',
+      },
     },
   },
 ];
