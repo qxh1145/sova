@@ -79,4 +79,3 @@ test('staging allowlist allows vercel.live toolbar and blocks it locally', () =>
   expect(isAllowedUrl('https://vercel.live.evil.com/', stagingHost)).toBe(false);
   expect(isAllowedUrl('https://evil-vercel.live/', stagingHost)).toBe(false);
 });
-
