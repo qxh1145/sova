@@ -80,33 +80,15 @@ html.has-custom-cursor .cursor-ring {
   }
 }
 
-.home-hero-cta {
-  color: #fff !important;
-  text-decoration: none;
-  font-weight: 500;
-  transition: opacity 0.3s;
-}
-
-.home-hero-cta:hover {
-  opacity: 0.8;
-}
-
 @media (max-width: 549px) {
   .link_banner {
     text-align: center;
   }
 }
 
-.home-stats-heading h2 {
-  font-size: 1.6rem;
-  color: #fff;
-  font-weight: 700;
-  margin-bottom: 1rem;
+/* Not in source: stop the home marquee for users who ask for reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .cs-moving_text {
+    animation-play-state: paused;
+  }
 }
-
-.home-stats-heading p {
-  font-size: 0.9rem;
-  color: #fff;
-  opacity: 0.9;
-}
-

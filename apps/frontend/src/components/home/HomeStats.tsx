@@ -1,14 +1,14 @@
+import { Fragment } from 'react';
 import type { Locale, SectionCopy, Stat } from '@/types/content';
-import { SectionHeading } from '@/components/ui/SectionHeading';
 import { StatCounter } from './StatCounter';
 
 export interface HomeStatsProps {
   stats: Stat[];
   copy: SectionCopy;
-  locale?: Locale;
+  locale: Locale;
 }
 
-export function HomeStats({ stats, copy, locale = 'vi' }: HomeStatsProps) {
+export function HomeStats({ stats, copy, locale }: HomeStatsProps) {
   if (!stats.length) return null;
 
   const isEn = locale === 'en';
@@ -17,6 +17,7 @@ export function HomeStats({ stats, copy, locale = 'vi' }: HomeStatsProps) {
   const rowAchievementsId = isEn ? 'row-1720363582' : 'row-1603758451';
   const colHeadingId = isEn ? 'col-497116769' : 'col-2018152776';
   const textTitleId = isEn ? 'text-1018257427' : 'text-3615603604';
+  const textDescId = isEn ? 'text-3546826826' : 'text-718633786';
   const colLineId = isEn ? 'col-1096890536' : 'col-855219004';
   const rowGridId = isEn ? 'row-809501727' : 'row-92355582';
 
@@ -28,13 +29,25 @@ export function HomeStats({ stats, copy, locale = 'vi' }: HomeStatsProps) {
             <div id={colHeadingId} className="col medium-5 small-12 large-5">
               <div className="col-inner">
                 <div id={textTitleId} className="text">
-                  <SectionHeading
-                    title={copy.title}
-                    description={copy.description}
-                    level={2}
-                    className="home-stats-heading"
-                  />
+                  <h2>
+                    <strong>
+                      {copy.titleLines
+                        ? copy.titleLines.map((line, i) => (
+                            <Fragment key={i}>
+                              {i > 0 && <br />}
+                              {line}
+                              {i < (copy.titleLines?.length ?? 0) - 1 ? ' ' : ''}
+                            </Fragment>
+                          ))
+                        : copy.title}
+                    </strong>
+                  </h2>
                 </div>
+                {copy.description && (
+                  <div id={textDescId} className="text">
+                    <p>{copy.description}</p>
+                  </div>
+                )}
               </div>
             </div>
 

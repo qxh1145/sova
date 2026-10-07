@@ -12,6 +12,10 @@ export const seoServices: Service[] = [
     key: 'seo',
     summary:
       'Mỗi dự án không chỉ đại diện cho một cơ hội để tạo ra giá trị cho doanh nghiệp, mà còn là một cơ hội để chúng ta trở thành đối tác đồng hành, đem đến giá trị cộng hưởng cho khách hàng thông qua các sản phẩm trải nghiệm số tinh tế.',
+    homeSummary:
+      'Chúng tôi cung cấp dịch vụ SEO tổng thể Website uy tín và chuyên nghiệp, cam kết thứ hạng từ khóa sau khi hoàn thành chiến dịch Marketing',
+    subServices: [],
+    arrowHref: '/seo-tu-khoa-website/',
     hero: {
       headingLines: ['Dịch vụ SEO TOP', 'từ khoá website'],
       description: {
@@ -173,6 +177,10 @@ export const seoServices: Service[] = [
     key: 'seo',
     summary:
       'Each project is not only an opportunity to create value for businesses, but also a chance for us to become trusted partners—delivering synergistic value to clients through refined and impactful digital experiences.',
+    homeSummary:
+      'We deliver data-driven SEO campaigns by combining on-page optimization, semantic schema structuring, backlink profiling, and performance audits. Our approach guarantees improved organic visibility, keyword dominance, and technical crawlability.',
+    subServices: [],
+    arrowHref: '/en/website-keyword-seo/',
     hero: {
       headingLines: ['Top-Ranking', 'SEO Services'],
       description: {

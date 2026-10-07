@@ -12,6 +12,13 @@ export const storageServices: Service[] = [
     key: 'storage',
     summary:
       'Kinh nghiệm hơn 6 năm đồng hành cùng nhiều doanh nghiệp, chúng tôi tin rằng sự kết hợp của tư duy chiến lược, khả năng thấu cảm và sự sáng tạo đổi mới sẽ tạo ra những trải nghiệm số cuốn hút, tạo động lực thúc đẩy sự phát triển của doanh nghiệp.',
+    homeSummary:
+      'Với hệ thống server chất lượng cao chuyên nghiệp đòi hỏi tốc độ cao, tính ổn định và bảo mật, chúng tôi luôn hiểu rõ điều kiện cần và đủ để có được một website tốc độ cao nhất',
+    subServices: [
+      { label: 'Business Hosting', href: '/hosting-doanh-nghiep/' },
+      { label: 'Cloud VPS', href: '/vps-doanh-nghiep/' },
+    ],
+    arrowHref: '/giai-phap-luu-tru/',
     hero: {
       headingLines: ['Giải pháp lưu trữ', 'cho doanh nghiệp'],
       description: {
@@ -109,6 +116,13 @@ export const storageServices: Service[] = [
     key: 'storage',
     summary:
       'With over 6 years of experience working alongside businesses, we believe that the synergy of strategic thinking, empathy, and innovative creativity can deliver compelling digital experiences that drive business growth.',
+    homeSummary:
+      'Our high-performance servers are optimized for speed, security, and stability, ensuring that your website runs smoothly and efficiently at all times.',
+    subServices: [
+      { label: 'Business Hosting', href: '/en/business-hosting/' },
+      { label: 'Business VPS', href: '/en/business-vps/' },
+    ],
+    arrowHref: '/en/storage-solution/',
     hero: {
       headingLines: ['Business', 'Storage Solutions'],
       description: {

@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const port = 3100;
+const port = Number(process.env.E2E_PORT ?? 3100);
 const stagingUrl = process.env.STAGING_URL;
 
 if (process.env.npm_lifecycle_event === 'test:e2e:staging' && !stagingUrl) {

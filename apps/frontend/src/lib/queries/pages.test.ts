@@ -1,6 +1,7 @@
 import { expect, test, vi } from 'vitest';
 import type { ContentData, ContentRepository } from '@/lib/repositories/contracts';
 import { createMockRepository } from '@/lib/repositories/mock';
+import { assets } from '@/data/assets';
 import { faqs } from '@/data/faq';
 import { navigation } from '@/data/navigation';
 import { contactPages } from '@/data/pages/contact';
@@ -21,7 +22,13 @@ import { stats } from '@/data/stats';
 import { testimonials } from '@/data/testimonials';
 import type { ContactPageContent, SiteSettings } from '@/types/content';
 import { getFAQs } from './faq';
-import { getContactPage, getHomePage, getLegalPage, getPaymentGuide } from './pages';
+import {
+  getContactPage,
+  getHomeAssets,
+  getHomePage,
+  getLegalPage,
+  getPaymentGuide,
+} from './pages';
 import { getPost } from './posts';
 import { getPricing, getService, getServicePage } from './services';
 import { getNavigation } from './site';
@@ -63,6 +70,7 @@ const repoWith = (data: Partial<ContentData> = {}) =>
     postCategories: [],
     stats,
     pricing: websitePricing,
+    assets,
     homePages,
     contactPages: [contactWithPhone],
     legalPages,
@@ -142,11 +150,12 @@ test('dangling stat or placement ids throw naming the page and ids', async () =>
         serviceIds: [...home.serviceIds, 'service-gone-vi'],
         projectPlacements: [{ entityId: 'project-gone', order: 1 }],
         partnerPlacements: [{ entityId: 'partner-gone', order: 1 }],
+        marqueeSeparatorId: 'asset-gone',
       },
     ],
   });
   await expect(getHomePage('vi')).rejects.toThrow(
-    'home-vi references missing ids: stat-gone, project-gone, partner-gone, service-gone-vi',
+    'home-vi references missing ids: stat-gone, project-gone, partner-gone, service-gone-vi, asset-gone',
   );
 });
 
@@ -163,22 +172,31 @@ test('VI home query resolves all collections in record order', async () => {
   );
   expect(page?.posts.map((p) => p.id)).toEqual(home.postPlacements.map((p) => p.entityId));
   expect(page?.stats.map((s) => s.id)).toEqual(home.statIds);
+  expect(page?.marqueeSeparator.id).toBe(home.marqueeSeparatorId);
+  expect(page?.marqueeSeparator.src).toBe('/wp-content/uploads/2024/02/Ellipse-2351.svg');
   expect(page?.services).toHaveLength(6);
   expect(page?.projects).toHaveLength(6);
   expect(page?.partners).toHaveLength(30);
   expect(page?.testimonials).toHaveLength(3);
   expect(page?.posts).toHaveLength(3);
   expect(page?.stats).toHaveLength(4);
+  expect(page?.testimonialArt.photo.id).toBe(home.testimonialArtIds.photoId);
+  expect(page?.testimonialArt.quoteIcon.id).toBe(home.testimonialArtIds.quoteIconId);
+  expect(page?.testimonialArt.line.id).toBe(home.testimonialArtIds.lineId);
 });
 
-test('EN home query preserves repeated service id and empty lists', async () => {
+test('EN home query resolves services and empty lists', async () => {
   repository = repoWith();
   const home = homePages.find((p) => p.locale === 'en')!;
   const page = await getHomePage('en');
   expect(page).not.toBeNull();
   expect(page?.services.map((s) => s.id)).toEqual(home.serviceIds);
   expect(page?.services[0].id).toBe('service-website-en');
-  expect(page?.services[1].id).toBe('service-website-en');
+  expect(page?.services[1].id).toBe('service-mobile-en');
+  expect(page?.marqueeSeparator.id).toBe(home.marqueeSeparatorId);
+  expect(page?.testimonialArt.photo.id).toBe(home.testimonialArtIds.photoId);
+  expect(page?.testimonialArt.quoteIcon.id).toBe(home.testimonialArtIds.quoteIconId);
+  expect(page?.testimonialArt.line.id).toBe(home.testimonialArtIds.lineId);
   expect(page?.projects).toEqual([]);
   expect(page?.posts).toEqual([]);
   expect(page?.partners).toHaveLength(30);
@@ -200,6 +218,24 @@ test('dangling testimonial id throws naming the page and id', async () => {
   );
 });
 
+test('dangling testimonial art id throws naming the page and id', async () => {
+  const home = homePages.find((p) => p.locale === 'vi')!;
+  repository = repoWith({
+    homePages: [
+      {
+        ...home,
+        testimonialArtIds: {
+          ...home.testimonialArtIds,
+          photoId: 'asset-gone-photo',
+        },
+      },
+    ],
+  });
+  await expect(getHomePage('vi')).rejects.toThrow(
+    'home-vi references missing ids: asset-gone-photo',
+  );
+});
+
 test('getHomePage accepts optional repository parameter', async () => {
   // The default repository has no home page, so a resolved page proves the parameter is used.
   repository = repoWith({ homePages: [] });
@@ -214,3 +250,59 @@ test('navigation resolves without tokens left', async () => {
   expect(nav.serviceOptions).toHaveLength(6);
   expect(JSON.stringify(nav)).not.toContain('{{site.');
 });
+
+test('getHomeAssets resolves video, projects, categories, partners, testimonials, and posts in order', async () => {
+  repository = repoWith();
+  const home = await getHomePage('vi');
+  expect(home).not.toBeNull();
+  const result = await getHomeAssets(home);
+
+  expect(result.videoAsset?.id).toBe(home!.hero.videoId);
+  expect(result.projectAssets.map((a) => a.id)).toEqual(
+    home!.projects.map((p) => p.galleryIds[0]).filter(Boolean),
+  );
+  expect(result.partnerAssets.map((a) => a.id)).toEqual(home!.partners.map((p) => p.logoId));
+  expect(result.testimonialAssets.map((a) => a.id)).toEqual(
+    home!.testimonials.map((t) => t.avatarId).filter(Boolean),
+  );
+  expect(result.postAssets.map((a) => a.id)).toEqual(
+    home!.posts.map((p) => p.thumbnailId).filter(Boolean),
+  );
+});
+
+test('getHomeAssets handles null content and missing hero video gracefully', async () => {
+  repository = repoWith();
+  const nullResult = await getHomeAssets(null);
+  expect(nullResult).toEqual({
+    videoAsset: null,
+    projectAssets: [],
+    projectCategories: [],
+    partnerAssets: [],
+    testimonialAssets: [],
+    postAssets: [],
+  });
+
+  const home = await getHomePage('vi');
+  expect(home).not.toBeNull();
+  const noVideoHome = {
+    ...home!,
+    hero: { ...home!.hero, videoId: undefined },
+  };
+  const result = await getHomeAssets(noVideoHome);
+  expect(result.videoAsset).toBeNull();
+  expect(result.projectAssets.length).toBeGreaterThan(0);
+});
+
+test('getHomeAssets fetches video in parallel and accepts custom repository', async () => {
+  repository = repoWith({ homePages: [] });
+  const customRepo = repoWith();
+  const home = await getHomePage('vi', customRepo);
+  expect(home).not.toBeNull();
+
+  const getAssetsSpy = vi.spyOn(customRepo, 'getAssets');
+  const result = await getHomeAssets(home, customRepo);
+
+  expect(result.videoAsset?.id).toBe(home!.hero.videoId);
+  expect(getAssetsSpy).toHaveBeenCalled();
+});
+
