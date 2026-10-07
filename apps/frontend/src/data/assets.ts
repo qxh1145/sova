@@ -6508,4 +6508,18 @@ export const assets: AssetRef[] = [
     width: 2000,
     height: 1498,
   },
+  {
+    id: 'asset-7d2d3a2fb0',
+    src: '/wp-content/uploads/2024/02/zdvdxf-xdbfd-scaled-1.webp',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'e-mail-doanh-nghiep/index.html', line: 628 },
+      { file: 'en/business-e-mail/index.html', line: 628 },
+    ],
+    width: 2560,
+    height: 1127,
+  },
 ];
+

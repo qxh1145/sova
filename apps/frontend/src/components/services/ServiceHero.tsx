@@ -23,6 +23,8 @@ export interface ServiceHeroIds {
   gap1b?: string;
   descText?: string;
   gap2?: string;
+  /** Classes on gap2 element; defaults to `gap-element clearfix`. */
+  gap2Class?: string;
   /** Second, `hide-for-small` gap before the CTA (hosting). */
   gap2b?: string;
   ctaText?: string;
@@ -32,6 +34,7 @@ export interface ServiceHeroIds {
 }
 
 export const SERVICE_HERO_IDS_VI: ServiceHeroIds = {
+
   banner: 'banner-2067401347',
   textBox: 'text-box-1159832857',
   row: 'row-2031123420',
@@ -137,7 +140,44 @@ export const SERVICE_HERO_IDS_VPS_EN: ServiceHeroIds = {
   imageWrapper: 'image_1196805514',
 };
 
+export const SERVICE_HERO_IDS_EMAIL_VI: ServiceHeroIds = {
+  banner: 'banner-880688064',
+  textBox: 'text-box-597000131',
+  textBoxY: 'y10',
+  row: 'row-2053155899',
+  leftCol: 'col-760506537',
+  breadcrumbText: 'text-951094996',
+  headingText: 'text-424266418',
+  gap1: 'gap-2042908816',
+  descText: 'text-498730765',
+  gap2: 'gap-2007649633',
+  gap2Class: 'gap-element clearfix show-for-small',
+  gap2b: 'gap-335606629',
+  ctaText: 'text-911677094',
+  rightCol: 'col-180293630',
+  imageWrapper: 'image_1552379478',
+};
+
+export const SERVICE_HERO_IDS_EMAIL_EN: ServiceHeroIds = {
+  banner: 'banner-782456447',
+  textBox: 'text-box-866894448',
+  textBoxY: 'y10',
+  row: 'row-568955501',
+  leftCol: 'col-696292836',
+  breadcrumbText: 'text-2322921990',
+  headingText: 'text-3815375937',
+  gap1: 'gap-1350754616',
+  descText: 'text-2722962742',
+  gap2: 'gap-1782042057',
+  gap2Class: 'gap-element clearfix show-for-small',
+  gap2b: 'gap-898855605',
+  ctaText: 'text-2419020874',
+  rightCol: 'col-1117205165',
+  imageWrapper: 'image_1999389245',
+};
+
 export interface ServiceHeroProps {
+
   hero: HeroContent;
   heroImage?: AssetRef | null;
   bgImage?: AssetRef | null;
@@ -249,7 +289,7 @@ export function ServiceHero({
                         {ids.gap2 && (
                           <div
                             id={ids.gap2}
-                            className="gap-element clearfix"
+                            className={ids.gap2Class ?? 'gap-element clearfix'}
                             style={{ display: 'block', height: 'auto' }}
                           />
                         )}

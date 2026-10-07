@@ -312,6 +312,79 @@ export const TESTIMONIALS_IDS_VPS_EN: TestimonialsIds = {
   ],
 };
 
+export const TESTIMONIALS_IDS_EMAIL_VI: TestimonialsIds = {
+  section: 'section_1984183481',
+  row: 'row-114143651',
+  leftCol: 'col-1068355559',
+  imageWrapper: 'image_331740629',
+  rightCol: 'col-901618470',
+  eyebrowText: 'text-3837946768',
+  titleText: 'text-1298323406',
+  sliderWrapper: 'slider-114261328',
+  innerGap: 'gap-1424382467',
+  bottomGap: 'gap-1531803359',
+  slides: [
+    {
+      row: 'row-1206751867',
+      col: 'col-794361294',
+      ndKh: 'text-1628036239',
+      line: 'text-1168134763',
+      iconBoxText: 'text-2116874641',
+    },
+    {
+      row: 'row-847301732',
+      col: 'col-200154738',
+      ndKh: 'text-1399452221',
+      line: 'text-1476327395',
+      iconBoxText: 'text-1917514466',
+    },
+    {
+      row: 'row-68234570',
+      col: 'col-249943998',
+      ndKh: 'text-2113135161',
+      line: 'text-1378018257',
+      iconBoxText: 'text-3113930760',
+    },
+  ],
+};
+
+export const TESTIMONIALS_IDS_EMAIL_EN: TestimonialsIds = {
+  section: 'section_2136010649',
+  row: 'row-103329289',
+  leftCol: 'col-1651344776',
+  imageWrapper: 'image_412222799',
+  rightCol: 'col-901269700',
+  eyebrowText: 'text-3202874702',
+  titleText: 'text-3557437193',
+  sliderWrapper: 'slider-1505677085',
+  innerGap: 'gap-37007440',
+  bottomGap: 'gap-343316009',
+  slides: [
+    {
+      row: 'row-1701249391',
+      col: 'col-38225116',
+      ndKh: 'text-4243389167',
+      line: 'text-1571621388',
+      iconBoxText: 'text-1622937273',
+    },
+    {
+      row: 'row-1403061539',
+      col: 'col-480395229',
+      ndKh: 'text-358670330',
+      line: 'text-706941177',
+      iconBoxText: 'text-3720002696',
+    },
+    {
+      row: 'row-673922830',
+      col: 'col-1766384887',
+      ndKh: 'text-159124821',
+      line: 'text-2470805889',
+      iconBoxText: 'text-1126978856',
+    },
+  ],
+};
+
+
 export const TESTIMONIALS_LABELS: Record<Locale, CarouselLabels> = {
   vi: {
     prev: 'Trước',
