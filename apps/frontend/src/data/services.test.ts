@@ -113,7 +113,9 @@ test('every reference resolves in the same locale', () => {
       expect(pricing.some((p) => p.id === service.pricingId && p.locale === locale)).toBe(true);
     const ids = [
       service.hero.imageId,
+      service.hero.bgImageId,
       service.hero.videoId,
+      service.benefitsBgImageId,
       service.seo.imageId,
       ...service.benefits.map((b) => b.iconId),
       ...service.offerings.map((o) => o.mediaId),
