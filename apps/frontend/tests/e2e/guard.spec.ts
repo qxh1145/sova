@@ -65,3 +65,17 @@ test('staging allowlist keeps third-party and wordpress hosts blocked', () => {
     expect(isAllowedUrl(url, stagingHost), url).toBe(false);
   }
 });
+
+test('staging allowlist allows vercel.live toolbar and blocks it locally', () => {
+  const stagingHost = 'sova-landing-stage.vercel.app';
+  expect(isAllowedUrl('https://vercel.live/', stagingHost)).toBe(true);
+  expect(isAllowedUrl('https://vercel.live/script.js', stagingHost)).toBe(true);
+
+  // blocked in local mode (no staging host)
+  expect(isAllowedUrl('https://vercel.live/')).toBe(false);
+  expect(isAllowedUrl('https://vercel.live/script.js')).toBe(false);
+
+  // lookalikes blocked in staging mode
+  expect(isAllowedUrl('https://vercel.live.evil.com/', stagingHost)).toBe(false);
+  expect(isAllowedUrl('https://evil-vercel.live/', stagingHost)).toBe(false);
+});
