@@ -6521,4 +6521,30 @@ export const assets: AssetRef[] = [
     width: 2560,
     height: 1127,
   },
+  {
+    id: 'asset-40c494b5f4',
+    src: '/wp-content/uploads/2024/02/de729be13c98f6a585c5656f0ce73db4-1.webp',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'giai-phap-luu-tru/index.html', line: 628 },
+      { file: 'en/storage-solution/index.html', line: 628 },
+    ],
+    width: 2000,
+    height: 1333,
+  },
+  {
+    id: 'asset-bcb1d8243f',
+    src: '/wp-content/uploads/2024/02/Deco-1-6.svg',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'giai-phap-luu-tru/index.html', line: 862 },
+      { file: 'en/storage-solution/index.html', line: 862 },
+    ],
+    width: 262,
+    height: 261,
+  },
 ];

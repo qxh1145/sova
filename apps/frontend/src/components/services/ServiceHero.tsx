@@ -21,6 +21,8 @@ export interface ServiceHeroIds {
   gap1?: string;
   /** Second gap before the description (hosting). */
   gap1b?: string;
+  /** Classes on gap1b element; defaults to `gap-element clearfix`. */
+  gap1bClass?: string;
   descText?: string;
   gap2?: string;
   /** Classes on gap2 element; defaults to `gap-element clearfix`. */
@@ -175,6 +177,48 @@ export const SERVICE_HERO_IDS_EMAIL_EN: ServiceHeroIds = {
   imageWrapper: 'image_1999389245',
 };
 
+export const SERVICE_HERO_IDS_STORAGE_VI: ServiceHeroIds = {
+  banner: 'banner-1255492643',
+  textBox: 'text-box-596276206',
+  textBoxY: 'y10',
+  row: 'row-371210678',
+  leftCol: 'col-1574168941',
+  topGap: 'gap-2067858221',
+  breadcrumbText: 'text-445793396',
+  headingText: 'text-4148275343',
+  gap1: 'gap-987932550',
+  gap1b: 'gap-1295344278',
+  gap1bClass: 'gap-element clearfix show-for-small',
+  descText: 'text-1453693104',
+  gap2: 'gap-161076987',
+  gap2Class: 'gap-element clearfix show-for-small',
+  gap2b: 'gap-1107479796',
+  ctaText: 'text-3990203095',
+  rightCol: 'col-912227582',
+  imageWrapper: 'image_1556659363',
+};
+
+export const SERVICE_HERO_IDS_STORAGE_EN: ServiceHeroIds = {
+  banner: 'banner-964121618',
+  textBox: 'text-box-193917254',
+  textBoxY: 'y10',
+  row: 'row-1304501646',
+  leftCol: 'col-901932855',
+  topGap: 'gap-1182039191',
+  breadcrumbText: 'text-1244128777',
+  headingText: 'text-700628076',
+  gap1: 'gap-1604216309',
+  gap1b: 'gap-474200673',
+  gap1bClass: 'gap-element clearfix show-for-small',
+  descText: 'text-1232967560',
+  gap2: 'gap-2132235472',
+  gap2Class: 'gap-element clearfix show-for-small',
+  gap2b: 'gap-193824015',
+  ctaText: 'text-315635000',
+  rightCol: 'col-411984466',
+  imageWrapper: 'image_1524550594',
+};
+
 export interface ServiceHeroProps {
   hero: HeroContent;
   heroImage?: AssetRef | null;
@@ -271,7 +315,7 @@ export function ServiceHero({ hero, heroImage, bgImage, ids }: ServiceHeroProps)
                         {ids.gap1b && (
                           <div
                             id={ids.gap1b}
-                            className="gap-element clearfix"
+                            className={ids.gap1bClass ?? 'gap-element clearfix'}
                             style={{ display: 'block', height: 'auto' }}
                           />
                         )}
