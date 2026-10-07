@@ -26,6 +26,11 @@
   },
   {
     "match": "eras-",
+    "within": "eras-table-price",
+    "reason": "Source class name kept in why-choose-us service table"
+  },
+  {
+    "match": "eras-",
     "within": "eras-table-price-slider",
     "reason": "Source class name kept in carousel fixture"
   },

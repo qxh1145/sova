@@ -25,7 +25,14 @@ export const hostingServices: Service[] = [
         sources: [{ file: 'hosting-doanh-nghiep/index.html', line: 716 }],
       },
       imageId: 'asset-9726b1c0b9',
+      bgImageId: 'asset-e75d5cf81c',
       cta: { label: 'Kết nối ngay →', href: '/lien-he/' },
+      breadcrumb: [
+        { label: 'Trang chủ', href: '/' },
+        { label: 'Dịch vụ' },
+        { label: 'Giải pháp lưu trữ', href: '/giai-phap-luu-tru/' },
+        { label: 'Business Hosting' },
+      ],
     },
     benefits: [
       {
@@ -114,6 +121,7 @@ export const hostingServices: Service[] = [
     ],
     featuredProjectIds: [],
     pricingId: 'pricing-hosting',
+    benefitsBgImageId: 'asset-e0d6652ff9',
     seo: {
       title: 'Hosting doanh nghiệp - Công ty thiết kế website chuyên nghiệp | Sova',
       description: 'Trang chủ / Dịch vụ / Giải pháp lưu trữ / Business Hosting',
@@ -122,14 +130,18 @@ export const hostingServices: Service[] = [
     },
     offerings: [],
     sectionCopy: {
-      pricing: { title: 'Bảng giá dịch vụ' },
-      benefits: { title: 'Sử dụng dịch vụ của Sova', titleLines: ['Sử dụng dịch vụ của', 'Sova'] },
+      pricing: { eyebrow: 'Dịch vụ Business hosting', title: 'Bảng giá dịch vụ' },
+      benefits: {
+        eyebrow: 'Vì sao bạn nên chọn',
+        title: 'Sử dụng dịch vụ của Sova',
+        titleLines: ['Sử dụng dịch vụ của', 'Sova'],
+      },
       testimonials: {
         eyebrow: 'Sova',
         title: 'Khách hàng nhận xét về chúng tôi',
         titleLines: ['Khách hàng nhận xét', 'về chúng tôi'],
       },
-      faq: { title: 'Những câu hỏi thường gặp' },
+      faq: { eyebrow: 'GIẢI ĐÁP', title: 'Những câu hỏi thường gặp' },
     },
   },
   {
@@ -155,7 +167,14 @@ export const hostingServices: Service[] = [
         sources: [{ file: 'en/business-hosting/index.html', line: 716 }],
       },
       imageId: 'asset-9726b1c0b9',
+      bgImageId: 'asset-e75d5cf81c',
       cta: { label: 'Connect now →', href: '/en/contact-us/' },
+      breadcrumb: [
+        { label: 'Home', href: '/en/home/' },
+        { label: 'Services' },
+        { label: 'Storage solutions', href: '/en/storage-solution/' },
+        { label: 'Business Hosting' },
+      ],
     },
     benefits: [
       {
@@ -244,6 +263,7 @@ export const hostingServices: Service[] = [
     ],
     featuredProjectIds: [],
     pricingId: 'pricing-hosting',
+    benefitsBgImageId: 'asset-e0d6652ff9',
     seo: {
       title: 'Business Hosting - Công ty thiết kế website chuyên nghiệp | Sova',
       description: 'Home / Services / Storage solutions / Business Hosting',
@@ -252,10 +272,10 @@ export const hostingServices: Service[] = [
     },
     offerings: [],
     sectionCopy: {
-      pricing: { title: 'Business Hosting Pricing' },
-      benefits: { title: 'Sova’s Email Service ?' },
+      pricing: { eyebrow: 'Business hosting Service', title: 'Business Hosting Pricing' },
+      benefits: { eyebrow: 'Why you choose', title: 'Sova’s Email Service ?' },
       testimonials: { eyebrow: 'Sova', title: 'Customer Reviews' },
-      faq: { title: 'Frequently Asked Questions' },
+      faq: { eyebrow: 'FAQs', title: 'Frequently Asked Questions' },
     },
   },
 ];

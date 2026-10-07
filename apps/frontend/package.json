@@ -16,7 +16,7 @@
     "baseline": "playwright test -c playwright.baseline.config.ts capture.spec",
     "baseline:compare": "playwright test -c playwright.baseline.config.ts compare.spec",
     "baseline:hash": "playwright test -c playwright.baseline.config.ts source-hash.spec",
-    "baseline:sova": "BASELINE_SOVA=1 playwright test -c playwright.baseline.config.ts sova.spec",
+    "baseline:sova": "BASELINE_SOVA=1 playwright test -c playwright.baseline.config.ts sova.spec home.spec services.spec",
     "import": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import/index.ts",
     "port:css": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/port-css.ts",
     "check:brand": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-brand.ts",

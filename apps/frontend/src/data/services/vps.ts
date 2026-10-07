@@ -25,7 +25,14 @@ export const vpsServices: Service[] = [
         sources: [{ file: 'vps-doanh-nghiep/index.html', line: 702 }],
       },
       imageId: 'asset-091b1f7afb',
+      bgImageId: 'asset-12900f6ca6',
       cta: { label: 'Kết nối ngay →', href: '/vps-doanh-nghiep/' },
+      breadcrumb: [
+        { label: 'Trang chủ', href: '/' },
+        { label: 'Dịch vụ' },
+        { label: 'Giải pháp lưu trữ', href: '/giai-phap-luu-tru/' },
+        { label: 'Cloud VPS' },
+      ],
     },
     benefits: [
       {
@@ -115,6 +122,7 @@ export const vpsServices: Service[] = [
     ],
     featuredProjectIds: [],
     pricingId: 'pricing-vps',
+    benefitsBgImageId: 'asset-e0d6652ff9',
     seo: {
       title: 'VPS Doanh nghiệp - Công ty thiết kế website chuyên nghiệp | Sova',
       description: 'Trang chủ / Dịch vụ / Giải pháp lưu trữ / Cloud VPS',
@@ -123,14 +131,18 @@ export const vpsServices: Service[] = [
     },
     offerings: [],
     sectionCopy: {
-      pricing: { title: 'Bảng giá dịch vụ' },
-      benefits: { title: 'Sử dụng dịch vụ của Sova', titleLines: ['Sử dụng dịch vụ của', 'Sova'] },
+      pricing: { eyebrow: 'Dịch vụ Cloud VPS', title: 'Bảng giá dịch vụ' },
+      benefits: {
+        eyebrow: 'Vì sao bạn nên chọn',
+        title: 'Sử dụng dịch vụ của Sova',
+        titleLines: ['Sử dụng dịch vụ của', 'Sova'],
+      },
       testimonials: {
         eyebrow: 'Sova',
         title: 'Khách hàng nhận xét về chúng tôi',
         titleLines: ['Khách hàng nhận xét', 'về chúng tôi'],
       },
-      faq: { title: 'Những câu hỏi thường gặp' },
+      faq: { eyebrow: 'GIẢI ĐÁP', title: 'Những câu hỏi thường gặp' },
     },
   },
   {
@@ -156,7 +168,14 @@ export const vpsServices: Service[] = [
         sources: [{ file: 'en/business-vps/index.html', line: 702 }],
       },
       imageId: 'asset-091b1f7afb',
+      bgImageId: 'asset-12900f6ca6',
       cta: { label: 'Connect now →', href: '/en/contact-us/' },
+      breadcrumb: [
+        { label: 'Home', href: '/en/home/' },
+        { label: 'Services' },
+        { label: 'Storage solutions', href: '/en/storage-solution/' },
+        { label: 'Cloud VPS' },
+      ],
     },
     benefits: [
       {
@@ -246,6 +265,7 @@ export const vpsServices: Service[] = [
     ],
     featuredProjectIds: [],
     pricingId: 'pricing-vps',
+    benefitsBgImageId: 'asset-e0d6652ff9',
     seo: {
       title: 'Business VPS - Công ty thiết kế website chuyên nghiệp | Sova',
       description: 'Home / Services / Storage solutions / Cloud VPS',
@@ -254,10 +274,10 @@ export const vpsServices: Service[] = [
     },
     offerings: [],
     sectionCopy: {
-      pricing: { title: 'Business Hosting Pricing' },
-      benefits: { title: 'Sova’s Email Service ?' },
+      pricing: { eyebrow: 'Cloud VPS Service', title: 'Business Hosting Pricing' },
+      benefits: { eyebrow: 'Why you choose', title: 'Sova’s Email Service ?' },
       testimonials: { eyebrow: 'Sova', title: 'Customer Reviews' },
-      faq: { title: 'Frequently Asked Questions' },
+      faq: { eyebrow: 'FAQs', title: 'Frequently Asked Questions' },
     },
   },
 ];
