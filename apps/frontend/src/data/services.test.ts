@@ -11,6 +11,7 @@ import { hostingPricing } from './pricing/hosting';
 import { vpsPricing } from './pricing/vps';
 import { websitePricing } from './pricing/website';
 import { projects } from './projects';
+import { homePages } from './pages/home';
 import { brandingServices } from './services/branding';
 import { emailServices } from './services/email';
 import { hostingServices } from './services/hosting';
@@ -138,4 +139,50 @@ test('no Eras word or raw Eras contact value in service, pricing, testimonial an
   expect([...text.matchAll(BRAND_LEAK_RE)].map((m) => m[0])).toEqual([]);
   expect(text.match(/Sova VietNam/g)).toBeNull();
   for (const [pattern] of SCRUB_RULES) expect(text.match(pattern)).toBeNull();
+});
+
+test('VI item 5 sub-services Business Hosting + Cloud VPS', () => {
+  const viStorage = storageServices.find((s) => s.locale === 'vi');
+  expect(viStorage).toBeDefined();
+  expect(viStorage!.subServices).toEqual([
+    { label: 'Business Hosting', href: '/hosting-doanh-nghiep/' },
+    { label: 'Cloud VPS', href: '/vps-doanh-nghiep/' },
+  ]);
+  expect(viStorage!.arrowHref).toBe('/giai-phap-luu-tru/');
+  expect(viStorage!.homeSummary).toContain('hệ thống server chất lượng cao');
+});
+
+test('EN home serviceIds has six services, index 1 is service-mobile-en with website arrow', () => {
+  const enHome = homePages.find((p) => p.locale === 'en');
+  expect(enHome).toBeDefined();
+  expect(enHome!.serviceIds).toHaveLength(6);
+  expect(enHome!.serviceIds[1]).toBe('service-mobile-en');
+  expect(enHome!.serviceIds).toEqual([
+    'service-website-en',
+    'service-mobile-en',
+    'service-seo-en',
+    'service-branding-en',
+    'service-storage-en',
+    'service-email-en',
+  ]);
+
+  const enMobile = mobileServices.find((s) => s.locale === 'en');
+  expect(enMobile).toBeDefined();
+  expect(enMobile!.arrowHref).toBe('/en/website-development/');
+  expect(enMobile!.subServices).toEqual([]);
+  expect(enMobile!.homeSummary).toContain('Our mobile solutions');
+});
+
+test('VI home serviceIds has six services in order', () => {
+  const viHome = homePages.find((p) => p.locale === 'vi');
+  expect(viHome).toBeDefined();
+  expect(viHome!.serviceIds).toEqual([
+    'service-website-vi',
+    'service-mobile-vi',
+    'service-seo-vi',
+    'service-branding-vi',
+    'service-storage-vi',
+    'service-email-vi',
+  ]);
+  expect(viHome!.marqueeSeparatorId).toBe('asset-400b882328');
 });

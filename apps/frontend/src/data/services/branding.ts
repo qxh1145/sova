@@ -12,6 +12,10 @@ export const brandingServices: Service[] = [
     key: 'branding',
     summary:
       'Tại Sova, chúng tôi giúp doanh nghiệp hiện thực hóa mục tiêu bằng các dịch vụ thiết kế UI/UX chuyên biệt. Quá trình này được xây dựng trên nền tảng nghiên cứu sâu về thị trường và hành vi người dùng, đảm bảo sự phù hợp với yếu tố văn hóa.',
+    homeSummary:
+      'Nhận diện tốt nhất là qua hình ảnh. Một profile đẹp tạo kết nối mạnh mẽ và ấn tượng Profile đẹp tạo dựng uy tín và tên tuổi của doanh nghiệp',
+    subServices: [],
+    arrowHref: '/ui-ux-branding-design/',
     hero: {
       headingLines: ['UI/UX,', 'Branding Design'],
       description: {
@@ -173,6 +177,10 @@ export const brandingServices: Service[] = [
     key: 'branding',
     summary:
       'Sova empower businesses to achieve their goals through specialized UI/UX design services. Our process is grounded in deep research into market dynamics and user behavior, ensuring that every design aligns with both functional needs and cultural context.',
+    homeSummary:
+      'We design based on deep user behavior analytics and cultural context mapping. Our UI/UX design systems are component-based, responsive by default, and built to support conversion-focused user journeys while maintaining brand consistency across platforms.',
+    subServices: [],
+    arrowHref: '/en/ui-ux-branding-design-2/',
     hero: {
       headingLines: ['UI/UX,', 'Branding Design'],
       description: {

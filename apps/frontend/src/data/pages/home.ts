@@ -57,6 +57,12 @@ export const homePages: HomePageRecord[] = [
       'service-email-vi',
     ],
     marqueeText: ['Development', 'UI/UX', 'Sova', 'Branding', 'Writer', 'Mobile'],
+    marqueeSeparatorId: 'asset-400b882328',
+    testimonialArtIds: {
+      photoId: 'asset-941f38ec1d',
+      quoteIconId: 'asset-1d227d7c9b',
+      lineId: 'asset-5763f42849',
+    },
     projectPlacements: [
       { entityId: 'project-2348', order: 1 },
       { entityId: 'project-2182', order: 2 },
@@ -146,13 +152,19 @@ export const homePages: HomePageRecord[] = [
     },
     serviceIds: [
       'service-website-en',
-      'service-website-en',
+      'service-mobile-en',
       'service-seo-en',
       'service-branding-en',
       'service-storage-en',
       'service-email-en',
     ],
     marqueeText: ['Development', 'UI/UX', 'Sova', 'Branding', 'Writer', 'Mobile'],
+    marqueeSeparatorId: 'asset-400b882328',
+    testimonialArtIds: {
+      photoId: 'asset-941f38ec1d',
+      quoteIconId: 'asset-1d227d7c9b',
+      lineId: 'asset-5763f42849',
+    },
     projectPlacements: [],
     partnerPlacements: [
       { entityId: 'partner-logo-wisdomland', order: 1 },

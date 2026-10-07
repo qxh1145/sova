@@ -69,9 +69,14 @@ export interface HeroContent {
 export type ServiceKey =
   'website' | 'mobile' | 'seo' | 'branding' | 'storage' | 'email' | 'hosting' | 'vps';
 
+export type Asset = AssetRef;
+
 export interface Service extends LocalizedIdentity {
   key: ServiceKey;
   summary: string;
+  homeSummary: string;
+  subServices: { label: string; href: string }[];
+  arrowHref: string;
   parentKey?: ServiceKey;
   hero: HeroContent;
   benefits: Feature[];
@@ -398,6 +403,7 @@ export interface CollectionPlacement {
 export interface SectionCopy {
   eyebrow?: string;
   title: string;
+  /** Source `<br>` line breaks of `title`, set only when the heading has more than one line. */
   titleLines?: string[];
   description?: string;
 }
@@ -416,15 +422,34 @@ export interface HomePageContent extends LocalizedIdentity {
     SectionCopy
   >;
   marqueeText: string[];
+  marqueeSeparator: Asset;
+  testimonialArt: {
+    photo: Asset;
+    quoteIcon: Asset;
+    line: Asset;
+  };
 }
 
 /** Stored home record: raw ids and placements; queries fill resolved arrays. */
 export type HomePageRecord = Omit<
   HomePageContent,
-  'stats' | 'services' | 'projects' | 'partners' | 'testimonials' | 'posts'
+  | 'stats'
+  | 'services'
+  | 'projects'
+  | 'partners'
+  | 'testimonials'
+  | 'posts'
+  | 'marqueeSeparator'
+  | 'testimonialArt'
 > & {
   statIds: EntityId[];
   serviceIds: EntityId[];
+  marqueeSeparatorId: EntityId;
+  testimonialArtIds: {
+    photoId: EntityId;
+    quoteIconId: EntityId;
+    lineId: EntityId;
+  };
   projectPlacements: CollectionPlacement[];
   partnerPlacements: CollectionPlacement[];
   testimonialPlacements: CollectionPlacement[];

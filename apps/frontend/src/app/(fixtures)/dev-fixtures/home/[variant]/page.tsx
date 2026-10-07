@@ -3,7 +3,7 @@ import { SiteShell } from '@/components/layout/SiteShell';
 import { HomeView } from '@/components/home/HomeView';
 import { FeaturedProjects } from '@/components/projects/FeaturedProjects';
 import { getShellProps } from '@/lib/queries/site';
-import { getHomePage } from '@/lib/queries/pages';
+import { getHomeAssets, getHomePage } from '@/lib/queries/pages';
 import { getAssets } from '@/lib/queries/assets';
 import { getProjectCategories } from '@/lib/queries/projects';
 import { createScenarioRepository } from '@/dev/scenarios';
@@ -12,7 +12,7 @@ import { UnmountToggle } from './UnmountToggle';
 
 export const dynamic = 'force-dynamic';
 
-const VALID_VARIANTS = new Set(['empty', 'error', 'unmount']);
+const VALID_VARIANTS = new Set(['empty', 'error', 'missing-media', 'unmount']);
 
 export default async function DevFixtureHomePage({
   params,
@@ -59,31 +59,20 @@ export default async function DevFixtureHomePage({
     await getHomePage(locale, createScenarioRepository('error'));
   }
 
-  const emptyRepo = createScenarioRepository('empty');
+  const repo = createScenarioRepository(variant === 'missing-media' ? 'missing-media' : 'empty');
   const [shell, content] = await Promise.all([
-    getShellProps(locale, emptyRepo),
-    getHomePage(locale, emptyRepo),
+    getShellProps(locale, repo),
+    getHomePage(locale, repo),
   ]);
 
-  const [videoAsset] = content?.hero.videoId
-    ? await getAssets([content.hero.videoId], emptyRepo)
-    : [];
-  const galleryAssetIds = (content?.projects ?? [])
-    .map((p) => p.galleryIds[0])
-    .filter((id): id is string => Boolean(id));
-  const [projectAssets, categories] = await Promise.all([
-    galleryAssetIds.length ? getAssets(galleryAssetIds, emptyRepo) : Promise.resolve([]),
-    getProjectCategories(emptyRepo),
-  ]);
+  const homeAssets = await getHomeAssets(content, repo);
 
   return (
     <SiteShell {...shell}>
       <HomeView
         content={content}
         locale={locale}
-        videoAsset={videoAsset}
-        projectAssets={projectAssets}
-        projectCategories={categories}
+        {...homeAssets}
       />
     </SiteShell>
   );

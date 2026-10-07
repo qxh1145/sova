@@ -12,6 +12,10 @@ export const websiteServices: Service[] = [
     key: 'website',
     summary:
       'Mỗi dự án không chỉ là cơ hội để tạo ra giá trị cho doanh nghiệp, mà còn là dịp để chúng ta trở thành đối tác đồng hành, mang lại giá trị cộng hưởng cho khách hàng thông qua những sản phẩm trải nghiệm số tinh tế.',
+    homeSummary:
+      'Một quy trình chuẩn từ nghiên cứu thiết kế đến xây dựng lập trình website là một điều rất quan trọng để cho ra được sản phẩm hoàn thiện nhất cho khách hàng',
+    subServices: [],
+    arrowHref: '/thiet-ke-website/',
     hero: {
       headingLines: ['Thiết kế Website', 'Chuyên Nghiệp'],
       description: {
@@ -172,6 +176,10 @@ export const websiteServices: Service[] = [
     key: 'website',
     summary:
       'Each project is not only an opportunity to create value for businesses, but also a chance for us to become trusted partners—delivering synergistic value to clients through refined and impactful digital experiences.',
+    homeSummary:
+      'We implement a full-stack development pipeline—starting from in-depth user research, wireframing, UI/UX design to frontend and backend development—ensuring scalable, high-performance websites optimized for SEO, security, and cross-browser compatibility.',
+    subServices: [],
+    arrowHref: '/en/website-development/',
     hero: {
       headingLines: ['Professional', 'Website Development'],
       description: {

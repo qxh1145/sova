@@ -12,6 +12,10 @@ export const mobileServices: Service[] = [
     key: 'mobile',
     summary:
       'Thiết kế phần mềm web-app mobile là giải pháp giúp doanh nghiệp quản lý công việc kinh doanh một cách có hệ thống và logic, từ đó nâng cao hiệu quả, gia tăng lợi nhuận và thúc đẩy sự phát triển.',
+    homeSummary:
+      'Thiết kế phần mềm web-app mobile là giải pháp giúp doanh nghiệp quản lý công việc kinh doanh có tính quy củ và logic, hiệu quả hơn, từ đó gia tăng lợi nhuận, phát triển',
+    subServices: [],
+    arrowHref: '/thiet-ke-app-mobile/',
     hero: {
       headingLines: ['Thiết kế App mobile', 'Chuyên Nghiệp'],
       description: {
@@ -164,6 +168,10 @@ export const mobileServices: Service[] = [
     key: 'mobile',
     summary:
       'Designing web and mobile app software is a solution that helps businesses manage operations in a systematic and logical way, thereby enhancing efficiency, increasing profitability, and driving growth.',
+    homeSummary:
+      'Our mobile solutions (native & cross-platform) are engineered with modular architecture, robust APIs, and adaptive UI, allowing seamless performance across devices. We apply Agile methodology to continuously iterate and improve based on user feedback and business goals.',
+    subServices: [],
+    arrowHref: '/en/website-development/',
     hero: {
       headingLines: ['Professional', 'Mobile App Design'],
       description: {
