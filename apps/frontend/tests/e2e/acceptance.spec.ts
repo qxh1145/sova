@@ -23,6 +23,9 @@ function setupConsoleCollector(page: Page) {
   page.on('pageerror', (err) => {
     consoleErrors.push(err.message);
   });
+  // The console 404 line carries no URL, so 404s are checked here. Only RSC prefetches of nav
+  // routes that later epics build are expected; a missing asset or page document still fails.
+  // ponytail: blanket _rsc allowance; drop it once every nav route exists (epic-fidelity).
   page.on('response', (res) => {
     if (res.status() !== 404) return;
     const url = new URL(res.url());
@@ -423,99 +426,60 @@ const EN_SECTIONS: HomeSectionSpec[] = [
   },
 ];
 
-test.describe('Acceptance: Home sections (vi)', () => {
-  test.beforeEach(async ({ page }) => {
-    setupConsoleCollector(page);
-  });
+const HOME_LOCALES = [
+  { locale: 'vi', route: '/', sections: VI_SECTIONS, absent: [] },
+  {
+    locale: 'en',
+    route: '/en/home/',
+    sections: EN_SECTIONS,
+    // Documented omissions: FeaturedProjects (A22 (e)) and LatestPosts (postPlacements empty).
+    absent: ['section.horizontal-scroll-section', '#section_549960105'],
+  },
+];
 
-  test.afterEach(async ({ page }) => {
-    verifyConsoleCollector(page);
-  });
+for (const { locale, route, sections, absent } of HOME_LOCALES) {
+  test.describe(`Acceptance: Home sections (${locale})`, () => {
+    test.beforeEach(async ({ page }) => {
+      setupConsoleCollector(page);
+    });
 
-  test('VI home sections are visible with source headings in source order', async ({ page }) => {
-    await page.goto('/');
+    test.afterEach(async ({ page }) => {
+      verifyConsoleCollector(page);
+    });
 
-    for (const section of VI_SECTIONS) {
-      const root = page.locator(section.selector);
-      await expect(root, `Section ${section.name} (${section.sourceLine}) root should be visible`).toBeVisible();
-      if (section.headingSelector && section.headingText) {
-        await expect(
-          root.locator(section.headingSelector).first(),
-          `Section ${section.name} (${section.sourceLine}) heading should contain "${section.headingText}"`,
-        ).toContainText(section.headingText);
-      }
-    }
+    test(`${locale.toUpperCase()} home sections are visible with source headings in source order`, async ({
+      page,
+    }) => {
+      await page.goto(route);
 
-    const orderResult = await page.evaluate((sections) => {
-      const elements = sections.map((s) => document.querySelector(s.selector));
-      for (let i = 0; i < elements.length - 1; i++) {
-        const a = elements[i];
-        const b = elements[i + 1];
-        if (!a) return { ok: false, error: `Section ${sections[i].name} (${sections[i].selector}) missing from DOM` };
-        if (!b) return { ok: false, error: `Section ${sections[i + 1].name} (${sections[i + 1].selector}) missing from DOM` };
-        const pos = a.compareDocumentPosition(b);
-        if (!(pos & Node.DOCUMENT_POSITION_FOLLOWING)) {
-          return {
-            ok: false,
-            error: `Section ${sections[i + 1].name} (${sections[i + 1].selector}) does not follow ${sections[i].name} in DOM order`,
-          };
+      for (const section of sections) {
+        const label = `Section ${section.name} (${section.sourceLine})`;
+        const root = page.locator(section.selector);
+        await expect(root, `${label} root should be visible`).toBeVisible();
+        if (section.headingSelector && section.headingText) {
+          await expect(
+            root.locator(section.headingSelector).first(),
+            `${label} heading should contain "${section.headingText}"`,
+          ).toContainText(section.headingText);
         }
       }
-      return { ok: true, error: '' };
-    }, VI_SECTIONS);
 
-    expect(orderResult.ok, orderResult.error).toBe(true);
-  });
-});
-
-test.describe('Acceptance: Home sections (en)', () => {
-  test.beforeEach(async ({ page }) => {
-    setupConsoleCollector(page);
-  });
-
-  test.afterEach(async ({ page }) => {
-    verifyConsoleCollector(page);
-  });
-
-  test('EN home sections are visible with source headings in source order, omitted sections absent', async ({ page }) => {
-    await page.goto('/en/home/');
-
-    for (const section of EN_SECTIONS) {
-      const root = page.locator(section.selector);
-      await expect(root, `Section ${section.name} (${section.sourceLine}) root should be visible`).toBeVisible();
-      if (section.headingSelector && section.headingText) {
-        await expect(
-          root.locator(section.headingSelector).first(),
-          `Section ${section.name} (${section.sourceLine}) heading should contain "${section.headingText}"`,
-        ).toContainText(section.headingText);
-      }
-    }
-
-    const orderResult = await page.evaluate((sections) => {
-      const elements = sections.map((s) => document.querySelector(s.selector));
-      for (let i = 0; i < elements.length - 1; i++) {
-        const a = elements[i];
-        const b = elements[i + 1];
-        if (!a) return { ok: false, error: `Section ${sections[i].name} (${sections[i].selector}) missing from DOM` };
-        if (!b) return { ok: false, error: `Section ${sections[i + 1].name} (${sections[i + 1].selector}) missing from DOM` };
-        const pos = a.compareDocumentPosition(b);
-        if (!(pos & Node.DOCUMENT_POSITION_FOLLOWING)) {
-          return {
-            ok: false,
-            error: `Section ${sections[i + 1].name} (${sections[i + 1].selector}) does not follow ${sections[i].name} in DOM order`,
-          };
+      const orderError = await page.evaluate((specs) => {
+        for (let i = 0; i < specs.length - 1; i++) {
+          const a = document.querySelector(specs[i].selector);
+          const b = document.querySelector(specs[i + 1].selector);
+          if (!a || !b) return `Section ${(a ? specs[i + 1] : specs[i]).name} missing from DOM`;
+          if (!(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING)) {
+            return `Section ${specs[i + 1].name} (${specs[i + 1].selector}) does not follow ${specs[i].name} in DOM order`;
+          }
         }
+        return '';
+      }, sections);
+      expect(orderError, orderError).toBe('');
+
+      for (const selector of absent) {
+        await expect(page.locator(selector), `${selector} should be omitted`).toHaveCount(0);
       }
-      return { ok: true, error: '' };
-    }, EN_SECTIONS);
-
-    expect(orderResult.ok, orderResult.error).toBe(true);
-
-    // Documented omissions:
-    // FeaturedProjects omitted on EN (A22e)
-    await expect(page.locator('section.horizontal-scroll-section')).toHaveCount(0);
-    // LatestPosts omitted on EN (postPlacements is empty)
-    await expect(page.locator('#section_549960105')).toHaveCount(0);
+    });
   });
-});
-
+}
