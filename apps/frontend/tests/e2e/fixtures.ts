@@ -41,7 +41,7 @@ export function isAllowedUrl(url: string, overrideStagingHost?: string | null): 
     if (protocol !== 'http:' && protocol !== 'https:') return true; // data:, blob:, etc.
     const effectiveStagingHost =
       overrideStagingHost !== undefined ? extractHostname(overrideStagingHost) : defaultStagingHost;
-    if (effectiveStagingHost && hostname === effectiveStagingHost) {
+    if (effectiveStagingHost && (hostname === effectiveStagingHost || hostname === 'vercel.live')) {
       return true;
     }
     return LOCAL_HOSTS.includes(hostname) || MAPS_EMBED_ALLOWLIST.includes(hostname);
