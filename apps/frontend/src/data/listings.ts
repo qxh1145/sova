@@ -162,3 +162,22 @@ export const listingSnapshots: ListingSnapshot[] = [
   { routeId: 'route-tin-tuc', page: 1, orderedIds: ['post-853', 'post-826', 'post-815'] },
   { routeId: 'route-ux-ui', page: 1, orderedIds: ['post-2492', 'post-2323'] },
 ];
+
+export const blogListingCopy = {
+  title: 'Góc nhìn',
+  breadcrumbHome: 'Trang chủ',
+  breadcrumbBlog: 'Góc nhìn',
+  readMore: 'Đọc tiếp →',
+  pagination: {
+    nav: 'Phân trang bài viết',
+    prev: 'Trang trước',
+    next: 'Trang tiếp theo',
+  },
+};
+
+export const blogDetailCopy = {
+  breadcrumbHome: 'Trang chủ',
+  breadcrumbBlog: 'Góc nhìn',
+  breadcrumbCurrent: 'Chi tiết',
+  headingBackgroundImage: '/wp-content/uploads/2024/03/ec9c55cfcb4d0c64ecafd52d957c13e9.png',
+};

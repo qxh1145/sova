@@ -62,8 +62,10 @@ export interface HeroContent {
   headingLines: string[];
   description?: RichContent;
   imageId?: EntityId;
+  bgImageId?: EntityId;
   videoId?: EntityId;
   cta?: LinkModel;
+  breadcrumb?: { label: string; href?: string }[];
 }
 
 export type ServiceKey =
@@ -84,6 +86,8 @@ export interface Service extends LocalizedIdentity {
   testimonialIds: EntityId[];
   featuredProjectIds: EntityId[];
   pricingId?: EntityId;
+  /** Background image of the benefits icon-card section (hosting/VPS `ss-ndv-seo`). */
+  benefitsBgImageId?: EntityId;
   seo: SEO;
   /** Why-choose-us (website/mobile), packages (SEO/branding), hub summaries (storage); else []. */
   offerings: OfferingPanel[];
@@ -98,6 +102,7 @@ export interface OfferingPanel {
   id: EntityId;
   title: string;
   content: RichContent;
+  items?: string[];
   mediaId?: EntityId;
 }
 

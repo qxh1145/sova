@@ -19,20 +19,23 @@ export function FAQList({
   className,
   labels,
 }: FAQListProps) {
-  const defaultValue = defaultOpen === 'first' && faqs.length > 0 ? [faqs[0].id] : [];
+  const defaultValue = defaultOpen === 'first' && faqs.length > 0 ? [`${faqs[0].id}-0`] : [];
 
   return (
     <Accordion type={type} defaultValue={defaultValue} className={className}>
-      {faqs.map((faq) => (
-        <AccordionItem
-          key={faq.id}
-          value={faq.id}
-          title={faq.question}
-          labels={labels}
-        >
-          <RichText content={faq.answer} />
-        </AccordionItem>
-      ))}
+      {faqs.map((faq, index) => {
+        const itemKey = `${faq.id}-${index}`;
+        return (
+          <AccordionItem
+            key={itemKey}
+            value={itemKey}
+            title={faq.question}
+            labels={labels}
+          >
+            <RichText content={faq.answer} />
+          </AccordionItem>
+        );
+      })}
     </Accordion>
   );
 }
