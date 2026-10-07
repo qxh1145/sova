@@ -4,8 +4,6 @@ import { HomeView } from '@/components/home/HomeView';
 import { FeaturedProjects } from '@/components/projects/FeaturedProjects';
 import { getShellProps } from '@/lib/queries/site';
 import { getHomeAssets, getHomePage } from '@/lib/queries/pages';
-import { getAssets } from '@/lib/queries/assets';
-import { getProjectCategories } from '@/lib/queries/projects';
 import { createScenarioRepository } from '@/dev/scenarios';
 import type { Locale } from '@/types/content';
 import { UnmountToggle } from './UnmountToggle';
@@ -37,18 +35,14 @@ export default async function DevFixtureHomePage({
   if (variant === 'unmount') {
     const home = await getHomePage('vi');
     if (!home) notFound();
-    const { projects } = home;
-    const [assets, categories] = await Promise.all([
-      getAssets(projects.map((p) => p.galleryIds[0]).filter((id): id is string => Boolean(id))),
-      getProjectCategories(),
-    ]);
+    const { projectAssets, projectCategories } = await getHomeAssets(home);
     return (
       <UnmountToggle>
         <FeaturedProjects
-          projects={projects}
+          projects={home.projects}
           copy={home.sectionCopy.projects}
-          assets={assets}
-          categories={categories}
+          assets={projectAssets}
+          categories={projectCategories}
         />
       </UnmountToggle>
     );
@@ -69,11 +63,7 @@ export default async function DevFixtureHomePage({
 
   return (
     <SiteShell {...shell}>
-      <HomeView
-        content={content}
-        locale={locale}
-        {...homeAssets}
-      />
+      <HomeView content={content} locale={locale} {...homeAssets} />
     </SiteShell>
   );
 }

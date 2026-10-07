@@ -265,15 +265,12 @@ test.describe('Floating contacts and mobile contact bar', () => {
     page.on('pageerror', (err) => consoleErrors.push(err.message));
     page.on('response', (res) => {
       // Link prefetches of routes later epics build (`?_rsc=`) 404 today; anything else is a real failure
-      if (res.status() >= 400 && !res.url().includes('_rsc=')) {
-        try {
-          const url = new URL(res.url());
-          if (!KNOWN_ABSENT_CSS_ASSETS.has(url.pathname)) {
-            failedResponses.push(res.url());
-          }
-        } catch {
-          failedResponses.push(res.url());
-        }
+      if (
+        res.status() >= 400 &&
+        !res.url().includes('_rsc=') &&
+        !KNOWN_ABSENT_CSS_ASSETS.has(new URL(res.url()).pathname)
+      ) {
+        failedResponses.push(res.url());
       }
     });
 

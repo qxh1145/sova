@@ -156,21 +156,17 @@ export async function getHomeAssets(
     .map((p) => p.thumbnailId)
     .filter((id): id is string => Boolean(id));
 
-  const [
-    videoAssets,
-    projectAssets,
-    categories,
-    partnerAssets,
-    testimonialAssets,
-    postAssets,
-  ] = await Promise.all([
-    content.hero.videoId ? repository.getAssets([content.hero.videoId]) : Promise.resolve([]),
-    galleryAssetIds.length ? repository.getAssets(galleryAssetIds) : Promise.resolve([]),
-    repository.getProjectCategories(),
-    partnerLogoIds.length ? repository.getAssets(partnerLogoIds) : Promise.resolve([]),
-    testimonialAvatarIds.length ? repository.getAssets(testimonialAvatarIds) : Promise.resolve([]),
-    postThumbnailIds.length ? repository.getAssets(postThumbnailIds) : Promise.resolve([]),
-  ]);
+  const [videoAssets, projectAssets, categories, partnerAssets, testimonialAssets, postAssets] =
+    await Promise.all([
+      content.hero.videoId ? repository.getAssets([content.hero.videoId]) : Promise.resolve([]),
+      galleryAssetIds.length ? repository.getAssets(galleryAssetIds) : Promise.resolve([]),
+      repository.getProjectCategories(),
+      partnerLogoIds.length ? repository.getAssets(partnerLogoIds) : Promise.resolve([]),
+      testimonialAvatarIds.length
+        ? repository.getAssets(testimonialAvatarIds)
+        : Promise.resolve([]),
+      postThumbnailIds.length ? repository.getAssets(postThumbnailIds) : Promise.resolve([]),
+    ]);
 
   return {
     videoAsset: videoAssets[0] ?? null,
