@@ -1081,10 +1081,8 @@ test.describe('Latest posts', () => {
         const resolved = await resolveRoute(href);
         expect(resolved).not.toBeNull();
         expect(resolved?.route.kind).toBe('post-detail');
-        if (STAGING) {
-          const res = await page.request.get(href);
-          expect(res.status()).toBe(200);
-        }
+        const res = await page.request.get(href);
+        expect(res.status()).toBe(200);
       }
     }
 
