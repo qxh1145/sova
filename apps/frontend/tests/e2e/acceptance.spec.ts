@@ -1,3 +1,4 @@
+import type { Page } from '@playwright/test';
 import {
   expect,
   expectNoDuplicateIds,
@@ -9,42 +10,45 @@ import {
 
 const WIDTHS = [390, 549, 550, 768, 849, 850, 1280, 1440];
 
+function setupConsoleCollector(page: Page) {
+  const consoleErrors: string[] = [];
+  page.on('console', (msg) => {
+    if (msg.type() === 'error') {
+      const text = msg.text();
+      if (!text.startsWith('Failed to load resource: the server responded with a status of 404')) {
+        consoleErrors.push(text);
+      }
+    }
+  });
+  page.on('pageerror', (err) => {
+    consoleErrors.push(err.message);
+  });
+  page.on('response', (res) => {
+    if (res.status() !== 404) return;
+    const url = new URL(res.url());
+    if (
+      url.pathname.startsWith('/dev-fixtures/') ||
+      KNOWN_ABSENT_CSS_ASSETS.has(url.pathname) ||
+      url.searchParams.has('_rsc')
+    )
+      return;
+    consoleErrors.push(`404 ${res.url()}`);
+  });
+  (page as unknown as { __consoleErrors: string[] }).__consoleErrors = consoleErrors;
+}
+
+function verifyConsoleCollector(page: Page) {
+  const errors = (page as unknown as { __consoleErrors?: string[] }).__consoleErrors ?? [];
+  expect(errors, `Unexpected console/page errors:\n${errors.join('\n')}`).toEqual([]);
+}
+
 test.describe('Acceptance: Site shell on real routes', () => {
   test.beforeEach(async ({ page }) => {
-    const consoleErrors: string[] = [];
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') {
-        const text = msg.text();
-        if (
-          !text.startsWith('Failed to load resource: the server responded with a status of 404')
-        ) {
-          consoleErrors.push(text);
-        }
-      }
-    });
-    page.on('pageerror', (err) => {
-      consoleErrors.push(err.message);
-    });
-    // The console 404 line carries no URL, so 404s are checked here. Only RSC prefetches of nav
-    // routes that later epics build are expected; a missing asset or page document still fails.
-    // ponytail: blanket _rsc allowance; drop it once every nav route exists (epic-fidelity).
-    page.on('response', (res) => {
-      if (res.status() !== 404) return;
-      const url = new URL(res.url());
-      if (
-        url.pathname.startsWith('/dev-fixtures/') ||
-        KNOWN_ABSENT_CSS_ASSETS.has(url.pathname) ||
-        url.searchParams.has('_rsc')
-      )
-        return;
-      consoleErrors.push(`404 ${res.url()}`);
-    });
-    (page as unknown as { __consoleErrors: string[] }).__consoleErrors = consoleErrors;
+    setupConsoleCollector(page);
   });
 
   test.afterEach(async ({ page }) => {
-    const errors = (page as unknown as { __consoleErrors?: string[] }).__consoleErrors ?? [];
-    expect(errors, `Unexpected console/page errors:\n${errors.join('\n')}`).toEqual([]);
+    verifyConsoleCollector(page);
   });
 
   test('Header sticky 90→70 motion at 1440px and stuck behavior at 390px on real routes', async ({
@@ -310,3 +314,208 @@ test.describe('Acceptance: 8 responsive widths viewport checks', () => {
     }
   }
 });
+
+interface HomeSectionSpec {
+  name: string;
+  selector: string;
+  sourceLine: string;
+  headingSelector?: string;
+  headingText?: string;
+}
+
+const VI_SECTIONS: HomeSectionSpec[] = [
+  {
+    name: 'Hero',
+    selector: '#banner-1767683074',
+    sourceLine: 'eras-clone/index.html:627',
+    headingSelector: 'h1',
+    headingText: 'Thấu hiểu, đồng hành',
+  },
+  {
+    name: 'Stats',
+    selector: '#row-560000867',
+    sourceLine: 'eras-clone/index.html:772',
+    headingSelector: 'h2',
+    headingText: 'Thành tựu',
+  },
+  {
+    name: 'Services',
+    selector: '#section_1856001238',
+    sourceLine: 'eras-clone/index.html:1097',
+    headingSelector: 'h2',
+    headingText: 'Dịch vụ tại Sova',
+  },
+  {
+    name: 'Marquee',
+    selector: '#section_1648741915',
+    sourceLine: 'eras-clone/index.html:1356',
+  },
+  {
+    name: 'FeaturedProjects',
+    selector: 'section.horizontal-scroll-section',
+    sourceLine: 'eras-clone/index.html:1400',
+    headingSelector: 'h2',
+    headingText: 'Dự án chứa đựng',
+  },
+  {
+    name: 'Partners',
+    selector: '#section_62935602',
+    sourceLine: 'eras-clone/index.html:1664',
+    headingSelector: 'h2',
+    headingText: 'Đối tác tin cậy',
+  },
+  {
+    name: 'Testimonials',
+    selector: '#section_1900032435',
+    sourceLine: 'eras-clone/index.html:2122',
+    headingSelector: 'h2',
+    headingText: 'Khách hàng nhận xét',
+  },
+  {
+    name: 'LatestPosts',
+    selector: '#section_549960105',
+    sourceLine: 'eras-clone/index.html:2529',
+    headingSelector: 'h2',
+    headingText: 'Theo dõi tin tức',
+  },
+];
+
+const EN_SECTIONS: HomeSectionSpec[] = [
+  {
+    name: 'Hero',
+    selector: '#banner-1274327306',
+    sourceLine: 'eras-clone/en/home/index.html:627',
+    headingSelector: 'h1',
+    headingText: 'From Understanding',
+  },
+  {
+    name: 'Stats',
+    selector: '#row-34630575',
+    sourceLine: 'eras-clone/en/home/index.html:773',
+    headingSelector: 'h2',
+    headingText: 'Our Achievements',
+  },
+  {
+    name: 'Services',
+    selector: '#section_2119007658',
+    sourceLine: 'eras-clone/en/home/index.html:1098',
+    headingSelector: 'h2',
+    headingText: 'Our Services',
+  },
+  {
+    name: 'Marquee',
+    selector: '#section_2114423796',
+    sourceLine: 'eras-clone/en/home/index.html:1357',
+  },
+  {
+    name: 'Partners',
+    selector: '#section_841675174',
+    sourceLine: 'eras-clone/en/home/index.html:1599',
+    headingSelector: 'h2',
+    headingText: 'Our Clients',
+  },
+  {
+    name: 'Testimonials',
+    selector: '#section_1228410742',
+    sourceLine: 'eras-clone/en/home/index.html:2053',
+    headingSelector: 'h2',
+    headingText: 'Customer Reviews',
+  },
+];
+
+test.describe('Acceptance: Home sections (vi)', () => {
+  test.beforeEach(async ({ page }) => {
+    setupConsoleCollector(page);
+  });
+
+  test.afterEach(async ({ page }) => {
+    verifyConsoleCollector(page);
+  });
+
+  test('VI home sections are visible with source headings in source order', async ({ page }) => {
+    await page.goto('/');
+
+    for (const section of VI_SECTIONS) {
+      const root = page.locator(section.selector);
+      await expect(root, `Section ${section.name} (${section.sourceLine}) root should be visible`).toBeVisible();
+      if (section.headingSelector && section.headingText) {
+        await expect(
+          root.locator(section.headingSelector).first(),
+          `Section ${section.name} (${section.sourceLine}) heading should contain "${section.headingText}"`,
+        ).toContainText(section.headingText);
+      }
+    }
+
+    const orderResult = await page.evaluate((sections) => {
+      const elements = sections.map((s) => document.querySelector(s.selector));
+      for (let i = 0; i < elements.length - 1; i++) {
+        const a = elements[i];
+        const b = elements[i + 1];
+        if (!a) return { ok: false, error: `Section ${sections[i].name} (${sections[i].selector}) missing from DOM` };
+        if (!b) return { ok: false, error: `Section ${sections[i + 1].name} (${sections[i + 1].selector}) missing from DOM` };
+        const pos = a.compareDocumentPosition(b);
+        if (!(pos & Node.DOCUMENT_POSITION_FOLLOWING)) {
+          return {
+            ok: false,
+            error: `Section ${sections[i + 1].name} (${sections[i + 1].selector}) does not follow ${sections[i].name} in DOM order`,
+          };
+        }
+      }
+      return { ok: true, error: '' };
+    }, VI_SECTIONS);
+
+    expect(orderResult.ok, orderResult.error).toBe(true);
+  });
+});
+
+test.describe('Acceptance: Home sections (en)', () => {
+  test.beforeEach(async ({ page }) => {
+    setupConsoleCollector(page);
+  });
+
+  test.afterEach(async ({ page }) => {
+    verifyConsoleCollector(page);
+  });
+
+  test('EN home sections are visible with source headings in source order, omitted sections absent', async ({ page }) => {
+    await page.goto('/en/home/');
+
+    for (const section of EN_SECTIONS) {
+      const root = page.locator(section.selector);
+      await expect(root, `Section ${section.name} (${section.sourceLine}) root should be visible`).toBeVisible();
+      if (section.headingSelector && section.headingText) {
+        await expect(
+          root.locator(section.headingSelector).first(),
+          `Section ${section.name} (${section.sourceLine}) heading should contain "${section.headingText}"`,
+        ).toContainText(section.headingText);
+      }
+    }
+
+    const orderResult = await page.evaluate((sections) => {
+      const elements = sections.map((s) => document.querySelector(s.selector));
+      for (let i = 0; i < elements.length - 1; i++) {
+        const a = elements[i];
+        const b = elements[i + 1];
+        if (!a) return { ok: false, error: `Section ${sections[i].name} (${sections[i].selector}) missing from DOM` };
+        if (!b) return { ok: false, error: `Section ${sections[i + 1].name} (${sections[i + 1].selector}) missing from DOM` };
+        const pos = a.compareDocumentPosition(b);
+        if (!(pos & Node.DOCUMENT_POSITION_FOLLOWING)) {
+          return {
+            ok: false,
+            error: `Section ${sections[i + 1].name} (${sections[i + 1].selector}) does not follow ${sections[i].name} in DOM order`,
+          };
+        }
+      }
+      return { ok: true, error: '' };
+    }, EN_SECTIONS);
+
+    expect(orderResult.ok, orderResult.error).toBe(true);
+
+    // Documented omissions:
+    // FeaturedProjects omitted on EN (A22e)
+    await expect(page.locator('section.horizontal-scroll-section')).toHaveCount(0);
+    // LatestPosts omitted on EN (postPlacements is empty)
+    await expect(page.locator('#section_549960105')).toHaveCount(0);
+  });
+});
+
