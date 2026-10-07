@@ -34,7 +34,6 @@ export interface ServiceHeroIds {
 }
 
 export const SERVICE_HERO_IDS_VI: ServiceHeroIds = {
-
   banner: 'banner-2067401347',
   textBox: 'text-box-1159832857',
   row: 'row-2031123420',
@@ -177,19 +176,13 @@ export const SERVICE_HERO_IDS_EMAIL_EN: ServiceHeroIds = {
 };
 
 export interface ServiceHeroProps {
-
   hero: HeroContent;
   heroImage?: AssetRef | null;
   bgImage?: AssetRef | null;
   ids: ServiceHeroIds;
 }
 
-export function ServiceHero({
-  hero,
-  heroImage,
-  bgImage,
-  ids,
-}: ServiceHeroProps) {
+export function ServiceHero({ hero, heroImage, bgImage, ids }: ServiceHeroProps) {
   const { breadcrumb } = hero;
 
   return (
@@ -243,7 +236,8 @@ export function ServiceHero({
                                   </Fragment>
                                 ))}
                               </span>
-                              {breadcrumb.length > 0 && ` ${breadcrumb[breadcrumb.length - 1].label}`}
+                              {breadcrumb.length > 0 &&
+                                ` ${breadcrumb[breadcrumb.length - 1].label}`}
                               <br />
                             </p>
                           </div>

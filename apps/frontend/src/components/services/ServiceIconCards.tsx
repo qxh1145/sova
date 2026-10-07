@@ -332,7 +332,6 @@ export const SERVICE_ICON_CARDS_IDS_EMAIL_EN: ServiceIconCardsIds = {
   ],
 };
 
-
 export interface ServiceIconCardsProps {
   copy?: SectionCopy;
   benefits: Feature[];

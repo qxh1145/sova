@@ -210,6 +210,7 @@ const TABLE_SERVICE_ROUTES = [
     pricingTitle: 'Bảng giá dịch vụ',
     benefitsTitle: 'Sử dụng dịch vụ của Sova',
     rows: 8,
+    columns: 8,
     faqCount: 10,
     icons: 6,
     iconWidths: ['78px', '78px', '78px', '78px', '78px', '78px'],
@@ -229,6 +230,7 @@ const TABLE_SERVICE_ROUTES = [
     pricingTitle: 'Business Hosting Pricing',
     benefitsTitle: 'Sova’s Email Service ?',
     rows: 8,
+    columns: 8,
     faqCount: 10,
     icons: 6,
     iconWidths: ['78px', '78px', '78px', '78px', '78px', '78px'],
@@ -248,6 +250,7 @@ const TABLE_SERVICE_ROUTES = [
     pricingTitle: 'Bảng giá dịch vụ',
     benefitsTitle: 'Sử dụng dịch vụ của Sova',
     rows: 6,
+    columns: 8,
     faqCount: 12,
     icons: 5,
     iconWidths: ['78px', '78px', '94px', '79px', '80px', '78px'],
@@ -268,6 +271,7 @@ const TABLE_SERVICE_ROUTES = [
     pricingTitle: 'Business Hosting Pricing',
     benefitsTitle: 'Sova’s Email Service ?',
     rows: 6,
+    columns: 8,
     faqCount: 12,
     icons: 5,
     iconWidths: ['78px', '78px', '94px', '79px', '80px', '78px'],
@@ -321,9 +325,7 @@ test.describe('Hosting, VPS, and Email service pages', () => {
       const { vpsPricing } = await import('../../src/data/pricing/vps');
       const { emailPricing } = await import('../../src/data/pricing/email');
       const pricingMap = { hosting: hostingPricing, vps: vpsPricing, email: emailPricing };
-      const pricing = pricingMap[config.key].find(
-        (p) => p.locale === config.locale,
-      );
+      const pricing = pricingMap[config.key].find((p) => p.locale === config.locale);
       if (pricing?.kind !== 'table') throw new Error('table pricing missing');
 
       await page.goto(config.path);
@@ -355,10 +357,9 @@ test.describe('Hosting, VPS, and Email service pages', () => {
       await expect(table.locator('thead th')).toHaveText(pricing.columns.map((c) => c.label));
       const rows = table.locator('tbody tr');
       await expect(rows).toHaveCount(config.rows);
-      const cols = ('columns' in config ? config.columns : 8) as number;
       for (const [i, plan] of pricing.plans.entries()) {
         const row = rows.nth(i);
-        await expect(row.locator('td')).toHaveCount(cols);
+        await expect(row.locator('td')).toHaveCount(config.columns);
         await expect(row.locator('td').first()).toHaveText(plan.name);
         await expect(row.locator('td.vps-price')).toHaveText(plan.price!.displayText);
         const cta = row.locator('td:last-child a.vps-btn');
@@ -406,10 +407,17 @@ test.describe('Hosting, VPS, and Email service pages', () => {
           hero.getByRole('link', {
             name: config.locale === 'vi' ? 'Trang chủ' : 'Home',
           }),
-        ).toHaveAttribute(
-          'href',
-          config.locale === 'vi' ? '/' : '/en/home/',
+        ).toHaveAttribute('href', config.locale === 'vi' ? '/' : '/en/home/');
+        const crumbs = hero.locator(
+          `#${config.locale === 'vi' ? 'text-951094996' : 'text-2322921990'}`,
         );
+        await expect(crumbs).toContainText(
+          config.locale === 'vi' ? 'Dịch vụ / Email Business' : 'Services / Email Business',
+        );
+        await expect(crumbs.locator('a')).toHaveCount(1);
+        await expect(
+          hero.locator(`#${config.locale === 'vi' ? 'gap-2007649633' : 'gap-1782042057'}`),
+        ).toHaveClass('gap-element clearfix show-for-small');
       } else {
         await expect(
           hero.getByRole('link', {
@@ -421,7 +429,6 @@ test.describe('Hosting, VPS, and Email service pages', () => {
         );
       }
     });
-
 
     test(`Table scrolls inside its wrapper, never the page, on ${config.path}`, async ({
       page,

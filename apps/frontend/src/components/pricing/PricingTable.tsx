@@ -88,7 +88,6 @@ export const PRICING_TABLE_IDS_EMAIL_EN: PricingTableIds = {
   wrapperId: 'vps-email-dn-1',
 };
 
-
 export interface PricingTableProps {
   pricing: TablePricing;
   copy?: SectionCopy;

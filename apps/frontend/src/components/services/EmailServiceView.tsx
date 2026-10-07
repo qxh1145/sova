@@ -1,10 +1,6 @@
 import type { Locale } from '@/types/content';
 import type { ServiceAssets, ServicePage } from '@/lib/queries/services';
-import {
-  ServiceHero,
-  SERVICE_HERO_IDS_EMAIL_EN,
-  SERVICE_HERO_IDS_EMAIL_VI,
-} from './ServiceHero';
+import { ServiceHero, SERVICE_HERO_IDS_EMAIL_EN, SERVICE_HERO_IDS_EMAIL_VI } from './ServiceHero';
 import {
   ServiceIconCards,
   SERVICE_ICON_CARDS_IDS_EMAIL_EN,

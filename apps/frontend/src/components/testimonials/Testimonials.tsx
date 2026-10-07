@@ -384,7 +384,6 @@ export const TESTIMONIALS_IDS_EMAIL_EN: TestimonialsIds = {
   ],
 };
 
-
 export const TESTIMONIALS_LABELS: Record<Locale, CarouselLabels> = {
   vi: {
     prev: 'Trước',

@@ -6522,4 +6522,3 @@ export const assets: AssetRef[] = [
     height: 1127,
   },
 ];
-
