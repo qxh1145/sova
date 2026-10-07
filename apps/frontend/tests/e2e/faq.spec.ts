@@ -223,9 +223,9 @@ test.describe('Accordion primitive and shared FAQ list', () => {
       .locator('.accordion-inner');
     const defaultFirstHtml = await defaultFirstFaq.innerHTML();
 
-    // Locate SEO FAQ #7 (A05 revision item with id accordion-faq-vi-752892835)
+    // Locate SEO FAQ #7 (A05 revision item; FAQList ids are `accordion-<faqId>-<index>`)
     const defaultA05Faq = page.locator(
-      '[data-testid="seo-faq-section"] #accordion-faq-vi-752892835-content',
+      '[data-testid="seo-faq-section"] [id^="accordion-faq-vi-752892835-"][id$="-content"]',
     );
     const defaultA05Html = await defaultA05Faq.innerHTML();
 
@@ -242,7 +242,7 @@ test.describe('Accordion primitive and shared FAQ list', () => {
     const changedFirstHtml = await changedFirstFaq.innerHTML();
 
     const changedA05Faq = page.locator(
-      '[data-testid="seo-faq-section"] #accordion-faq-vi-752892835-content',
+      '[data-testid="seo-faq-section"] [id^="accordion-faq-vi-752892835-"][id$="-content"]',
     );
     const changedA05Html = await changedA05Faq.innerHTML();
 

@@ -1,5 +1,6 @@
 import { getRepository } from '@/lib/repositories';
 import type {
+  AssetRef,
   EntityId,
   FAQ,
   Locale,
@@ -26,6 +27,93 @@ export interface ServicePage {
   testimonials: Testimonial[];
   projects: Project[];
   pricing: Pricing | null;
+}
+
+export interface ServiceAssets {
+  heroImage: AssetRef | null;
+  heroBgImage: AssetRef | null;
+  benefitsVideo: AssetRef | null;
+  benefitIcons: AssetRef[];
+  offeringMedia: AssetRef[];
+  subtractIcon: AssetRef | null;
+  testimonialAvatars: AssetRef[];
+  testimonialArt: {
+    photo: AssetRef;
+    quoteIcon: AssetRef;
+    line: AssetRef;
+  };
+}
+
+export const TESTIMONIAL_ART_IDS = {
+  photoId: 'asset-941f38ec1d',
+  quoteIconId: 'asset-1d227d7c9b',
+  lineId: 'asset-5763f42849',
+};
+
+export const SUBTRACT_ICON_ID = 'asset-d68ffd5723';
+
+/**
+ * Resolves all assets required for a service page in parallel (hero, benefits, offerings, testimonials).
+ */
+export async function getServiceAssets(
+  page: ServicePage,
+  repository = getRepository(),
+): Promise<ServiceAssets> {
+  const { service, testimonials } = page;
+  const heroImageId = service.hero.imageId;
+  const heroBgImageId = service.hero.bgImageId;
+  const videoId = service.hero.videoId;
+  const benefitIconIds = service.benefits
+    .map((b) => b.iconId)
+    .filter((id): id is string => Boolean(id));
+  const offeringMediaIds = service.offerings
+    .map((o) => o.mediaId)
+    .filter((id): id is string => Boolean(id));
+  const avatarIds = testimonials
+    .map((t) => t.avatarId)
+    .filter((id): id is string => Boolean(id));
+
+  const [
+    heroImages,
+    heroBgImages,
+    videoAssets,
+    benefitIcons,
+    offeringMedia,
+    subtractAssets,
+    testimonialAvatars,
+    artAssets,
+  ] = await Promise.all([
+    heroImageId ? repository.getAssets([heroImageId]) : Promise.resolve([]),
+    heroBgImageId ? repository.getAssets([heroBgImageId]) : Promise.resolve([]),
+    videoId ? repository.getAssets([videoId]) : Promise.resolve([]),
+    benefitIconIds.length ? repository.getAssets(benefitIconIds) : Promise.resolve([]),
+    offeringMediaIds.length ? repository.getAssets(offeringMediaIds) : Promise.resolve([]),
+    repository.getAssets([SUBTRACT_ICON_ID]),
+    avatarIds.length ? repository.getAssets(avatarIds) : Promise.resolve([]),
+    repository.getAssets([
+      TESTIMONIAL_ART_IDS.photoId,
+      TESTIMONIAL_ART_IDS.quoteIconId,
+      TESTIMONIAL_ART_IDS.lineId,
+    ]),
+  ]);
+
+  const photo = artAssets.find((a) => a.id === TESTIMONIAL_ART_IDS.photoId);
+  const quoteIcon = artAssets.find((a) => a.id === TESTIMONIAL_ART_IDS.quoteIconId);
+  const line = artAssets.find((a) => a.id === TESTIMONIAL_ART_IDS.lineId);
+  if (!photo || !quoteIcon || !line) {
+    throw new Error('Testimonial art assets missing from repository');
+  }
+
+  return {
+    heroImage: heroImages[0] ?? null,
+    heroBgImage: heroBgImages[0] ?? null,
+    benefitsVideo: videoAssets[0] ?? null,
+    benefitIcons,
+    offeringMedia,
+    subtractIcon: subtractAssets[0] ?? null,
+    testimonialAvatars,
+    testimonialArt: { photo, quoteIcon, line },
+  };
 }
 
 /**
