@@ -19,11 +19,7 @@ const asTable = (p: (typeof hostingPricing)[number]) => {
 const render = (pricing: TablePricing, ids = PRICING_TABLE_IDS_HOSTING_VI) =>
   parse(
     renderToStaticMarkup(
-      <PricingTable
-        pricing={pricing}
-        copy={{ eyebrow: 'Eyebrow', title: 'Title' }}
-        ids={ids}
-      />,
+      <PricingTable pricing={pricing} copy={{ eyebrow: 'Eyebrow', title: 'Title' }} ids={ids} />,
     ),
   );
 
@@ -54,6 +50,16 @@ describe('PricingTable', () => {
     expect(root.querySelectorAll('[id*="popup"]')).toHaveLength(0);
   });
 
+  it('shows the email top gap on small screens while hosting keeps hide-for-small', () => {
+    const email = render(asTable(emailPricing[0]), PRICING_TABLE_IDS_EMAIL_VI);
+    expect(email.querySelector('#gap-1496315896')?.getAttribute('class')).toBe(
+      'gap-element clearfix',
+    );
+    const hosting = render(asTable(hostingPricing[0]));
+    expect(
+      hosting.querySelector(`#${PRICING_TABLE_IDS_HOSTING_VI.topGap}`)?.getAttribute('class'),
+    ).toBe('gap-element clearfix hide-for-small');
+  });
 
   it('renders money as td.vps-price and the plan name in bold', () => {
     const pricing = asTable(hostingPricing[0]);

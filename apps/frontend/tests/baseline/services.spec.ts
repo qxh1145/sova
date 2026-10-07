@@ -22,8 +22,9 @@ function loadLoggedDiffs(): Map<string, number> {
 }
 
 const loggedDiffs = loadLoggedDiffs();
-const serviceRows = manifest.rows.filter((r) => /^(?:mobile|hosting|vps|email)-(?:vi|en)$/.test(r.key));
-
+const serviceRows = manifest.rows.filter((r) =>
+  /^(?:mobile|hosting|vps|email)-(?:vi|en)$/.test(r.key),
+);
 
 for (const row of serviceRows) {
   for (const viewport of manifest.viewports) {

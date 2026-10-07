@@ -20,7 +20,6 @@ describe.each([
   ['VpsServiceView', VpsServiceView],
   ['EmailServiceView', EmailServiceView],
 ])('%s', (_, View) => {
-
   it('throws when pricing is missing', () => {
     expect(() => View({ page: page(null), assets, locale: 'vi' })).toThrow(/table pricing/);
   });
