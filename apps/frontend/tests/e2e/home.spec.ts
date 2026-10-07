@@ -30,12 +30,16 @@ const HOME_COPY = {
     lines: ['Thấu hiểu, đồng hành', 'và thiết kế trải nghiệm', 'digital toàn diện'],
     cta: { label: 'Về chúng tôi →', href: '/gioi-thieu/' },
     statsTitle: 'Thành tựu chúng tôi đạt được',
+    statsBreaks: 1,
+    statsDesc: { id: 'text-718633786', start: 'Đối với Sova xem mỗi dự án' },
     labels: ['Khách hàng hài lòng', 'Dự án hoàn thành', 'Thành viên', 'Năm kinh nghiệm'],
   },
   '/en/home/': {
     lines: ['From Understanding', 'to Innovation', 'We Craft Digital Excellence'],
     cta: { label: 'About us →', href: '/en/about-us/' },
     statsTitle: 'Our Achievements',
+    statsBreaks: 0,
+    statsDesc: { id: 'text-3546826826', start: 'Sova see every project' },
     labels: ['Satisfied Clients', 'Projects Completed', 'Team members', 'Years of experience'],
   },
 } as const;
@@ -127,6 +131,8 @@ test.describe('Home query, hero and stats', () => {
 
       const stats = page.locator('.col-thanhtuu');
       await expect(stats.locator('h2')).toHaveText(copy.statsTitle);
+      await expect(stats.locator('h2 br')).toHaveCount(copy.statsBreaks);
+      await expect(stats.locator(`#${copy.statsDesc.id} p`)).toContainText(copy.statsDesc.start);
       await expect(stats.locator('.row-num')).toHaveCount(4);
       for (const [idx, label] of copy.labels.entries()) {
         const row = stats.locator('.row-num').nth(idx);
@@ -134,6 +140,15 @@ test.describe('Home query, hero and stats', () => {
         await expect(row).toContainText('+');
       }
     }
+  });
+
+  test('Hero CTA is hidden below 550px (hide-for-small)', async ({ page }) => {
+    await page.goto('/');
+    const cta = page.locator('.link_banner.hide-for-small a');
+    await page.setViewportSize({ width: 390, height: 900 });
+    await expect(cta).toBeHidden();
+    await page.setViewportSize({ width: 550, height: 900 });
+    await expect(cta).toBeVisible();
   });
 
   test('With JS, stats count up once on first intersection and end on server values', async ({
@@ -410,7 +425,7 @@ test.describe('Home query, hero and stats', () => {
     const initialTriggers = await liveTriggers();
     expect(
       initialTriggers,
-      'window.ScrollTrigger missing: build with NEXT_PUBLIC_E2E=1',
+      'window.ScrollTrigger missing: build with npm run build:e2e',
     ).not.toBeNull();
     expect(initialTriggers).toBeGreaterThan(0);
 
@@ -575,14 +590,20 @@ test.describe('Services list, accordion and marquee', () => {
   test('VI item 5 renders sub-services Business Hosting and Cloud VPS', async ({ page }) => {
     await page.goto('/');
 
-    const desktopSubServices = page.locator('.hide-for-small .dich_vu').nth(4).locator('.name_dv span a');
+    const desktopSubServices = page
+      .locator('.hide-for-small .dich_vu')
+      .nth(4)
+      .locator('.name_dv span a');
     await expect(desktopSubServices).toHaveCount(2);
     await expect(desktopSubServices.nth(0)).toHaveText('Business Hosting');
     await expect(desktopSubServices.nth(0)).toHaveAttribute('href', '/hosting-doanh-nghiep/');
     await expect(desktopSubServices.nth(1)).toHaveText('Cloud VPS');
     await expect(desktopSubServices.nth(1)).toHaveAttribute('href', '/vps-doanh-nghiep/');
 
-    const accSubServices = page.locator('.show-for-small .accordion-item').nth(4).locator('.dv-con a');
+    const accSubServices = page
+      .locator('.show-for-small .accordion-item')
+      .nth(4)
+      .locator('.dv-con a');
     await expect(accSubServices).toHaveCount(2);
     await expect(accSubServices.nth(0)).toHaveText('Business Hosting');
     await expect(accSubServices.nth(0)).toHaveAttribute('href', '/hosting-doanh-nghiep/');
@@ -739,7 +760,12 @@ test.describe('Partner logo grid', () => {
   }) => {
     const cases = [
       { path: '/', localeIndex: 0, eyebrowId: '#text-2149017180', titleId: '#text-1007250049' },
-      { path: '/en/home/', localeIndex: 1, eyebrowId: '#text-3114286333', titleId: '#text-3018448185' },
+      {
+        path: '/en/home/',
+        localeIndex: 1,
+        eyebrowId: '#text-3114286333',
+        titleId: '#text-3018448185',
+      },
     ];
 
     for (const { path, localeIndex, eyebrowId, titleId } of cases) {
@@ -770,8 +796,9 @@ test.describe('Partner logo grid', () => {
       await expect(page.locator('.row.gal-doitac a')).toHaveCount(0);
 
       // Logos are decorative: none has an accessible name
-      const accessibleNames = await page.locator('.row.gal-doitac img, .row.gal-doitac a').evaluateAll(
-        (elements) =>
+      const accessibleNames = await page
+        .locator('.row.gal-doitac img, .row.gal-doitac a')
+        .evaluateAll((elements) =>
           elements.map(
             (el) =>
               (el as HTMLElement).innerText ||
@@ -779,7 +806,7 @@ test.describe('Partner logo grid', () => {
               el.getAttribute('alt') ||
               '',
           ),
-      );
+        );
       expect(accessibleNames.every((name) => name === '')).toBe(true);
 
       // Partner names never reach the DOM
@@ -923,7 +950,10 @@ test.describe('Testimonials section', () => {
         const slide = slides.nth(i);
         await expect(slide).toHaveAttribute('id', c.slideIds[i]);
         await expect(slide.locator('.nd-kh')).toHaveText(item.quote.html);
-        await expect(slide.locator('.nd-kh + .text img')).toHaveAttribute('src', artSrc(art.lineId));
+        await expect(slide.locator('.nd-kh + .text img')).toHaveAttribute(
+          'src',
+          artSrc(art.lineId),
+        );
         await expect(slide.locator('.icon-box h3 strong')).toHaveText(item.person);
         await expect(slide.locator('.icon-box p')).toHaveText(item.role!);
         await expect(slide.locator('.icon-box-img img')).toHaveAttribute(
@@ -936,7 +966,9 @@ test.describe('Testimonials section', () => {
     }
   });
 
-  test('Autoplay advances every 6000ms, pauses on hover, and resumes after leave', async ({ page }) => {
+  test('Autoplay advances every 6000ms, pauses on hover, and resumes after leave', async ({
+    page,
+  }) => {
     await openPausedHome(page, '/');
     const slider = '#slider-1717467276';
     const slides = page.locator(`${slider} .flickity-slider > *`);
@@ -1041,9 +1073,7 @@ test.describe('Latest posts', () => {
     const links = grid.locator('a.plain');
     await expect(links).toHaveCount(3);
 
-    const hrefs = await links.evaluateAll((els) =>
-      els.map((el) => el.getAttribute('href')),
-    );
+    const hrefs = await links.evaluateAll((els) => els.map((el) => el.getAttribute('href')));
     expect(hrefs).toEqual(expectedPlacementPaths);
 
     for (const href of hrefs) {
@@ -1174,4 +1204,3 @@ test.describe('Latest posts', () => {
     await expect(page.locator('#section_549960105')).toHaveCount(0);
   });
 });
-
