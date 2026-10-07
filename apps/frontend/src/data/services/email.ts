@@ -25,7 +25,13 @@ export const emailServices: Service[] = [
         sources: [{ file: 'e-mail-doanh-nghiep/index.html', line: 693 }],
       },
       imageId: 'asset-3afc86a627',
+      bgImageId: 'asset-7d2d3a2fb0',
       cta: { label: 'Liên hệ ngay →', href: '/lien-he/' },
+      breadcrumb: [
+        { label: 'Trang chủ', href: '/' },
+        { label: 'Dịch vụ' },
+        { label: 'Email Business' },
+      ],
     },
     benefits: [
       {
@@ -113,6 +119,7 @@ export const emailServices: Service[] = [
     ],
     featuredProjectIds: [],
     pricingId: 'pricing-email',
+    benefitsBgImageId: 'asset-e0d6652ff9',
     seo: {
       title: 'E-mail doanh nghiệp - Công ty thiết kế website chuyên nghiệp | Sova',
       description: 'Trang chủ / Dịch vụ / Email Business',
@@ -121,14 +128,14 @@ export const emailServices: Service[] = [
     },
     offerings: [],
     sectionCopy: {
-      pricing: { title: 'Bảng giá dịch vụ' },
-      benefits: { title: 'Sử dụng dịch vụ tại Sova' },
+      pricing: { eyebrow: 'Dịch vụ Email doanh nghiệp', title: 'Bảng giá dịch vụ' },
+      benefits: { eyebrow: 'Vì sao bạn nên chọn', title: 'Sử dụng dịch vụ tại Sova' },
       testimonials: {
         eyebrow: 'Sova',
         title: 'Khách hàng nhận xét về chúng tôi',
         titleLines: ['Khách hàng nhận xét', 'về chúng tôi'],
       },
-      faq: { title: 'Những câu hỏi thường gặp' },
+      faq: { eyebrow: 'GIẢI ĐÁP', title: 'Những câu hỏi thường gặp' },
     },
   },
   {
@@ -154,7 +161,13 @@ export const emailServices: Service[] = [
         sources: [{ file: 'en/business-e-mail/index.html', line: 693 }],
       },
       imageId: 'asset-3afc86a627',
+      bgImageId: 'asset-7d2d3a2fb0',
       cta: { label: 'Connect now →', href: '/en/contact-us/' },
+      breadcrumb: [
+        { label: 'Home', href: '/en/home/' },
+        { label: 'Services' },
+        { label: 'Email Business' },
+      ],
     },
     benefits: [
       {
@@ -242,6 +255,7 @@ export const emailServices: Service[] = [
     ],
     featuredProjectIds: [],
     pricingId: 'pricing-email',
+    benefitsBgImageId: 'asset-e0d6652ff9',
     seo: {
       title: 'Business E-mail - Công ty thiết kế website chuyên nghiệp | Sova',
       description: 'Home / Services / Email Business',
@@ -250,10 +264,10 @@ export const emailServices: Service[] = [
     },
     offerings: [],
     sectionCopy: {
-      pricing: { title: 'Service Pricing Table' },
-      benefits: { title: 'Sova’s Email Service ?' },
+      pricing: { eyebrow: 'Business Email Service', title: 'Service Pricing Table' },
+      benefits: { eyebrow: 'Why you choose ', title: 'Sova’s Email Service ?' },
       testimonials: { eyebrow: 'Sova', title: 'Customer Reviews' },
-      faq: { title: 'Frequently Asked Questions' },
+      faq: { eyebrow: 'FAQs', title: 'Frequently Asked Questions' },
     },
   },
 ];

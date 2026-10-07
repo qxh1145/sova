@@ -272,14 +272,56 @@ const TABLE_SERVICE_ROUTES = [
     icons: 5,
     iconWidths: ['78px', '78px', '94px', '79px', '80px', '78px'],
   },
+  {
+    key: 'email',
+    locale: 'vi',
+    path: '/e-mail-doanh-nghiep/',
+    sectionIds: [
+      'banner-880688064',
+      'section_1723121385',
+      'section_136281833',
+      'section_1984183481',
+      'section_630184286',
+    ],
+    headingLines: ['Dịch vụ', 'Email doanh nghiệp'],
+    pricingTitle: 'Bảng giá dịch vụ',
+    benefitsTitle: 'Sử dụng dịch vụ tại Sova',
+    rows: 7,
+    columns: 7,
+    faqCount: 9,
+    icons: 6,
+    iconWidths: ['60px', '60px', '75px', '60px', '60px', '60px'],
+  },
+  {
+    key: 'email',
+    locale: 'en',
+    path: '/en/business-e-mail/',
+    sectionIds: [
+      'banner-782456447',
+      'section_1607043033',
+      'section_676662741',
+      'section_2136010649',
+      'section_1417737979',
+    ],
+    headingLines: ['Business', 'Email Service'],
+    pricingTitle: 'Service Pricing Table',
+    benefitsTitle: 'Sova’s Email Service ?',
+    rows: 5,
+    columns: 7,
+    faqCount: 9,
+    icons: 6,
+    iconWidths: ['60px', '60px', '75px', '60px', '60px', '60px'],
+  },
 ] as const;
 
-test.describe('Hosting and VPS service pages (Story 5.2)', () => {
+test.describe('Hosting, VPS, and Email service pages', () => {
   for (const config of TABLE_SERVICE_ROUTES) {
     test(`Sections, h1, table, cards, testimonials and FAQ on ${config.path}`, async ({ page }) => {
       const { hostingPricing } = await import('../../src/data/pricing/hosting');
       const { vpsPricing } = await import('../../src/data/pricing/vps');
-      const pricing = (config.key === 'hosting' ? hostingPricing : vpsPricing).find(
+      const { emailPricing } = await import('../../src/data/pricing/email');
+      const pricingMap = { hosting: hostingPricing, vps: vpsPricing, email: emailPricing };
+      const pricing = pricingMap[config.key].find(
         (p) => p.locale === config.locale,
       );
       if (pricing?.kind !== 'table') throw new Error('table pricing missing');
@@ -295,10 +337,13 @@ test.describe('Hosting and VPS service pages (Story 5.2)', () => {
       expect(sectionIds).toEqual(config.sectionIds);
       await expectNoDuplicateIds(page);
 
-      // No benefits video, projects or why-choose-us sections.
+      // No benefits video, projects, upgrade-triggers, or why-choose-us sections.
       await expect(page.locator('main video')).toHaveCount(0);
       await expect(page.locator('main .ss-decor')).toHaveCount(0);
       await expect(page.locator('main .eras-table-price')).toHaveCount(0);
+      await expect(page.locator('main .vps-actions')).toHaveCount(0);
+      await expect(page.locator('main .vps-btn-config')).toHaveCount(0);
+      await expect(page.locator('main [id*="popup"]')).toHaveCount(0);
       await expect(page.locator('[role=tablist]')).toHaveCount(0);
 
       await expect(page.locator('main h1')).toHaveCount(1);
@@ -310,9 +355,10 @@ test.describe('Hosting and VPS service pages (Story 5.2)', () => {
       await expect(table.locator('thead th')).toHaveText(pricing.columns.map((c) => c.label));
       const rows = table.locator('tbody tr');
       await expect(rows).toHaveCount(config.rows);
+      const cols = ('columns' in config ? config.columns : 8) as number;
       for (const [i, plan] of pricing.plans.entries()) {
         const row = rows.nth(i);
-        await expect(row.locator('td')).toHaveCount(8);
+        await expect(row.locator('td')).toHaveCount(cols);
         await expect(row.locator('td').first()).toHaveText(plan.name);
         await expect(row.locator('td.vps-price')).toHaveText(plan.price!.displayText);
         const cta = row.locator('td:last-child a.vps-btn');
@@ -348,18 +394,34 @@ test.describe('Hosting and VPS service pages (Story 5.2)', () => {
       await page.goto(config.path);
       const hero = page.locator(`#${config.sectionIds[0]}`);
       const bg =
-        config.key === 'hosting' ? 'freepikvdfvdf_2704716-scaled-1-1.webp' : 'anh-nen-1.webp';
+        config.key === 'hosting'
+          ? 'freepikvdfvdf_2704716-scaled-1-1.webp'
+          : config.key === 'vps'
+            ? 'anh-nen-1.webp'
+            : 'zdvdxf-xdbfd-scaled-1.webp';
       await expect(hero.locator(`img.bg[src*="${bg}"]`)).toHaveCount(1);
       await expect(hero.locator('.img-inner img')).toHaveCount(1);
-      await expect(
-        hero.getByRole('link', {
-          name: config.locale === 'vi' ? 'Giải pháp lưu trữ' : 'Storage solutions',
-        }),
-      ).toHaveAttribute(
-        'href',
-        config.locale === 'vi' ? '/giai-phap-luu-tru/' : '/en/storage-solution/',
-      );
+      if (config.key === 'email') {
+        await expect(
+          hero.getByRole('link', {
+            name: config.locale === 'vi' ? 'Trang chủ' : 'Home',
+          }),
+        ).toHaveAttribute(
+          'href',
+          config.locale === 'vi' ? '/' : '/en/home/',
+        );
+      } else {
+        await expect(
+          hero.getByRole('link', {
+            name: config.locale === 'vi' ? 'Giải pháp lưu trữ' : 'Storage solutions',
+          }),
+        ).toHaveAttribute(
+          'href',
+          config.locale === 'vi' ? '/giai-phap-luu-tru/' : '/en/storage-solution/',
+        );
+      }
     });
+
 
     test(`Table scrolls inside its wrapper, never the page, on ${config.path}`, async ({
       page,
