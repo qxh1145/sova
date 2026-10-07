@@ -86,6 +86,8 @@ export interface Service extends LocalizedIdentity {
   testimonialIds: EntityId[];
   featuredProjectIds: EntityId[];
   pricingId?: EntityId;
+  /** Background image of the benefits icon-card section (hosting/VPS `ss-ndv-seo`). */
+  benefitsBgImageId?: EntityId;
   seo: SEO;
   /** Why-choose-us (website/mobile), packages (SEO/branding), hub summaries (storage); else []. */
   offerings: OfferingPanel[];

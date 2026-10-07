@@ -13,7 +13,11 @@ const SERVICES_ROUTES = [
     headingLines: ['Thiết kế App mobile', 'Chuyên Nghiệp'],
     faqCount: 8,
     breadcrumbId: 'text-2027656733',
-    breadcrumb: { home: 'Trang chủ', homeHref: '/', text: 'Trang chủ / Dịch vụ / Thiết kế App Mobile' },
+    breadcrumb: {
+      home: 'Trang chủ',
+      homeHref: '/',
+      text: 'Trang chủ / Dịch vụ / Thiết kế App Mobile',
+    },
     imageWrapperId: 'image_984856161',
     sampleItem: 'Tăng tính tiện lợi, cạnh tranh',
   },
@@ -29,7 +33,11 @@ const SERVICES_ROUTES = [
     headingLines: ['Professional', 'Mobile App Design'],
     faqCount: 9,
     breadcrumbId: 'text-1919501786',
-    breadcrumb: { home: 'Home', homeHref: '/en/home/', text: 'Home / Services / App Mobile Development' },
+    breadcrumb: {
+      home: 'Home',
+      homeHref: '/en/home/',
+      text: 'Home / Services / App Mobile Development',
+    },
     imageWrapperId: 'image_1568157091',
     sampleItem: 'Increased Convenience & Competitiveness',
   },
@@ -107,7 +115,9 @@ test.describe('Mobile App Service Pages Tracer (Story 5.1)', () => {
       await expect(benefits.locator('video source[src*="cybervpn.mp4"]')).toHaveCount(1);
       await expect(benefits.locator('.row_ptien .icon-box-img img')).toHaveCount(4);
 
-      const gridCards = page.locator(`#${config.whyChooseUsId} .eras-table-price.hide-for-small > .col`);
+      const gridCards = page.locator(
+        `#${config.whyChooseUsId} .eras-table-price.hide-for-small > .col`,
+      );
       await expect(gridCards).toHaveCount(3);
       for (const card of await gridCards.all()) {
         await expect(card.locator('h3')).not.toBeEmpty();
@@ -182,4 +192,199 @@ test.describe('Mobile App Service Pages Tracer (Story 5.1)', () => {
 
     expect(keyWarnings).toEqual([]);
   });
+});
+
+const TABLE_SERVICE_ROUTES = [
+  {
+    key: 'hosting',
+    locale: 'vi',
+    path: '/hosting-doanh-nghiep/',
+    sectionIds: [
+      'banner-998365047',
+      'section_1575376699',
+      'section_2022484527',
+      'section_601922759',
+      'section_2047789767',
+    ],
+    headingLines: ['Dịch vụ', 'Business Hosting'],
+    pricingTitle: 'Bảng giá dịch vụ',
+    benefitsTitle: 'Sử dụng dịch vụ của Sova',
+    rows: 8,
+    faqCount: 10,
+    icons: 6,
+    iconWidths: ['78px', '78px', '78px', '78px', '78px', '78px'],
+  },
+  {
+    key: 'hosting',
+    locale: 'en',
+    path: '/en/business-hosting/',
+    sectionIds: [
+      'banner-1497056567',
+      'section_594539523',
+      'section_1382323701',
+      'section_1341923526',
+      'section_748910381',
+    ],
+    headingLines: ['Business Hosting', 'Service'],
+    pricingTitle: 'Business Hosting Pricing',
+    benefitsTitle: 'Sova’s Email Service ?',
+    rows: 8,
+    faqCount: 10,
+    icons: 6,
+    iconWidths: ['78px', '78px', '78px', '78px', '78px', '78px'],
+  },
+  {
+    key: 'vps',
+    locale: 'vi',
+    path: '/vps-doanh-nghiep/',
+    sectionIds: [
+      'banner-52976556',
+      'section_887597801',
+      'section_753586130',
+      'section_2083222755',
+      'section_630471639',
+    ],
+    headingLines: ['Dịch vụ', 'Cloud VPS'],
+    pricingTitle: 'Bảng giá dịch vụ',
+    benefitsTitle: 'Sử dụng dịch vụ của Sova',
+    rows: 6,
+    faqCount: 12,
+    icons: 5,
+    iconWidths: ['78px', '78px', '94px', '79px', '80px', '78px'],
+  },
+  {
+    key: 'vps',
+    locale: 'en',
+    path: '/en/business-vps/',
+    sectionIds: [
+      'banner-1956119831',
+      'section_932558823',
+      'section_349332889',
+      'section_1606797624',
+      'section_681289048',
+    ],
+    headingLines: ['Cloud VPS', 'Service'],
+    // EN source copy errors kept as-is.
+    pricingTitle: 'Business Hosting Pricing',
+    benefitsTitle: 'Sova’s Email Service ?',
+    rows: 6,
+    faqCount: 12,
+    icons: 5,
+    iconWidths: ['78px', '78px', '94px', '79px', '80px', '78px'],
+  },
+] as const;
+
+test.describe('Hosting and VPS service pages (Story 5.2)', () => {
+  for (const config of TABLE_SERVICE_ROUTES) {
+    test(`Sections, h1, table, cards, testimonials and FAQ on ${config.path}`, async ({ page }) => {
+      const { hostingPricing } = await import('../../src/data/pricing/hosting');
+      const { vpsPricing } = await import('../../src/data/pricing/vps');
+      const pricing = (config.key === 'hosting' ? hostingPricing : vpsPricing).find(
+        (p) => p.locale === config.locale,
+      );
+      if (pricing?.kind !== 'table') throw new Error('table pricing missing');
+
+      await page.goto(config.path);
+
+      const sectionIds = await page.evaluate(() =>
+        Array.from(
+          document.querySelectorAll('main#main > .banner, main#main > section'),
+          (el) => el.id,
+        ),
+      );
+      expect(sectionIds).toEqual(config.sectionIds);
+      await expectNoDuplicateIds(page);
+
+      // No benefits video, projects or why-choose-us sections.
+      await expect(page.locator('main video')).toHaveCount(0);
+      await expect(page.locator('main .ss-decor')).toHaveCount(0);
+      await expect(page.locator('main .eras-table-price')).toHaveCount(0);
+      await expect(page.locator('[role=tablist]')).toHaveCount(0);
+
+      await expect(page.locator('main h1')).toHaveCount(1);
+      await expect(page.locator('main h1 .typewriter')).toHaveText([...config.headingLines]);
+
+      const [, pricingId, iconsId, testimonialsId, faqId] = config.sectionIds;
+      await expect(page.locator(`#${pricingId} h2`)).toHaveText(config.pricingTitle);
+      const table = page.locator(`#${pricingId} .vps-table-wrapper > table.vps-table`);
+      await expect(table.locator('thead th')).toHaveText(pricing.columns.map((c) => c.label));
+      const rows = table.locator('tbody tr');
+      await expect(rows).toHaveCount(config.rows);
+      for (const [i, plan] of pricing.plans.entries()) {
+        const row = rows.nth(i);
+        await expect(row.locator('td')).toHaveCount(8);
+        await expect(row.locator('td').first()).toHaveText(plan.name);
+        await expect(row.locator('td.vps-price')).toHaveText(plan.price!.displayText);
+        const cta = row.locator('td:last-child a.vps-btn');
+        await expect(cta).toHaveAttribute('href', /^https:\/\//);
+        await expect(cta).toHaveAttribute('target', '_blank');
+        await expect(cta.locator('span')).toHaveText(plan.cta.label);
+      }
+
+      const icons = page.locator(`#${iconsId}`);
+      await expect(icons).toHaveClass(/ss-ndv-seo/);
+      await expect(
+        icons.locator('img.bg[src*="b64598d7e18308083c456d32c69bae66.webp"]'),
+      ).toHaveCount(1);
+      await expect(icons.locator('h2')).toHaveText(config.benefitsTitle);
+      await expect(icons.locator('.row_ptien > .col')).toHaveCount(6);
+      await expect(icons.locator('.row_ptien .icon-box-img img')).toHaveCount(config.icons);
+      expect(
+        await icons
+          .locator('.row_ptien .icon-box-img')
+          .evaluateAll((els) => els.map((el) => (el as HTMLElement).style.width)),
+      ).toEqual(config.iconWidths);
+
+      await expect(page.locator(`#${testimonialsId} .slide-kh .flickity-slider > *`)).toHaveCount(
+        3,
+      );
+
+      const faqItems = page.locator(`#${faqId} .accordion.ac-luutru .accordion-item`);
+      await expect(faqItems).toHaveCount(config.faqCount);
+      await expect(faqItems.first().locator('.accordion-title')).toHaveClass(/active/);
+    });
+
+    test(`Hero assets and breadcrumb on ${config.path}`, async ({ page }) => {
+      await page.goto(config.path);
+      const hero = page.locator(`#${config.sectionIds[0]}`);
+      const bg =
+        config.key === 'hosting' ? 'freepikvdfvdf_2704716-scaled-1-1.webp' : 'anh-nen-1.webp';
+      await expect(hero.locator(`img.bg[src*="${bg}"]`)).toHaveCount(1);
+      await expect(hero.locator('.img-inner img')).toHaveCount(1);
+      await expect(
+        hero.getByRole('link', {
+          name: config.locale === 'vi' ? 'Giải pháp lưu trữ' : 'Storage solutions',
+        }),
+      ).toHaveAttribute(
+        'href',
+        config.locale === 'vi' ? '/giai-phap-luu-tru/' : '/en/storage-solution/',
+      );
+    });
+
+    test(`Table scrolls inside its wrapper, never the page, on ${config.path}`, async ({
+      page,
+    }) => {
+      for (const width of [390, 549, 768]) {
+        await page.setViewportSize({ width, height: 844 });
+        await page.goto(config.path);
+        const metrics = await page.evaluate(() => {
+          const wrapper = document.querySelector<HTMLElement>('.vps-table-wrapper')!;
+          const lastCell = wrapper.querySelector('tbody tr td:last-child')!;
+          wrapper.scrollLeft = wrapper.scrollWidth;
+          const cell = lastCell.getBoundingClientRect();
+          const box = wrapper.getBoundingClientRect();
+          return {
+            page: document.documentElement.scrollWidth - window.innerWidth,
+            scrollable: wrapper.scrollWidth > wrapper.clientWidth,
+            lastCellReachable: cell.right <= box.right + 1 && cell.left >= box.left - 1,
+          };
+        });
+        expect(metrics, `${width}px`).toEqual({
+          page: 0,
+          scrollable: true,
+          lastCellReachable: true,
+        });
+      }
+    });
+  }
 });
