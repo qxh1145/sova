@@ -32,6 +32,8 @@ export interface ServicePage {
 export interface ServiceAssets {
   heroImage: AssetRef | null;
   heroBgImage: AssetRef | null;
+  /** Hosting/VPS icon-card section background (`service.benefitsBgImageId`). */
+  benefitsBgImage?: AssetRef | null;
   benefitsVideo: AssetRef | null;
   benefitIcons: AssetRef[];
   offeringMedia: AssetRef[];
@@ -62,6 +64,7 @@ export async function getServiceAssets(
   const { service, testimonials } = page;
   const heroImageId = service.hero.imageId;
   const heroBgImageId = service.hero.bgImageId;
+  const benefitsBgImageId = service.benefitsBgImageId;
   const videoId = service.hero.videoId;
   const benefitIconIds = service.benefits
     .map((b) => b.iconId)
@@ -76,6 +79,7 @@ export async function getServiceAssets(
   const [
     heroImages,
     heroBgImages,
+    benefitsBgImages,
     videoAssets,
     benefitIcons,
     offeringMedia,
@@ -85,6 +89,7 @@ export async function getServiceAssets(
   ] = await Promise.all([
     heroImageId ? repository.getAssets([heroImageId]) : Promise.resolve([]),
     heroBgImageId ? repository.getAssets([heroBgImageId]) : Promise.resolve([]),
+    benefitsBgImageId ? repository.getAssets([benefitsBgImageId]) : Promise.resolve([]),
     videoId ? repository.getAssets([videoId]) : Promise.resolve([]),
     benefitIconIds.length ? repository.getAssets(benefitIconIds) : Promise.resolve([]),
     offeringMediaIds.length ? repository.getAssets(offeringMediaIds) : Promise.resolve([]),
@@ -107,6 +112,7 @@ export async function getServiceAssets(
   return {
     heroImage: heroImages[0] ?? null,
     heroBgImage: heroBgImages[0] ?? null,
+    benefitsBgImage: benefitsBgImages[0] ?? null,
     benefitsVideo: videoAssets[0] ?? null,
     benefitIcons,
     offeringMedia,
