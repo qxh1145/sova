@@ -11,12 +11,6 @@ import type {
   UtilityContent,
 } from '@/types/content';
 
-export function getProjectCategories(
-  repository: ContentRepository = getRepository(),
-): Promise<ProjectCategory[]> {
-  return repository.getProjectCategories();
-}
-
 export interface ProjectListingPageData {
   projects: Project[];
   categories: (ProjectCategory & { count: number })[];

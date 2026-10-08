@@ -7,9 +7,7 @@ export type ProjectCardData = Pick<
   'id' | 'path' | 'title' | 'thumbnailId' | 'categoryIds'
 >;
 
-export function toCardData(
-  project: Pick<Project, 'id' | 'path' | 'title' | 'thumbnailId' | 'categoryIds'>,
-): ProjectCardData {
+export function toCardData(project: ProjectCardData): ProjectCardData {
   return {
     id: project.id,
     path: project.path,

@@ -14,9 +14,9 @@ export interface ProjectFiltersProps {
   thumbnailAssets: AssetRef[];
   locale: Locale;
   loading?: boolean;
-  emptyMessage?: string;
-  loadingMessage?: string;
-  filterAllLabel?: string;
+  emptyMessage: string;
+  loadingMessage: string;
+  filterAllLabel: string;
   paginationLabels?: PaginationLabels;
   /** Cards per page; absent shows every card and renders no pagination wrapper. */
   pageSize?: number;

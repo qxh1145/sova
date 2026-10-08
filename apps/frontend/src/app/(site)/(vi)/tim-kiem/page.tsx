@@ -9,10 +9,6 @@ interface SearchPageProps {
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const { s: rawS, page: rawPage } = await searchParams;
-  if (rawS === undefined) {
-    notFound();
-  }
-
   const s = Array.isArray(rawS) ? rawS[0] : rawS;
   if (s === undefined) {
     notFound();
