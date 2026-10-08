@@ -4,14 +4,18 @@ export type TablePricing = Extract<Pricing, { kind: 'table' }>;
 
 export interface PricingTableIds {
   section: string;
-  /** `hide-for-small` gap above the heading. */
+  /** Gap above the heading. */
   topGap?: string;
+  /** Classes on topGap element; defaults to `gap-element clearfix hide-for-small`. */
+  topGapClass?: string;
   headingRow: string;
   headingCol: string;
   eyebrowText: string;
   titleText: string;
   tableRow: string;
   tableCol: string;
+  /** Optional id for .vps-table-wrapper (e.g. `vps-email-dn-1`). */
+  wrapperId?: string;
 }
 
 export const PRICING_TABLE_IDS_HOSTING_VI: PricingTableIds = {
@@ -58,6 +62,32 @@ export const PRICING_TABLE_IDS_VPS_EN: PricingTableIds = {
   tableCol: 'col-29190709',
 };
 
+export const PRICING_TABLE_IDS_EMAIL_VI: PricingTableIds = {
+  section: 'section_1723121385',
+  topGap: 'gap-1496315896',
+  topGapClass: 'gap-element clearfix',
+  headingRow: 'row-1343462591',
+  headingCol: 'col-1699782743',
+  eyebrowText: 'text-2801814563',
+  titleText: 'text-175338096',
+  tableRow: 'row-1107519995',
+  tableCol: 'col-1897353336',
+  wrapperId: 'vps-email-dn-1',
+};
+
+export const PRICING_TABLE_IDS_EMAIL_EN: PricingTableIds = {
+  section: 'section_1607043033',
+  topGap: 'gap-490160498',
+  topGapClass: 'gap-element clearfix',
+  headingRow: 'row-1619090874',
+  headingCol: 'col-1079132485',
+  eyebrowText: 'text-1957191661',
+  titleText: 'text-486854854',
+  tableRow: 'row-298469797',
+  tableCol: 'col-947553831',
+  wrapperId: 'vps-email-dn-1',
+};
+
 export interface PricingTableProps {
   pricing: TablePricing;
   copy?: SectionCopy;
@@ -86,7 +116,7 @@ export function PricingTable({ pricing, copy, ids }: PricingTableProps) {
         {ids.topGap && (
           <div
             id={ids.topGap}
-            className="gap-element clearfix hide-for-small"
+            className={ids.topGapClass ?? 'gap-element clearfix hide-for-small'}
             style={{ display: 'block', height: 'auto' }}
           />
         )}
@@ -116,7 +146,7 @@ export function PricingTable({ pricing, copy, ids }: PricingTableProps) {
         <div className="row" id={ids.tableRow}>
           <div id={ids.tableCol} className="col small-12 large-12">
             <div className="col-inner">
-              <div className="vps-table-wrapper">
+              <div className="vps-table-wrapper" id={ids.wrapperId}>
                 <table className="vps-table">
                   <thead>
                     <tr>
