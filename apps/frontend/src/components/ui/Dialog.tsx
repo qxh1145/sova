@@ -12,6 +12,7 @@ export interface DialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   variant: 'off-canvas' | 'lightbox';
+  holder?: 'inline' | 'image';
   side?: 'left' | 'right';
   id?: string;
   className?: string;
@@ -25,6 +26,7 @@ export interface DialogProps {
 
 function DialogPortalInner({
   variant,
+  holder = 'inline',
   side = 'right',
   id,
   className = '',
@@ -60,51 +62,53 @@ function DialogPortalInner({
     .join(' ');
 
   return (
-    <>
-      <DialogPrimitive.Overlay className={overlayClasses} />
-      <div className={wrapClasses} style={{ pointerEvents: 'auto' }}>
-        <div className="mfp-container mfp-s-ready mfp-inline-holder">
-          <DialogPrimitive.Content
-            id={id}
-            className={contentClasses}
-            onCloseAutoFocus={onCloseAutoFocus}
-          >
-            <DialogPrimitive.Title style={titleHidden ? visuallyHiddenStyle : undefined}>
-              {title}
-            </DialogPrimitive.Title>
-            {description ? (
-              <DialogPrimitive.Description>{description}</DialogPrimitive.Description>
-            ) : null}
-            <DialogPrimitive.Close asChild>
-              <button
-                type="button"
-                className="mfp-close"
-                aria-label={labels.close}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="28"
-                  height="28"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="feather feather-x"
-                  aria-hidden="true"
-                  focusable="false"
+    <DialogPrimitive.Overlay asChild>
+      <div style={{ display: 'contents' }}>
+        <div className={overlayClasses} />
+        <div className={wrapClasses} style={{ pointerEvents: 'auto', overflowY: 'auto' }}>
+          <div className={`mfp-container mfp-s-ready mfp-${holder}-holder`}>
+            <DialogPrimitive.Content
+              id={id}
+              className={contentClasses}
+              onCloseAutoFocus={onCloseAutoFocus}
+            >
+              <DialogPrimitive.Title style={titleHidden ? visuallyHiddenStyle : undefined}>
+                {title}
+              </DialogPrimitive.Title>
+              {description ? (
+                <DialogPrimitive.Description>{description}</DialogPrimitive.Description>
+              ) : null}
+              <DialogPrimitive.Close asChild>
+                <button
+                  type="button"
+                  className="mfp-close"
+                  aria-label={labels.close}
                 >
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-            </DialogPrimitive.Close>
-            {children}
-          </DialogPrimitive.Content>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="feather feather-x"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </DialogPrimitive.Close>
+              {children}
+            </DialogPrimitive.Content>
+          </div>
         </div>
       </div>
-    </>
+    </DialogPrimitive.Overlay>
   );
 }
 
