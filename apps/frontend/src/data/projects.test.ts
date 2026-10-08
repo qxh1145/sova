@@ -2,10 +2,11 @@
 import { expect, test } from 'vitest';
 import { BRAND_LEAK_RE } from '@/lib/content/brand';
 import { SCRUB_RULES } from '@/lib/content/scrub';
-import { createMockRepository } from '@/lib/repositories/mock';
+import { createMockRepository, defaultContentData } from '@/lib/repositories/mock';
 import type { ContentData } from '@/lib/repositories/contracts';
 import { assets } from './assets';
 import { utilityContent } from './content';
+import { listingSettings } from './listings';
 import { projectCategories } from './project-categories';
 import { projects } from './projects';
 
@@ -146,3 +147,20 @@ test('getProjectListingPage returns locale projects, categories with derived cou
   expect(enData.categories.every((c) => c.count === 0)).toBe(true);
 });
 
+test('every listing hero asset id resolves to a committed asset', () => {
+  for (const { routeId, hero } of listingSettings)
+    for (const id of [hero?.imageId, hero?.bgImageId, hero?.videoId].filter(Boolean))
+      expect(assetById.has(id!), `${routeId} ${id}`).toBe(true);
+});
+
+test('getProjectListingPage resolves both listing hero images from committed data', async () => {
+  const { getProjectListingPage } = await import('@/lib/queries/projects');
+  const repo = createMockRepository(defaultContentData);
+  for (const locale of ['vi', 'en'] as const) {
+    const data = await getProjectListingPage(locale, repo);
+    expect(data.heroImage?.id, locale).toBe(data.settings?.hero?.imageId);
+    expect(data.bgImage?.id, locale).toBe(data.settings?.hero?.bgImageId);
+    expect(data.heroImage).not.toBeNull();
+    expect(data.bgImage).not.toBeNull();
+  }
+});

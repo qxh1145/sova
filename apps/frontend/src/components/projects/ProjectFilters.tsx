@@ -1,14 +1,16 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import type { AssetRef, Locale, Project, ProjectCategory } from '@/types/content';
-import { ProjectCard } from './ProjectCard';
+import type { AssetRef, Locale, ProjectCategory } from '@/types/content';
+import { ProjectCard, type ProjectCardData } from './ProjectCard';
 import { ProjectGrid } from './ProjectGrid';
 import { Pagination, type PaginationLabels } from '@/components/ui/Pagination';
 
 export interface ProjectFiltersProps {
-  projects: Project[];
+  projects: ProjectCardData[];
   categories: (ProjectCategory & { count: number })[];
+  /** Listing route path; filter links point here so middle-click and no-JS stay on the page. */
+  listingPath: string;
   thumbnailAssets: AssetRef[];
   locale: Locale;
   loading?: boolean;
@@ -24,6 +26,7 @@ export function ProjectFilters({
   projects,
   categories,
   thumbnailAssets,
+  listingPath,
   locale,
   loading = false,
   emptyMessage = 'Không có dự án nào.',
@@ -84,7 +87,7 @@ export function ProjectFilters({
         <ul className="nav nav-left nav-center nav-line-grow nav-uppercase filter-nav">
           <li className={selectedSlug === '' ? 'active' : ''}>
             <a
-              href="index.html"
+              href={listingPath}
               data-term=""
               onClick={(e) => {
                 e.preventDefault();
@@ -98,7 +101,7 @@ export function ProjectFilters({
             categories.map((cat) => (
               <li key={cat.id} className={selectedSlug === cat.slug ? 'active' : ''}>
                 <a
-                  href="index.html"
+                  href={listingPath}
                   data-term={cat.slug}
                   onClick={(e) => {
                     e.preventDefault();

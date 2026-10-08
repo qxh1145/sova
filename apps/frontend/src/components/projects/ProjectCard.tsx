@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import type { AssetRef, Project } from '@/types/content';
 
+/** Fields a card renders; keeps client payloads free of body/SEO data. */
+export type ProjectCardData = Pick<Project, 'id' | 'path' | 'title' | 'thumbnailId' | 'categoryIds'>;
+
 export interface ProjectCardProps {
-  project: Project;
+  project: ProjectCardData;
   thumbnailAsset?: AssetRef | null;
   categoryLabel?: string;
   dataTerms?: string;
