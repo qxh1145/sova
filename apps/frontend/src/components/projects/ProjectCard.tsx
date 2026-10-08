@@ -2,7 +2,10 @@ import Link from 'next/link';
 import type { AssetRef, Project } from '@/types/content';
 
 /** Fields a card renders; keeps client payloads free of body/SEO data. */
-export type ProjectCardData = Pick<Project, 'id' | 'path' | 'title' | 'thumbnailId' | 'categoryIds'>;
+export type ProjectCardData = Pick<
+  Project,
+  'id' | 'path' | 'title' | 'thumbnailId' | 'categoryIds'
+>;
 
 export interface ProjectCardProps {
   project: ProjectCardData;
@@ -20,7 +23,8 @@ export function ProjectCard({
   imageClassName = 'attachment-original size-original',
 }: ProjectCardProps) {
   const label = categoryLabel || '';
-  const termsAttr = dataTerms !== undefined ? dataTerms : label ? JSON.stringify([label]) : undefined;
+  const termsAttr =
+    dataTerms !== undefined ? dataTerms : label ? JSON.stringify([label]) : undefined;
 
   return (
     <div className="col" data-terms={termsAttr}>

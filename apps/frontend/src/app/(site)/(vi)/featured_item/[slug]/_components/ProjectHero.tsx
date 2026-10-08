@@ -46,6 +46,7 @@ export function ProjectHero({ title, heroImage }: ProjectHeroProps) {
 
                           <div id="text-3814173174" className="text">
                             <p style={{ textAlign: 'center' }}>
+                              {/* prettier-ignore */}
                               <span style={{ color: '#808080' }}>
                                 Trang chủ | Dự án |{/* business-text-ok: source plain text breadcrumb */}
                                 <span style={{ color: '#ffffff' }}> Chi tiết</span>{/* business-text-ok: source plain text breadcrumb */}

@@ -23,9 +23,7 @@ interface ProjectDetailPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateMetadata({
-  params,
-}: ProjectDetailPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: ProjectDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
   const detail = await getProjectDetail(slug);
   if (!detail) return {};
@@ -53,7 +51,11 @@ export default async function ViProjectDetailPage({ params }: ProjectDetailPageP
         title={project.title}
         sidebar={<ProjectInfoSidebar summary={project.summary} />}
       >
-        <ProjectContent terms={terms} displayDate={project.displayDate} />
+        <ProjectContent
+          terms={terms}
+          displayDate={project.displayDate}
+          displayDateMarkup={project.displayDateMarkup}
+        />
       </ProjectBodyLayout>
       <RelatedProjects related={related} />
     </div>
