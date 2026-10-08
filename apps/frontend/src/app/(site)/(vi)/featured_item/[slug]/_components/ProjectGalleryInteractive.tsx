@@ -1,15 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type { AssetRef } from '@/types/content';
 import { Carousel, type CarouselLabels } from '@/components/ui/Carousel';
 import { GalleryLightbox } from '@/components/projects/GalleryLightbox';
 
 const GALLERY_CAROUSEL_LABELS: CarouselLabels = {
-  prev: 'Previous',
-  next: 'Next',
-  goTo: 'Go to slide {index}',
-  region: 'Project gallery',
+  prev: 'Trước',
+  next: 'Tiếp theo',
+  goTo: 'Chuyển tới slide {index}',
+  region: 'Thư viện ảnh dự án',
 };
 
 export interface ProjectGallerySliderProps {
@@ -18,6 +18,7 @@ export interface ProjectGallerySliderProps {
 
 export function ProjectGallerySlider({ galleryAssets }: ProjectGallerySliderProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const triggerRef = useRef<HTMLAnchorElement | null>(null);
 
   return (
     <>
@@ -39,6 +40,7 @@ export function ProjectGallerySlider({ galleryAssets }: ProjectGallerySliderProp
                 href={img.src}
                 onClick={(e) => {
                   e.preventDefault();
+                  triggerRef.current = e.currentTarget;
                   setLightboxIndex(index);
                 }}
               >
@@ -53,6 +55,7 @@ export function ProjectGallerySlider({ galleryAssets }: ProjectGallerySliderProp
         assets={galleryAssets}
         isOpen={lightboxIndex !== null}
         initialIndex={lightboxIndex ?? 0}
+        returnFocusRef={triggerRef}
         onClose={() => setLightboxIndex(null)}
       />
     </>
@@ -65,6 +68,7 @@ export interface ProjectGallerySingleProps {
 
 export function ProjectGallerySingle({ asset }: ProjectGallerySingleProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLAnchorElement | null>(null);
 
   return (
     <>
@@ -72,6 +76,7 @@ export function ProjectGallerySingle({ asset }: ProjectGallerySingleProps) {
         <div className="col large-12">
           <div className="img-inner">
             <a
+              ref={triggerRef}
               className="lightbox-gallery"
               href={asset.src}
               onClick={(e) => {
@@ -89,6 +94,7 @@ export function ProjectGallerySingle({ asset }: ProjectGallerySingleProps) {
         assets={[asset]}
         isOpen={isOpen}
         initialIndex={0}
+        returnFocusRef={triggerRef}
         onClose={() => setIsOpen(false)}
       />
     </>

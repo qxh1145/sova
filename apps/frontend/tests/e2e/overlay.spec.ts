@@ -357,7 +357,7 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
     expect(response?.status()).toBe(404);
   });
 
-  test('Probe C4: Tall lightbox content scrolls with mouse wheel (deferred C4)', async ({
+  test('Probe C4: Tall lightbox content scrolls with mouse wheel', async ({
     page,
   }) => {
     // .mfp-wrap sits inside Radix RemoveScroll tree via display:contents DialogPrimitive.Overlay,

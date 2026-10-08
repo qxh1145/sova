@@ -522,6 +522,7 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
       const sidebar = page.locator('.col.large-3.small-12 .col-inner');
       await expect(sidebar).toBeVisible();
       await expect(sidebar.locator('h3')).toHaveText('Thông tin dự án');
+      await expect(sidebar).toContainText(project.summary!);
       // Gallery slide count matches galleryIds.length
       if (project.galleryIds.length >= 2) {
         await expect(page.locator('#slider-duan .flickity-enabled')).toBeVisible();
@@ -583,6 +584,9 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
     await expect(bossmanDialog.locator('.mfp-arrow')).toHaveCount(0);
     await page.keyboard.press('Escape');
     await expect(bossmanDialog).toHaveCount(0);
+    await expect(
+      page.locator('#slider-duan .row .col.large-12 .img-inner a.lightbox-gallery'),
+    ).toBeFocused();
 
     // 5. Multi-image 4 slides: xanhthienthanh (prev/next navigation, wrap-around, lightbox)
     await page.goto(
@@ -594,10 +598,19 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
     await expect(xttSlides).toHaveCount(4);
     await expect(page.locator('#slider-duan ol.flickity-page-dots li')).toHaveCount(4);
 
-    // Click next arrow on carousel
+    // Dot 1 selects slide 1 and stops autoplay; arrows move the selection by one and wrap
+    const xttDots = page.locator('#slider-duan ol.flickity-page-dots button.dot');
+    const xttPrevBtn = page.locator('#slider-duan button.flickity-prev-next-button.previous');
     const xttNextBtn = page.locator('#slider-duan button.flickity-prev-next-button.next');
+    await xttDots.nth(0).click();
+    await expect(xttSlides.nth(0)).toHaveClass(/is-selected/);
+    await xttPrevBtn.click();
+    await expect(xttSlides.nth(3)).toHaveClass(/is-selected/);
+    await expect(xttDots.nth(3)).toHaveClass(/is-selected/);
     await xttNextBtn.click();
-    await page.waitForTimeout(200);
+    await expect(xttSlides.nth(0)).toHaveClass(/is-selected/);
+    await xttNextBtn.click();
+    await expect(xttSlides.nth(1)).toHaveClass(/is-selected/);
 
     // Click 2nd slide link -> lightbox opens at "2 of 4", scroll locked
     await page.locator('#slider-duan .flickity-slider > .img.col:nth-child(2) a.lightbox-gallery').click();
@@ -615,18 +628,35 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
     await lbNext.click();
     await expect(xttDialog.locator('.mfp-counter')).toHaveText('1 of 4');
 
-    // ArrowLeft wraps around to 4 of 4
+    // ArrowLeft wraps around to 4 of 4, ArrowRight wraps back to 1 of 4
     await page.keyboard.press('ArrowLeft');
+    await expect(xttDialog.locator('.mfp-counter')).toHaveText('4 of 4');
+    await page.keyboard.press('ArrowRight');
+    await expect(xttDialog.locator('.mfp-counter')).toHaveText('1 of 4');
+
+    // Lightbox prev arrow wraps around to 4 of 4
+    await page.locator('button.mfp-arrow-left').click();
     await expect(xttDialog.locator('.mfp-counter')).toHaveText('4 of 4');
 
     // Close lightbox via .mfp-close
     await page.locator('button.mfp-close').click();
     await expect(xttDialog).toHaveCount(0);
     await expect(page.locator('body')).not.toHaveAttribute('data-scroll-locked');
+    // Focus returns to the link that opened the lightbox
+    await expect(
+      page.locator('#slider-duan .flickity-slider > .img.col:nth-child(2) a.lightbox-gallery'),
+    ).toBeFocused();
 
     // 6. 2 slides: giang-lam (loop works both directions)
     await page.goto('/featured_item/giang-lam-dung-cu-co-khi/');
-    await expect(page.locator('#slider-duan .flickity-slider > .img.col')).toHaveCount(2);
+    const glSlides = page.locator('#slider-duan .flickity-slider > .img.col');
+    await expect(glSlides).toHaveCount(2);
+    await page.locator('#slider-duan ol.flickity-page-dots button.dot').nth(0).click();
+    await expect(glSlides.nth(0)).toHaveClass(/is-selected/);
+    await page.locator('#slider-duan button.flickity-prev-next-button.previous').click();
+    await expect(glSlides.nth(1)).toHaveClass(/is-selected/);
+    await page.locator('#slider-duan button.flickity-prev-next-button.next').click();
+    await expect(glSlides.nth(0)).toHaveClass(/is-selected/);
 
     // 7. Free-text date (huynh-thuc-khang)
     await page.goto('/featured_item/truong-trung-hoc-pho-thong-huynh-thuc-khang/');
