@@ -34,7 +34,7 @@ test('getPostDetail falls back to thumbnailId without a featured image', async (
 });
 
 test('getBlogListingPage returns page 1 with thumbnails and total pages', async () => {
-  const data = await getBlogListingPage(1, 6, repository);
+  const data = await getBlogListingPage({}, repository);
   expect(data).not.toBeNull();
   expect(data!.posts).toHaveLength(6);
   expect(data!.total).toBe(27);
@@ -48,7 +48,6 @@ test('getBlogListingPage returns page 1 with thumbnails and total pages', async 
 test('getBlogListingPage slices category pages correctly', async () => {
   const thuThuatPage1 = await getBlogListingPage(
     { category: 'thu-thuat', page: 1, pageSize: 6 },
-    6,
     repository,
   );
   expect(thuThuatPage1).not.toBeNull();
@@ -59,7 +58,6 @@ test('getBlogListingPage slices category pages correctly', async () => {
 
   const thuThuatPage2 = await getBlogListingPage(
     { category: 'thu-thuat', page: 2, pageSize: 6 },
-    6,
     repository,
   );
   expect(thuThuatPage2).not.toBeNull();
@@ -67,7 +65,6 @@ test('getBlogListingPage slices category pages correctly', async () => {
 
   const socialPage2 = await getBlogListingPage(
     { category: 'social-marketing', page: 2, pageSize: 6 },
-    6,
     repository,
   );
   expect(socialPage2).not.toBeNull();
@@ -76,27 +73,18 @@ test('getBlogListingPage slices category pages correctly', async () => {
 });
 
 test('getBlogListingPage returns null for unknown route or unsourced page', async () => {
-  expect(
-    await getBlogListingPage({ routeId: 'route-non-existent' }, 6, repository),
-  ).toBeNull();
+  expect(await getBlogListingPage({ routeId: 'route-non-existent' }, repository)).toBeNull();
   // /tin-tuc/ only has page 1 in routes
-  expect(
-    await getBlogListingPage({ category: 'tin-tuc', page: 2 }, 6, repository),
-  ).toBeNull();
+  expect(await getBlogListingPage({ category: 'tin-tuc', page: 2 }, repository)).toBeNull();
   // /goc-nhin/page/6/ not in routes
-  expect(
-    await getBlogListingPage({ page: 6 }, 6, repository),
-  ).toBeNull();
-  // number input for unsourced page 6 returns null
-  expect(
-    await getBlogListingPage(6, 6, repository),
-  ).toBeNull();
+  expect(await getBlogListingPage({ page: 6 }, repository)).toBeNull();
+  // category slug that resolves to a non-post-list route
+  expect(await getBlogListingPage({ category: 'gioi-thieu' }, repository)).toBeNull();
 });
 
 test('getBlogListingPage returns EN shell with no posts for en insight', async () => {
   const enInsight = await getBlogListingPage(
     { routeId: 'route-en--insight', locale: 'en' },
-    6,
     repository,
   );
   expect(enInsight).not.toBeNull();

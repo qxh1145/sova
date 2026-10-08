@@ -67,14 +67,12 @@ export function BlogListView({
               readMoreLabel={copy.readMore}
             />
           ))}
-          {totalPages > 1 && (
-            <Pagination
-              current={page}
-              total={totalPages}
-              labels={copy.pagination}
-              hrefForPage={(p) => (p === 1 ? basePath : `${basePath}page/${p}/`)}
-            />
-          )}
+          <Pagination
+            current={page}
+            total={totalPages}
+            labels={copy.pagination}
+            hrefForPage={(p) => (p === 1 ? basePath : `${basePath}page/${p}/`)}
+          />
         </div>
         <div className="large-4 col">
           <BlogSidebar categories={categories} copy={copy} />
