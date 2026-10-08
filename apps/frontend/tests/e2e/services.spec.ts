@@ -457,3 +457,184 @@ test.describe('Hosting, VPS, and Email service pages', () => {
     });
   }
 });
+
+const STORAGE_SERVICE_ROUTES = [
+  {
+    locale: 'vi',
+    path: '/giai-phap-luu-tru/',
+    sectionIds: [
+      'banner-1255492643',
+      'section_1644279447',
+      'section_1086282974',
+      'section_1048537414',
+      'section_1489580969',
+    ],
+    headingLines: ['Giải pháp lưu trữ', 'cho doanh nghiệp'],
+    eyebrow: 'Sova cung cấp',
+    title: 'Các dịch vụ lưu trữ',
+    faqEyebrow: { id: 'text-1409335333', text: 'GIẢI ĐÁP' },
+    decoImageId: 'image_1886760630',
+    heroSmallGaps: ['gap-1295344278', 'gap-161076987'],
+    routes: ['/hosting-doanh-nghiep/', '/vps-doanh-nghiep/', '/e-mail-doanh-nghiep/'],
+    slideTitles: ['Business hosting', 'Cloud VPS', 'E-mail doanh nghiệp'],
+    faqCount: 4,
+  },
+  {
+    locale: 'en',
+    path: '/en/storage-solution/',
+    sectionIds: [
+      'banner-964121618',
+      'section_475696028',
+      'section_674888486',
+      'section_2078920882',
+      'section_1266521913',
+    ],
+    headingLines: ['Business', 'Storage Solutions'],
+    eyebrow: 'Sova provides',
+    title: 'Storage Services',
+    faqEyebrow: { id: 'text-4251296495', text: 'FAQs' },
+    decoImageId: 'image_1222782848',
+    heroSmallGaps: ['gap-474200673', 'gap-2132235472'],
+    routes: ['/en/business-hosting/', '/en/business-vps/', '/en/business-e-mail/'],
+    slideTitles: ['Business hosting', 'Cloud VPS', 'Business Email'],
+    faqCount: 4,
+  },
+] as const;
+
+test.describe('Storage service pages (Story 5.4)', () => {
+  for (const config of STORAGE_SERVICE_ROUTES) {
+    test(`Section order, h1, cards, testimonials and FAQ on ${config.path}`, async ({ page }) => {
+      const { storageServices } = await import('../../src/data/services/storage');
+      const service = storageServices.find((s) => s.locale === config.locale);
+      if (!service) throw new Error('storage service missing');
+
+      await page.goto(config.path);
+
+      const sectionIds = await page.evaluate(() =>
+        Array.from(
+          document.querySelectorAll('main#main > .banner, main#main > section'),
+          (el) => el.id,
+        ),
+      );
+      expect(sectionIds).toEqual(config.sectionIds);
+      await expectNoDuplicateIds(page);
+
+      // No pricing table, benefits video or marquee markup.
+      await expect(page.locator('main table')).toHaveCount(0);
+      await expect(page.locator('main video')).toHaveCount(0);
+      await expect(page.locator('main .ss-ndv-seo')).toHaveCount(0);
+      await expect(page.locator('main .cs-moving_text')).toHaveCount(0);
+      await expect(page.locator('[role=tablist]')).toHaveCount(0);
+
+      // Projects slot is present and empty.
+      const projectsSlot = page.locator(`#${config.sectionIds[2]}`);
+      await expect(projectsSlot).toHaveClass(/ss-decor/);
+
+      // H1 heading lines
+      await expect(page.locator('main h1')).toHaveCount(1);
+      await expect(page.locator('main h1 .typewriter')).toHaveText([...config.headingLines]);
+
+      // Offerings section
+      const offerings = page.locator(`#${config.sectionIds[1]}`);
+      await expect(offerings).toContainText(config.eyebrow);
+      await expect(offerings.locator('h2')).toHaveText(config.title);
+      await expect(
+        offerings.locator(`#${config.decoImageId} img[src*="Deco-1-6.svg"]`),
+      ).toHaveCount(1);
+      const gridCards = offerings.locator('.eras-table-price > .col');
+      await expect(gridCards).toHaveCount(3);
+
+      for (let i = 0; i < 3; i++) {
+        const card = gridCards.nth(i);
+        const offering = service.offerings[i];
+        await expect(card.locator('h3')).toHaveText(offering.title);
+        await expect(card.locator('.icon-box')).toHaveCount(7);
+        await expect(card.locator('.icon-box h5')).toHaveText(offering.items ?? []);
+        const cta = card.locator('p a.but-lh');
+        await expect(cta).toHaveAttribute('href', config.routes[i]);
+      }
+
+      // Testimonials (3 slides)
+      await expect(
+        page.locator(`#${config.sectionIds[3]} .slide-kh .flickity-slider > *`),
+      ).toHaveCount(3);
+
+      // FAQ (4 items, first open)
+      const faqItems = page.locator(
+        `#${config.sectionIds[4]} .accordion.ac-luutru .accordion-item`,
+      );
+      await expect(faqItems).toHaveCount(config.faqCount);
+      await expect(faqItems.first().locator('.accordion-title')).toHaveClass(/active/);
+      await expect(page.locator(`#${config.faqEyebrow.id}`)).toHaveText(config.faqEyebrow.text);
+    });
+
+    test(`Hero assets and breadcrumb on ${config.path}`, async ({ page }) => {
+      await page.goto(config.path);
+      const hero = page.locator(`#${config.sectionIds[0]}`);
+      await expect(
+        hero.locator('img.bg[src*="de729be13c98f6a585c5656f0ce73db4-1.webp"]'),
+      ).toHaveCount(1);
+      await expect(hero.locator('.img-inner img[src*="image-71.svg"]')).toHaveCount(1);
+      for (const gapId of config.heroSmallGaps) {
+        await expect(hero.locator(`#${gapId}`)).toHaveClass('gap-element clearfix show-for-small');
+      }
+
+      const breadcrumb = hero.locator(
+        `#${config.locale === 'vi' ? 'text-445793396' : 'text-1244128777'}`,
+      );
+      await expect(breadcrumb).toContainText(
+        config.locale === 'vi'
+          ? 'Trang chủ / Dịch vụ / Giải pháp lưu trữ'
+          : 'Home / Services / Storage solutions',
+      );
+      await expect(
+        hero.getByRole('link', {
+          name: config.locale === 'vi' ? 'Trang chủ' : 'Home',
+        }),
+      ).toHaveAttribute('href', config.locale === 'vi' ? '/' : '/en/home/');
+    });
+
+    test(`Grid hidden and slider visible at mobile viewports with no page scroll on ${config.path}`, async ({
+      page,
+    }) => {
+      for (const width of [390, 549]) {
+        await page.setViewportSize({ width, height: 844 });
+        await page.goto(config.path);
+
+        const offerings = page.locator(`#${config.sectionIds[1]}`);
+        const grid = offerings.locator('.eras-table-price.hide-for-small');
+        const slider = offerings.locator('.eras-table-price-slider.show-for-small');
+
+        await expect(grid).toBeHidden();
+        await expect(slider).toBeVisible();
+
+        // 3 slides in carousel
+        const slides = slider.locator('.flickity-slider > .row');
+        await expect(slides).toHaveCount(3);
+        for (let i = 0; i < 3; i++) {
+          const slide = slides.nth(i);
+          await expect(slide.locator('h3')).toHaveText(config.slideTitles[i]);
+          await expect(slide.locator('.icon-box')).toHaveCount(7);
+          const cta = slide.locator('p a.but-lh');
+          await expect(cta).toHaveAttribute('href', config.routes[i]);
+        }
+
+        // Carousel dots and arrows present
+        await expect(slider.locator('.flickity-page-dots')).toBeVisible();
+        await expect(slider.locator('.flickity-prev-next-button')).toHaveCount(2);
+
+        // No horizontal page scroll
+        const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+        const innerWidth = await page.evaluate(() => window.innerWidth);
+        expect(scrollWidth, `${width}px scrollWidth <= innerWidth`).toBeLessThanOrEqual(innerWidth);
+      }
+
+      // At >= 550px: slider hidden, grid visible
+      await page.setViewportSize({ width: 550, height: 844 });
+      await page.goto(config.path);
+      const offerings550 = page.locator(`#${config.sectionIds[1]}`);
+      await expect(offerings550.locator('.eras-table-price.hide-for-small')).toBeVisible();
+      await expect(offerings550.locator('.eras-table-price-slider.show-for-small')).toBeHidden();
+    });
+  }
+});
