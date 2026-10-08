@@ -53,7 +53,14 @@ export function ProjectListView({
       </section>
 
       <ProjectFilters
-        projects={projects}
+        projects={projects.map(({ id, path, title, thumbnailId, categoryIds }) => ({
+          id,
+          path,
+          title,
+          thumbnailId,
+          categoryIds,
+        }))}
+        listingPath={isEn ? '/en/our-project/' : '/du-an/'}
         categories={categories}
         thumbnailAssets={thumbnailAssets}
         locale={locale}

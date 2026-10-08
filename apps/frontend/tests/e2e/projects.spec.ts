@@ -27,6 +27,26 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
     expect(lastPageText?.trim()).toBe('11');
   });
 
+  test('VI /du-an/ hero renders imported description, CTA, breadcrumb and images', async ({ page }) => {
+    await page.goto('/du-an/');
+    const hero = page.locator('.banner.banner-project');
+    await expect(hero).toContainText('Khám phá tư duy thiết kế và triết lý sáng tạo');
+    await expect(hero.locator('a.but-lh')).toHaveAttribute('href', '/lien-he/');
+    await expect(hero).toContainText('Trang chủ');
+    await expect(hero.locator('.banner-bg img')).toHaveAttribute(
+      'src',
+      '/wp-content/uploads/2024/02/de729be13c98f6a585c5656f0ce73db4-1.webp',
+    );
+    await expect(
+      hero.locator('img[src="/wp-content/uploads/2024/02/43e3185f955f1d3fca7ffa93786c89a0.png"]'),
+    ).toHaveCount(1);
+    // Filter links stay on the listing route for middle-click / no-JS.
+    for (const href of await page.locator('.filter-nav a').evaluateAll((as) =>
+      as.map((a) => a.getAttribute('href')),
+    ))
+      expect(href).toBe('/du-an/');
+  });
+
   test('Filtering on /du-an/ resets page, updates counts, and preserves URL', async ({ page }) => {
     await page.goto('/du-an/');
     const initialUrl = page.url();

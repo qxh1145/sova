@@ -264,7 +264,7 @@ export const projectListingCopy = {
   en: {
     filterAll: 'All',
     emptyMessage: 'No projects found.',
-    loadingMessage: 'Loading...',
+    loadingMessage: 'Đang tải...',
     pagination: {
       nav: 'Project pagination',
       prev: 'Previous page',
