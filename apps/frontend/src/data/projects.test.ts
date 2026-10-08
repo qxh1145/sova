@@ -2,10 +2,11 @@
 import { expect, test } from 'vitest';
 import { BRAND_LEAK_RE } from '@/lib/content/brand';
 import { SCRUB_RULES } from '@/lib/content/scrub';
-import { createMockRepository } from '@/lib/repositories/mock';
+import { createMockRepository, defaultContentData } from '@/lib/repositories/mock';
 import type { ContentData } from '@/lib/repositories/contracts';
 import { assets } from './assets';
 import { utilityContent } from './content';
+import { listingSettings } from './listings';
 import { projectCategories } from './project-categories';
 import { projects } from './projects';
 
@@ -111,4 +112,55 @@ test('getProjectCategories returns all project categories', async () => {
   const repo = createMockRepository({ projectCategories } as unknown as ContentData);
   const categories = await repo.getProjectCategories();
   expect(categories).toEqual(projectCategories);
+});
+
+test('getProjectListingPage returns locale projects, categories with derived counts, and copy', async () => {
+  const { getProjectListingPage } = await import('@/lib/queries/projects');
+  const repo = createMockRepository({
+    projects,
+    projectCategories,
+    assets: [],
+    listingSettings: [
+      {
+        routeId: 'route-du-an',
+        heading: { title: 'Dự án' },
+      },
+      {
+        routeId: 'route-en--our-project',
+        heading: { title: 'Projects' },
+      },
+    ],
+  } as unknown as ContentData);
+
+  const viData = await getProjectListingPage('vi', repo);
+  expect(viData.locale).toBe('vi');
+  expect(viData.projects).toHaveLength(62);
+  expect(viData.copy.filterAll).toBe('Tất cả');
+  expect(viData.categories.find((c) => c.slug === 'website')?.count).toBe(59);
+  expect(viData.categories.find((c) => c.slug === 'branding')?.count).toBe(2);
+  expect(viData.categories.find((c) => c.slug === 'mobile-app')?.count).toBe(1);
+
+  const enData = await getProjectListingPage('en', repo);
+  expect(enData.locale).toBe('en');
+  expect(enData.projects).toHaveLength(0);
+  expect(enData.copy.filterAll).toBe('All');
+  expect(enData.categories.every((c) => c.count === 0)).toBe(true);
+});
+
+test('every listing hero asset id resolves to a committed asset', () => {
+  for (const { routeId, hero } of listingSettings)
+    for (const id of [hero?.imageId, hero?.bgImageId, hero?.videoId].filter(Boolean))
+      expect(assetById.has(id!), `${routeId} ${id}`).toBe(true);
+});
+
+test('getProjectListingPage resolves both listing hero images from committed data', async () => {
+  const { getProjectListingPage } = await import('@/lib/queries/projects');
+  const repo = createMockRepository(defaultContentData);
+  for (const locale of ['vi', 'en'] as const) {
+    const data = await getProjectListingPage(locale, repo);
+    expect(data.heroImage?.id, locale).toBe(data.settings?.hero?.imageId);
+    expect(data.bgImage?.id, locale).toBe(data.settings?.hero?.bgImageId);
+    expect(data.heroImage).not.toBeNull();
+    expect(data.bgImage).not.toBeNull();
+  }
 });
