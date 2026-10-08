@@ -166,3 +166,77 @@ test('src/dev is imported only by lib/repositories/index.ts', () => {
     .filter((file) => /['"](@\/dev|(\.\.?\/)+dev)\//.test(readFileSync(join(src, file), 'utf8')));
   expect(importers).toEqual(['lib/repositories/index.ts']);
 });
+
+describe('extended scenario', () => {
+  test('extended scenario builds and contains mock records', async () => {
+    vi.stubEnv('CONTENT_SCENARIO', 'extended');
+    const repo = getRepository();
+    const project = await repo.getProject('du-an-mock-mo-rong');
+    expect(project).not.toBeNull();
+    expect(project?.id).toBe('project-mock-extended');
+
+    const post = await repo.getPost('bai-viet-mock-mo-rong-tim-kiem-xyz987');
+    expect(post).not.toBeNull();
+    expect(post?.id).toBe('post-mock-extended');
+
+    const routes = await repo.listRoutes();
+    expect(routes.some((r) => r.path === '/featured_item/du-an-mock-mo-rong/')).toBe(true);
+    expect(routes.some((r) => r.path === '/bai-viet-mock-mo-rong-tim-kiem-xyz987/')).toBe(true);
+  });
+
+  test('withRecords throws when post slug is a reserved root slug', async () => {
+    const { defaultContentData } = await import('@/lib/repositories/mock');
+    const { withRecords, mockPost } = await import('./extended');
+    expect(() =>
+      withRecords(defaultContentData, {
+        posts: [
+          {
+            ...mockPost,
+            id: 'post-reserved-test',
+            slug: 'featured_item_category',
+            path: '/featured_item_category/',
+          },
+        ],
+        routes: [
+          {
+            id: 'route-reserved-post',
+            locale: 'vi',
+            path: '/featured_item_category/',
+            kind: 'post-detail',
+            entityId: 'post-reserved-test',
+            aliases: [],
+            source: { file: 'test.html', line: 1 },
+          },
+        ],
+      }),
+    ).toThrow('routes: post slug featured_item_category is a reserved root slug');
+  });
+
+  test('withRecords throws when project slug is a reserved root slug', async () => {
+    const { defaultContentData } = await import('@/lib/repositories/mock');
+    const { withRecords, mockProject } = await import('./extended');
+    expect(() =>
+      withRecords(defaultContentData, {
+        projects: [
+          {
+            ...mockProject,
+            id: 'project-reserved-test',
+            slug: 'du-an',
+            path: '/featured_item/du-an/',
+          },
+        ],
+        routes: [
+          {
+            id: 'route-reserved-project',
+            locale: 'vi',
+            path: '/featured_item/du-an/',
+            kind: 'project-detail',
+            entityId: 'project-reserved-test',
+            aliases: [],
+            source: { file: 'test.html', line: 1 },
+          },
+        ],
+      }),
+    ).toThrow('routes: project slug du-an is a reserved root slug');
+  });
+});
