@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { PostCard } from './PostCard';
+import { BlogSidebar } from './BlogSidebar';
 import { Pagination } from '@/components/ui/Pagination';
 import type { BlogListingPageData } from '@/lib/queries/posts';
 
@@ -9,10 +10,15 @@ export function BlogListView({
   page,
   totalPages,
   settings,
+  categories,
+  basePath,
   copy,
 }: BlogListingPageData) {
   const assetMap = new Map(thumbnailAssets.map((asset) => [asset.id, asset]));
-  const title = settings?.heading.title || copy.title;
+  const heroH1 = settings?.hero?.headingLines?.[0] || copy.title;
+  const isCategory = basePath !== '/goc-nhin/' && basePath !== '/en/insight/';
+  const categoryTitle = isCategory ? settings?.heading?.title : undefined;
+  const homeHref = basePath.startsWith('/en/') ? '/en/home/' : '/';
 
   return (
     <main id="main">
@@ -20,10 +26,10 @@ export function BlogListView({
         <div className="bg section-bg fill bg-fill bg-loaded" />
         <div className="section-content relative">
           <h1 style={{ textAlign: 'center', fontSize: '49px' }}>
-            <span style={{ color: '#ffffff' }}>{title}</span>
+            <span style={{ color: '#ffffff' }}>{heroH1}</span>
           </h1>
           <p style={{ textAlign: 'center' }}>
-            <Link href="/" style={{ color: '#808080', textDecoration: 'none' }}>
+            <Link href={homeHref} style={{ color: '#808080', textDecoration: 'none' }}>
               {copy.breadcrumbHome}
             </Link>
             {'\u00a0\u00a0'}
@@ -51,6 +57,7 @@ export function BlogListView({
         }}
       >
         <div className="large-8 col small-col-first">
+          {categoryTitle && <h2 className="category-title">{categoryTitle}</h2>}
           {posts.map((post) => (
             <PostCard
               key={post.id}
@@ -60,12 +67,17 @@ export function BlogListView({
               readMoreLabel={copy.readMore}
             />
           ))}
-          <Pagination
-            current={page}
-            total={totalPages}
-            labels={copy.pagination}
-            hrefForPage={(p) => (p === 1 ? '/goc-nhin/' : `/goc-nhin/page/${p}/`)}
-          />
+          {totalPages > 1 && (
+            <Pagination
+              current={page}
+              total={totalPages}
+              labels={copy.pagination}
+              hrefForPage={(p) => (p === 1 ? basePath : `${basePath}page/${p}/`)}
+            />
+          )}
+        </div>
+        <div className="large-4 col">
+          <BlogSidebar categories={categories} copy={copy} />
         </div>
       </div>
     </main>
