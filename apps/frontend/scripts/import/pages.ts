@@ -592,11 +592,19 @@ function listing(page: Page, registry: AssetRegistry, stats: Stats): ListingSett
     page,
     'listing h1',
   ).map((h) => plain(h, stats));
-  const category = page.root.querySelector('h2.category-title');
+  // Featured archives title the page with `h1.entry-title` (category label, or the THP title on
+  // /featured_item/, A12).
+  const category =
+    page.root.querySelector('h2.category-title') ?? page.root.querySelector('h1.entry-title');
 
   let hero: HeroContent = { headingLines };
 
-  if (page.route.id === 'route-du-an' || page.route.id === 'route-en--our-project') {
+  if (
+    page.route.id === 'route-du-an' ||
+    page.route.id === 'route-en--our-project' ||
+    page.route.id === 'route-featured_item' ||
+    page.route.id.startsWith('route-featured_item_category--')
+  ) {
     const banner = page.root.querySelector('.banner');
     if (banner) {
       const lineOf = page.lineOf;

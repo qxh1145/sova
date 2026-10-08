@@ -253,3 +253,183 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
     expect(sovaData?.marginTop).toBe(sourceData?.marginTop);
   });
 });
+
+test.describe('/featured_item/ archive and /featured_item_category/* archives', () => {
+  const ARCHIVE = '#portfolio-1541637127';
+  const CATEGORIES = [
+    { slug: 'website', title: 'Website', count: 59, portfolio: '#portfolio-200128785' },
+    { slug: 'branding', title: 'Branding', count: 2, portfolio: '#portfolio-1442370418' },
+    { slug: 'mobile-app', title: 'Mobile App', count: 1, portfolio: '#portfolio-1320843097' },
+  ];
+
+  test('Archive default: THP page title (A12), "Tất cả" active, 62 cards, no pagination', async ({
+    page,
+  }) => {
+    await page.goto('/featured_item/');
+    await expect(page.locator('.page-title h1.entry-title')).toHaveText(
+      'Công ty Cổ phần Phát triển Công nghệ THP',
+    );
+    await expect(page.locator('.filter-nav li.active a')).toHaveText('Tất cả');
+    await expect(page.locator('.filter-nav a')).toHaveText([
+      'Tất cả',
+      'Branding',
+      'Mobile App',
+      'Website',
+    ]);
+    await expect(page.locator(`${ARCHIVE} .col`)).toHaveCount(62);
+    await expect(page.locator('#portfolio-pagination, .pagination')).toHaveCount(0);
+    await expect(page.locator('.banner.banner-project')).toContainText('Khám phá tư duy thiết kế');
+
+    // Cards render in source archive order: STORMICK 19th, Dsmart 23rd
+    const cardLinks = page.locator(`${ARCHIVE} .col a[href*="/featured_item/"]`);
+    await expect(cardLinks.nth(0)).toHaveAttribute(
+      'href',
+      '/featured_item/evc-athena-cong-ty-tnhh-evc-athena/',
+    );
+    await expect(cardLinks.nth(18)).toHaveAttribute(
+      'href',
+      '/featured_item/stormick-cong-ty-tnhh-storm-entertaiment/',
+    );
+    await expect(cardLinks.nth(22)).toHaveAttribute(
+      'href',
+      '/featured_item/giao-dien-dsmart-giai-phap-dieu-khien-xe-hoi-tren-smartphone/',
+    );
+  });
+
+  test('Archive filter: Branding 2 (incl. THP), Mobile App 1, Website 59, Tất cả 62; URL unchanged', async ({
+    page,
+  }) => {
+    await page.goto('/featured_item/');
+    const url = page.url();
+    const cards = page.locator(`${ARCHIVE} .col`);
+    for (const [term, count] of [
+      ['branding', 2],
+      ['mobile-app', 1],
+      ['website', 59],
+      ['', 62],
+    ] as const) {
+      await page.locator(`.filter-nav a[data-term="${term}"]`).click();
+      await expect(page.locator('.filter-nav li.active a')).toHaveAttribute('data-term', term);
+      await expect(cards).toHaveCount(count);
+      if (term === 'branding')
+        await expect(cards.locator('.portfolio-box-title')).toContainText([
+          'Công ty Cổ phần Phát triển Công nghệ THP',
+        ]);
+      await expect(page.locator('.pagination')).toHaveCount(0);
+      expect(page.url()).toBe(url);
+    }
+  });
+
+  test('Archive columns: 2 / 3 / 3 / 4 / 4 cards per row at 549 / 550 / 849 / 850 / 1280', async ({
+    page,
+  }) => {
+    for (const [width, perRow] of [
+      [549, 2],
+      [550, 3],
+      [849, 3],
+      [850, 4],
+      [1280, 4],
+    ]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/featured_item/');
+      const firstRow = await page.locator(`${ARCHIVE} .col`).evaluateAll((cols) => {
+        const tops = cols.map((c) => (c as HTMLElement).offsetTop);
+        return tops.filter((t) => t === tops[0]).length;
+      });
+      expect(firstRow, `${width}px`).toBe(perRow);
+    }
+  });
+
+  for (const { slug, title, count, portfolio } of CATEGORIES) {
+    test(`Category ${slug}: H1 "${title}", ${count} cards, no filter nav, no pagination`, async ({
+      page,
+    }) => {
+      await page.goto(`/featured_item_category/${slug}/`);
+      await expect(page.locator('.page-title h1.entry-title')).toHaveText(title);
+      const cards = page.locator(`${portfolio} .col`);
+      await expect(cards).toHaveCount(count);
+      await expect(cards.locator('.portfolio-box-category')).toHaveText(Array(count).fill(title));
+      await expect(page.locator('.filter-nav')).toHaveCount(0);
+      await expect(page.locator('.pagination, #portfolio-pagination')).toHaveCount(0);
+      if (slug === 'branding')
+        await expect(cards.locator('.portfolio-box-title')).toContainText([
+          'Công ty Cổ phần Phát triển Công nghệ THP',
+        ]);
+    });
+  }
+
+  test('Unknown category is a 404', async ({ page }) => {
+    const res = await page.goto('/featured_item_category/nope/');
+    expect(res?.status()).toBe(404);
+  });
+
+  test('No duplicate ids and no console errors on the four routes', async ({ page }) => {
+    const consoleErrors: string[] = [];
+    page.on('console', (msg) => {
+      if (msg.type() === 'error' && !msg.text().startsWith('Failed to load resource'))
+        consoleErrors.push(msg.text());
+    });
+    page.on('pageerror', (err) => consoleErrors.push(err.message));
+    for (const url of [
+      '/featured_item/',
+      ...CATEGORIES.map((c) => `/featured_item_category/${c.slug}/`),
+    ]) {
+      await page.goto(url);
+      const dupes = await page.evaluate(() => {
+        const seen = new Set<string>();
+        return Array.from(document.querySelectorAll('[id]'))
+          .map((el) => el.id)
+          .filter((id) => (seen.has(id) ? true : (seen.add(id), false)));
+      });
+      expect(dupes, url).toEqual([]);
+    }
+    expect(consoleErrors).toEqual([]);
+  });
+
+  // Tag + class signature of the archive wrapper, grid and first card (hrefs/srcs differ by design).
+  const signature = (wrapperSelector: string) => {
+    const wrapper = document.querySelector('.portfolio-page-wrapper');
+    const portfolio = document.querySelector(wrapperSelector);
+    const grid = portfolio?.querySelector('.row');
+    const card = grid?.querySelector('.col');
+    const sig = (el: Element | null | undefined) =>
+      el ? `${el.tagName.toLowerCase()}.${[...el.classList].join('.')}` : null;
+    return {
+      wrapper: sig(wrapper),
+      pageTitle: sig(wrapper?.querySelector('.page-title h1')),
+      section: sig(wrapper?.querySelector('section')),
+      sectionId: wrapper?.querySelector('section')?.id,
+      portfolio: sig(portfolio),
+      filter: sig(portfolio?.querySelector('.filter-nav')),
+      grid: sig(grid),
+      card: card ? [card, ...card.querySelectorAll('*')].map(sig) : null,
+      cardTerms: card?.getAttribute('data-terms'),
+    };
+  };
+
+  for (const row of [
+    { url: '/featured_item/', file: 'featured_item/index.html', portfolio: ARCHIVE },
+    ...CATEGORIES.map((c) => ({
+      url: `/featured_item_category/${c.slug}/`,
+      file: `featured_item_category/${c.slug}/index.html`,
+      portfolio: c.portfolio,
+    })),
+  ]) {
+    test(`${row.url} wrapper, grid and card markup match eras-clone`, async ({ page }) => {
+      test.skip(!hasSource, missingSourceMessage);
+      await openSource(page, {
+        key: `archive-${row.url}`,
+        url: row.url,
+        file: row.file,
+        family: 'projects',
+        locale: 'vi',
+        reason: 'parity',
+      });
+      const source = await page.evaluate(signature, row.portfolio);
+      await page.goto(row.url);
+      const sova = await page.evaluate(signature, row.portfolio);
+      expect(source.grid).not.toBeNull();
+      expect(sova).toEqual(source);
+    });
+  }
+});
