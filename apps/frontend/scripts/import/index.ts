@@ -90,9 +90,11 @@ export const postCategories: (PostCategory & { sources: SourceRef[] })[] = ${JSO
   await writeTs(
     path.join(DATA, 'projects.ts'),
     `${HEADER}
-import type { Project } from '@/types/content';
+import type { EntityId, Project } from '@/types/content';
 
 export const projects: Project[] = ${JSON.stringify(project.projects)};
+
+export const featuredItemOrder: EntityId[] = ${JSON.stringify(project.featuredItemOrder)};
 `,
   );
   await writeTs(
