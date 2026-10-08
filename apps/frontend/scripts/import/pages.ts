@@ -7,6 +7,7 @@ import type {
   ContactPageContent,
   EntityId,
   Feature,
+  HeroContent,
   HomePageRecord,
   LegalPage,
   ListingSettings,
@@ -583,7 +584,7 @@ function profile(page: Page, registry: AssetRegistry, stats: Stats): CompanyProf
   };
 }
 
-function listing(page: Page, stats: Stats): ListingSettings {
+function listing(page: Page, registry: AssetRegistry, stats: Stats): ListingSettings {
   const headingLines = must(
     page.root
       .querySelectorAll('h1')
@@ -592,10 +593,68 @@ function listing(page: Page, stats: Stats): ListingSettings {
     'listing h1',
   ).map((h) => plain(h, stats));
   const category = page.root.querySelector('h2.category-title');
+
+  let hero: HeroContent = { headingLines };
+
+  if (page.route.id === 'route-du-an' || page.route.id === 'route-en--our-project') {
+    const banner = page.root.querySelector('.banner');
+    if (banner) {
+      const lineOf = page.lineOf;
+      const file = page.file;
+      const ctx = { file, lineOf, stats };
+
+      const bgImg = banner.querySelector('.banner-bg img');
+      const bgImageId = registry.image(bgImg, file, lineOf);
+
+      const rightColImg = banner.querySelector('.img img');
+      const imageId = registry.image(rightColImg, file, lineOf);
+
+      const descEl = banner.querySelector('.text.nd-kh');
+      const descText = descEl ? descEl.childNodes[0]?.rawText.trim() : undefined;
+      const description = descText
+        ? rich(descText, [{ file, line: lineOf(descEl!.range[0]) }])
+        : undefined;
+
+      const ctaEl = banner.querySelector('a.but-lh');
+      const cta = linkModel(ctaEl, ctx);
+
+      const bcEl = banner.querySelector('.row .col:first-child .text:first-child');
+      let breadcrumb: { label: string; href?: string }[] | undefined;
+      if (bcEl) {
+        const homeLink = bcEl.querySelector('a');
+        const lastText = bcEl.childNodes
+          .filter((n) => n.nodeType === 3)
+          .map((n) => n.text.trim())
+          .filter(Boolean)
+          .pop();
+        if (homeLink && lastText) {
+          breadcrumb = [
+            {
+              label: plain(homeLink, stats),
+              href: processHref(homeLink.getAttribute('href') ?? '', file, lineOf(homeLink.range[0]), stats) ?? '/',
+            },
+            {
+              label: lastText,
+            },
+          ];
+        }
+      }
+
+      hero = {
+        headingLines,
+        description,
+        cta,
+        imageId,
+        bgImageId,
+        breadcrumb,
+      };
+    }
+  }
+
   return {
     routeId: page.route.id,
     heading: { title: category ? plain(category, stats) : headingLines.join(' ') },
-    hero: { headingLines },
+    hero,
   };
 }
 
@@ -691,7 +750,7 @@ export function importPages(
     profiles: pages('profile').map((p) => profile(p, registry, stats)),
     stats: statRecords,
     listingSettings: [...pages('post-list'), ...pages('project-list')].map((p) =>
-      listing(p, stats),
+      listing(p, registry, stats),
     ),
     thankYou: pages('thank-you').map((p) => thankYou(p, stats)),
     wordmark,

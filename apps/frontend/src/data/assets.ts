@@ -6547,4 +6547,17 @@ export const assets: AssetRef[] = [
     width: 262,
     height: 261,
   },
+  {
+    id: 'asset-f85d3636d6',
+    src: '/wp-content/uploads/2024/02/43e3185f955f1d3fca7ffa93786c89a0.png',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'du-an/index.html', line: 768 },
+      { file: 'en/our-project/index.html', line: 773 },
+    ],
+    width: 652,
+    height: 517,
+  },
 ];

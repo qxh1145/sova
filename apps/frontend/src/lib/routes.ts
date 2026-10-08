@@ -9,8 +9,7 @@ export function normalizePath(input: string): PublicPath {
 }
 
 const firstSegment = (path: string) => path.split('/')[1];
-/** Post-category slugs: one-segment post-list routes backed by a category record. */
-const categorySlugs = (routes: RouteEntry[]) =>
+export const categorySlugs = (routes: RouteEntry[]) =>
   routes
     .filter((r) => r.kind === 'post-list' && r.entityId && r.path.split('/').length === 3)
     .map((r) => firstSegment(r.path));
