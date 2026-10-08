@@ -9,12 +9,10 @@ import { RelatedPosts } from '@/app/(site)/(vi)/[slug]/_components/RelatedPosts'
 import { getShellProps } from '@/lib/queries/site';
 import { getBlogSearchPage, getPostDetail } from '@/lib/queries/posts';
 import { createScenarioRepository } from '@/dev/scenarios';
-import type { Locale } from '@/types/content';
-
 import { createMockRepository } from '@/lib/repositories/mock';
 import { fixtures } from '@/dev/fixtures';
 import { BlogListView } from '@/components/blog/BlogListView';
-import type { Post } from '@/types/content';
+import type { Locale, Post } from '@/types/content';
 
 export const dynamic = 'force-dynamic';
 

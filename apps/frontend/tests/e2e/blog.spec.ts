@@ -543,6 +543,22 @@ test.describe('Blog listing and post detail', () => {
     await expect(wpPrev).toHaveAttribute('href', '/?s=wordpress');
     await expect(page.locator('#secondary input.search-field')).toHaveValue('wordpress');
 
+    // 4b. Multi-word accented query: "tên miền" -> 7 matches; encoding must survive pagination round-trip
+    const accentQ = 'tên miền';
+    const accentEnc = encodeURIComponent(accentQ);
+    await page.goto(`/?s=${accentEnc}`);
+    await expect(page.locator('#section_1769897078 h1')).toContainText(`Kết quả tìm kiếm: ${accentQ}`);
+    await expect(page.locator('#post-list article')).toHaveCount(6);
+    await expect(page.locator('#secondary input.search-field')).toHaveValue(accentQ);
+    const accentNext = page.locator('.pagination .next.page-numbers');
+    await expect(accentNext).toHaveAttribute('href', `/page/2/?s=${accentEnc}`);
+    await accentNext.click();
+    await page.waitForURL(`**/page/2/?s=${accentEnc}`);
+    await expect(page.locator('#section_1769897078 h1')).toContainText(`Kết quả tìm kiếm: ${accentQ}`);
+    await expect(page.locator('#post-list article')).toHaveCount(1);
+    await expect(page.locator('#secondary input.search-field')).toHaveValue(accentQ);
+    await expect(page.locator('.pagination .prev.page-numbers')).toHaveAttribute('href', `/?s=${accentEnc}`);
+
     // 5. No results: /?s=zzqqxx
     await page.goto('/?s=zzqqxx');
     await expect(page.locator('#post-list article')).toHaveCount(0);
