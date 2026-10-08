@@ -56,6 +56,28 @@ export interface ContentRepository {
     page: number;
     pageSize: number;
   }): Promise<PageResult<Post>>;
+  /**
+   * Returns categories for the locale in source order, with counts computed from published posts.
+   */
+  getPostCategories(locale: Locale): Promise<(PostCategory & { count: number })[]>;
+  /**
+   * Posts referenced by `relatedPostIds` in post order; unknown ids skipped; published only.
+   */
+  getRelatedPosts(id: EntityId): Promise<Post[]>;
+  /**
+   * Projects referenced by `relatedProjectIds` in project order; unknown ids skipped.
+   */
+  getRelatedProjects(id: EntityId): Promise<Project[]>;
+  /**
+   * Published posts matching query in title, excerpt or body (HTML stripped), case- and accent-insensitive.
+   * Blank query returns all published posts paginated.
+   */
+  searchPosts(input: {
+    locale: Locale;
+    query: string;
+    page: number;
+    pageSize: number;
+  }): Promise<PageResult<Post>>;
   getFAQs(ids: EntityId[], locale: Locale): Promise<FAQ[]>;
   getFAQTopics(locale: Locale): Promise<FAQTopic[]>;
   getTestimonials(ids: EntityId[], locale: Locale): Promise<Testimonial[]>;

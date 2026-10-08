@@ -194,6 +194,7 @@ export interface Post extends LocalizedIdentity {
   modifiedAt?: string;
   displayDate?: string;
   relatedPostIds: EntityId[];
+  editorial: EditorialState;
   seo: SEO;
 }
 

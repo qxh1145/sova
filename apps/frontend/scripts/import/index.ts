@@ -230,6 +230,25 @@ import type { ListingSettings, ListingSnapshot } from '@/types/content';
 
 export const listingSettings: ListingSettings[] = ${JSON.stringify(page.listingSettings)};
 export const listingSnapshots: ListingSnapshot[] = ${JSON.stringify(snapshots)};
+
+export const blogListingCopy = {
+  title: 'Góc nhìn',
+  breadcrumbHome: 'Trang chủ',
+  breadcrumbBlog: 'Góc nhìn',
+  readMore: 'Đọc tiếp →',
+  pagination: {
+    nav: 'Phân trang bài viết',
+    prev: 'Trang trước',
+    next: 'Trang tiếp theo',
+  },
+};
+
+export const blogDetailCopy = {
+  breadcrumbHome: 'Trang chủ',
+  breadcrumbBlog: 'Góc nhìn',
+  breadcrumbCurrent: 'Chi tiết',
+  headingBackgroundImage: '/wp-content/uploads/2024/03/ec9c55cfcb4d0c64ecafd52d957c13e9.png',
+};
 `,
   );
   await writeTs(
