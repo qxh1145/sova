@@ -357,12 +357,11 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
     expect(response?.status()).toBe(404);
   });
 
-  test.fixme('Probe C4: Tall lightbox content scrolls with mouse wheel (deferred C4)', async ({
+  test('Probe C4: Tall lightbox content scrolls with mouse wheel', async ({
     page,
   }) => {
-    // .mfp-wrap sits outside Radix RemoveScroll's content shard (Dialog.tsx:65-67),
-    // so wheel events are cancelled by RemoveScroll and scrollTop remains 0.
-    // Owner: epic-collections.
+    // .mfp-wrap sits inside Radix RemoveScroll tree via display:contents DialogPrimitive.Overlay,
+    // so wheel events are handled by .mfp-wrap and scrollTop increases while body scroll remains locked.
     await page.goto('/dev-fixtures/overlay/single');
     await page.locator('[data-testid="single-trigger"]').click();
     const dialog = page.locator('#single-dialog');
@@ -380,5 +379,9 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
 
     const newScrollTop = await wrap.evaluate((el) => el.scrollTop);
     expect(newScrollTop).toBeGreaterThan(0);
+
+    // Body scroll stays locked
+    await expect(page.locator('body')).toHaveAttribute('data-scroll-locked');
+    expect(await getBodyOverflow(page)).toBe('hidden');
   });
 });
