@@ -1,7 +1,7 @@
 // Deterministic dev/test scenarios, selected via CONTENT_SCENARIO (ignored in production).
 import type { ContentData, ContentRepository } from '@/lib/repositories/contracts';
 import { createMockRepository } from '@/lib/repositories/mock';
-import { extendedFixtures } from './extended';
+import { buildExtendedFixtures } from './extended';
 import { fixtures, missingMediaFixtures } from './fixtures';
 
 export const scenarioNames = ['happy-path', 'empty', 'missing-media', 'error', 'extended'] as const;
@@ -34,7 +34,7 @@ export function createScenarioRepository(name: string): ContentRepository {
     case 'error':
       return errorRepository;
     case 'extended':
-      return createMockRepository(extendedFixtures);
+      return createMockRepository(buildExtendedFixtures());
     default:
       throw new Error(
         `Unknown CONTENT_SCENARIO "${name}" (expected one of: ${scenarioNames.join(', ')})`,

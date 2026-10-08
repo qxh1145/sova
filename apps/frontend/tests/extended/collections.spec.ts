@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { defaultContentData } from '../../src/lib/repositories/mock';
 import {
   mockPost,
   mockPostPath,
@@ -23,20 +24,27 @@ test.describe('Extended scenario data-driven placement', () => {
     const terms = page.locator('.qodef-portfolio-content');
     await expect(terms).toBeVisible();
 
-    // Related cards link to mockProject.relatedProjectIds
+    // Related cards link to mockProject.relatedProjectIds, in order
     const relatedLinks = page.locator('.portfolio-bottom .portfolio-related .col a');
     const hrefs = await relatedLinks.evaluateAll((links) =>
       links.map((link) => link.getAttribute('href')),
     );
-    // Check each related project path is present in hrefs
-    expect(hrefs.some((h) => h?.includes('giao-dien-dsmart'))).toBe(true);
-    expect(hrefs.some((h) => h?.includes('cong-ty-co-phan-phat-trien-cong-nghe-thp'))).toBe(true);
+    expect(hrefs).toEqual(
+      mockProject.relatedProjectIds.map(
+        (id) => defaultContentData.projects.find((p) => p.id === id)?.path,
+      ),
+    );
   });
 
   test('Project listing: /du-an/, filter Mobile App has 2 cards, one is mock', async ({ page }) => {
-    await page.goto('/du-an/');
+    // Dev mode hydrates late; clicking the anchor before hydration reloads the page unfiltered.
+    await page.goto('/du-an/', { waitUntil: 'networkidle' });
     const mobileAppFilter = page.locator('.filter-nav a[data-term="mobile-app"]');
     await mobileAppFilter.click();
+    await expect(page.locator('.filter-nav li.active a')).toHaveAttribute(
+      'data-term',
+      'mobile-app',
+    );
 
     const cards = page.locator('#portfolio-results .col');
     await expect(cards).toHaveCount(2);
@@ -85,10 +93,9 @@ test.describe('Extended scenario data-driven placement', () => {
     const hrefs = await relatedLinks.evaluateAll((links) =>
       links.map((link) => link.getAttribute('href')),
     );
-    expect(hrefs).toHaveLength(3);
-    for (const href of hrefs) {
-      expect(href && href.length > 2).toBe(true);
-    }
+    expect(hrefs).toEqual(
+      mockPost.relatedPostIds.map((id) => defaultContentData.posts.find((p) => p.id === id)?.path),
+    );
   });
 
   test('Blog listing: /goc-nhin/page/5/ has 4 cards, last is mock', async ({ page }) => {

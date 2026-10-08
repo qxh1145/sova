@@ -125,8 +125,10 @@ export function withRecords(
   };
 }
 
-export const extendedFixtures: ContentData = withRecords(defaultContentData, {
-  projects: [mockProject],
-  posts: [mockPost],
-  routes: [mockProjectRoute, mockPostRoute],
-});
+// Built on demand so production, which ignores CONTENT_SCENARIO, never runs the merge.
+export const buildExtendedFixtures = (): ContentData =>
+  withRecords(defaultContentData, {
+    projects: [mockProject],
+    posts: [mockPost],
+    routes: [mockProjectRoute, mockPostRoute],
+  });
