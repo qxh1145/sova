@@ -98,3 +98,10 @@ html.has-custom-cursor .cursor-ring {
     animation-play-state: paused;
   }
 }
+
+/* Storage offerings card titles: source inline `font-family: Poppins, sans-serif!important`.
+   React inline styles cannot carry !important on client render, so the rule lives here. */
+#section_1644279447 h3,
+#section_475696028 h3 {
+  font-family: Poppins, sans-serif !important;
+}

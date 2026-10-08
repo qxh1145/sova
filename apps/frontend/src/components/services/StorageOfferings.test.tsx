@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { parse } from 'node-html-parser';
 import type { ServiceAssets, ServicePage } from '@/lib/queries/services';
 import type { RouteEntry } from '@/types/content';
 import { storageServices } from '@/data/services/storage';
@@ -79,23 +81,44 @@ const mockAssets: ServiceAssets = {
 };
 
 describe('StorageOfferings / StorageServiceView', () => {
-  it('resolves hrefs for all offering cards and renders 3 slides', () => {
-    const viView = StorageServiceView({
-      page: mockPage(storageServices[0]),
-      assets: mockAssets,
-      routes: mockRoutes,
-      locale: 'vi',
-    });
-    expect(viView).toBeDefined();
+  it.each([
+    [
+      'vi',
+      storageServices[0],
+      ['/hosting-doanh-nghiep/', '/vps-doanh-nghiep/', '/e-mail-doanh-nghiep/'],
+    ],
+    [
+      'en',
+      storageServices[1],
+      ['/en/business-hosting/', '/en/business-vps/', '/en/business-e-mail/'],
+    ],
+  ] as const)(
+    '%s resolves hrefs for all offering cards and renders 3 slides',
+    (locale, service, paths) => {
+      const root = parse(
+        renderToStaticMarkup(
+          StorageServiceView({
+            page: mockPage(service),
+            assets: mockAssets,
+            routes: mockRoutes,
+            locale,
+          }),
+        ),
+      );
+      // next/link drops the trailing slash outside the Next runtime (trailingSlash config unset).
+      const hrefs = paths.map((p) => p.replace(/\/$/, ''));
+      const grid = root.querySelector('.eras-table-price.hide-for-small'); // business-text-ok: source CSS class name
+      const slider = root.querySelector('.slide_gplt');
 
-    const enView = StorageServiceView({
-      page: mockPage(storageServices[1]),
-      assets: mockAssets,
-      routes: mockRoutes,
-      locale: 'en',
-    });
-    expect(enView).toBeDefined();
-  });
+      expect(grid?.querySelectorAll('a.but-lh').map((a) => a.getAttribute('href'))).toEqual(hrefs);
+      expect(slider?.querySelectorAll('a.but-lh').map((a) => a.getAttribute('href'))).toEqual(
+        hrefs,
+      );
+      expect(slider?.querySelectorAll('h3').map((h) => h.text)).toEqual(
+        service.offerings.map((o) => o.slideTitle),
+      );
+    },
+  );
 
   it('throws naming unknown routeId when offering cta routeId is not in registry', () => {
     const brokenService = {

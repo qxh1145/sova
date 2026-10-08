@@ -376,7 +376,7 @@ export function StorageOfferings({
                     }}
                   />
                   <div id={cardIds?.titleText} className="text">
-                    <h3 style={{ fontFamily: 'Poppins, sans-serif !important' }}>
+                    <h3 style={{ fontFamily: 'Poppins, sans-serif' }}>
                       {offering.title}
                     </h3>
                   </div>
@@ -513,7 +513,7 @@ export function StorageOfferings({
                         }}
                       />
                       <div id={slideIds?.titleText} className="text">
-                        <h3 style={{ fontFamily: 'Poppins, sans-serif !important' }}>
+                        <h3 style={{ fontFamily: 'Poppins, sans-serif' }}>
                           {slideTitle}
                         </h3>
                       </div>

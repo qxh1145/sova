@@ -76,7 +76,7 @@ export const storageServices: Service[] = [
           'Backup dữ liệu hàng tuần',
           'Trải nghiệm 03 ngày miễn phí',
         ],
-        cta: { label: 'Xem chi tiết   → ', routeId: 'route-hosting-doanh-nghiep' },
+        cta: { label: 'Xem chi tiết\u00a0 \u00a0→ ', routeId: 'route-hosting-doanh-nghiep' },
         content: {
           format: 'sanitized-html',
           html: '<ul><li>Hạ tầng mạnh mẽ</li><li>An toàn – Bảo mật</li><li>Hỗ trợ liên tục 24/7/365</li><li>Cài đặt website nhanh chóng</li><li>Truy xuất nhanh – Tăng tốc xử lý</li><li>Backup dữ liệu hàng tuần</li><li>Trải nghiệm 03 ngày miễn phí</li></ul><p><a href="/hosting-doanh-nghiep/">Xem chi tiết   → </a></p>',
@@ -98,7 +98,7 @@ export const storageServices: Service[] = [
           'Backup dữ liệu hàng tuần',
           'Trải nghiệm 03 ngày miễn phí',
         ],
-        cta: { label: 'Xem chi tiết   → ', routeId: 'route-vps-doanh-nghiep' },
+        cta: { label: 'Xem chi tiết\u00a0 \u00a0→ ', routeId: 'route-vps-doanh-nghiep' },
         content: {
           format: 'sanitized-html',
           html: '<ul><li>Tối ưu hoá vì tốc độ</li><li>Máy chủ hiệu năng cao</li><li>Hỗ trợ liên tục 24/7/365</li><li>Phục vụ tận tình, chu đáo</li><li>SSD Storages/NVMe Enterprise</li><li>Backup dữ liệu hàng tuần</li><li>Trải nghiệm 03 ngày miễn phí</li></ul><p><a href="/vps-doanh-nghiep/">Xem chi tiết   → </a></p>',
@@ -120,7 +120,7 @@ export const storageServices: Service[] = [
           'Backup dữ liệu hàng tuần',
           'Trải nghiệm 3 ngày miễn phí',
         ],
-        cta: { label: 'Xem chi tiết   → ', routeId: 'route-e-mail-doanh-nghiep' },
+        cta: { label: 'Xem chi tiết\u00a0 \u00a0→ ', routeId: 'route-e-mail-doanh-nghiep' },
         content: {
           format: 'sanitized-html',
           html: '<ul><li>Chống Spam/Virut</li><li>Nhanh chóng – Bảo mật</li><li>Giao diện quản lý thân thiện</li><li>Hỗ trợ liên tục 24/7/365</li><li>Check mail trên Outlook và Webmail</li><li>Backup dữ liệu hàng tuần</li><li>Trải nghiệm 3 ngày miễn phí</li></ul><p><a href="/e-mail-doanh-nghiep/">Xem chi tiết   → </a></p>',
@@ -212,7 +212,7 @@ export const storageServices: Service[] = [
           'Weekly Data Backups',
           'Enjoy a 3-Day Free Trial',
         ],
-        cta: { label: 'See Detail   → ', routeId: 'route-en--business-hosting' },
+        cta: { label: 'See Detail\u00a0 \u00a0→ ', routeId: 'route-en--business-hosting' },
         content: {
           format: 'sanitized-html',
           html: '<ul><li>Robust Infrastructure</li><li>Secure &amp; Protected</li><li>24/7/365 Continuous Support</li><li>Instant Website Setup</li><li>High-Speed Access &amp; Processing</li><li>Weekly Data Backups</li><li>Enjoy a 3-Day Free Trial</li></ul><p><a href="/en/business-hosting/">See Detail   → </a></p>',
@@ -234,7 +234,7 @@ export const storageServices: Service[] = [
           'Weekly Data Backups',
           'Enjoy a 3-Day Free Trial',
         ],
-        cta: { label: 'See Detail   → ', routeId: 'route-en--business-vps' },
+        cta: { label: 'See Detail\u00a0 \u00a0→ ', routeId: 'route-en--business-vps' },
         content: {
           format: 'sanitized-html',
           html: '<ul><li>Speed-Optimized Performance</li><li>High-Performance Servers</li><li>24/7/365 Continuous Support</li><li>Dedicated &amp; Attentive Support</li><li>SSD Storages/NVMe Enterprise</li><li>Weekly Data Backups</li><li>Enjoy a 3-Day Free Trial</li></ul><p><a href="/en/business-vps/">See Detail   → </a></p>',
@@ -256,7 +256,7 @@ export const storageServices: Service[] = [
           'Weekly Data Backups',
           'Enjoy a 3-Day Free Trial',
         ],
-        cta: { label: 'See Detail   → ', routeId: 'route-en--business-e-mail' },
+        cta: { label: 'See Detail\u00a0 \u00a0→ ', routeId: 'route-en--business-e-mail' },
         content: {
           format: 'sanitized-html',
           html: '<ul><li>Anti-Spam &amp; Virus Protection</li><li>Fast &amp; Secure</li><li>User-Friendly Control Panel</li><li>24/7/365 Continuous Support</li><li>Email Access via Outlook &amp; Webmail</li><li>Weekly Data Backups</li><li>Enjoy a 3-Day Free Trial</li></ul><p><a href="/en/business-e-mail/">See Detail   → </a></p>',

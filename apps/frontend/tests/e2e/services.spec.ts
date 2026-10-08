@@ -472,11 +472,10 @@ const STORAGE_SERVICE_ROUTES = [
     headingLines: ['Giải pháp lưu trữ', 'cho doanh nghiệp'],
     eyebrow: 'Sova cung cấp',
     title: 'Các dịch vụ lưu trữ',
-    routes: [
-      '/hosting-doanh-nghiep/',
-      '/vps-doanh-nghiep/',
-      '/e-mail-doanh-nghiep/',
-    ],
+    faqEyebrow: { id: 'text-1409335333', text: 'GIẢI ĐÁP' },
+    decoImageId: 'image_1886760630',
+    heroSmallGaps: ['gap-1295344278', 'gap-161076987'],
+    routes: ['/hosting-doanh-nghiep/', '/vps-doanh-nghiep/', '/e-mail-doanh-nghiep/'],
     slideTitles: ['Business hosting', 'Cloud VPS', 'E-mail doanh nghiệp'],
     faqCount: 4,
   },
@@ -493,11 +492,10 @@ const STORAGE_SERVICE_ROUTES = [
     headingLines: ['Business', 'Storage Solutions'],
     eyebrow: 'Sova provides',
     title: 'Storage Services',
-    routes: [
-      '/en/business-hosting/',
-      '/en/business-vps/',
-      '/en/business-e-mail/',
-    ],
+    faqEyebrow: { id: 'text-4251296495', text: 'FAQs' },
+    decoImageId: 'image_1222782848',
+    heroSmallGaps: ['gap-474200673', 'gap-2132235472'],
+    routes: ['/en/business-hosting/', '/en/business-vps/', '/en/business-e-mail/'],
     slideTitles: ['Business hosting', 'Cloud VPS', 'Business Email'],
     faqCount: 4,
   },
@@ -538,7 +536,11 @@ test.describe('Storage service pages (Story 5.4)', () => {
 
       // Offerings section
       const offerings = page.locator(`#${config.sectionIds[1]}`);
+      await expect(offerings).toContainText(config.eyebrow);
       await expect(offerings.locator('h2')).toHaveText(config.title);
+      await expect(
+        offerings.locator(`#${config.decoImageId} img[src*="Deco-1-6.svg"]`),
+      ).toHaveCount(1);
       const gridCards = offerings.locator('.eras-table-price > .col');
       await expect(gridCards).toHaveCount(3);
 
@@ -553,27 +555,37 @@ test.describe('Storage service pages (Story 5.4)', () => {
       }
 
       // Testimonials (3 slides)
-      await expect(page.locator(`#${config.sectionIds[3]} .slide-kh .flickity-slider > *`)).toHaveCount(
-        3,
-      );
+      await expect(
+        page.locator(`#${config.sectionIds[3]} .slide-kh .flickity-slider > *`),
+      ).toHaveCount(3);
 
       // FAQ (4 items, first open)
-      const faqItems = page.locator(`#${config.sectionIds[4]} .accordion.ac-luutru .accordion-item`);
+      const faqItems = page.locator(
+        `#${config.sectionIds[4]} .accordion.ac-luutru .accordion-item`,
+      );
       await expect(faqItems).toHaveCount(config.faqCount);
       await expect(faqItems.first().locator('.accordion-title')).toHaveClass(/active/);
+      await expect(page.locator(`#${config.faqEyebrow.id}`)).toHaveText(config.faqEyebrow.text);
     });
 
     test(`Hero assets and breadcrumb on ${config.path}`, async ({ page }) => {
       await page.goto(config.path);
       const hero = page.locator(`#${config.sectionIds[0]}`);
-      await expect(hero.locator('img.bg[src*="de729be13c98f6a585c5656f0ce73db4-1.webp"]')).toHaveCount(1);
+      await expect(
+        hero.locator('img.bg[src*="de729be13c98f6a585c5656f0ce73db4-1.webp"]'),
+      ).toHaveCount(1);
       await expect(hero.locator('.img-inner img[src*="image-71.svg"]')).toHaveCount(1);
+      for (const gapId of config.heroSmallGaps) {
+        await expect(hero.locator(`#${gapId}`)).toHaveClass('gap-element clearfix show-for-small');
+      }
 
       const breadcrumb = hero.locator(
         `#${config.locale === 'vi' ? 'text-445793396' : 'text-1244128777'}`,
       );
       await expect(breadcrumb).toContainText(
-        config.locale === 'vi' ? 'Trang chủ / Dịch vụ / Giải pháp lưu trữ' : 'Home / Services / Storage solutions',
+        config.locale === 'vi'
+          ? 'Trang chủ / Dịch vụ / Giải pháp lưu trữ'
+          : 'Home / Services / Storage solutions',
       );
       await expect(
         hero.getByRole('link', {
