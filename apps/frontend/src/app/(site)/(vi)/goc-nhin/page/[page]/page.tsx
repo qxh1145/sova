@@ -9,11 +9,9 @@ export async function generateStaticParams() {
   const routes = await listRoutes();
   return routes
     .filter((r) => r.locale === 'vi' && r.kind === 'post-list' && r.path.startsWith('/goc-nhin/page/'))
-    .map((r) => {
-      const parts = pathSegments(r.path);
-      return { page: parts[2] ?? '' };
-    })
-    .filter((p) => Boolean(p.page));
+    .map((r) => pathSegments(r.path))
+    .filter((parts) => parts.length === 3 && parts[1] === 'page' && /^\d+$/.test(parts[2]))
+    .map((parts) => ({ page: parts[2] }));
 }
 
 interface GocNhinPagedProps {

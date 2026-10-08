@@ -38,7 +38,7 @@ async function resolveListingTail(
   repository: ContentRepository,
   options: {
     basePath: string;
-    copy: (typeof blogListingCopy)['vi'] | (typeof blogListingCopy)['en'];
+    copy: BlogListingPageData['copy'];
     settings?: ListingSettings | null;
     searchQuery?: string;
   },

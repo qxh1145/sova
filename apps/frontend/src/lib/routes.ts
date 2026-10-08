@@ -12,8 +12,8 @@ const firstSegment = (path: string) => path.split('/')[1];
 export const pathSegments = (path: string): string[] => path.split('/').filter(Boolean);
 
 /**
- * Validates and parses a 1-based page path parameter.
- * Returns the page number (>= 2) or null if invalid or < 2.
+ * Validates and parses the page segment of a paged route (`/page/N/`).
+ * Returns the page number (>= 2), or null when the segment is not digits or is < 2.
  */
 export function parsePageParam(pageStr: string): number | null {
   if (!/^[1-9]\d*$/.test(pageStr)) return null;
