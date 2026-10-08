@@ -90,9 +90,11 @@ export const postCategories: (PostCategory & { sources: SourceRef[] })[] = ${JSO
   await writeTs(
     path.join(DATA, 'projects.ts'),
     `${HEADER}
-import type { Project } from '@/types/content';
+import type { EntityId, Project } from '@/types/content';
 
 export const projects: Project[] = ${JSON.stringify(project.projects)};
+
+export const featuredItemOrder: EntityId[] = ${JSON.stringify(project.featuredItemOrder)};
 `,
   );
   await writeTs(
@@ -241,6 +243,8 @@ export const blogListingCopy = {
     categoriesTitle: 'Danh mục bài viết',
     searchPlaceholder: 'Search…',
     searchSubmit: 'Gửi',
+    searchResultsTitle: 'Kết quả tìm kiếm: ',
+    searchNoResults: 'Không tìm thấy bài viết phù hợp.',
     pagination: {
       nav: 'Phân trang bài viết',
       prev: 'Trang trước',
@@ -256,6 +260,8 @@ export const blogListingCopy = {
     categoriesTitle: 'Categories',
     searchPlaceholder: 'Search…',
     searchSubmit: 'Submit',
+    searchResultsTitle: 'Search results: ',
+    searchNoResults: 'No matching posts found.',
     pagination: {
       nav: 'Post pagination',
       prev: 'Previous page',
@@ -269,6 +275,7 @@ export const blogDetailCopy = {
   breadcrumbBlog: 'Góc nhìn',
   breadcrumbCurrent: 'Chi tiết',
   headingBackgroundImage: '/wp-content/uploads/2024/03/ec9c55cfcb4d0c64ecafd52d957c13e9.png',
+  relatedTitle: 'Bài viết liên quan:',
 };
 
 export const projectListingCopy = {

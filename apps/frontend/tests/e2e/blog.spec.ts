@@ -1,10 +1,20 @@
-import { expect, expectNoDuplicateIds, isAllowedUrl, test } from './fixtures';
+import { expect, expectNoDuplicateIds, STAGING, test } from './fixtures';
 import { assets } from '../../src/data/assets';
 import { posts } from '../../src/data/posts';
 import { listingSnapshots } from '../../src/data/listings';
 
+import { routes } from '../../src/data/routes';
+
 const postMap = new Map(posts.map((p) => [p.id, p]));
 const assetMap = new Map(assets.map((a) => [a.id, a]));
+const postDetailRoutePaths = new Set(
+  routes.filter((r) => r.kind === 'post-detail').map((r) => r.path),
+);
+// Unique <video> elements per post detail in docs/evidence/pages.json (kind 'post-detail').
+const evidenceVideoCounts: Record<string, number> = {
+  '/hieu-tu-a-z-ve-thiet-ke-website-responsive/': 4,
+  '/huong-dan-xoa-cache-trinh-duyet-va-may-tinh/': 1,
+};
 
 test.describe('Blog listing and post detail', () => {
   test('Listing /goc-nhin/ renders 6 cards in order, pagination items, and navigates to detail', async ({
@@ -81,14 +91,10 @@ test.describe('Blog listing and post detail', () => {
     expect(res?.status()).toBe(404);
   });
 
-  test('All 27 post paths render title, hero image, meta and body', async ({ page }) => {
+  test('All 27 post paths render title, hero image, meta, rich media, and related posts', async ({ page }) => {
     expect(posts).toHaveLength(27);
-    // Some post bodies hotlink source images (e.g. mona.media, registered in data/assets.ts).
-    // Abort them here so this content check does not trip the fixture's external-request guard.
-    await page.route(
-      (url) => !isAllowedUrl(url.href),
-      (route) => (route.request().resourceType() === 'image' ? route.abort() : route.fallback()),
-    );
+    const totals = { table: 0, figure: 0, blockquote: 0, video: 0 };
+
     for (const post of posts) {
       const res = await page.goto(post.path);
       expect(res?.status(), `Status 200 for ${post.path}`).toBe(200);
@@ -99,11 +105,101 @@ test.describe('Blog listing and post detail', () => {
       await expect(heroImg).toHaveAttribute('fetchpriority', 'high');
       await expect(page.locator('.blog-single .meta .author')).toHaveText(post.author.name);
       await expect(page.locator('.blog-single .meta .date')).toHaveText(post.displayDate!);
-      const bodyText = await page
-        .locator('.blog-single .col.large-12 > div:not(.post-image):not(.meta)')
-        .innerText();
+      const bodyLocator = page.locator('.blog-single .col.large-12 > div:not(.post-image):not(.meta):not(.relatedcat)');
+      const bodyText = await bodyLocator.innerText();
       expect(bodyText.trim().length, `Body text for ${post.path}`).toBeGreaterThan(0);
+
+      // Verify DOM counts of rich content match post.body.html tag counts
+      const html = post.body.html;
+      const expectedTables = (html.match(/<table\b[^>]*>/gi) || []).length;
+      const expectedFigures = (html.match(/<figure\b[^>]*>/gi) || []).length;
+      const expectedBlockquotes = (html.match(/<blockquote\b[^>]*>/gi) || []).length;
+      const expectedVideos = (html.match(/<video\b[^>]*>/gi) || []).length;
+
+      await expect(bodyLocator.locator('table')).toHaveCount(expectedTables);
+      await expect(bodyLocator.locator('figure')).toHaveCount(expectedFigures);
+      await expect(bodyLocator.locator('blockquote')).toHaveCount(expectedBlockquotes);
+      await expect(bodyLocator.locator('video')).toHaveCount(expectedVideos);
+      expect(expectedVideos, `Evidence video count for ${post.path}`).toBe(
+        evidenceVideoCounts[post.path] ?? 0,
+      );
+      totals.table += expectedTables;
+      totals.figure += expectedFigures;
+      totals.blockquote += expectedBlockquotes;
+      totals.video += expectedVideos;
+
+      // Missing body media keep their element, lose src and carry the missing marker
+      const missingSrcs = new Set(
+        post.body.assetIds
+          .map((id) => assetMap.get(id))
+          .filter((a) => a?.status === 'missing' && a.src)
+          .map((a) => a!.src),
+      );
+      const mediaTags = html.match(/<(img|source)\b[^>]*>/gi) || [];
+      const expectedMissingTags = mediaTags.filter((tag) =>
+        missingSrcs.has(tag.match(/\ssrc\s*=\s*(["'])(.*?)\1/i)?.[2] ?? ''),
+      ).length;
+      const expectedMissingVideos = (html.match(/<video\b[\s\S]*?<\/video>/gi) || []).filter(
+        (video) => {
+          const sources = video.match(/<source\b[^>]*>/gi) || [];
+          return (
+            sources.length > 0 &&
+            sources.every((tag) =>
+              missingSrcs.has(tag.match(/\ssrc\s*=\s*(["'])(.*?)\1/i)?.[2] ?? ''),
+            )
+          );
+        },
+      ).length;
+      await expect(bodyLocator.locator('[data-media-status="missing"]')).toHaveCount(
+        expectedMissingTags + expectedMissingVideos,
+      );
+      const renderedSrcs = await bodyLocator
+        .locator('img[src], source[src]')
+        .evaluateAll((els) => els.map((el) => el.getAttribute('src')));
+      expect(
+        renderedSrcs.filter((src) => src && missingSrcs.has(src)),
+        `No missing body src rendered for ${post.path}`,
+      ).toEqual([]);
+
+      // Related posts section verification
+      const relatedSection = page.locator('.blog-single .relatedcat');
+      await expect(relatedSection).toBeVisible();
+
+      const expectedRelatedCount = post.relatedPostIds.length;
+      const relatedCards = relatedSection.locator('.related-post-item');
+      await expect(relatedCards).toHaveCount(expectedRelatedCount);
+
+      if (expectedRelatedCount === 0) {
+        await expect(relatedSection.locator('.title-lienquan')).toHaveCount(0);
+      } else {
+        await expect(relatedSection.locator('.title-lienquan')).toHaveText('Bài viết liên quan:');
+
+        for (let i = 0; i < expectedRelatedCount; i++) {
+          const card = relatedCards.nth(i);
+          const relPostId = post.relatedPostIds[i];
+          const relPost = postMap.get(relPostId)!;
+
+          await expect(card).toHaveClass(new RegExp(`item-${i + 1}`));
+          await expect(card.locator('h5')).toHaveText(relPost.title);
+
+          const link = card.locator('a');
+          await expect(link).toHaveAttribute('href', relPost.path);
+          await expect(link).toHaveAttribute('title', relPost.title);
+          expect(postDetailRoutePaths.has(relPost.path), `${relPost.path} is a post-detail route`).toBe(true);
+
+          const relThumbId = relPost.thumbnailId ?? relPost.featuredImageId;
+          const relThumbAsset = relThumbId ? assetMap.get(relThumbId) : null;
+          if (relThumbAsset && relThumbAsset.status !== 'missing' && relThumbAsset.src) {
+            await expect(card.locator('img')).toHaveAttribute('src', relThumbAsset.src);
+          } else {
+            await expect(card.locator('img')).toHaveCount(0);
+          }
+        }
+      }
     }
+
+    // Aggregate rich-content counts across the 27 posts
+    expect(totals).toEqual({ table: 1, figure: 9, blockquote: 8, video: 5 });
   });
 
   test('Pages 2 to 5 render expected cards and pagination links', async ({ page }) => {
@@ -318,5 +414,197 @@ test.describe('Blog listing and post detail', () => {
     const res = await page.goto('/goc-nhin');
     expect(page.url()).toMatch(/\/goc-nhin\/$/);
     expect(res?.status()).toBe(200);
+  });
+
+  test('Dev-fixture happy-path renders hero, body media, and related post card', async ({
+    page,
+  }) => {
+    test.skip(STAGING, 'Dev fixtures are not deployed to staging');
+
+    await page.goto('/dev-fixtures/blog/happy-path');
+    await expect(page.locator('h1.cs-page_title')).toHaveText('Fixture');
+
+    // Hero image present
+    const heroImg = page.locator('.blog-single .post-image img');
+    await expect(heroImg).toHaveAttribute('src', '/fixture.png');
+
+    // Body media present
+    const bodyLocator = page.locator(
+      '.blog-single .col.large-12 > div:not(.post-image):not(.meta):not(.relatedcat)',
+    );
+    await expect(bodyLocator.locator('img[src="/fixture.png"]')).toBeVisible();
+    await expect(bodyLocator.locator('video source[src="/fixture-video.mp4"]')).toBeAttached();
+
+    // Related card present with thumbnail
+    const relatedSection = page.locator('.blog-single .relatedcat');
+    await expect(relatedSection.locator('.related-post-item')).toHaveCount(1);
+    const relatedCard = relatedSection.locator('.related-post-item.item-1');
+    await expect(relatedCard.locator('h5')).toHaveText('Fixture 2');
+    await expect(relatedCard.locator('img')).toHaveAttribute('src', '/fixture.png');
+  });
+
+  test('Dev-fixture missing-media omits hero, related card img, and marks body media missing with no missing requests', async ({
+    page,
+  }) => {
+    test.skip(STAGING, 'Dev fixtures are not deployed to staging');
+
+    const requestedUrls: string[] = [];
+    page.on('request', (req) => requestedUrls.push(req.url()));
+
+    await page.goto('/dev-fixtures/blog/missing-media');
+    await expect(page.locator('h1.cs-page_title')).toHaveText('Fixture');
+
+    // Hero omitted
+    await expect(page.locator('.blog-single .post-image img')).toHaveCount(0);
+
+    // Body media elements kept, src dropped, marked missing
+    const bodyLocator = page.locator(
+      '.blog-single .col.large-12 > div:not(.post-image):not(.meta):not(.relatedcat)',
+    );
+    const missingImgs = bodyLocator.locator('img[data-media-status="missing"]');
+    await expect(missingImgs).toHaveCount(1);
+    await expect(missingImgs).not.toHaveAttribute('src');
+
+    const missingSources = bodyLocator.locator('source[data-media-status="missing"]');
+    await expect(missingSources).toHaveCount(1);
+    await expect(missingSources).not.toHaveAttribute('src');
+    await expect(bodyLocator.locator('video[data-media-status="missing"]')).toHaveCount(1);
+
+    // Related card has title and link, but no img
+    const relatedSection = page.locator('.blog-single .relatedcat');
+    await expect(relatedSection.locator('.related-post-item')).toHaveCount(1);
+    const relatedCard = relatedSection.locator('.related-post-item.item-1');
+    await expect(relatedCard.locator('h5')).toHaveText('Fixture 2');
+    await expect(relatedCard.locator('a')).toHaveAttribute('href', /^\/fixture-post-2\/?$/);
+    await expect(relatedCard.locator('img')).toHaveCount(0);
+
+    // No request to missing sources
+    expect(requestedUrls.some((u) => u.includes('fixture.png'))).toBe(false);
+    expect(requestedUrls.some((u) => u.includes('fixture-video.mp4'))).toBe(false);
+  });
+
+  test('Dev-fixture error renders the page error state in VI and EN', async ({ page }) => {
+    test.skip(STAGING, 'Dev fixtures are not deployed to staging');
+
+    await page.goto('/dev-fixtures/blog/error');
+    await expect(page.locator('.page-error-main')).toBeVisible();
+
+    await page.goto('/dev-fixtures/blog/error?locale=en');
+    await expect(page.locator('.page-error-main')).toBeVisible();
+  });
+
+  test('Search results matrix: title-only, excerpt-only, body-only, pagination, no-results, blank, 404s, sidebar, and form submit', async ({
+    page,
+  }) => {
+    // 1. Title-only word: "cache" -> matches only /huong-dan-xoa-cache-trinh-duyet-va-may-tinh/
+    await page.goto('/?s=cache');
+    await expect(page.locator('#section_1769897078 h1')).toContainText('Kết quả tìm kiếm: cache');
+    const cacheCards = page.locator('#post-list article');
+    await expect(cacheCards).toHaveCount(1);
+    await expect(cacheCards.first().locator('.title-post-archive')).toHaveText(
+      postMap.get('post-2434')!.title,
+    );
+    await expect(page.locator('#secondary input.search-field')).toHaveValue('cache');
+
+    // 2. Excerpt-only word: "copywriter" -> matches in excerpt of post-836 (/huong-dan-viet-bai-chuan-seo-2021/), not in title
+    await page.goto('/?s=copywriter');
+    await expect(page.locator('#section_1769897078 h1')).toContainText('Kết quả tìm kiếm: copywriter');
+    const copywriterCards = page.locator('#post-list article');
+    await expect(copywriterCards).toHaveCount(1);
+    await expect(copywriterCards.first().locator('.title-post-archive')).toHaveText(
+      postMap.get('post-836')!.title,
+    );
+    expect(postMap.get('post-836')!.title.toLowerCase()).not.toContain('copywriter');
+    expect(postMap.get('post-836')!.excerpt.toLowerCase()).toContain('copywriter');
+
+    // 3. Body-only word: "haravan" -> matches only in body of post-853 (/kinh-doanh-nho-le-co-nen-xay-dung-website-ban-hang/), not in title or excerpt
+    await page.goto('/?s=haravan');
+    await expect(page.locator('#section_1769897078 h1')).toContainText('Kết quả tìm kiếm: haravan');
+    const haravanCards = page.locator('#post-list article');
+    await expect(haravanCards).toHaveCount(1);
+    await expect(haravanCards.first().locator('.title-post-archive')).toHaveText(
+      postMap.get('post-853')!.title,
+    );
+    expect(postMap.get('post-853')!.title.toLowerCase()).not.toContain('haravan');
+    expect(postMap.get('post-853')!.excerpt.toLowerCase()).not.toContain('haravan');
+
+    // 4. Many results: "wordpress" -> 7 matches -> 6 cards on page 1, pagination to page 2
+    await page.goto('/?s=wordpress');
+    await expect(page.locator('#post-list article')).toHaveCount(6);
+    const wpPagination = page.locator('.pagination');
+    await expect(wpPagination).toBeVisible();
+    const wpNext = wpPagination.locator('.next.page-numbers');
+    await expect(wpNext).toHaveAttribute('href', '/page/2/?s=wordpress');
+
+    // Go to page 2: /page/2/?s=wordpress
+    await page.goto('/page/2/?s=wordpress');
+    await expect(page.locator('#post-list article')).toHaveCount(1);
+    const wpPrev = page.locator('.pagination .prev.page-numbers');
+    await expect(wpPrev).toHaveAttribute('href', '/?s=wordpress');
+    await expect(page.locator('#secondary input.search-field')).toHaveValue('wordpress');
+
+    // 4b. Multi-word accented query: "tên miền" -> 7 matches; encoding must survive pagination round-trip
+    const accentQ = 'tên miền';
+    const accentEnc = encodeURIComponent(accentQ);
+    await page.goto(`/?s=${accentEnc}`);
+    await expect(page.locator('#section_1769897078 h1')).toContainText(`Kết quả tìm kiếm: ${accentQ}`);
+    await expect(page.locator('#post-list article')).toHaveCount(6);
+    await expect(page.locator('#secondary input.search-field')).toHaveValue(accentQ);
+    const accentNext = page.locator('.pagination .next.page-numbers');
+    await expect(accentNext).toHaveAttribute('href', `/page/2/?s=${accentEnc}`);
+    await accentNext.click();
+    await page.waitForURL(`**/page/2/?s=${accentEnc}`);
+    await expect(page.locator('#section_1769897078 h1')).toContainText(`Kết quả tìm kiếm: ${accentQ}`);
+    await expect(page.locator('#post-list article')).toHaveCount(1);
+    await expect(page.locator('#secondary input.search-field')).toHaveValue(accentQ);
+    await expect(page.locator('.pagination .prev.page-numbers')).toHaveAttribute('href', `/?s=${accentEnc}`);
+
+    // 5. No results: /?s=zzqqxx
+    await page.goto('/?s=zzqqxx');
+    await expect(page.locator('#post-list article')).toHaveCount(0);
+    await expect(page.locator('.pagination')).toHaveCount(0);
+    await expect(page.locator('#post-list')).toContainText('Không tìm thấy bài viết phù hợp.');
+    await expect(page.locator('#secondary input.search-field')).toHaveValue('zzqqxx');
+
+    // 6. Blank query: /?s=
+    await page.goto('/?s=');
+    await expect(page.locator('#section_1769897078 h1')).toContainText('Kết quả tìm kiếm:');
+    await expect(page.locator('#post-list article')).toHaveCount(6);
+    const blankNext = page.locator('.pagination .next.page-numbers');
+    await expect(blankNext).toHaveAttribute('href', '/page/2/?s=');
+
+    // 7. 404 rows: page past end or invalid page
+    const resPastEnd = await page.goto('/page/9/?s=wordpress');
+    expect(resPastEnd?.status()).toBe(404);
+
+    const resPage0 = await page.goto('/page/0/?s=wordpress');
+    expect(resPage0?.status()).toBe(404);
+
+    const resPage02 = await page.goto('/page/02/?s=wordpress');
+    expect(resPage02?.status()).toBe(404);
+
+    // 8. Form submit from /goc-nhin/ lands on results
+    await page.goto('/goc-nhin/');
+    const searchInput = page.locator('#secondary input.search-field');
+    await searchInput.fill('cache');
+    await page.locator('#secondary button.ux-search-submit').click();
+    await page.waitForURL('**/?s=cache');
+    await expect(page.locator('#section_1769897078 h1')).toContainText('Kết quả tìm kiếm: cache');
+  });
+
+  test('Dev-fixture search variant excludes draft post from results', async ({ page }) => {
+    test.skip(STAGING, 'Dev fixtures are not deployed to staging');
+
+    // Searching "Fixture" should match published posts in fixtures, but draft post "Fixture Draft Post Title" must be absent
+    await page.goto('/dev-fixtures/blog/search?s=Fixture');
+    const articles = page.locator('#post-list article');
+    await expect(articles).toHaveCount(2);
+    const titles = await articles.locator('.title-post-archive').allInnerTexts();
+    expect(titles).not.toContain('Fixture Draft Post Title');
+
+    // Searching specifically for draft keyword returns no results
+    await page.goto('/dev-fixtures/blog/search?s=Draft');
+    await expect(page.locator('#post-list article')).toHaveCount(0);
+    await expect(page.locator('#post-list')).toContainText('Không tìm thấy bài viết phù hợp.');
   });
 });

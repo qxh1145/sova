@@ -3,6 +3,7 @@ import { createMockRepository, defaultContentData } from '@/lib/repositories/moc
 import { posts } from '@/data/posts';
 import {
   getBlogListingPage,
+  getBlogSearchPage,
   getPostCategories,
   getPostDetail,
   getRelatedPosts,
@@ -31,6 +32,87 @@ test('getPostDetail falls back to thumbnailId without a featured image', async (
   const repo = createMockRepository({ ...defaultContentData, posts: [post] });
   const detail = await getPostDetail(post.slug, repo);
   expect(detail?.featuredAsset?.id).toBe(post.thumbnailId);
+});
+
+test('getPostDetail returns related posts in relatedPostIds order and resolves thumbnails', async () => {
+  const post = posts.find((p) => p.relatedPostIds.length === 3)!;
+  const detail = await getPostDetail(post.slug, repository);
+  expect(detail?.related).toHaveLength(3);
+  expect(detail?.related.map((r) => r.post.id)).toEqual(post.relatedPostIds);
+  expect(detail?.related.every((r) => r.thumbnailAsset !== null)).toBe(true);
+});
+
+test('getPostDetail handles fewer or empty related posts (post-2323: 1, post-888: 0)', async () => {
+  const post2323 = posts.find((p) => p.id === 'post-2323')!;
+  const detail2323 = await getPostDetail(post2323.slug, repository);
+  expect(detail2323?.related).toHaveLength(1);
+  expect(detail2323?.related[0].post.id).toBe(post2323.relatedPostIds[0]);
+
+  const post888 = posts.find((p) => p.id === 'post-888')!;
+  expect(post888.relatedPostIds).toHaveLength(0);
+  const detail888 = await getPostDetail(post888.slug, repository);
+  expect(detail888?.related).toHaveLength(0);
+});
+
+test('getPostDetail resolves related thumbnail as missing/null if asset is missing or has no thumbnail', async () => {
+  const [parent, child] = posts;
+  const missingAssetRepo = createMockRepository({
+    ...defaultContentData,
+    posts: [
+      { ...parent, relatedPostIds: [child.id] },
+      { ...child, thumbnailId: 'asset-missing-thumb' },
+    ],
+    assets: [
+      ...defaultContentData.assets,
+      {
+        id: 'asset-missing-thumb',
+        src: '/missing-thumb.png',
+        alt: '',
+        kind: 'image',
+        status: 'missing',
+        sources: [],
+      },
+    ],
+  });
+  const detail = await getPostDetail(parent.slug, missingAssetRepo);
+  expect(detail?.related).toHaveLength(1);
+  expect(detail?.related[0].thumbnailAsset?.status).toBe('missing');
+});
+
+test('getPostDetail applies missing-media fallback to body media elements', async () => {
+  const testPost = {
+    ...posts[0],
+    id: 'post-fallback-test',
+    slug: 'post-fallback-test',
+    body: {
+      format: 'sanitized-html' as const,
+      html: '<p><img src="/img-present.png" alt="ok" /><img src = "/img-missing.png" alt="miss" width="100" height="50" /></p><video controls width="640" height="360"><source src  =  "/vid-missing.mp4" type="video/mp4"></video>',
+      assetIds: ['asset-ok', 'asset-miss', 'asset-vid-miss'],
+      sources: [],
+    },
+  };
+  const testRepo = createMockRepository({
+    ...defaultContentData,
+    posts: [testPost],
+    assets: [
+      { id: 'asset-ok', src: '/img-present.png', alt: 'ok', kind: 'image', status: 'local', sources: [] },
+      { id: 'asset-miss', src: '/img-missing.png', alt: 'miss', kind: 'image', status: 'missing', sources: [] },
+      { id: 'asset-vid-miss', src: '/vid-missing.mp4', alt: 'vid', kind: 'video', status: 'missing', sources: [] },
+    ],
+  });
+  const detail = await getPostDetail(testPost.slug, testRepo);
+  expect(detail).not.toBeNull();
+  const html = detail!.post.body.html;
+  // Local asset kept intact
+  expect(html).toContain('src="/img-present.png"');
+  // Missing assets stripped of src and marked data-media-status="missing" even with spaces around =
+  expect(html).not.toContain('/img-missing.png');
+  expect(html).not.toContain('/vid-missing.mp4');
+  expect(html).toContain('<img alt="miss" width="100" height="50" data-media-status="missing" />');
+  expect(html).toContain('<source type="video/mp4" data-media-status="missing">');
+  // Video with every source missing is marked too
+  expect(html).toContain('<video controls width="640" height="360" data-media-status="missing">');
+  expect(html).not.toContain('<video controls width="640" height="360">');
 });
 
 test('getBlogListingPage returns page 1 with thumbnails and total pages', async () => {
@@ -299,3 +381,59 @@ test('draft fixture post is excluded from getPost, listPosts, getRelatedPosts, g
   expect(search.total).toBe(0);
   expect(search.items).toEqual([]);
 });
+
+test('getBlogSearchPage: pagination 6/page, null past end, empty result shape, draft excluded', async () => {
+  // Blank query matches all 27 published posts -> 6/page, totalPages = 5
+  const page1 = await getBlogSearchPage({ query: '' }, repository);
+  expect(page1).not.toBeNull();
+  expect(page1!.posts).toHaveLength(6);
+  expect(page1!.total).toBe(27);
+  expect(page1!.totalPages).toBe(5);
+  expect(page1!.page).toBe(1);
+  expect(page1!.basePath).toBe('/');
+  expect(page1!.searchQuery).toBe('');
+  expect(page1!.settings).toBeNull();
+  expect(page1!.categories).toHaveLength(6);
+  expect(page1!.thumbnailAssets.length).toBeGreaterThan(0);
+
+  // Page 5 has 3 posts
+  const page5 = await getBlogSearchPage({ query: '', page: 5 }, repository);
+  expect(page5).not.toBeNull();
+  expect(page5!.posts).toHaveLength(3);
+  expect(page5!.page).toBe(5);
+
+  // Page past end returns null
+  const pastEnd = await getBlogSearchPage({ query: '', page: 6 }, repository);
+  expect(pastEnd).toBeNull();
+
+  // Empty result shape when query does not match
+  const noMatch = await getBlogSearchPage({ query: 'nonexistentterm123' }, repository);
+  expect(noMatch).not.toBeNull();
+  expect(noMatch!.posts).toEqual([]);
+  expect(noMatch!.total).toBe(0);
+  expect(noMatch!.totalPages).toBe(0);
+  expect(noMatch!.page).toBe(1);
+  expect(noMatch!.thumbnailAssets).toEqual([]);
+
+  // Draft post excluded
+  const draftPost: (typeof posts)[0] = {
+    ...posts[0],
+    id: 'post-draft-search-test',
+    slug: 'post-draft-search-test',
+    title: 'SecretDraftPostKeyword Title',
+    editorial: {
+      status: 'draft',
+      updatedAt: '2026-10-08',
+      revision: 1,
+    },
+  };
+  const repoWithDraft = createMockRepository({
+    ...defaultContentData,
+    posts: [...defaultContentData.posts, draftPost],
+  });
+  const draftSearch = await getBlogSearchPage({ query: 'SecretDraftPostKeyword' }, repoWithDraft);
+  expect(draftSearch).not.toBeNull();
+  expect(draftSearch!.posts).toEqual([]);
+  expect(draftSearch!.total).toBe(0);
+});
+
