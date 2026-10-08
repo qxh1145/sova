@@ -63,6 +63,8 @@ test.describe('Blog listing and post detail', () => {
     const dots = pagination.locator('.page-numbers.dots');
     await expect(dots).toHaveCount(1);
 
+    await expect(page.locator('h2.category-title')).toHaveCount(0);
+
     await expectNoDuplicateIds(page);
 
     // Click first card -> post with .blog-single body visible
@@ -116,6 +118,7 @@ test.describe('Blog listing and post detail', () => {
 
       const actualIds = await articles.evaluateAll((els) => els.map((el) => el.id));
       expect(actualIds).toEqual(snapshot.orderedIds);
+      await expect(page.locator('h2.category-title')).toHaveCount(0);
 
       // Pagination checks
       const pagination = page.locator('.pagination');
@@ -145,12 +148,12 @@ test.describe('Blog listing and post detail', () => {
     page,
   }) => {
     const categorySlugs = [
-      { slug: 'creative-branding', title: 'Creative Branding', count: 1 },
-      { slug: 'goc-nhin-website', title: 'Góc nhìn website', count: 6 },
-      { slug: 'social-marketing', title: 'Social Marketing', count: 6 },
-      { slug: 'thu-thuat', title: 'Thủ thuật', count: 6 },
-      { slug: 'tin-tuc', title: 'Tin tức', count: 3 },
-      { slug: 'ux-ui', title: 'UX/UI', count: 2 },
+      { slug: 'creative-branding', title: 'Creative Branding', page1Count: 1 },
+      { slug: 'goc-nhin-website', title: 'Góc nhìn website', page1Count: 6 },
+      { slug: 'social-marketing', title: 'Social Marketing', page1Count: 6 },
+      { slug: 'thu-thuat', title: 'Thủ thuật', page1Count: 6 },
+      { slug: 'tin-tuc', title: 'Tin tức', page1Count: 3 },
+      { slug: 'ux-ui', title: 'UX/UI', page1Count: 2 },
     ];
 
     for (const cat of categorySlugs) {
@@ -163,18 +166,35 @@ test.describe('Blog listing and post detail', () => {
       await expect(h2).toHaveText(cat.title);
 
       // Snapshot cards
-      const snapshot = listingSnapshots.find((s) => s.routeId === `route-${cat.slug}` && s.page === 1)!;
+      const snapshot = listingSnapshots.find(
+        (s) => s.routeId === `route-${cat.slug}` && s.page === 1,
+      )!;
       const articles = page.locator('#post-list article');
-      await expect(articles).toHaveCount(cat.count);
+      await expect(articles).toHaveCount(cat.page1Count);
       const actualIds = await articles.evaluateAll((els) => els.map((el) => el.id));
       expect(actualIds).toEqual(snapshot.orderedIds);
+
+      // Pagination: only categories with a sourced page 2
+      const pagination = page.locator('.pagination');
+      if (cat.slug === 'social-marketing' || cat.slug === 'thu-thuat') {
+        await expect(pagination.locator('.page-numbers.current')).toHaveText('1');
+        await expect(pagination.locator('.prev.page-numbers')).toHaveCount(0);
+        await expect(pagination.locator('.next.page-numbers')).toHaveAttribute(
+          'href',
+          `/${cat.slug}/page/2/`,
+        );
+      } else {
+        await expect(pagination).toHaveCount(0);
+      }
 
       // Sidebar exists
       await expect(page.locator('#secondary.widget-area')).toBeVisible();
     }
   });
 
-  test('Sourced category page 2s render cards matching snapshot and pagination', async ({ page }) => {
+  test('Sourced category page 2s render cards matching snapshot and pagination', async ({
+    page,
+  }) => {
     // /thu-thuat/page/2/
     await page.goto('/thu-thuat/page/2/');
     const ttSnapshot = listingSnapshots.find(
@@ -182,8 +202,16 @@ test.describe('Blog listing and post detail', () => {
     )!;
     const ttArticles = page.locator('#post-list article');
     await expect(ttArticles).toHaveCount(6);
-    expect(await ttArticles.evaluateAll((els) => els.map((el) => el.id))).toEqual(ttSnapshot.orderedIds);
+    expect(await ttArticles.evaluateAll((els) => els.map((el) => el.id))).toEqual(
+      ttSnapshot.orderedIds,
+    );
     await expect(page.locator('h2.category-title')).toHaveText('Thủ thuật');
+    await expect(page.locator('.pagination .page-numbers.current')).toHaveText('2');
+    await expect(page.locator('.pagination .prev.page-numbers')).toHaveAttribute(
+      'href',
+      '/thu-thuat/',
+    );
+    await expect(page.locator('.pagination .next.page-numbers')).toHaveCount(0);
 
     // /social-marketing/page/2/
     await page.goto('/social-marketing/page/2/');
@@ -192,8 +220,16 @@ test.describe('Blog listing and post detail', () => {
     )!;
     const smArticles = page.locator('#post-list article');
     await expect(smArticles).toHaveCount(1);
-    expect(await smArticles.evaluateAll((els) => els.map((el) => el.id))).toEqual(smSnapshot.orderedIds);
+    expect(await smArticles.evaluateAll((els) => els.map((el) => el.id))).toEqual(
+      smSnapshot.orderedIds,
+    );
     await expect(page.locator('h2.category-title')).toHaveText('Social Marketing');
+    await expect(page.locator('.pagination .page-numbers.current')).toHaveText('2');
+    await expect(page.locator('.pagination .prev.page-numbers')).toHaveAttribute(
+      'href',
+      '/social-marketing/',
+    );
+    await expect(page.locator('.pagination .next.page-numbers')).toHaveCount(0);
   });
 
   test('Unsourced pages and invalid category/page routes return 404', async ({ page }) => {
@@ -202,6 +238,11 @@ test.describe('Blog listing and post detail', () => {
       '/goc-nhin/page/1/',
       '/goc-nhin/page/6/',
       '/gioi-thieu/page/2/',
+      '/thu-thuat/page/1/',
+      '/thu-thuat/page/3/',
+      '/thu-thuat/page/abc/',
+      '/thu-thuat/page/02/',
+      '/goc-nhin/page/03/',
     ];
     for (const url of notFoundUrls) {
       const res = await page.goto(url);
@@ -209,7 +250,9 @@ test.describe('Blog listing and post detail', () => {
     }
   });
 
-  test('Sidebar renders search form and categories with exact counts and links', async ({ page }) => {
+  test('Sidebar renders search form and categories with exact counts and links', async ({
+    page,
+  }) => {
     await page.goto('/goc-nhin/');
     const sidebar = page.locator('#secondary');
     await expect(sidebar).toBeVisible();
@@ -257,6 +300,7 @@ test.describe('Blog listing and post detail', () => {
 
     const articles = page.locator('#post-list article');
     await expect(articles).toHaveCount(0);
+    await expect(page.locator('h2.category-title')).toHaveCount(0);
 
     const secondary = page.locator('#secondary');
     await expect(secondary).toBeAttached();
@@ -276,4 +320,3 @@ test.describe('Blog listing and post detail', () => {
     expect(res?.status()).toBe(200);
   });
 });
-

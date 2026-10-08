@@ -78,25 +78,14 @@ export interface BlogListingPageData {
 }
 
 export async function getBlogListingPage(
-  input: number | BlogListingPageInput = 1,
-  legacyPageSize = 6,
+  input: BlogListingPageInput = {},
   repository: ContentRepository = getRepository(),
 ): Promise<BlogListingPageData | null> {
-  const options: BlogListingPageInput =
-    typeof input === 'number'
-      ? { page: input, pageSize: legacyPageSize, locale: 'vi' }
-      : { page: 1, pageSize: 6, locale: 'vi', ...input };
-
-  const {
-    page = 1,
-    pageSize = 6,
-    locale = 'vi',
-    category,
-  } = options;
+  const { page = 1, pageSize = 6, locale = 'vi', category } = input;
 
   const routes = await repository.listRoutes();
 
-  let routeId = options.routeId;
+  let routeId = input.routeId;
   let targetRoute: (typeof routes)[0] | undefined;
 
   if (routeId) {

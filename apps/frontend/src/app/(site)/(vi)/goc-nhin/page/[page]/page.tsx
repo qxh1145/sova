@@ -21,7 +21,7 @@ interface GocNhinPagedProps {
 
 export default async function ViGocNhinPagedPage({ params }: GocNhinPagedProps) {
   const { page: pageStr } = await params;
-  if (!/^\d+$/.test(pageStr)) {
+  if (!/^[1-9]\d*$/.test(pageStr)) {
     notFound();
   }
   const pageNum = parseInt(pageStr, 10);

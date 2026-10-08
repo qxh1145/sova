@@ -8,7 +8,7 @@ export interface BlogSidebarProps {
 }
 
 export function BlogSidebar({ categories, copy }: BlogSidebarProps) {
-  // Source: empty (no asides) when no categories/copy (e.g. EN)
+  // Source: empty #secondary (no asides) when the locale has no categories (EN)
   if (categories.length === 0) {
     return (
       <div id="secondary" className="widget-area " role="complementary" />

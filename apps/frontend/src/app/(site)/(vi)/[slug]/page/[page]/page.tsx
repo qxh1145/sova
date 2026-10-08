@@ -30,7 +30,7 @@ interface ViCategoryPagedPageProps {
 
 export default async function ViCategoryPagedPage({ params }: ViCategoryPagedPageProps) {
   const { slug, page: pageStr } = await params;
-  if (!/^\d+$/.test(pageStr)) {
+  if (!/^[1-9]\d*$/.test(pageStr)) {
     notFound();
   }
   const pageNum = parseInt(pageStr, 10);
