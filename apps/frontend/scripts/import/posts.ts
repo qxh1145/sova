@@ -243,6 +243,9 @@ export function importPosts(erasDir: string, registry: AssetRegistry, stats: Sta
     const publishedAt = metaContent('meta[property="article:published_time"]');
     const modifiedAt = metaContent('meta[property="article:modified_time"]');
     const postPath = `/${card.slug}/` as PublicPath;
+    const updatedAt = modifiedAt ?? publishedAt;
+    if (!updatedAt)
+      throw new Error(`Source drift: ${file}: post has no published or modified time`);
 
     const post: Post = {
       id: card.postId,
@@ -268,7 +271,7 @@ export function importPosts(erasDir: string, registry: AssetRegistry, stats: Sta
         .map((slug) => [...cards.values()].find((c) => c.slug === slug)!.postId),
       editorial: {
         status: 'published',
-        updatedAt: modifiedAt ?? publishedAt ?? '2023-10-01T00:00:00+07:00',
+        updatedAt,
         revision: 1,
         publishedAt: publishedAt ?? undefined,
       },

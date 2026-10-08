@@ -105,6 +105,7 @@ function normalizeSearchText(text: string): string {
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[đĐ]/g, (m) => (m === 'đ' ? 'd' : 'D'))
+    .replace(/\s+/g, ' ')
     .toLowerCase();
 }
 
@@ -173,7 +174,7 @@ function createRawRepository(data: ContentData): ContentRepository {
     },
     async getRelatedPosts(id) {
       const post = data.posts.find((p) => p.id === id);
-      if (!post) return [];
+      if (!post || !isPublished(post)) return [];
       return byIds(data.posts, post.relatedPostIds, (p) => isPublished(p));
     },
     async getRelatedProjects(id) {
