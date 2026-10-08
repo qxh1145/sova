@@ -249,6 +249,29 @@ export const blogDetailCopy = {
   breadcrumbCurrent: 'Chi tiết',
   headingBackgroundImage: '/wp-content/uploads/2024/03/ec9c55cfcb4d0c64ecafd52d957c13e9.png',
 };
+
+export const projectListingCopy = {
+  vi: {
+    filterAll: 'Tất cả',
+    emptyMessage: 'Không có dự án nào.',
+    loadingMessage: 'Đang tải...',
+    pagination: {
+      nav: 'Phân trang dự án',
+      prev: 'Trang trước',
+      next: 'Trang tiếp theo',
+    },
+  },
+  en: {
+    filterAll: 'All',
+    emptyMessage: 'No projects found.',
+    loadingMessage: 'Đang tải...',
+    pagination: {
+      nav: 'Project pagination',
+      prev: 'Previous page',
+      next: 'Next page',
+    },
+  },
+};
 `,
   );
   await writeTs(

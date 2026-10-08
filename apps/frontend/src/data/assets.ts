@@ -6508,4 +6508,30 @@ export const assets: AssetRef[] = [
     width: 2000,
     height: 1498,
   },
+  {
+    id: 'asset-40c494b5f4',
+    src: '/wp-content/uploads/2024/02/de729be13c98f6a585c5656f0ce73db4-1.webp',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'du-an/index.html', line: 631 },
+      { file: 'en/our-project/index.html', line: 630 },
+    ],
+    width: 2000,
+    height: 1333,
+  },
+  {
+    id: 'asset-f85d3636d6',
+    src: '/wp-content/uploads/2024/02/43e3185f955f1d3fca7ffa93786c89a0.png',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'du-an/index.html', line: 768 },
+      { file: 'en/our-project/index.html', line: 773 },
+    ],
+    width: 652,
+    height: 517,
+  },
 ];

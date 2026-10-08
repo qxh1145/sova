@@ -159,7 +159,8 @@ test('src/dev is imported only by lib/repositories/index.ts', () => {
         /\.tsx?$/.test(file) &&
         !file.startsWith('dev/') &&
         file !== 'app/(fixtures)/dev-fixtures/shell/[variant]/page.tsx' &&
-        file !== 'app/(fixtures)/dev-fixtures/home/[variant]/page.tsx',
+        file !== 'app/(fixtures)/dev-fixtures/home/[variant]/page.tsx' &&
+        file !== 'app/(fixtures)/dev-fixtures/projects/[variant]/page.tsx',
     )
     .filter((file) => /['"](@\/dev|(\.\.?\/)+dev)\//.test(readFileSync(join(src, file), 'utf8')));
   expect(importers).toEqual(['lib/repositories/index.ts']);
