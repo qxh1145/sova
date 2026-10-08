@@ -101,9 +101,11 @@ export type ServiceSection =
 export interface OfferingPanel {
   id: EntityId;
   title: string;
+  slideTitle?: string;
   content: RichContent;
   items?: string[];
   mediaId?: EntityId;
+  cta?: { label: string; routeId: EntityId };
 }
 
 export interface WebsiteContent {
