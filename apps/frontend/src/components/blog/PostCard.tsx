@@ -5,7 +5,8 @@ import type { AssetRef, Post } from '@/types/content';
 export interface PostCardProps {
   post: Post;
   thumbnailAsset?: AssetRef | null;
-  variant?: 'home' | 'list';
+  variant?: 'home' | 'list' | 'grid';
+  itemIndex?: number;
   readMoreLabel?: string;
 }
 
@@ -13,6 +14,7 @@ export function PostCard({
   post,
   thumbnailAsset,
   variant = 'home',
+  itemIndex = 1,
   readMoreLabel,
 }: PostCardProps) {
   const hasValidMedia = Boolean(
@@ -56,6 +58,32 @@ export function PostCard({
           </div>
         </div>
       </article>
+    );
+  }
+
+  if (variant === 'grid') {
+    return (
+      <div className={`col related-post-item item-${itemIndex}`}>
+        <div className="col-inner">
+          <Link href={post.path} title={post.title}>
+            <div className="box-image">
+              <div className="image-cover image-zoom" style={{ paddingTop: '58%' }}>
+                {hasValidMedia && thumbnailAsset && (
+                  <img
+                    alt=""
+                    decoding="async"
+                    loading="lazy"
+                    src={thumbnailAsset.src}
+                    width={thumbnailAsset.width}
+                    height={thumbnailAsset.height}
+                  />
+                )}
+              </div>
+            </div>
+            <h5>{post.title}</h5>
+          </Link>
+        </div>
+      </div>
     );
   }
 

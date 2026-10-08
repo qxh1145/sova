@@ -9,6 +9,12 @@ const rich: RichContent = {
   assetIds: [],
   sources,
 };
+const richPost: RichContent = {
+  format: 'sanitized-html',
+  html: '<p><img src="/fixture.png" alt="" width="600" height="400" /></p><video controls width="1020" height="728"><source src="/fixture-video.mp4" type="video/mp4"></video><p>Fixture body</p>',
+  assetIds: ['asset-1', 'asset-video'],
+  sources,
+};
 const seo = (path: `/${string}`): SEO => ({ title: 'Fixture', canonicalPath: path });
 const hero = { headingLines: ['Fixture'] };
 const page = (id: string, path: `/${string}`) => ({
@@ -214,10 +220,22 @@ export const fixtures: ContentData = {
       categoryIds: ['post-category-1'],
       thumbnailId: 'asset-1',
       excerpt: 'Fixture',
+      body: richPost,
+      author: { id: 'author-1', name: 'Fixture' },
+      relatedPostIds: ['post-2'],
+      editorial: { status: 'published', updatedAt: '2023-10-01', revision: 1 },
+    },
+    {
+      ...page('post-2', '/fixture-post-2'),
+      slug: 'fixture-post-2',
+      title: 'Fixture 2',
+      categoryIds: [],
+      thumbnailId: 'asset-1',
+      excerpt: 'Fixture 2',
       body: rich,
       author: { id: 'author-1', name: 'Fixture' },
       relatedPostIds: [],
-      editorial: { status: 'published', updatedAt: '2023-10-01', revision: 1 },
+      editorial: { status: 'published', updatedAt: '2023-10-02', revision: 1 },
     },
   ],
   postCategories: [
@@ -264,6 +282,14 @@ export const fixtures: ContentData = {
       src: '/fixture.png',
       alt: 'Fixture',
       kind: 'image',
+      status: 'local',
+      sources,
+    },
+    {
+      id: 'asset-video',
+      src: '/fixture-video.mp4',
+      alt: 'Fixture Video',
+      kind: 'video',
       status: 'local',
       sources,
     },

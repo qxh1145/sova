@@ -1,13 +1,14 @@
 import '@/styles/legacy/sections/route-goc-nhin.css';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { categorySlugs } from '@/lib/routes';
 import { listRoutes } from '@/lib/queries/site';
 import { getBlogListingPage, getPostDetail } from '@/lib/queries/posts';
 import { BlogListView } from '@/components/blog/BlogListView';
+import Link from 'next/link';
 import { ArticleHeroImage } from './_components/ArticleHeroImage';
 import { PostMeta } from './_components/PostMeta';
 import { ArticleBody } from './_components/ArticleBody';
+import { RelatedPosts } from './_components/RelatedPosts';
 
 export async function generateStaticParams() {
   const routes = await listRoutes();
@@ -44,7 +45,7 @@ export default async function ViPostDetailPage({ params }: PostDetailPageProps) 
       notFound();
     }
 
-    const { post, featuredAsset, copy } = detail;
+    const { post, featuredAsset, related, copy } = detail;
 
     return (
       <main id="main">
@@ -83,6 +84,7 @@ export default async function ViPostDetailPage({ params }: PostDetailPageProps) 
               <ArticleHeroImage image={featuredAsset} />
               <PostMeta author={post.author?.name} date={post.displayDate} />
               <ArticleBody body={post.body} />
+              <RelatedPosts related={related} title={copy.relatedTitle} />
             </div>
           </div>
         </div>
