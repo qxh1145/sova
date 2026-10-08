@@ -15,8 +15,6 @@ import {
   getProfile,
   getUtilityContent,
 } from '@/lib/queries/pages';
-import { getPost, listPosts } from '@/lib/queries/posts';
-import { getProject, listProjects } from '@/lib/queries/projects';
 import { getNavigation, getShellContent, getSiteSettings, listRoutes } from '@/lib/queries/site';
 import { getPricing, getService } from '@/lib/queries/services';
 import { getPartners, getStats, getTestimonials } from '@/lib/queries/social-proof';
@@ -39,19 +37,19 @@ const queries: [
   ['listRoutes', 'list', ['route-1', 'route-en-1', 'route-no-counterpart'], () => listRoutes()],
   ['getService', 'single', 'service-1', () => getService('website', 'vi')],
   ['getPricing', 'single', 'pricing-1', () => getPricing('pricing-1', 'vi')],
-  ['getProject', 'single', 'project-1', () => getProject('fixture-project')],
+  ['getProject', 'single', 'project-1', () => getRepository().getProject('fixture-project')],
   [
     'listProjects',
     'page',
     ['project-1'],
-    () => listProjects({ category: 'website', page: 1, pageSize: 10 }),
+    () => getRepository().listProjects({ category: 'website', page: 1, pageSize: 10 }),
   ],
-  ['getPost', 'single', 'post-1', () => getPost('fixture-post')],
+  ['getPost', 'single', 'post-1', () => getRepository().getPost('fixture-post')],
   [
     'listPosts',
     'page',
     ['post-1'],
-    () => listPosts({ locale: 'vi', category: 'fixture-category', page: 1, pageSize: 10 }),
+    () => getRepository().listPosts({ locale: 'vi', category: 'fixture-category', page: 1, pageSize: 10 }),
   ],
   ['getFAQs', 'list', ['faq-1'], () => getFAQs(['faq-1'], 'vi')],
   ['getFAQTopics', 'list', ['faq-topic-1'], () => getFAQTopics('vi')],
@@ -132,7 +130,7 @@ test('invalid page/pageSize returns no items', async () => {
     [1, 0],
     [1, 2.5],
   ]) {
-    const result = await listProjects({ page, pageSize });
+    const result = await getRepository().listProjects({ page, pageSize });
     expect(result.items).toEqual([]);
     expect(result.total).toBe(1);
   }
