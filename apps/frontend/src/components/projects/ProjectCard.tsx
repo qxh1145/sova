@@ -7,24 +7,42 @@ export type ProjectCardData = Pick<
   'id' | 'path' | 'title' | 'thumbnailId' | 'categoryIds'
 >;
 
+export function toCardData(
+  project: Pick<Project, 'id' | 'path' | 'title' | 'thumbnailId' | 'categoryIds'>,
+): ProjectCardData {
+  return {
+    id: project.id,
+    path: project.path,
+    title: project.title,
+    thumbnailId: project.thumbnailId,
+    categoryIds: project.categoryIds,
+  };
+}
+
+export function categoryLabel(
+  categoryIds: string[],
+  categoryMap: Map<string, string>,
+): string {
+  return categoryIds
+    .map((id) => categoryMap.get(id))
+    .filter(Boolean)
+    .join(', ');
+}
+
 export interface ProjectCardProps {
   project: ProjectCardData;
   thumbnailAsset?: AssetRef | null;
   categoryLabel?: string;
-  dataTerms?: string;
   imageClassName?: string;
 }
 
 export function ProjectCard({
   project,
   thumbnailAsset,
-  categoryLabel,
-  dataTerms,
+  categoryLabel: label = '',
   imageClassName = 'attachment-original size-original',
 }: ProjectCardProps) {
-  const label = categoryLabel || '';
-  const termsAttr =
-    dataTerms !== undefined ? dataTerms : label ? JSON.stringify([label]) : undefined;
+  const termsAttr = label ? JSON.stringify([label]) : undefined;
 
   return (
     <div className="col" data-terms={termsAttr}>

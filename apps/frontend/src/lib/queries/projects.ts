@@ -6,35 +6,15 @@ import type {
   EntityId,
   ListingSettings,
   Locale,
-  PageResult,
   Project,
   ProjectCategory,
   UtilityContent,
 } from '@/types/content';
 
-export function getProject(slug: string): Promise<Project | null> {
-  return getRepository().getProject(slug);
-}
-
-export function listProjects(input: {
-  category?: string;
-  page: number;
-  pageSize: number;
-}): Promise<PageResult<Project>> {
-  return getRepository().listProjects(input);
-}
-
 export function getProjectCategories(
   repository: ContentRepository = getRepository(),
 ): Promise<ProjectCategory[]> {
   return repository.getProjectCategories();
-}
-
-export function getRelatedProjects(
-  id: string,
-  repository: ContentRepository = getRepository(),
-): Promise<Project[]> {
-  return repository.getRelatedProjects(id);
 }
 
 export interface ProjectListingPageData {

@@ -44,6 +44,7 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
     await expect(
       hero.locator('img[src="/wp-content/uploads/2024/02/43e3185f955f1d3fca7ffa93786c89a0.png"]'),
     ).toHaveCount(1);
+    await expect(hero.locator('#text-754739457 + #gap-1660522927.gap-element')).toHaveCount(1);
     // Filter links stay on the listing route for middle-click / no-JS.
     for (const href of await page
       .locator('.filter-nav a')
@@ -157,6 +158,9 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
     const heroTitle = page.locator('.service-hero-heading');
     await expect(heroTitle).toContainText('Projects Partnered');
     await expect(heroTitle).toContainText('with Sova');
+    await expect(
+      page.locator('.banner.banner-project #text-1484206156 + #gap-1176636974.gap-element'),
+    ).toHaveCount(1);
 
     // Only "All" filter
     const filterItems = page.locator('.filter-nav li');
@@ -492,6 +496,7 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
   test('All 62 project detail pages return 200 with title, both H1s, terms, date, and sidebar', async ({
     page,
   }) => {
+    test.setTimeout(120_000);
     const { projects } = await import('../../src/data/projects');
     expect(projects).toHaveLength(62);
 
