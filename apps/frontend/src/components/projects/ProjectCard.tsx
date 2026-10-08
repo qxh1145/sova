@@ -9,6 +9,7 @@ export interface ProjectCardProps {
   thumbnailAsset?: AssetRef | null;
   categoryLabel?: string;
   dataTerms?: string;
+  imageClassName?: string;
 }
 
 export function ProjectCard({
@@ -16,6 +17,7 @@ export function ProjectCard({
   thumbnailAsset,
   categoryLabel,
   dataTerms,
+  imageClassName = 'attachment-original size-original',
 }: ProjectCardProps) {
   const label = categoryLabel || '';
   const termsAttr = dataTerms !== undefined ? dataTerms : label ? JSON.stringify([label]) : undefined;
@@ -32,7 +34,7 @@ export function ProjectCard({
                     width={thumbnailAsset.width ?? 2000}
                     height={thumbnailAsset.height ?? 2000}
                     src={thumbnailAsset.src}
-                    className="attachment-original size-original"
+                    className={imageClassName}
                     alt={thumbnailAsset.alt ?? ''}
                     decoding="async"
                     loading="lazy"

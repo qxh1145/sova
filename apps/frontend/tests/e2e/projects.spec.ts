@@ -470,3 +470,170 @@ test.describe('/featured_item/ archive and /featured_item_category/* archives', 
     });
   }
 });
+
+test.describe('/featured_item/<slug>/ project detail pages', () => {
+  test('All 62 project detail pages return 200 with title, both H1s, terms, date, and sidebar', async ({
+    page,
+  }) => {
+    const { projects } = await import('../../src/data/projects');
+    expect(projects).toHaveLength(62);
+
+    for (const project of projects) {
+      const res = await page.goto(project.path);
+      expect(res?.status(), `status for ${project.path}`).toBe(200);
+
+      // <title> = seo.title
+      const title = await page.title();
+      expect(title).toBe(project.seo.title);
+
+      // Both H1s match project title
+      const h1Current = page.locator('h1.current-post-title');
+      const h1Entry = page.locator('h1.entry-title');
+      await expect(h1Current).toHaveText(project.title);
+      await expect(h1Entry).toHaveText(project.title);
+
+      // Terms block present
+      const terms = page.locator('.qodef-portfolio-content');
+      await expect(terms).toBeVisible();
+
+      // Date present
+      const dateEl = page.locator('.qodef-info--date');
+      await expect(dateEl).toBeVisible();
+      if (project.displayDate) {
+        await expect(dateEl).toContainText(project.displayDate);
+      }
+
+      // Sidebar with excerpt present
+      const sidebar = page.locator('.col.large-3.small-12 .col-inner');
+      await expect(sidebar).toBeVisible();
+      await expect(sidebar.locator('h3')).toHaveText('Thông tin dự án');
+      if (project.summary) {
+        await expect(sidebar).toContainText(project.summary);
+      }
+    }
+  });
+
+  test('Matrix rows: THP, no gallery (centro), 1 image (bossman), free-text date (huynh-thuc-khang), 58 related (evc-athena), unknown slug', async ({
+    page,
+  }) => {
+    // 1. THP
+    await page.goto('/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/');
+    const thpDate = page.locator('.qodef-info--date h3.qodef-e-title');
+    await expect(thpDate).toHaveText('DATE: 24 Tháng Bảy, 2022');
+    const thpRelated = page.locator('.portfolio-bottom .portfolio-related .col');
+    await expect(thpRelated).toHaveCount(1);
+    await expect(thpRelated.locator('.portfolio-box-title')).toContainText('STORMICK');
+    await expect(thpRelated.locator('.portfolio-box-category')).toContainText('Branding');
+    await expect(page.locator('.qodef-portfolio-content h2')).toHaveCount(4);
+
+    // 2. Centro (no gallery)
+    await page.goto('/featured_item/centro-noi-that-cao-cap-centro-chau-au/');
+    const centroSlider = page.locator('#slider-duan .slider');
+    await expect(centroSlider).toBeAttached();
+    await expect(centroSlider.locator('img, .img')).toHaveCount(0);
+    const centroDate = page.locator('.qodef-info--date .entry-date');
+    await expect(centroDate).toHaveText('24 Tháng Bảy, 2022');
+
+    // 3. Bossman (1 gallery image)
+    await page.goto('/featured_item/bossman-cong-ty-co-phan-bossman-viet-nam/');
+    const bossmanImg = page.locator('#slider-duan .row .col.large-12 .img-inner img');
+    await expect(bossmanImg).toBeVisible();
+    await expect(bossmanImg).toHaveCSS('border-radius', '12px');
+
+    // 4. Free-text date (huynh-thuc-khang)
+    await page.goto('/featured_item/truong-trung-hoc-pho-thong-huynh-thuc-khang/');
+    const htkDate = page.locator('.qodef-info--date');
+    await expect(htkDate).toContainText('Ngày 22 tháng 4 năm 2023');
+
+    // 5. Many related (evc-athena has 39 related ids, capped at first 4)
+    await page.goto('/featured_item/evc-athena-cong-ty-tnhh-evc-athena/');
+    const athenaRelated = page.locator('.portfolio-bottom .portfolio-related .col');
+    await expect(athenaRelated).toHaveCount(4);
+
+    // 6. Unknown slug -> 404
+    const unknownRes = await page.goto('/featured_item/khong-ton-tai/');
+    expect(unknownRes?.status()).toBe(404);
+  });
+
+  test('No duplicate ids and no console errors on THP and centro detail pages', async ({
+    page,
+  }) => {
+    for (const url of [
+      '/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/',
+      '/featured_item/centro-noi-that-cao-cap-centro-chau-au/',
+    ]) {
+      const consoleErrors: string[] = [];
+      page.on('console', (msg) => {
+        if (msg.type() === 'error' && !msg.text().startsWith('Failed to load resource')) {
+          consoleErrors.push(msg.text());
+        }
+      });
+      page.on('pageerror', (err) => consoleErrors.push(err.message));
+
+      await page.goto(url);
+      const dupes = await page.evaluate(() => {
+        const seen = new Set<string>();
+        return Array.from(document.querySelectorAll('[id]'))
+          .map((el) => el.id)
+          .filter((id) => (seen.has(id) ? true : (seen.add(id), false)));
+      });
+      expect(dupes, url).toEqual([]);
+      expect(consoleErrors).toEqual([]);
+    }
+  });
+
+  const detailSignature = () => {
+    const sig = (el: Element | null | undefined) =>
+      el ? `${el.tagName.toLowerCase()}.${[...el.classList].join('.')}` : null;
+    const getTree = (rootEl: Element | null | undefined) =>
+      rootEl ? [rootEl, ...rootEl.querySelectorAll('*')].map(sig) : null;
+
+    const wrapper = document.querySelector('.portfolio-page-wrapper.portfolio-single-page');
+    const hero = wrapper?.querySelector('section.section');
+    const bodyRows = wrapper?.querySelectorAll('.row.row-portcus');
+    const bodyRow = bodyRows && bodyRows.length > 1 ? bodyRows[1] : null;
+    const sidebar = bodyRow?.querySelector('.col.large-3.small-12');
+    const relatedWrapper = wrapper?.querySelector('.portfolio-bottom');
+    const relatedCard = relatedWrapper?.querySelector('.portfolio-related .col');
+
+    return {
+      wrapper: sig(wrapper),
+      hero: sig(hero),
+      bodyRow: sig(bodyRow),
+      sidebar: sig(sidebar),
+      sidebarTree: getTree(sidebar),
+      relatedWrapper: sig(relatedWrapper),
+      relatedCard: sig(relatedCard),
+      relatedCardTree: getTree(relatedCard),
+    };
+  };
+
+  for (const row of [
+    {
+      url: '/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/',
+      file: 'featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/index.html',
+    },
+    {
+      url: '/featured_item/centro-noi-that-cao-cap-centro-chau-au/',
+      file: 'featured_item/centro-noi-that-cao-cap-centro-chau-au/index.html',
+    },
+  ]) {
+    test(`${row.url} detail signature matches eras-clone source`, async ({ page }) => {
+      test.skip(!hasSource, missingSourceMessage);
+      await openSource(page, {
+        key: `detail-${row.url}`,
+        url: row.url,
+        file: row.file,
+        family: 'project-detail',
+        locale: 'vi',
+        reason: 'parity',
+      });
+      const source = await page.evaluate(detailSignature);
+      await page.goto(row.url);
+      const sova = await page.evaluate(detailSignature);
+      expect(source.wrapper).not.toBeNull();
+      expect(sova).toEqual(source);
+    });
+  }
+});
+
