@@ -1,15 +1,24 @@
+import '@/styles/legacy/sections/route-goc-nhin.css';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { categorySlugs } from '@/lib/routes';
 import { listRoutes } from '@/lib/queries/site';
-import { getPostDetail } from '@/lib/queries/posts';
+import { getBlogListingPage, getPostDetail } from '@/lib/queries/posts';
+import { BlogListView } from '@/components/blog/BlogListView';
 import { ArticleHeroImage } from './_components/ArticleHeroImage';
 import { PostMeta } from './_components/PostMeta';
 import { ArticleBody } from './_components/ArticleBody';
 
 export async function generateStaticParams() {
   const routes = await listRoutes();
+  const catSlugs = new Set(categorySlugs(routes));
   return routes
-    .filter((r) => r.locale === 'vi' && r.kind === 'post-detail')
+    .filter(
+      (r) =>
+        r.locale === 'vi' &&
+        (r.kind === 'post-detail' ||
+          (r.kind === 'post-list' && catSlugs.has(r.path.split('/')[1]))),
+    )
     .map((r) => ({
       slug: r.path.replace(/^\/|\/$/g, ''),
     }));
@@ -81,6 +90,19 @@ export default async function ViPostDetailPage({ params }: PostDetailPageProps) 
     );
   }
 
-  // Story 4.4 category branch will be added here
+  const catSlugs = new Set(categorySlugs(routes));
+  if (routeEntry.kind === 'post-list' && catSlugs.has(slug)) {
+    const data = await getBlogListingPage({
+      routeId: routeEntry.id,
+      category: slug,
+      page: 1,
+      locale: 'vi',
+    });
+    if (!data) {
+      notFound();
+    }
+    return <BlogListView {...data} />;
+  }
+
   notFound();
 }
