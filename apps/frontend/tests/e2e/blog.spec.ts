@@ -492,4 +492,119 @@ test.describe('Blog listing and post detail', () => {
     await page.goto('/dev-fixtures/blog/error?locale=en');
     await expect(page.locator('.page-error-main')).toBeVisible();
   });
+
+  test('Search results matrix: title-only, excerpt-only, body-only, pagination, no-results, blank, 404s, sidebar, and form submit', async ({
+    page,
+  }) => {
+    // 1. Title-only word: "cache" -> matches only /huong-dan-xoa-cache-trinh-duyet-va-may-tinh/
+    await page.goto('/?s=cache');
+    await expect(page.locator('#section_1769897078 h1')).toContainText('Kết quả tìm kiếm: cache');
+    const cacheCards = page.locator('#post-list article');
+    await expect(cacheCards).toHaveCount(1);
+    await expect(cacheCards.first().locator('.title-post-archive')).toHaveText(
+      postMap.get('post-2434')!.title,
+    );
+    await expect(page.locator('#secondary input.search-field')).toHaveValue('cache');
+
+    // 2. Excerpt-only word: "copywriter" -> matches in excerpt of post-836 (/huong-dan-viet-bai-chuan-seo-2021/), not in title
+    await page.goto('/?s=copywriter');
+    await expect(page.locator('#section_1769897078 h1')).toContainText('Kết quả tìm kiếm: copywriter');
+    const copywriterCards = page.locator('#post-list article');
+    await expect(copywriterCards).toHaveCount(1);
+    await expect(copywriterCards.first().locator('.title-post-archive')).toHaveText(
+      postMap.get('post-836')!.title,
+    );
+    expect(postMap.get('post-836')!.title.toLowerCase()).not.toContain('copywriter');
+    expect(postMap.get('post-836')!.excerpt.toLowerCase()).toContain('copywriter');
+
+    // 3. Body-only word: "haravan" -> matches only in body of post-853 (/kinh-doanh-nho-le-co-nen-xay-dung-website-ban-hang/), not in title or excerpt
+    await page.goto('/?s=haravan');
+    await expect(page.locator('#section_1769897078 h1')).toContainText('Kết quả tìm kiếm: haravan');
+    const haravanCards = page.locator('#post-list article');
+    await expect(haravanCards).toHaveCount(1);
+    await expect(haravanCards.first().locator('.title-post-archive')).toHaveText(
+      postMap.get('post-853')!.title,
+    );
+    expect(postMap.get('post-853')!.title.toLowerCase()).not.toContain('haravan');
+    expect(postMap.get('post-853')!.excerpt.toLowerCase()).not.toContain('haravan');
+
+    // 4. Many results: "wordpress" -> 7 matches -> 6 cards on page 1, pagination to page 2
+    await page.goto('/?s=wordpress');
+    await expect(page.locator('#post-list article')).toHaveCount(6);
+    const wpPagination = page.locator('.pagination');
+    await expect(wpPagination).toBeVisible();
+    const wpNext = wpPagination.locator('.next.page-numbers');
+    await expect(wpNext).toHaveAttribute('href', '/page/2/?s=wordpress');
+
+    // Go to page 2: /page/2/?s=wordpress
+    await page.goto('/page/2/?s=wordpress');
+    await expect(page.locator('#post-list article')).toHaveCount(1);
+    const wpPrev = page.locator('.pagination .prev.page-numbers');
+    await expect(wpPrev).toHaveAttribute('href', '/?s=wordpress');
+    await expect(page.locator('#secondary input.search-field')).toHaveValue('wordpress');
+
+    // 4b. Multi-word accented query: "tên miền" -> 7 matches; encoding must survive pagination round-trip
+    const accentQ = 'tên miền';
+    const accentEnc = encodeURIComponent(accentQ);
+    await page.goto(`/?s=${accentEnc}`);
+    await expect(page.locator('#section_1769897078 h1')).toContainText(`Kết quả tìm kiếm: ${accentQ}`);
+    await expect(page.locator('#post-list article')).toHaveCount(6);
+    await expect(page.locator('#secondary input.search-field')).toHaveValue(accentQ);
+    const accentNext = page.locator('.pagination .next.page-numbers');
+    await expect(accentNext).toHaveAttribute('href', `/page/2/?s=${accentEnc}`);
+    await accentNext.click();
+    await page.waitForURL(`**/page/2/?s=${accentEnc}`);
+    await expect(page.locator('#section_1769897078 h1')).toContainText(`Kết quả tìm kiếm: ${accentQ}`);
+    await expect(page.locator('#post-list article')).toHaveCount(1);
+    await expect(page.locator('#secondary input.search-field')).toHaveValue(accentQ);
+    await expect(page.locator('.pagination .prev.page-numbers')).toHaveAttribute('href', `/?s=${accentEnc}`);
+
+    // 5. No results: /?s=zzqqxx
+    await page.goto('/?s=zzqqxx');
+    await expect(page.locator('#post-list article')).toHaveCount(0);
+    await expect(page.locator('.pagination')).toHaveCount(0);
+    await expect(page.locator('#post-list')).toContainText('Không tìm thấy bài viết phù hợp.');
+    await expect(page.locator('#secondary input.search-field')).toHaveValue('zzqqxx');
+
+    // 6. Blank query: /?s=
+    await page.goto('/?s=');
+    await expect(page.locator('#section_1769897078 h1')).toContainText('Kết quả tìm kiếm:');
+    await expect(page.locator('#post-list article')).toHaveCount(6);
+    const blankNext = page.locator('.pagination .next.page-numbers');
+    await expect(blankNext).toHaveAttribute('href', '/page/2/?s=');
+
+    // 7. 404 rows: page past end or invalid page
+    const resPastEnd = await page.goto('/page/9/?s=wordpress');
+    expect(resPastEnd?.status()).toBe(404);
+
+    const resPage0 = await page.goto('/page/0/?s=wordpress');
+    expect(resPage0?.status()).toBe(404);
+
+    const resPage02 = await page.goto('/page/02/?s=wordpress');
+    expect(resPage02?.status()).toBe(404);
+
+    // 8. Form submit from /goc-nhin/ lands on results
+    await page.goto('/goc-nhin/');
+    const searchInput = page.locator('#secondary input.search-field');
+    await searchInput.fill('cache');
+    await page.locator('#secondary button.ux-search-submit').click();
+    await page.waitForURL('**/?s=cache');
+    await expect(page.locator('#section_1769897078 h1')).toContainText('Kết quả tìm kiếm: cache');
+  });
+
+  test('Dev-fixture search variant excludes draft post from results', async ({ page }) => {
+    test.skip(STAGING, 'Dev fixtures are not deployed to staging');
+
+    // Searching "Fixture" should match published posts in fixtures, but draft post "Fixture Draft Post Title" must be absent
+    await page.goto('/dev-fixtures/blog/search?s=Fixture');
+    const articles = page.locator('#post-list article');
+    await expect(articles).toHaveCount(2);
+    const titles = await articles.locator('.title-post-archive').allInnerTexts();
+    expect(titles).not.toContain('Fixture Draft Post Title');
+
+    // Searching specifically for draft keyword returns no results
+    await page.goto('/dev-fixtures/blog/search?s=Draft');
+    await expect(page.locator('#post-list article')).toHaveCount(0);
+    await expect(page.locator('#post-list')).toContainText('Không tìm thấy bài viết phù hợp.');
+  });
 });

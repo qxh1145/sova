@@ -12,6 +12,7 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:e2e:extended": "playwright test -c playwright.extended.config.ts",
     "test:e2e:staging": "playwright test acceptance guard smoke",
     "baseline": "playwright test -c playwright.baseline.config.ts capture.spec",
     "baseline:compare": "playwright test -c playwright.baseline.config.ts compare.spec",

@@ -3,6 +3,7 @@ import { createMockRepository, defaultContentData } from '@/lib/repositories/moc
 import { posts } from '@/data/posts';
 import {
   getBlogListingPage,
+  getBlogSearchPage,
   getPostCategories,
   getPostDetail,
   getRelatedPosts,
@@ -380,3 +381,59 @@ test('draft fixture post is excluded from getPost, listPosts, getRelatedPosts, g
   expect(search.total).toBe(0);
   expect(search.items).toEqual([]);
 });
+
+test('getBlogSearchPage: pagination 6/page, null past end, empty result shape, draft excluded', async () => {
+  // Blank query matches all 27 published posts -> 6/page, totalPages = 5
+  const page1 = await getBlogSearchPage({ query: '' }, repository);
+  expect(page1).not.toBeNull();
+  expect(page1!.posts).toHaveLength(6);
+  expect(page1!.total).toBe(27);
+  expect(page1!.totalPages).toBe(5);
+  expect(page1!.page).toBe(1);
+  expect(page1!.basePath).toBe('/');
+  expect(page1!.searchQuery).toBe('');
+  expect(page1!.settings).toBeNull();
+  expect(page1!.categories).toHaveLength(6);
+  expect(page1!.thumbnailAssets.length).toBeGreaterThan(0);
+
+  // Page 5 has 3 posts
+  const page5 = await getBlogSearchPage({ query: '', page: 5 }, repository);
+  expect(page5).not.toBeNull();
+  expect(page5!.posts).toHaveLength(3);
+  expect(page5!.page).toBe(5);
+
+  // Page past end returns null
+  const pastEnd = await getBlogSearchPage({ query: '', page: 6 }, repository);
+  expect(pastEnd).toBeNull();
+
+  // Empty result shape when query does not match
+  const noMatch = await getBlogSearchPage({ query: 'nonexistentterm123' }, repository);
+  expect(noMatch).not.toBeNull();
+  expect(noMatch!.posts).toEqual([]);
+  expect(noMatch!.total).toBe(0);
+  expect(noMatch!.totalPages).toBe(0);
+  expect(noMatch!.page).toBe(1);
+  expect(noMatch!.thumbnailAssets).toEqual([]);
+
+  // Draft post excluded
+  const draftPost: (typeof posts)[0] = {
+    ...posts[0],
+    id: 'post-draft-search-test',
+    slug: 'post-draft-search-test',
+    title: 'SecretDraftPostKeyword Title',
+    editorial: {
+      status: 'draft',
+      updatedAt: '2026-10-08',
+      revision: 1,
+    },
+  };
+  const repoWithDraft = createMockRepository({
+    ...defaultContentData,
+    posts: [...defaultContentData.posts, draftPost],
+  });
+  const draftSearch = await getBlogSearchPage({ query: 'SecretDraftPostKeyword' }, repoWithDraft);
+  expect(draftSearch).not.toBeNull();
+  expect(draftSearch!.posts).toEqual([]);
+  expect(draftSearch!.total).toBe(0);
+});
+
