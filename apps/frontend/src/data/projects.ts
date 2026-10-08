@@ -94,6 +94,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-16d5473331',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-477',
@@ -190,6 +193,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-a8b853c9f2',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-482',
@@ -290,6 +296,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-0003b059bb',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-486',
@@ -379,6 +388,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-a7e02243b0',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-490',
@@ -478,6 +490,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-c7af1bf39f',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-494',
@@ -577,6 +592,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-75dd41901d',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-498',
@@ -676,6 +694,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-9ec64ec23e',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-502',
@@ -772,6 +793,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-374a31241b',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-506',
@@ -865,6 +889,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-a3be7e047a',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-515',
@@ -965,6 +992,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-cb300f7275',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-519',
@@ -1065,6 +1095,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-3297810c7d',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-528',
@@ -1165,6 +1198,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-f186b5f4cb',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-533',
@@ -1264,6 +1300,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-aa1cf68ee2',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-538',
@@ -1353,6 +1392,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-fd32fc651f',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-544',
@@ -1446,6 +1488,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-09e327e9db',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-548',
@@ -1542,6 +1587,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-c10d06625d',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-552',
@@ -1641,6 +1689,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-e532069691',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-558',
@@ -1737,6 +1788,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-842a79d6cd',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-570',
@@ -1836,6 +1890,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-5b1db4cca1',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-575',
@@ -1935,6 +1992,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-960193a139',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-580',
@@ -2034,6 +2094,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-fee54030b9',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-592',
@@ -2134,6 +2197,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-f2f9988f6a',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-597',
@@ -2230,6 +2296,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-7d07270901',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-602',
@@ -2329,6 +2398,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-eb81435eba',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-607',
@@ -2428,6 +2500,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-082bdea432',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-612',
@@ -2517,6 +2592,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-aae4d2dbf8',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-617',
@@ -2606,6 +2684,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-85bce1408a',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-622',
@@ -2705,6 +2786,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-7f747226a1',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-627',
@@ -2798,6 +2882,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-8770261900',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-632',
@@ -2891,6 +2978,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-56adb4352b',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-637',
@@ -2990,6 +3080,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-3bce149754',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-643',
@@ -3090,6 +3183,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-8ee40604af',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-648',
@@ -3183,6 +3279,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-6d3e42ad29',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-654',
@@ -3276,6 +3375,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-f82fabb560',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-660',
@@ -3375,6 +3477,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-69694bf2c0',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-666',
@@ -3471,6 +3576,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-68442fa581',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-674',
@@ -3570,6 +3678,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-7aded68e05',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-680',
@@ -3669,6 +3780,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-74d70dcd19',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-687',
@@ -3768,6 +3882,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-d160adaf53',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-694',
@@ -3867,6 +3984,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-5abdf84348',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-700',
@@ -3967,6 +4087,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-04fdc0a983',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-706',
@@ -4060,6 +4183,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-c199c79e05',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-712',
@@ -4149,6 +4275,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-606f8c7669',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-719',
@@ -4242,6 +4371,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-803aed4997',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-725',
@@ -4335,6 +4467,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-490760fa86',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-731',
@@ -4434,6 +4569,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-f85247d37f',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-737',
@@ -4530,6 +4668,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-813579fff9',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-743',
@@ -4629,6 +4770,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-dc167d38a9',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-749',
@@ -4722,6 +4866,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-2413e3f719',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-755',
@@ -4818,6 +4965,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-fdada6fd9b',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-761',
@@ -4913,6 +5063,10 @@ export const projects: Project[] = [
     ],
     thumbnailId: 'asset-bc4d5feda5',
     heroImageId: 'asset-6ea8fcf731',
+    displayDate: 'Ngày 22 tháng 4 năm 2023',
+    displayDateMarkup: 'text',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-2043',
@@ -5013,6 +5167,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-bafa44d838',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'heading',
+    summary:
+      'HÌNH THỨC THANH TOÁN: Lần 1: 50% sau khi ký hợp đồng. Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: Lên giao diện Demo trong vòng: 7 – 10 ngày Tiến hành lập trình: 15 – 20 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong quá trình làm...',
   },
   {
     id: 'project-2068',
@@ -5113,6 +5270,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-bb10eadd0a',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'heading',
+    summary:
+      'HÌNH THỨC THANH TOÁN: Lần 1: 50% sau khi ký hợp đồng. Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: Lên giao diện Demo trong vòng: 7 – 10 ngày Tiến hành lập trình: 15 – 20 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong quá trình làm...',
   },
   {
     id: 'project-2075',
@@ -5209,6 +5369,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-04aba1faa1',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'heading',
+    summary:
+      'HÌNH THỨC THANH TOÁN: Lần 1: 50% sau khi ký hợp đồng. Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: Lên giao diện Demo trong vòng: 7 – 10 ngày Tiến hành lập trình: 15 – 20 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong quá trình làm...',
   },
   {
     id: 'project-2120',
@@ -5301,6 +5464,10 @@ export const projects: Project[] = [
     ],
     thumbnailId: 'asset-a34e8f035b',
     heroImageId: 'asset-6ea8fcf731',
+    displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'heading',
+    summary:
+      'HÌNH THỨC THANH TOÁN: Lần 1: 50% sau khi ký hợp đồng. Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: Lên giao diện Demo trong vòng: 7 – 10 ngày Tiến hành lập trình: 15 – 20 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong quá trình làm...',
   },
   {
     id: 'project-2161',
@@ -5393,6 +5560,10 @@ export const projects: Project[] = [
     ],
     thumbnailId: 'asset-0ecf4d345b',
     heroImageId: 'asset-6ea8fcf731',
+    displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'heading',
+    summary:
+      'HÌNH THỨC THANH TOÁN: Lần 1: 50% sau khi ký hợp đồng. Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: Lên giao diện Demo trong vòng: 7 – 10 ngày Tiến hành lập trình: 15 – 20 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong quá trình làm...',
   },
   {
     id: 'project-2170',
@@ -5485,6 +5656,10 @@ export const projects: Project[] = [
     ],
     thumbnailId: 'asset-9b35e73d89',
     heroImageId: 'asset-6ea8fcf731',
+    displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'heading',
+    summary:
+      'HÌNH THỨC THANH TOÁN: Lần 1: 50% sau khi ký hợp đồng. Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: Lên giao diện Demo trong vòng: 7 – 10 ngày Tiến hành lập trình: 15 – 20 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong quá trình làm...',
   },
   {
     id: 'project-2176',
@@ -5578,6 +5753,10 @@ export const projects: Project[] = [
     ],
     thumbnailId: 'asset-7dde2a1c25',
     heroImageId: 'asset-6ea8fcf731',
+    displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'heading',
+    summary:
+      'HÌNH THỨC THANH TOÁN: Lần 1: 50% sau khi ký hợp đồng. Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: Lên giao diện Demo trong vòng: 7 – 10 ngày Tiến hành lập trình: 15 – 20 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong quá trình làm...',
   },
   {
     id: 'project-2182',
@@ -5673,6 +5852,10 @@ export const projects: Project[] = [
     ],
     thumbnailId: 'asset-599d722681',
     heroImageId: 'asset-6ea8fcf731',
+    displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'heading',
+    summary:
+      'HÌNH THỨC THANH TOÁN: Lần 1: 50% sau khi ký hợp đồng. Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: Lên giao diện Demo trong vòng: 7 – 10 ngày Tiến hành lập trình: 15 – 20 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong quá trình làm...',
   },
   {
     id: 'project-565',
@@ -5710,6 +5893,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-d6640dbce6',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
   {
     id: 'project-2348',
@@ -5746,6 +5932,10 @@ export const projects: Project[] = [
     ],
     thumbnailId: 'asset-3005f09701',
     heroImageId: 'asset-6ea8fcf731',
+    displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'heading',
+    summary:
+      'HÌNH THỨC THANH TOÁN: Lần 1: 50% sau khi ký hợp đồng. Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: Lên giao diện Demo trong vòng: 7 – 10 ngày Tiến hành lập trình: 15 – 20 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong quá trình làm...',
   },
   {
     id: 'project-585',
@@ -5786,6 +5976,9 @@ export const projects: Project[] = [
     thumbnailId: 'asset-b473c3b1c4',
     heroImageId: 'asset-6ea8fcf731',
     displayDate: '24 Tháng Bảy, 2022',
+    displayDateMarkup: 'entry-date',
+    summary:
+      'HÌNH THỨC THANH TOÁN: » Lần 1: 50% sau khi ký hợp đồng. » Lần 2: 50% khi nhận bàn giao website THỜI GIAN THỰC HIỆN: » Lên giao diện Demo trong vòng: 10 – 15 ngày » Tiến hành lập trình: 25 – 30 ngày Lưu ý: Thời gian chỉ mang tính chất tham khảo, trong...',
   },
 ];
 
@@ -5853,4 +6046,3 @@ export const featuredItemOrder: EntityId[] = [
   'project-2182',
   'project-2348',
 ];
-

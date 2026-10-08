@@ -2,13 +2,17 @@ import Link from 'next/link';
 import type { AssetRef, Project } from '@/types/content';
 
 /** Fields a card renders; keeps client payloads free of body/SEO data. */
-export type ProjectCardData = Pick<Project, 'id' | 'path' | 'title' | 'thumbnailId' | 'categoryIds'>;
+export type ProjectCardData = Pick<
+  Project,
+  'id' | 'path' | 'title' | 'thumbnailId' | 'categoryIds'
+>;
 
 export interface ProjectCardProps {
   project: ProjectCardData;
   thumbnailAsset?: AssetRef | null;
   categoryLabel?: string;
   dataTerms?: string;
+  imageClassName?: string;
 }
 
 export function ProjectCard({
@@ -16,9 +20,11 @@ export function ProjectCard({
   thumbnailAsset,
   categoryLabel,
   dataTerms,
+  imageClassName = 'attachment-original size-original',
 }: ProjectCardProps) {
   const label = categoryLabel || '';
-  const termsAttr = dataTerms !== undefined ? dataTerms : label ? JSON.stringify([label]) : undefined;
+  const termsAttr =
+    dataTerms !== undefined ? dataTerms : label ? JSON.stringify([label]) : undefined;
 
   return (
     <div className="col" data-terms={termsAttr}>
@@ -32,7 +38,7 @@ export function ProjectCard({
                     width={thumbnailAsset.width ?? 2000}
                     height={thumbnailAsset.height ?? 2000}
                     src={thumbnailAsset.src}
-                    className="attachment-original size-original"
+                    className={imageClassName}
                     alt={thumbnailAsset.alt ?? ''}
                     decoding="async"
                     loading="lazy"

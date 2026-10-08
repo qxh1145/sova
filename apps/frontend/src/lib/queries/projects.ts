@@ -9,6 +9,7 @@ import type {
   PageResult,
   Project,
   ProjectCategory,
+  UtilityContent,
 } from '@/types/content';
 
 export function getProject(slug: string): Promise<Project | null> {
@@ -105,5 +106,69 @@ export async function getProjectListingPage(
     settings,
     copy: projectListingCopy[locale],
     locale,
+  };
+}
+
+export interface RelatedProjectCard {
+  project: Project;
+  thumbnailAsset: AssetRef | null;
+  category: ProjectCategory | null;
+}
+
+export interface ProjectDetailData {
+  project: Project;
+  heroAsset: AssetRef | null;
+  galleryAssets: AssetRef[];
+  terms: UtilityContent | null;
+  related: RelatedProjectCard[];
+}
+
+export async function getProjectDetail(
+  slug: string,
+  repository: ContentRepository = getRepository(),
+): Promise<ProjectDetailData | null> {
+  const project = await repository.getProject(slug);
+  if (!project) return null;
+
+  const [allCategories, relatedProjects, terms] = await Promise.all([
+    repository.getProjectCategories(),
+    repository.getRelatedProjects(project.id),
+    project.deliveryTermsId ? repository.getUtilityContent(project.deliveryTermsId) : null,
+  ]);
+
+  const relatedCards = relatedProjects.slice(0, 4);
+
+  const neededAssetIds = [
+    project.heroImageId,
+    ...project.galleryIds,
+    ...relatedCards.map((p) => p.thumbnailId),
+  ].filter((id): id is string => Boolean(id));
+
+  const assets = neededAssetIds.length ? await repository.getAssets(neededAssetIds) : [];
+  const assetMap = new Map(assets.map((a) => [a.id, a]));
+  const categoryMap = new Map(allCategories.map((c) => [c.id, c]));
+
+  const heroAsset = project.heroImageId ? (assetMap.get(project.heroImageId) ?? null) : null;
+  const galleryAssets = project.galleryIds
+    .map((id) => assetMap.get(id))
+    .filter((a): a is AssetRef => Boolean(a));
+
+  const related: RelatedProjectCard[] = relatedCards.map((relProject) => {
+    const thumb = relProject.thumbnailId ? (assetMap.get(relProject.thumbnailId) ?? null) : null;
+    const catId = relProject.categoryIds[0];
+    const cat = catId ? (categoryMap.get(catId) ?? null) : null;
+    return {
+      project: relProject,
+      thumbnailAsset: thumb,
+      category: cat,
+    };
+  });
+
+  return {
+    project,
+    heroAsset,
+    galleryAssets,
+    terms,
+    related,
   };
 }

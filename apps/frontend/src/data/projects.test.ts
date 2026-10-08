@@ -91,12 +91,13 @@ test('every project image resolves to a local /wp-content/uploads/ or missing as
   expect(projects.flatMap((p) => p.galleryIds)).toHaveLength(136);
 });
 
-test('gallery shapes 0–4 and the 7 pages without a display date', () => {
+test('gallery shapes 0–4 and all 62 pages have displayDate and summary', () => {
   const sizes = projects.map((p) => p.galleryIds.length);
   expect(Math.max(...sizes)).toBe(4);
   expect(sizes.filter((n) => n === 0)).toHaveLength(4);
   expect(sizes.filter((n) => n === 1)).toHaveLength(8);
-  expect(projects.filter((p) => !p.displayDate)).toHaveLength(7);
+  expect(projects.filter((p) => !p.displayDate)).toHaveLength(0);
+  expect(projects.filter((p) => !p.summary)).toHaveLength(0);
 });
 
 test('no Eras word or raw Eras contact value in project, category and terms text', () => {
@@ -230,3 +231,49 @@ test('featuredItemOrder has 62 unique project ids in source archive order (STORM
   expect(dsmart?.slug).toBe('giao-dien-dsmart-giai-phap-dieu-khien-xe-hoi-tren-smartphone');
 });
 
+test('getProjectDetail returns project, assets, terms, related cards or null for unknown slug', async () => {
+  const { getProjectDetail } = await import('@/lib/queries/projects');
+  const repo = createMockRepository({
+    projects,
+    projectCategories,
+    utilityContent,
+    assets,
+  } as unknown as ContentData);
+
+  const unknown = await getProjectDetail('khong-ton-tai', repo);
+  expect(unknown).toBeNull();
+
+  const thp = await getProjectDetail('cong-ty-co-phan-phat-trien-cong-nghe-thp', repo);
+  expect(thp).not.toBeNull();
+  expect(thp!.project.slug).toBe('cong-ty-co-phan-phat-trien-cong-nghe-thp');
+  expect(thp!.heroAsset).not.toBeNull();
+  expect(thp!.galleryAssets).toHaveLength(2);
+  expect(thp!.terms?.id).toBe('project-terms-2');
+  expect(thp!.related).toHaveLength(1);
+  expect(thp!.related[0].project.slug).toBe('stormick-cong-ty-tnhh-storm-entertaiment');
+  expect(thp!.related[0].category?.slug).toBe('branding');
+
+  const centro = await getProjectDetail('centro-noi-that-cao-cap-centro-chau-au', repo);
+  expect(centro).not.toBeNull();
+  expect(centro!.project.slug).toBe('centro-noi-that-cao-cap-centro-chau-au');
+  expect(centro!.galleryAssets).toHaveLength(0);
+  expect(centro!.terms?.id).toBe('project-terms-1');
+  expect(centro!.related.map((r) => r.project.id)).toEqual(
+    centro!.project.relatedProjectIds.slice(0, 4),
+  );
+});
+
+test('getProjectDetail omits unresolved terms and hero asset without throwing', async () => {
+  const { getProjectDetail } = await import('@/lib/queries/projects');
+  const base = projects.find((p) => p.slug === 'centro-noi-that-cao-cap-centro-chau-au')!;
+  const repo = createMockRepository({
+    projects: [{ ...base, deliveryTermsId: 'missing-terms', heroImageId: 'missing-asset' }],
+    projectCategories,
+    utilityContent,
+    assets,
+  } as unknown as ContentData);
+
+  const detail = await getProjectDetail(base.slug, repo);
+  expect(detail!.terms).toBeNull();
+  expect(detail!.heroAsset).toBeNull();
+});
