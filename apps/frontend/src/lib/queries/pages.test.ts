@@ -24,7 +24,6 @@ import { testimonials } from '@/data/testimonials';
 import type { ContactPageContent, SiteSettings } from '@/types/content';
 import { getFAQs } from './faq';
 import { getContactPage, getHomeAssets, getHomePage, getLegalPage, getPaymentGuide } from './pages';
-import { getPost } from './posts';
 import { getPricing, getService, getServicePage } from './services';
 import { getNavigation } from './site';
 
@@ -111,7 +110,7 @@ test('phone change: post, service, pricing, payment guide and FAQ all show the n
   const faqId = faqs.find((f) => f.locale === 'vi' && f.answer.html.includes('{{site.phone}}'))!.id;
   expect(JSON.stringify(paymentGuides.find((p) => p.locale === 'vi'))).toContain('{{site.phone}}');
   const results = [
-    await getPost(post.slug),
+    await repository.getPost(post.slug),
     await getService('website', 'vi'),
     await getPricing(pricing.id, 'vi'),
     await getPaymentGuide('vi'),

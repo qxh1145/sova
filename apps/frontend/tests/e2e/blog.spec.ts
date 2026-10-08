@@ -590,6 +590,12 @@ test.describe('Blog listing and post detail', () => {
     await page.locator('#secondary button.ux-search-submit').click();
     await page.waitForURL('**/?s=cache');
     await expect(page.locator('#section_1769897078 h1')).toContainText('Kết quả tìm kiếm: cache');
+
+    // 9. Repeated query param ?s=cache&s=wordpress returns 200 with results for first value
+    const resRepeat = await page.goto('/?s=cache&s=wordpress');
+    expect(resRepeat?.status()).toBe(200);
+    await expect(page.locator('#section_1769897078 h1')).toContainText('Kết quả tìm kiếm: cache');
+    await expect(page.locator('#secondary input.search-field')).toHaveValue('cache');
   });
 
   test('Dev-fixture search variant excludes draft post from results', async ({ page }) => {

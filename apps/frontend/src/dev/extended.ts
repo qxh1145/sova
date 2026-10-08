@@ -3,14 +3,14 @@ import { defaultContentData } from '@/lib/repositories/mock';
 import { validateRoutes } from '@/lib/routes';
 import type { Post, Project, PublicPath, RouteEntry } from '@/types/content';
 
-export const mockProjectSlug = 'du-an-mock-mo-rong';
-export const mockProjectId = 'project-mock-extended';
-export const mockProjectRouteId = `route-featured_item--${mockProjectSlug}`;
+const mockProjectSlug = 'du-an-mock-mo-rong';
+const mockProjectId = 'project-mock-extended';
+const mockProjectRouteId = `route-featured_item--${mockProjectSlug}`;
 export const mockProjectPath = `/featured_item/${mockProjectSlug}/` as PublicPath;
 
-export const mockPostSlug = 'bai-viet-mock-mo-rong-tim-kiem-xyz987';
-export const mockPostId = 'post-mock-extended';
-export const mockPostRouteId = `route-${mockPostSlug}`;
+const mockPostSlug = 'bai-viet-mock-mo-rong-tim-kiem-xyz987';
+const mockPostId = 'post-mock-extended';
+const mockPostRouteId = `route-${mockPostSlug}`;
 export const mockPostPath = `/${mockPostSlug}/` as PublicPath;
 export const mockPostSearchToken = 'xyz987';
 
@@ -80,7 +80,7 @@ export const mockPost: Post = {
   displayDate: 'Tháng 10 9, 2026',
 };
 
-export const mockProjectRoute: RouteEntry = {
+const mockProjectRoute: RouteEntry = {
   id: mockProjectRouteId,
   locale: 'vi',
   path: mockProjectPath,
@@ -90,7 +90,7 @@ export const mockProjectRoute: RouteEntry = {
   source: { file: 'mock/project.html', line: 1 },
 };
 
-export const mockPostRoute: RouteEntry = {
+const mockPostRoute: RouteEntry = {
   id: mockPostRouteId,
   locale: 'vi',
   path: mockPostPath,
