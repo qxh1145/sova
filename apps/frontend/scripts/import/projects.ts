@@ -150,10 +150,20 @@ export function importProjects(erasDir: string, registry: AssetRegistry, stats: 
       file,
       lineOf,
     );
-    const galleryIds = root
-      .querySelectorAll('#slider-duan img')
-      .map((img) => registry.image(img, file, lineOf))
-      .filter((id): id is string => !!id);
+    const sliderDuan = root.querySelector('#slider-duan');
+    const galleryLayout: 'slider' | 'row' | undefined = sliderDuan
+      ? sliderDuan.querySelector('.slider')
+        ? 'slider'
+        : sliderDuan.querySelector('.row')
+          ? 'row'
+          : undefined
+      : undefined;
+    const galleryIds = sliderDuan
+      ? sliderDuan
+          .querySelectorAll('img')
+          .map((img) => registry.image(img, file, lineOf))
+          .filter((id): id is string => !!id)
+      : [];
     const description = root.querySelector('meta[name="description"]')?.getAttribute('content');
     const dateBox = root.querySelector('.qodef-info--date');
     const displayDate = dateBox?.rawText
@@ -188,6 +198,7 @@ export function importProjects(erasDir: string, registry: AssetRegistry, stats: 
       slug: card.slug,
       categoryIds: [`project-category-${card.categorySlug}`],
       galleryIds,
+      galleryLayout,
       body: { format: 'sanitized-html', html: '', assetIds: [], sources: [contentSource] },
       metadata: [],
       deliveryTermsId: termsRecord.id,

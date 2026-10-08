@@ -522,14 +522,25 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
       const sidebar = page.locator('.col.large-3.small-12 .col-inner');
       await expect(sidebar).toBeVisible();
       await expect(sidebar.locator('h3')).toHaveText('Thông tin dự án');
-      await expect(sidebar).toContainText(project.summary!);
+      // Gallery slide count matches galleryIds.length
+      if (project.galleryIds.length >= 2) {
+        await expect(page.locator('#slider-duan .flickity-enabled')).toBeVisible();
+        await expect(page.locator('#slider-duan .flickity-slider > .img.col')).toHaveCount(
+          project.galleryIds.length,
+        );
+      } else {
+        await expect(page.locator('#slider-duan .flickity-enabled')).toHaveCount(0);
+        if (project.galleryIds.length === 1) {
+          await expect(page.locator('#slider-duan .row .col.large-12 img')).toHaveCount(1);
+        }
+      }
     }
   });
 
-  test('Matrix rows: THP, no gallery (centro), 1 image (bossman), free-text date (huynh-thuc-khang), 58 related (evc-athena), unknown slug', async ({
+  test('Matrix rows: THP, no gallery (centro), empty row (evc-athena), 1 image (bossman), multi-image (xanhthienthanh, giang-lam), free-text date (huynh-thuc-khang), 58 related (evc-athena), unknown slug', async ({
     page,
   }) => {
-    // 1. THP
+    // 1. THP (multi-image carousel)
     await page.goto('/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/');
     const thpDate = page.locator('.qodef-info--date h3.qodef-e-title');
     await expect(thpDate).toHaveText('DATE: 24 Tháng Bảy, 2022');
@@ -538,38 +549,102 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
     await expect(thpRelated.locator('.portfolio-box-title')).toContainText('STORMICK');
     await expect(thpRelated.locator('.portfolio-box-category')).toContainText('Branding');
     await expect(page.locator('.qodef-portfolio-content h2')).toHaveCount(4);
+    await expect(page.locator('#slider-duan .flickity-enabled')).toBeVisible();
 
-    // 2. Centro (no gallery)
+    // 2. Centro (empty slider: .slider with no children, no Carousel)
     await page.goto('/featured_item/centro-noi-that-cao-cap-centro-chau-au/');
     const centroSlider = page.locator('#slider-duan .slider');
     await expect(centroSlider).toBeAttached();
     await expect(centroSlider.locator('img, .img')).toHaveCount(0);
+    await expect(page.locator('#slider-duan .flickity-enabled')).toHaveCount(0);
     const centroDate = page.locator('.qodef-info--date .entry-date');
     await expect(centroDate).toHaveText('24 Tháng Bảy, 2022');
 
-    // 3. Bossman (1 gallery image)
+    // 3. Evc Athena (empty row: #slider-duan > div.row:empty)
+    await page.goto('/featured_item/evc-athena-cong-ty-tnhh-evc-athena/');
+    const athenaRow = page.locator('#slider-duan > div.row');
+    await expect(athenaRow).toBeAttached();
+    await expect(athenaRow.locator('*')).toHaveCount(0);
+    await expect(page.locator('#slider-duan .flickity-enabled')).toHaveCount(0);
+
+    // 4. Bossman (1 gallery image, opens single lightbox)
     await page.goto('/featured_item/bossman-cong-ty-co-phan-bossman-viet-nam/');
     const bossmanImg = page.locator('#slider-duan .row .col.large-12 .img-inner img');
     await expect(bossmanImg).toBeVisible();
     await expect(bossmanImg).toHaveCSS('border-radius', '12px');
+    await expect(page.locator('#slider-duan .flickity-enabled')).toHaveCount(0);
 
-    // 4. Free-text date (huynh-thuc-khang)
+    // Bossman lightbox interaction: click image -> Dialog opens, counter "1 of 1", no arrows
+    await page.locator('#slider-duan .row .col.large-12 .img-inner a.lightbox-gallery').click();
+    const bossmanDialog = page.locator('[role="dialog"]');
+    await expect(bossmanDialog).toBeVisible();
+    await expect(bossmanDialog.locator('img.mfp-img')).toBeVisible();
+    await expect(bossmanDialog.locator('.mfp-counter')).toHaveText('1 of 1');
+    await expect(bossmanDialog.locator('.mfp-arrow')).toHaveCount(0);
+    await page.keyboard.press('Escape');
+    await expect(bossmanDialog).toHaveCount(0);
+
+    // 5. Multi-image 4 slides: xanhthienthanh (prev/next navigation, wrap-around, lightbox)
+    await page.goto(
+      '/featured_item/xanhthienthanh-cong-ty-co-phan-dau-tu-va-phat-trien-xanh-thien-thanh/',
+    );
+    const xttCarousel = page.locator('#slider-duan .flickity-enabled');
+    await expect(xttCarousel).toBeVisible();
+    const xttSlides = page.locator('#slider-duan .flickity-slider > .img.col');
+    await expect(xttSlides).toHaveCount(4);
+    await expect(page.locator('#slider-duan ol.flickity-page-dots li')).toHaveCount(4);
+
+    // Click next arrow on carousel
+    const xttNextBtn = page.locator('#slider-duan button.flickity-prev-next-button.next');
+    await xttNextBtn.click();
+    await page.waitForTimeout(200);
+
+    // Click 2nd slide link -> lightbox opens at "2 of 4", scroll locked
+    await page.locator('#slider-duan .flickity-slider > .img.col:nth-child(2) a.lightbox-gallery').click();
+    const xttDialog = page.locator('[role="dialog"]');
+    await expect(xttDialog).toBeVisible();
+    await expect(xttDialog.locator('.mfp-counter')).toHaveText('2 of 4');
+    await expect(page.locator('body')).toHaveAttribute('data-scroll-locked');
+
+    // Lightbox next arrow wraps around: click next -> 3 of 4, click next -> 4 of 4, click next -> 1 of 4
+    const lbNext = page.locator('button.mfp-arrow-right');
+    await lbNext.click();
+    await expect(xttDialog.locator('.mfp-counter')).toHaveText('3 of 4');
+    await lbNext.click();
+    await expect(xttDialog.locator('.mfp-counter')).toHaveText('4 of 4');
+    await lbNext.click();
+    await expect(xttDialog.locator('.mfp-counter')).toHaveText('1 of 4');
+
+    // ArrowLeft wraps around to 4 of 4
+    await page.keyboard.press('ArrowLeft');
+    await expect(xttDialog.locator('.mfp-counter')).toHaveText('4 of 4');
+
+    // Close lightbox via .mfp-close
+    await page.locator('button.mfp-close').click();
+    await expect(xttDialog).toHaveCount(0);
+    await expect(page.locator('body')).not.toHaveAttribute('data-scroll-locked');
+
+    // 6. 2 slides: giang-lam (loop works both directions)
+    await page.goto('/featured_item/giang-lam-dung-cu-co-khi/');
+    await expect(page.locator('#slider-duan .flickity-slider > .img.col')).toHaveCount(2);
+
+    // 7. Free-text date (huynh-thuc-khang)
     await page.goto('/featured_item/truong-trung-hoc-pho-thong-huynh-thuc-khang/');
     const htkDate = page.locator('.qodef-info--date');
     await expect(htkDate).toContainText('Ngày 22 tháng 4 năm 2023');
     await expect(htkDate.locator('.entry-date')).toHaveCount(0);
 
-    // 5. Many related (evc-athena has 58 related ids, capped at first 4)
+    // 8. Many related (evc-athena has 58 related ids, capped at first 4)
     await page.goto('/featured_item/evc-athena-cong-ty-tnhh-evc-athena/');
     const athenaRelated = page.locator('.portfolio-bottom .portfolio-related .col');
     await expect(athenaRelated).toHaveCount(4);
 
-    // 6. No related (dsmart): section and heading still render, as source
+    // 9. No related (dsmart): section and heading still render, as source
     await page.goto('/featured_item/giao-dien-dsmart-giai-phap-dieu-khien-xe-hoi-tren-smartphone/');
     await expect(page.locator('.portfolio-bottom h4')).toHaveText('Dự án liên quan');
     await expect(page.locator('.portfolio-bottom .portfolio-related .col')).toHaveCount(0);
 
-    // 7. Unknown slug -> 404
+    // 10. Unknown slug -> 404
     const unknownRes = await page.goto('/featured_item/khong-ton-tai/');
     expect(unknownRes?.status()).toBe(404);
   });
@@ -635,6 +710,10 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
     {
       url: '/featured_item/centro-noi-that-cao-cap-centro-chau-au/',
       file: 'featured_item/centro-noi-that-cao-cap-centro-chau-au/index.html',
+    },
+    {
+      url: '/featured_item/xanhthienthanh-cong-ty-co-phan-dau-tu-va-phat-trien-xanh-thien-thanh/',
+      file: 'featured_item/xanhthienthanh-cong-ty-co-phan-dau-tu-va-phat-trien-xanh-thien-thanh/index.html',
     },
   ]) {
     test(`${row.url} detail signature matches eras-clone source`, async ({ page }) => {
