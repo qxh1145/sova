@@ -34,7 +34,7 @@ const IDS: Record<string, ProjectArchiveIds> = {
 
 export async function generateStaticParams() {
   const categories = await getProjectCategories();
-  return categories.map((c) => ({ category: c.slug }));
+  return categories.filter((c) => Object.hasOwn(IDS, c.slug)).map((c) => ({ category: c.slug }));
 }
 
 interface FeaturedItemCategoryProps {
