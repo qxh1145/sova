@@ -75,6 +75,7 @@ export interface BlogListingPageData {
   categories: (PostCategory & { count: number })[];
   basePath: string;
   copy: (typeof blogListingCopy)['vi'] | (typeof blogListingCopy)['en'];
+  searchQuery?: string;
 }
 
 export async function getBlogListingPage(
@@ -140,6 +141,51 @@ export async function getBlogListingPage(
     categories,
     basePath,
     copy,
+  };
+}
+
+export interface BlogSearchPageInput {
+  query: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export async function getBlogSearchPage(
+  input: BlogSearchPageInput,
+  repository: ContentRepository = getRepository(),
+): Promise<BlogListingPageData | null> {
+  const { query, page = 1, pageSize = 6 } = input;
+  const locale: Locale = 'vi';
+
+  const [result, categories] = await Promise.all([
+    repository.searchPosts({ locale, query, page, pageSize }),
+    repository.getPostCategories(locale),
+  ]);
+
+  const totalPages = result.pageSize > 0 ? Math.ceil(result.total / result.pageSize) : 1;
+  if (page > 1 && page > totalPages) {
+    return null;
+  }
+
+  const thumbnailIds = result.items
+    .map((p) => p.thumbnailId)
+    .filter((id): id is string => Boolean(id));
+
+  const thumbnailAssets = thumbnailIds.length ? await repository.getAssets(thumbnailIds) : [];
+  const copy = blogListingCopy[locale];
+
+  return {
+    posts: result.items,
+    thumbnailAssets,
+    page: result.page,
+    pageSize: result.pageSize,
+    total: result.total,
+    totalPages,
+    settings: null,
+    categories,
+    basePath: '/',
+    copy,
+    searchQuery: query,
   };
 }
 
