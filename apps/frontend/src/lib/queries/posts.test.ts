@@ -4,12 +4,8 @@ import { posts } from '@/data/posts';
 import {
   getBlogListingPage,
   getBlogSearchPage,
-  getPostCategories,
   getPostDetail,
-  getRelatedPosts,
-  searchPosts,
 } from './posts';
-import { getRelatedProjects } from './projects';
 
 const repository = createMockRepository(defaultContentData);
 
@@ -177,7 +173,7 @@ test('getBlogListingPage returns EN shell with no posts for en insight', async (
 });
 
 test('getPostCategories computes category counts in source order', async () => {
-  const categories = await getPostCategories('vi', repository);
+  const categories = await repository.getPostCategories('vi');
   expect(categories.map((c) => c.slug)).toEqual([
     'creative-branding',
     'goc-nhin-website',
@@ -190,13 +186,13 @@ test('getPostCategories computes category counts in source order', async () => {
 });
 
 test('getPostCategories counts a newly added mock post with no code change', async () => {
-  const before = await getPostCategories('vi', repository);
+  const before = await repository.getPostCategories('vi');
   const added = { ...posts[0], id: 'post-added-test', slug: 'post-added-test' };
   const repoWithAdded = createMockRepository({
     ...defaultContentData,
     posts: [...defaultContentData.posts, added],
   });
-  const after = await getPostCategories('vi', repoWithAdded);
+  const after = await repoWithAdded.getPostCategories('vi');
   expect(after.map((c) => c.count)).toEqual(
     before.map((c) => c.count + (added.categoryIds.includes(c.id) ? 1 : 0)),
   );
@@ -204,10 +200,10 @@ test('getPostCategories counts a newly added mock post with no code change', asy
 
 test('getRelatedPosts returns posts in relatedPostIds order, skipping unknown ids', async () => {
   const post = posts[0];
-  const related = await getRelatedPosts(post.id, repository);
+  const related = await repository.getRelatedPosts(post.id);
   expect(related.map((p) => p.id)).toEqual(post.relatedPostIds);
 
-  const unknown = await getRelatedPosts('unknown-id', repository);
+  const unknown = await repository.getRelatedPosts('unknown-id');
   expect(unknown).toEqual([]);
 
   const repoWithMissing = createMockRepository({
@@ -222,16 +218,16 @@ test('getRelatedPosts returns posts in relatedPostIds order, skipping unknown id
       posts[2],
     ],
   });
-  const filtered = await getRelatedPosts('test-parent', repoWithMissing);
+  const filtered = await repoWithMissing.getRelatedPosts('test-parent');
   expect(filtered.map((p) => p.id)).toEqual([posts[2].id, posts[1].id]);
 });
 
 test('getRelatedProjects returns projects in relatedProjectIds order, skipping unknown ids', async () => {
   const project = defaultContentData.projects.find((p) => p.id === 'project-473')!;
-  const related = await getRelatedProjects(project.id, repository);
+  const related = await repository.getRelatedProjects(project.id);
   expect(related.map((p) => p.id)).toEqual(project.relatedProjectIds);
 
-  const unknown = await getRelatedProjects('unknown-project', repository);
+  const unknown = await repository.getRelatedProjects('unknown-project');
   expect(unknown).toEqual([]);
 
   const [first, second] = defaultContentData.projects;
@@ -247,21 +243,20 @@ test('getRelatedProjects returns projects in relatedProjectIds order, skipping u
       second,
     ],
   });
-  const filtered = await getRelatedProjects('test-parent', repoWithMissing);
+  const filtered = await repoWithMissing.getRelatedProjects('test-parent');
   expect(filtered.map((p) => p.id)).toEqual([second.id, first.id]);
 });
 
 test('searchPosts searches title, excerpt, and tag-stripped body HTML with accents and case folding', async () => {
   for (const query of ['', '   ']) {
-    const blank = await searchPosts({ locale: 'vi', query, page: 1, pageSize: 6 }, repository);
+    const blank = await repository.searchPosts({ locale: 'vi', query, page: 1, pageSize: 6 });
     expect(blank.total).toBe(27);
     expect(blank.items.map((p) => p.id)).toEqual(posts.slice(0, 6).map((p) => p.id));
   }
 
   // Accent & case folding: "thu thuat" matches "Thủ thuật"
-  const accentResult = await searchPosts(
+  const accentResult = await repository.searchPosts(
     { locale: 'vi', query: 'thu thuat', page: 1, pageSize: 50 },
-    repository,
   );
   expect(accentResult.total).toBeGreaterThan(0);
   expect(
@@ -288,15 +283,13 @@ test('searchPosts searches title, excerpt, and tag-stripped body HTML with accen
     ...defaultContentData,
     posts: [customPost],
   });
-  const attrMatch = await searchPosts(
+  const attrMatch = await htmlRepo.searchPosts(
     { locale: 'vi', query: 'secret-attr-only', page: 1, pageSize: 10 },
-    htmlRepo,
   );
   expect(attrMatch.total).toBe(0);
 
-  const bodyMatch = await searchPosts(
+  const bodyMatch = await htmlRepo.searchPosts(
     { locale: 'vi', query: 'Visible Body Content', page: 1, pageSize: 10 },
-    htmlRepo,
   );
   expect(bodyMatch.total).toBe(1);
 
@@ -307,16 +300,15 @@ test('searchPosts searches title, excerpt, and tag-stripped body HTML with accen
     'visible body content',
     'content next paragraph',
   ]) {
-    const match = await searchPosts({ locale: 'vi', query, page: 1, pageSize: 10 }, htmlRepo);
+    const match = await htmlRepo.searchPosts({ locale: 'vi', query, page: 1, pageSize: 10 });
     expect(
       match.items.map((p) => p.id),
       query,
     ).toEqual(['post-html-test']);
   }
 
-  const noMatch = await searchPosts(
+  const noMatch = await repository.searchPosts(
     { locale: 'vi', query: 'xyznonexistentterm123', page: 1, pageSize: 10 },
-    repository,
   );
   expect(noMatch.items).toEqual([]);
   expect(noMatch.total).toBe(0);

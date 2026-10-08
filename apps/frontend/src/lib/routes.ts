@@ -9,6 +9,18 @@ export function normalizePath(input: string): PublicPath {
 }
 
 const firstSegment = (path: string) => path.split('/')[1];
+export const pathSegments = (path: string): string[] => path.split('/').filter(Boolean);
+
+/**
+ * Validates and parses the page segment of a paged route (`/page/N/`).
+ * Returns the page number (>= 2), or null when the segment is not digits or is < 2.
+ */
+export function parsePageParam(pageStr: string): number | null {
+  if (!/^[1-9]\d*$/.test(pageStr)) return null;
+  const pageNum = parseInt(pageStr, 10);
+  return pageNum >= 2 ? pageNum : null;
+}
+
 export const categorySlugs = (routes: RouteEntry[]) =>
   routes
     .filter((r) => r.kind === 'post-list' && r.entityId && r.path.split('/').length === 3)

@@ -17,6 +17,7 @@ import type {
   PaymentGuideContent,
   Post,
   PostCategory,
+  PostCategoryWithCount,
   Pricing,
   Project,
   ProjectCategory,
@@ -59,7 +60,7 @@ export interface ContentRepository {
   /**
    * Returns categories for the locale in source order, with counts computed from published posts.
    */
-  getPostCategories(locale: Locale): Promise<(PostCategory & { count: number })[]>;
+  getPostCategories(locale: Locale): Promise<PostCategoryWithCount[]>;
   /**
    * Posts referenced by `relatedPostIds` in post order; unknown ids skipped; published only.
    */

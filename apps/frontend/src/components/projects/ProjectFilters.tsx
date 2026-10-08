@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import type { AssetRef, Locale, ProjectCategory } from '@/types/content';
-import { ProjectCard, type ProjectCardData } from './ProjectCard';
+import { ProjectCard, categoryLabel, type ProjectCardData } from './ProjectCard';
 import { ProjectGrid, type ProjectGridProps } from './ProjectGrid';
 import { Pagination, type PaginationLabels } from '@/components/ui/Pagination';
 
@@ -14,9 +14,9 @@ export interface ProjectFiltersProps {
   thumbnailAssets: AssetRef[];
   locale: Locale;
   loading?: boolean;
-  emptyMessage?: string;
-  loadingMessage?: string;
-  filterAllLabel?: string;
+  emptyMessage: string;
+  loadingMessage: string;
+  filterAllLabel: string;
   paginationLabels?: PaginationLabels;
   /** Cards per page; absent shows every card and renders no pagination wrapper. */
   pageSize?: number;
@@ -31,14 +31,10 @@ export function ProjectFilters({
   listingPath,
   locale,
   loading = false,
-  emptyMessage = 'Không có dự án nào.',
-  loadingMessage = 'Đang tải...',
-  filterAllLabel = 'Tất cả',
-  paginationLabels = {
-    nav: 'Phân trang dự án',
-    prev: 'Trang trước',
-    next: 'Trang tiếp theo',
-  },
+  emptyMessage,
+  loadingMessage,
+  filterAllLabel,
+  paginationLabels,
   pageSize,
   wrapperId = 'portfolio-wrapper',
   grid = { id: 'portfolio-results' },
@@ -127,24 +123,18 @@ export function ProjectFilters({
         ) : filteredProjects.length === 0 ? (
           <p>{emptyMessage}</p>
         ) : (
-          paginatedProjects.map((project) => {
-            const catLabel = project.categoryIds
-              .map((id) => categoryMap.get(id))
-              .filter(Boolean)
-              .join(', ');
-            return (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                thumbnailAsset={project.thumbnailId ? assetMap.get(project.thumbnailId) : undefined}
-                categoryLabel={catLabel}
-              />
-            );
-          })
+          paginatedProjects.map((project) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              thumbnailAsset={project.thumbnailId ? assetMap.get(project.thumbnailId) : undefined}
+              categoryLabel={categoryLabel(project.categoryIds, categoryMap)}
+            />
+          ))
         )}
       </ProjectGrid>
 
-      {pageSize ? (
+      {pageSize && paginationLabels ? (
         <div className="pagination-wrapper text-center mt-20" id="portfolio-pagination">
           {!loading && filteredProjects.length > 0 && totalPages > 1 ? (
             <Pagination

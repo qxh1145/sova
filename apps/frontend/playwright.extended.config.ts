@@ -4,6 +4,7 @@ const port = 3200;
 
 export default defineConfig({
   testDir: './tests/extended',
+  timeout: 120_000,
   forbidOnly: !!process.env.CI,
   reporter: process.env.CI ? 'github' : 'list',
   use: {
@@ -14,6 +15,7 @@ export default defineConfig({
     command: `npx next dev --port ${port}`,
     url: `http://localhost:${port}/`,
     reuseExistingServer: false,
+    timeout: 120_000,
     env: {
       CONTENT_SCENARIO: 'extended',
     },

@@ -2,7 +2,7 @@ import '@/styles/legacy/sections/route-featured_item_category--branding.css';
 import '@/styles/legacy/sections/route-featured_item_category--mobile-app.css';
 import '@/styles/legacy/sections/route-featured_item_category--website.css';
 import { notFound } from 'next/navigation';
-import { getProjectCategories, getProjectListingPage } from '@/lib/queries/projects';
+import { getProjectListingPage } from '@/lib/queries/projects';
 import {
   ProjectArchiveView,
   type ProjectArchiveIds,
@@ -33,8 +33,7 @@ const IDS: Record<string, ProjectArchiveIds> = {
 };
 
 export async function generateStaticParams() {
-  const categories = await getProjectCategories();
-  return categories.filter((c) => Object.hasOwn(IDS, c.slug)).map((c) => ({ category: c.slug }));
+  return Object.keys(IDS).map((category) => ({ category }));
 }
 
 interface FeaturedItemCategoryProps {

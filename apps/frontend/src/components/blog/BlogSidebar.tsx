@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import type { PostCategory } from '@/types/content';
-import type { blogListingCopy } from '@/data/listings';
+import type { PostCategoryWithCount } from '@/types/content';
+import type { BlogListingPageData } from '@/lib/queries/posts';
 
 export interface BlogSidebarProps {
-  categories: (PostCategory & { count: number })[];
-  copy: (typeof blogListingCopy)['vi'] | (typeof blogListingCopy)['en'];
+  categories: PostCategoryWithCount[];
+  copy: BlogListingPageData['copy'];
   searchQuery?: string;
 }
 
