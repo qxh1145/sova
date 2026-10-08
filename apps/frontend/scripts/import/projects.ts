@@ -155,7 +155,17 @@ export function importProjects(erasDir: string, registry: AssetRegistry, stats: 
       .map((img) => registry.image(img, file, lineOf))
       .filter((id): id is string => !!id);
     const description = root.querySelector('meta[name="description"]')?.getAttribute('content');
-    const displayDate = root.querySelector('.qodef-info--date .entry-date')?.rawText.trim();
+    const dateRaw = root.querySelector('.qodef-info--date')?.rawText.replace(/\s+/g, ' ').trim();
+    const displayDate = dateRaw?.replace(/^DATE:\s*/i, '').trim();
+
+    const sidebarInner =
+      root.querySelector('.col.large-3.small-12 .col-inner') ??
+      root.querySelector('.col.large-3 .col-inner');
+    const sidebarH3 = sidebarInner?.querySelector('h3');
+    const summary = sidebarInner
+      ? sidebarInner.text.replace(sidebarH3 ? sidebarH3.text : '', '').replace(/\s+/g, ' ').trim()
+      : undefined;
+
     const projectPath = `/featured_item/${card.slug}/` as PublicPath;
 
     const project: Project = {
@@ -182,6 +192,7 @@ export function importProjects(erasDir: string, registry: AssetRegistry, stats: 
     if (card.thumbnailId) project.thumbnailId = card.thumbnailId;
     if (heroImageId) project.heroImageId = heroImageId;
     if (displayDate) project.displayDate = processText(displayDate, stats);
+    if (summary) project.summary = processText(summary, stats);
     if (description) project.seo.description = processText(description, stats).trim();
     if (seoImageId) project.seo.imageId = seoImageId;
     projects.push(project);
