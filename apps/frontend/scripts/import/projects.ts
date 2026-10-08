@@ -155,15 +155,27 @@ export function importProjects(erasDir: string, registry: AssetRegistry, stats: 
       .map((img) => registry.image(img, file, lineOf))
       .filter((id): id is string => !!id);
     const description = root.querySelector('meta[name="description"]')?.getAttribute('content');
-    const dateRaw = root.querySelector('.qodef-info--date')?.rawText.replace(/\s+/g, ' ').trim();
-    const displayDate = dateRaw?.replace(/^DATE:\s*/i, '').trim();
+    const dateBox = root.querySelector('.qodef-info--date');
+    const displayDate = dateBox?.rawText
+      .replace(/\s+/g, ' ')
+      .trim()
+      .replace(/^DATE:\s*/i, '')
+      .trim();
+    const displayDateMarkup = dateBox?.querySelector('h3.qodef-e-title')
+      ? 'heading'
+      : dateBox?.querySelector('.entry-date')
+        ? 'entry-date'
+        : 'text';
 
     const sidebarInner =
       root.querySelector('.col.large-3.small-12 .col-inner') ??
       root.querySelector('.col.large-3 .col-inner');
     const sidebarH3 = sidebarInner?.querySelector('h3');
     const summary = sidebarInner
-      ? sidebarInner.text.replace(sidebarH3 ? sidebarH3.text : '', '').replace(/\s+/g, ' ').trim()
+      ? sidebarInner.text
+          .replace(sidebarH3 ? sidebarH3.text : '', '')
+          .replace(/\s+/g, ' ')
+          .trim()
       : undefined;
 
     const projectPath = `/featured_item/${card.slug}/` as PublicPath;
@@ -191,7 +203,10 @@ export function importProjects(erasDir: string, registry: AssetRegistry, stats: 
     };
     if (card.thumbnailId) project.thumbnailId = card.thumbnailId;
     if (heroImageId) project.heroImageId = heroImageId;
-    if (displayDate) project.displayDate = processText(displayDate, stats);
+    if (displayDate) {
+      project.displayDate = processText(displayDate, stats);
+      project.displayDateMarkup = displayDateMarkup;
+    }
     if (summary) project.summary = processText(summary, stats);
     if (description) project.seo.description = processText(description, stats).trim();
     if (seoImageId) project.seo.imageId = seoImageId;
@@ -222,4 +237,3 @@ export function importProjects(erasDir: string, registry: AssetRegistry, stats: 
 
   return { projects, categories, terms, featuredItemOrder };
 }
-

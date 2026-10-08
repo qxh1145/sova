@@ -2,7 +2,9 @@ import { test, expect } from '@playwright/test';
 import { hasSource, missingSourceMessage, openSource } from '../baseline/source';
 
 test.describe('/du-an/ and /en/our-project/ project listing, filter and pagination', () => {
-  test('Default /du-an/ renders "Tất cả" active, 6 cards, 11 pages (62 items)', async ({ page }) => {
+  test('Default /du-an/ renders "Tất cả" active, 6 cards, 11 pages (62 items)', async ({
+    page,
+  }) => {
     await page.goto('/du-an/');
     await expect(page).toHaveURL(/\/du-an\/$/);
 
@@ -27,7 +29,9 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
     expect(lastPageText?.trim()).toBe('11');
   });
 
-  test('VI /du-an/ hero renders imported description, CTA, breadcrumb and images', async ({ page }) => {
+  test('VI /du-an/ hero renders imported description, CTA, breadcrumb and images', async ({
+    page,
+  }) => {
     await page.goto('/du-an/');
     const hero = page.locator('.banner.banner-project');
     await expect(hero).toContainText('Khám phá tư duy thiết kế và triết lý sáng tạo');
@@ -41,9 +45,9 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
       hero.locator('img[src="/wp-content/uploads/2024/02/43e3185f955f1d3fca7ffa93786c89a0.png"]'),
     ).toHaveCount(1);
     // Filter links stay on the listing route for middle-click / no-JS.
-    for (const href of await page.locator('.filter-nav a').evaluateAll((as) =>
-      as.map((a) => a.getAttribute('href')),
-    ))
+    for (const href of await page
+      .locator('.filter-nav a')
+      .evaluateAll((as) => as.map((a) => a.getAttribute('href'))))
       expect(href).toBe('/du-an/');
   });
 
@@ -83,7 +87,10 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
     // 59 items / 6 per page = 10 pages
     await expect(page.locator('#portfolio-pagination .pagination')).toBeVisible();
     await expect(page.locator('#portfolio-pagination .current')).toHaveText('1');
-    const lastWebsitePage = await page.locator('#portfolio-pagination button.page-numbers:not(.next):not(.prev)').last().textContent();
+    const lastWebsitePage = await page
+      .locator('#portfolio-pagination button.page-numbers:not(.next):not(.prev)')
+      .last()
+      .textContent();
     expect(lastWebsitePage?.trim()).toBe('10');
     expect(page.url()).toBe(initialUrl);
 
@@ -92,12 +99,17 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
     await allFilter.click();
     await expect(page.locator('.filter-nav li.active a')).toHaveAttribute('data-term', '');
     await expect(page.locator('#portfolio-results .col')).toHaveCount(6);
-    const lastAllPage = await page.locator('#portfolio-pagination button.page-numbers:not(.next):not(.prev)').last().textContent();
+    const lastAllPage = await page
+      .locator('#portfolio-pagination button.page-numbers:not(.next):not(.prev)')
+      .last()
+      .textContent();
     expect(lastAllPage?.trim()).toBe('11');
     expect(page.url()).toBe(initialUrl);
   });
 
-  test('Page change scrolls to #portfolio-wrapper - 100px and keeps URL unchanged', async ({ page }) => {
+  test('Page change scrolls to #portfolio-wrapper - 100px and keeps URL unchanged', async ({
+    page,
+  }) => {
     await page.goto('/du-an/');
     const initialUrl = page.url();
 
@@ -118,7 +130,10 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
       return wrapper ? wrapper.getBoundingClientRect().top + window.scrollY - 100 : 0;
     });
 
-    await page.waitForFunction((expected) => Math.abs(window.scrollY - expected) < 20, expectedScroll);
+    await page.waitForFunction(
+      (expected) => Math.abs(window.scrollY - expected) < 20,
+      expectedScroll,
+    );
     const actualScroll = await page.evaluate(() => window.scrollY);
     expect(Math.abs(actualScroll - expectedScroll)).toBeLessThan(20);
 
@@ -132,7 +147,9 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
     expect(page.url()).toBe(initialUrl);
   });
 
-  test('EN /en/our-project/ renders shell, hero, All only, empty-state message, no pagination', async ({ page }) => {
+  test('EN /en/our-project/ renders shell, hero, All only, empty-state message, no pagination', async ({
+    page,
+  }) => {
     await page.goto('/en/our-project/');
     await expect(page).toHaveURL(/\/en\/our-project\/$/);
 
@@ -499,17 +516,13 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
       // Date present
       const dateEl = page.locator('.qodef-info--date');
       await expect(dateEl).toBeVisible();
-      if (project.displayDate) {
-        await expect(dateEl).toContainText(project.displayDate);
-      }
+      await expect(dateEl).toContainText(project.displayDate!);
 
       // Sidebar with excerpt present
       const sidebar = page.locator('.col.large-3.small-12 .col-inner');
       await expect(sidebar).toBeVisible();
       await expect(sidebar.locator('h3')).toHaveText('Thông tin dự án');
-      if (project.summary) {
-        await expect(sidebar).toContainText(project.summary);
-      }
+      await expect(sidebar).toContainText(project.summary!);
     }
   });
 
@@ -544,13 +557,19 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
     await page.goto('/featured_item/truong-trung-hoc-pho-thong-huynh-thuc-khang/');
     const htkDate = page.locator('.qodef-info--date');
     await expect(htkDate).toContainText('Ngày 22 tháng 4 năm 2023');
+    await expect(htkDate.locator('.entry-date')).toHaveCount(0);
 
-    // 5. Many related (evc-athena has 39 related ids, capped at first 4)
+    // 5. Many related (evc-athena has 58 related ids, capped at first 4)
     await page.goto('/featured_item/evc-athena-cong-ty-tnhh-evc-athena/');
     const athenaRelated = page.locator('.portfolio-bottom .portfolio-related .col');
     await expect(athenaRelated).toHaveCount(4);
 
-    // 6. Unknown slug -> 404
+    // 6. No related (dsmart): section and heading still render, as source
+    await page.goto('/featured_item/giao-dien-dsmart-giai-phap-dieu-khien-xe-hoi-tren-smartphone/');
+    await expect(page.locator('.portfolio-bottom h4')).toHaveText('Dự án liên quan');
+    await expect(page.locator('.portfolio-bottom .portfolio-related .col')).toHaveCount(0);
+
+    // 7. Unknown slug -> 404
     const unknownRes = await page.goto('/featured_item/khong-ton-tai/');
     expect(unknownRes?.status()).toBe(404);
   });
@@ -636,4 +655,3 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
     });
   }
 });
-

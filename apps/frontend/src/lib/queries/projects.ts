@@ -97,7 +97,7 @@ export async function getProjectListingPage(
   const heroImage = heroImageId ? (assetMap.get(heroImageId) ?? null) : null;
   const bgImage = bgImageId ? (assetMap.get(bgImageId) ?? null) : null;
 
-    return {
+  return {
     projects,
     categories,
     thumbnailAssets: thumbnailIds.map((id) => assetMap.get(id)).filter(Boolean) as AssetRef[],
@@ -148,15 +148,15 @@ export async function getProjectDetail(
   const assetMap = new Map(assets.map((a) => [a.id, a]));
   const categoryMap = new Map(allCategories.map((c) => [c.id, c]));
 
-  const heroAsset = project.heroImageId ? assetMap.get(project.heroImageId) ?? null : null;
+  const heroAsset = project.heroImageId ? (assetMap.get(project.heroImageId) ?? null) : null;
   const galleryAssets = project.galleryIds
     .map((id) => assetMap.get(id))
     .filter((a): a is AssetRef => Boolean(a));
 
   const related: RelatedProjectCard[] = relatedCards.map((relProject) => {
-    const thumb = relProject.thumbnailId ? assetMap.get(relProject.thumbnailId) ?? null : null;
+    const thumb = relProject.thumbnailId ? (assetMap.get(relProject.thumbnailId) ?? null) : null;
     const catId = relProject.categoryIds[0];
-    const cat = catId ? categoryMap.get(catId) ?? null : null;
+    const cat = catId ? (categoryMap.get(catId) ?? null) : null;
     return {
       project: relProject,
       thumbnailAsset: thumb,

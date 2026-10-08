@@ -6,8 +6,6 @@ export interface RelatedProjectsProps {
 }
 
 export function RelatedProjects({ related }: RelatedProjectsProps) {
-  if (related.length === 0) return null;
-
   return (
     <div className="portfolio-bottom">
       <div className="row row-portcus">

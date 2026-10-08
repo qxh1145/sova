@@ -23,11 +23,7 @@ export function ProjectGallery({ galleryAssets }: ProjectGalleryProps) {
         <div className="row">
           <div className="col large-12">
             <div className="img-inner">
-              <img
-                style={{ borderRadius: '12px' }}
-                src={img.src}
-                alt={img.alt ?? ''}
-              />
+              <img style={{ borderRadius: '12px' }} src={img.src} alt={img.alt ?? ''} />
             </div>
           </div>
         </div>
@@ -44,11 +40,7 @@ export function ProjectGallery({ galleryAssets }: ProjectGalleryProps) {
         {galleryAssets.map((img) => (
           <div className="img col" key={img.id}>
             <div className="img-inner">
-              <img
-                style={{ borderRadius: '12px' }}
-                src={img.src}
-                alt={img.alt ?? ''}
-              />
+              <img style={{ borderRadius: '12px' }} src={img.src} alt={img.alt ?? ''} />
             </div>
           </div>
         ))}

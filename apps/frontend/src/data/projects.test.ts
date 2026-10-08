@@ -258,7 +258,22 @@ test('getProjectDetail returns project, assets, terms, related cards or null for
   expect(centro!.project.slug).toBe('centro-noi-that-cao-cap-centro-chau-au');
   expect(centro!.galleryAssets).toHaveLength(0);
   expect(centro!.terms?.id).toBe('project-terms-1');
-  expect(centro!.related).toHaveLength(4); // capped at first 4
+  expect(centro!.related.map((r) => r.project.id)).toEqual(
+    centro!.project.relatedProjectIds.slice(0, 4),
+  );
 });
 
+test('getProjectDetail omits unresolved terms and hero asset without throwing', async () => {
+  const { getProjectDetail } = await import('@/lib/queries/projects');
+  const base = projects.find((p) => p.slug === 'centro-noi-that-cao-cap-centro-chau-au')!;
+  const repo = createMockRepository({
+    projects: [{ ...base, deliveryTermsId: 'missing-terms', heroImageId: 'missing-asset' }],
+    projectCategories,
+    utilityContent,
+    assets,
+  } as unknown as ContentData);
 
+  const detail = await getProjectDetail(base.slug, repo);
+  expect(detail!.terms).toBeNull();
+  expect(detail!.heroAsset).toBeNull();
+});
