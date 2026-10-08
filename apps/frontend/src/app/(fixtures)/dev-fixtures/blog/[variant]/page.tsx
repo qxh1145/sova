@@ -7,20 +7,23 @@ import { PostMeta } from '@/app/(site)/(vi)/[slug]/_components/PostMeta';
 import { ArticleBody } from '@/app/(site)/(vi)/[slug]/_components/ArticleBody';
 import { RelatedPosts } from '@/app/(site)/(vi)/[slug]/_components/RelatedPosts';
 import { getShellProps } from '@/lib/queries/site';
-import { getPostDetail } from '@/lib/queries/posts';
+import { getBlogSearchPage, getPostDetail } from '@/lib/queries/posts';
 import { createScenarioRepository } from '@/dev/scenarios';
-import type { Locale } from '@/types/content';
+import { createMockRepository } from '@/lib/repositories/mock';
+import { fixtures } from '@/dev/fixtures';
+import { BlogListView } from '@/components/blog/BlogListView';
+import type { Locale, Post } from '@/types/content';
 
 export const dynamic = 'force-dynamic';
 
-const VALID_VARIANTS = new Set(['happy-path', 'missing-media', 'error']);
+const VALID_VARIANTS = new Set(['happy-path', 'missing-media', 'error', 'search']);
 
 export default async function DevFixtureBlogPage({
   params,
   searchParams,
 }: {
   params: Promise<{ variant: string }>;
-  searchParams?: Promise<{ locale?: string }>;
+  searchParams?: Promise<{ locale?: string; s?: string; page?: string }>;
 }) {
   if (process.env.FIXTURE_HARNESS !== '1') {
     notFound();
@@ -31,8 +34,53 @@ export default async function DevFixtureBlogPage({
     notFound();
   }
 
-  const { locale: rawLocale } = (await searchParams) ?? {};
+  const { locale: rawLocale, s: query = 'Fixture', page: pageStr } = (await searchParams) ?? {};
   const locale: Locale = rawLocale === 'en' ? 'en' : 'vi';
+
+  if (variant === 'search') {
+    const draftPost: Post = {
+      id: 'post-draft-fixture',
+      locale: 'vi',
+      path: '/draft-fixture-post',
+      slug: 'draft-fixture-post',
+      title: 'Fixture Draft Post Title',
+      sources: [{ file: 'fixture', line: 1 }],
+      seo: { title: 'Fixture Draft', canonicalPath: '/draft-fixture-post' },
+      categoryIds: [],
+      thumbnailId: 'asset-1',
+      excerpt: 'Fixture Draft excerpt',
+      body: {
+        format: 'sanitized-html',
+        html: '<p>Fixture draft body</p>',
+        assetIds: [],
+        sources: [{ file: 'fixture', line: 1 }],
+      },
+      author: { id: 'author-1', name: 'Fixture' },
+      relatedPostIds: [],
+      editorial: { status: 'draft', updatedAt: '2026-10-08', revision: 1 },
+    };
+
+    const repo = createMockRepository({
+      ...fixtures,
+      posts: [...fixtures.posts, draftPost],
+    });
+
+    const pageNum = pageStr && /^[1-9]\d*$/.test(pageStr) ? parseInt(pageStr, 10) : 1;
+    const [shell, searchData] = await Promise.all([
+      getShellProps(locale, repo),
+      getBlogSearchPage({ query, page: pageNum }, repo),
+    ]);
+
+    if (!searchData) {
+      notFound();
+    }
+
+    return (
+      <SiteShell {...shell}>
+        <BlogListView {...searchData} />
+      </SiteShell>
+    );
+  }
 
   if (variant === 'error') {
     await getPostDetail('fixture-post', createScenarioRepository('error'));

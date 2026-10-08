@@ -245,6 +245,8 @@ export const blogListingCopy = {
     categoriesTitle: 'Danh mục bài viết',
     searchPlaceholder: 'Search…',
     searchSubmit: 'Gửi',
+    searchResultsTitle: 'Kết quả tìm kiếm: ',
+    searchNoResults: 'Không tìm thấy bài viết phù hợp.',
     pagination: {
       nav: 'Phân trang bài viết',
       prev: 'Trang trước',
@@ -260,6 +262,8 @@ export const blogListingCopy = {
     categoriesTitle: 'Categories',
     searchPlaceholder: 'Search…',
     searchSubmit: 'Submit',
+    searchResultsTitle: 'Search results: ',
+    searchNoResults: 'No matching posts found.',
     pagination: {
       nav: 'Post pagination',
       prev: 'Previous page',
