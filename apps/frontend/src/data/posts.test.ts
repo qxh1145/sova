@@ -18,6 +18,7 @@ const assetById = new Map(assets.map((a) => [a.id, a]));
 test('27 VI posts and 6 categories with the sidebar counts', () => {
   expect(posts).toHaveLength(27);
   expect(posts.every((p) => p.locale === 'vi')).toBe(true);
+  expect(posts.every((p) => p.editorial.status === 'published')).toBe(true);
   expect(Object.fromEntries(postCategories.map((c) => [c.slug, c.sourceDisplayCount]))).toEqual({
     'creative-branding': 1,
     'goc-nhin-website': 6,

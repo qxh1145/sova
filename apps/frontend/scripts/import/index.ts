@@ -230,6 +230,69 @@ import type { ListingSettings, ListingSnapshot } from '@/types/content';
 
 export const listingSettings: ListingSettings[] = ${JSON.stringify(page.listingSettings)};
 export const listingSnapshots: ListingSnapshot[] = ${JSON.stringify(snapshots)};
+
+export const blogListingCopy = {
+  vi: {
+    title: 'Góc nhìn',
+    breadcrumbHome: 'Trang chủ',
+    breadcrumbBlog: 'Góc nhìn',
+    readMore: 'Đọc tiếp →',
+    searchTitle: 'Tìm kiếm',
+    categoriesTitle: 'Danh mục bài viết',
+    searchPlaceholder: 'Search…',
+    searchSubmit: 'Gửi',
+    pagination: {
+      nav: 'Phân trang bài viết',
+      prev: 'Trang trước',
+      next: 'Trang tiếp theo',
+    },
+  },
+  en: {
+    title: 'Insight',
+    breadcrumbHome: 'Home',
+    breadcrumbBlog: 'Insight',
+    readMore: 'Read more →',
+    searchTitle: 'Search',
+    categoriesTitle: 'Categories',
+    searchPlaceholder: 'Search…',
+    searchSubmit: 'Submit',
+    pagination: {
+      nav: 'Post pagination',
+      prev: 'Previous page',
+      next: 'Next page',
+    },
+  },
+};
+
+export const blogDetailCopy = {
+  breadcrumbHome: 'Trang chủ',
+  breadcrumbBlog: 'Góc nhìn',
+  breadcrumbCurrent: 'Chi tiết',
+  headingBackgroundImage: '/wp-content/uploads/2024/03/ec9c55cfcb4d0c64ecafd52d957c13e9.png',
+};
+
+export const projectListingCopy = {
+  vi: {
+    filterAll: 'Tất cả',
+    emptyMessage: 'Không có dự án nào.',
+    loadingMessage: 'Đang tải...',
+    pagination: {
+      nav: 'Phân trang dự án',
+      prev: 'Trang trước',
+      next: 'Trang tiếp theo',
+    },
+  },
+  en: {
+    filterAll: 'All',
+    emptyMessage: 'No projects found.',
+    loadingMessage: 'Đang tải...',
+    pagination: {
+      nav: 'Project pagination',
+      prev: 'Previous page',
+      next: 'Next page',
+    },
+  },
+};
 `,
   );
   await writeTs(

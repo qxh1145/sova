@@ -23,6 +23,7 @@ describe('LatestPosts component', () => {
     thumbnailId,
     author: { id: 'author-1', name: 'Author' },
     relatedPostIds: [],
+    editorial: { status: 'published', updatedAt: '2023-10-01', revision: 1 },
     seo: { title, canonicalPath: path },
     sources: [],
   });

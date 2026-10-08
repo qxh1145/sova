@@ -67,12 +67,36 @@ export const listingSettings: ListingSettings[] = [
   {
     routeId: 'route-du-an',
     heading: { title: 'Dự án đồng hành cùng Sova' },
-    hero: { headingLines: ['Dự án đồng hành', 'cùng Sova'] },
+    hero: {
+      headingLines: ['Dự án đồng hành', 'cùng Sova'],
+      description: {
+        format: 'sanitized-html',
+        html: 'Khám phá tư duy thiết kế và triết lý sáng tạo được chúng tôi gửi gắm trong từng dự án.',
+        assetIds: [],
+        sources: [{ file: 'du-an/index.html', line: 709 }],
+      },
+      cta: { label: 'Kết nối ngay →', href: '/lien-he/' },
+      imageId: 'asset-f85d3636d6',
+      bgImageId: 'asset-40c494b5f4',
+      breadcrumb: [{ label: 'Trang chủ', href: '/' }, { label: 'Dự án' }],
+    },
   },
   {
     routeId: 'route-en--our-project',
     heading: { title: 'Projects Partnered with Sova' },
-    hero: { headingLines: ['Projects Partnered', 'with Sova'] },
+    hero: {
+      headingLines: ['Projects Partnered', 'with Sova'],
+      description: {
+        format: 'sanitized-html',
+        html: 'Explore the design mindset and creative philosophy that we embed in every project.',
+        assetIds: [],
+        sources: [{ file: 'en/our-project/index.html', line: 708 }],
+      },
+      cta: { label: 'Connect now →', href: '/lien-he/' },
+      imageId: 'asset-f85d3636d6',
+      bgImageId: 'asset-40c494b5f4',
+      breadcrumb: [{ label: 'Home', href: '/' }, { label: 'Projects' }],
+    },
   },
   {
     routeId: 'route-featured_item',
@@ -164,14 +188,35 @@ export const listingSnapshots: ListingSnapshot[] = [
 ];
 
 export const blogListingCopy = {
-  title: 'Góc nhìn',
-  breadcrumbHome: 'Trang chủ',
-  breadcrumbBlog: 'Góc nhìn',
-  readMore: 'Đọc tiếp →',
-  pagination: {
-    nav: 'Phân trang bài viết',
-    prev: 'Trang trước',
-    next: 'Trang tiếp theo',
+  vi: {
+    title: 'Góc nhìn',
+    breadcrumbHome: 'Trang chủ',
+    breadcrumbBlog: 'Góc nhìn',
+    readMore: 'Đọc tiếp →',
+    searchTitle: 'Tìm kiếm',
+    categoriesTitle: 'Danh mục bài viết',
+    searchPlaceholder: 'Search…',
+    searchSubmit: 'Gửi',
+    pagination: {
+      nav: 'Phân trang bài viết',
+      prev: 'Trang trước',
+      next: 'Trang tiếp theo',
+    },
+  },
+  en: {
+    title: 'Insight',
+    breadcrumbHome: 'Home',
+    breadcrumbBlog: 'Insight',
+    readMore: 'Read more →',
+    searchTitle: 'Search',
+    categoriesTitle: 'Categories',
+    searchPlaceholder: 'Search…',
+    searchSubmit: 'Submit',
+    pagination: {
+      nav: 'Post pagination',
+      prev: 'Previous page',
+      next: 'Next page',
+    },
   },
 };
 
@@ -180,4 +225,27 @@ export const blogDetailCopy = {
   breadcrumbBlog: 'Góc nhìn',
   breadcrumbCurrent: 'Chi tiết',
   headingBackgroundImage: '/wp-content/uploads/2024/03/ec9c55cfcb4d0c64ecafd52d957c13e9.png',
+};
+
+export const projectListingCopy = {
+  vi: {
+    filterAll: 'Tất cả',
+    emptyMessage: 'Không có dự án nào.',
+    loadingMessage: 'Đang tải...',
+    pagination: {
+      nav: 'Phân trang dự án',
+      prev: 'Trang trước',
+      next: 'Trang tiếp theo',
+    },
+  },
+  en: {
+    filterAll: 'All',
+    emptyMessage: 'No projects found.',
+    loadingMessage: 'Đang tải...',
+    pagination: {
+      nav: 'Project pagination',
+      prev: 'Previous page',
+      next: 'Next page',
+    },
+  },
 };
