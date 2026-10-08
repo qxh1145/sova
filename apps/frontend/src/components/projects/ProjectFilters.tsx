@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import type { AssetRef, Locale, ProjectCategory } from '@/types/content';
 import { ProjectCard, type ProjectCardData } from './ProjectCard';
-import { ProjectGrid } from './ProjectGrid';
+import { ProjectGrid, type ProjectGridProps } from './ProjectGrid';
 import { Pagination, type PaginationLabels } from '@/components/ui/Pagination';
 
 export interface ProjectFiltersProps {
@@ -18,9 +18,11 @@ export interface ProjectFiltersProps {
   loadingMessage?: string;
   filterAllLabel?: string;
   paginationLabels?: PaginationLabels;
+  /** Cards per page; absent shows every card and renders no pagination wrapper. */
+  pageSize?: number;
+  wrapperId?: string;
+  grid?: Omit<ProjectGridProps, 'children'>;
 }
-
-const PAGE_SIZE = 6;
 
 export function ProjectFilters({
   projects,
@@ -37,6 +39,9 @@ export function ProjectFilters({
     prev: 'Trang trước',
     next: 'Trang tiếp theo',
   },
+  pageSize,
+  wrapperId = 'portfolio-wrapper',
+  grid = { id: 'portfolio-results' },
 }: ProjectFiltersProps) {
   const [selectedSlug, setSelectedSlug] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -60,12 +65,13 @@ export function ProjectFilters({
     return projects.filter((p) => p.categoryIds.includes(matchingCat.id));
   }, [projects, selectedSlug, categories]);
 
-  const totalPages = Math.ceil(filteredProjects.length / PAGE_SIZE) || 1;
+  const totalPages = pageSize ? Math.ceil(filteredProjects.length / pageSize) || 1 : 1;
 
   const paginatedProjects = useMemo(() => {
-    const start = (currentPage - 1) * PAGE_SIZE;
-    return filteredProjects.slice(start, start + PAGE_SIZE);
-  }, [filteredProjects, currentPage]);
+    if (!pageSize) return filteredProjects;
+    const start = (currentPage - 1) * pageSize;
+    return filteredProjects.slice(start, start + pageSize);
+  }, [filteredProjects, currentPage, pageSize]);
 
   const handleFilterClick = (slug: string) => {
     setSelectedSlug(slug);
@@ -74,7 +80,7 @@ export function ProjectFilters({
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    const wrapper = document.getElementById('portfolio-wrapper');
+    const wrapper = document.getElementById(wrapperId);
     if (wrapper) {
       const top = wrapper.getBoundingClientRect().top + window.scrollY - 100;
       window.scrollTo({ top, behavior: 'smooth' });
@@ -82,7 +88,7 @@ export function ProjectFilters({
   };
 
   return (
-    <div id="portfolio-wrapper" className="portfolio-element-wrapper has-filtering">
+    <div id={wrapperId} className="portfolio-element-wrapper has-filtering">
       <div className="container mb-half">
         <ul className="nav nav-left nav-center nav-line-grow nav-uppercase filter-nav">
           <li className={selectedSlug === '' ? 'active' : ''}>
@@ -115,7 +121,7 @@ export function ProjectFilters({
         </ul>
       </div>
 
-      <ProjectGrid id="portfolio-results">
+      <ProjectGrid {...grid}>
         {loading ? (
           <p>{loadingMessage}</p>
         ) : filteredProjects.length === 0 ? (
@@ -138,16 +144,18 @@ export function ProjectFilters({
         )}
       </ProjectGrid>
 
-      <div className="pagination-wrapper text-center mt-20" id="portfolio-pagination">
-        {!loading && filteredProjects.length > 0 && totalPages > 1 ? (
-          <Pagination
-            current={currentPage}
-            total={totalPages}
-            labels={paginationLabels}
-            onPageChange={handlePageChange}
-          />
-        ) : null}
-      </div>
+      {pageSize ? (
+        <div className="pagination-wrapper text-center mt-20" id="portfolio-pagination">
+          {!loading && filteredProjects.length > 0 && totalPages > 1 ? (
+            <Pagination
+              current={currentPage}
+              total={totalPages}
+              labels={paginationLabels}
+              onPageChange={handlePageChange}
+            />
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }

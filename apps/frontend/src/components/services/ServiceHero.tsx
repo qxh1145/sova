@@ -18,11 +18,17 @@ export interface ServiceHeroIds {
   headingText: string;
   /** Heading wrapper classes; defaults to `text kanit-font page_text_go`. */
   headingClass?: string;
+  /** `show-for-small` gap after the heading text (featured archives). */
+  headingGap?: string;
   gap1?: string;
   /** Second gap before the description (hosting). */
   gap1b?: string;
+  /** Classes on gap1b element; defaults to `gap-element clearfix`. */
+  gap1bClass?: string;
   descText?: string;
   gap2?: string;
+  /** Classes on gap2 element; defaults to `gap-element clearfix`. */
+  gap2Class?: string;
   /** Second, `hide-for-small` gap before the CTA (hosting). */
   gap2b?: string;
   ctaText?: string;
@@ -169,6 +175,156 @@ export const PROJECT_HERO_IDS_EN: ServiceHeroIds = {
   imageWrapper: 'image_1934375415',
 };
 
+/** Source: `featured_item/index.html` hero. */
+export const PROJECT_HERO_IDS_FEATURED: ServiceHeroIds = {
+  banner: 'banner-1513224978',
+  textBox: 'text-box-933037456',
+  textBoxY: 'y10',
+  row: 'row-770104952',
+  leftCol: 'col-1371196074',
+  breadcrumbText: 'text-4132634771',
+  headingText: 'text-1186201538',
+  headingGap: 'gap-1700866820',
+  gap1: 'gap-1510571818',
+  descText: 'text-1287495552',
+  gap2: 'gap-531889326',
+  ctaText: 'text-942492924',
+  rightCol: 'col-801607298',
+  imageWrapper: 'image_1041525302',
+};
+
+/** Source: `featured_item_category/branding/index.html` hero. */
+export const PROJECT_HERO_IDS_FEATURED_BRANDING: ServiceHeroIds = {
+  banner: 'banner-1437243260',
+  textBox: 'text-box-2054480237',
+  textBoxY: 'y10',
+  row: 'row-1965149933',
+  leftCol: 'col-1858177944',
+  breadcrumbText: 'text-1312901196',
+  headingText: 'text-3643032278',
+  headingGap: 'gap-163447323',
+  gap1: 'gap-776102485',
+  descText: 'text-3606226640',
+  gap2: 'gap-379604357',
+  ctaText: 'text-2918825896',
+  rightCol: 'col-762608738',
+  imageWrapper: 'image_537329827',
+};
+
+/** Source: `featured_item_category/mobile-app/index.html` hero. */
+export const PROJECT_HERO_IDS_FEATURED_MOBILE_APP: ServiceHeroIds = {
+  banner: 'banner-819223527',
+  textBox: 'text-box-1797028337',
+  textBoxY: 'y10',
+  row: 'row-1716046406',
+  leftCol: 'col-1040171774',
+  breadcrumbText: 'text-802611617',
+  headingText: 'text-4093867166',
+  headingGap: 'gap-447887585',
+  gap1: 'gap-147756381',
+  descText: 'text-2172446531',
+  gap2: 'gap-547783008',
+  ctaText: 'text-4736212',
+  rightCol: 'col-1536317594',
+  imageWrapper: 'image_1564171001',
+};
+
+/** Source: `featured_item_category/website/index.html` hero. */
+export const PROJECT_HERO_IDS_FEATURED_WEBSITE: ServiceHeroIds = {
+  banner: 'banner-669224451',
+  textBox: 'text-box-1637600246',
+  textBoxY: 'y10',
+  row: 'row-817686983',
+  leftCol: 'col-1898983928',
+  breadcrumbText: 'text-1129091476',
+  headingText: 'text-1283775997',
+  headingGap: 'gap-1582094197',
+  gap1: 'gap-627171400',
+  descText: 'text-3601946220',
+  gap2: 'gap-1512249916',
+  ctaText: 'text-3645802221',
+  rightCol: 'col-1550218319',
+  imageWrapper: 'image_1425400725',
+};
+
+export const SERVICE_HERO_IDS_EMAIL_VI: ServiceHeroIds = {
+  banner: 'banner-880688064',
+  textBox: 'text-box-597000131',
+  textBoxY: 'y10',
+  row: 'row-2053155899',
+  leftCol: 'col-760506537',
+  breadcrumbText: 'text-951094996',
+  headingText: 'text-424266418',
+  gap1: 'gap-2042908816',
+  descText: 'text-498730765',
+  gap2: 'gap-2007649633',
+  gap2Class: 'gap-element clearfix show-for-small',
+  gap2b: 'gap-335606629',
+  ctaText: 'text-911677094',
+  rightCol: 'col-180293630',
+  imageWrapper: 'image_1552379478',
+};
+
+export const SERVICE_HERO_IDS_EMAIL_EN: ServiceHeroIds = {
+  banner: 'banner-782456447',
+  textBox: 'text-box-866894448',
+  textBoxY: 'y10',
+  row: 'row-568955501',
+  leftCol: 'col-696292836',
+  breadcrumbText: 'text-2322921990',
+  headingText: 'text-3815375937',
+  gap1: 'gap-1350754616',
+  descText: 'text-2722962742',
+  gap2: 'gap-1782042057',
+  gap2Class: 'gap-element clearfix show-for-small',
+  gap2b: 'gap-898855605',
+  ctaText: 'text-2419020874',
+  rightCol: 'col-1117205165',
+  imageWrapper: 'image_1999389245',
+};
+
+export const SERVICE_HERO_IDS_STORAGE_VI: ServiceHeroIds = {
+  banner: 'banner-1255492643',
+  textBox: 'text-box-596276206',
+  textBoxY: 'y10',
+  row: 'row-371210678',
+  leftCol: 'col-1574168941',
+  topGap: 'gap-2067858221',
+  breadcrumbText: 'text-445793396',
+  headingText: 'text-4148275343',
+  gap1: 'gap-987932550',
+  gap1b: 'gap-1295344278',
+  gap1bClass: 'gap-element clearfix show-for-small',
+  descText: 'text-1453693104',
+  gap2: 'gap-161076987',
+  gap2Class: 'gap-element clearfix show-for-small',
+  gap2b: 'gap-1107479796',
+  ctaText: 'text-3990203095',
+  rightCol: 'col-912227582',
+  imageWrapper: 'image_1556659363',
+};
+
+export const SERVICE_HERO_IDS_STORAGE_EN: ServiceHeroIds = {
+  banner: 'banner-964121618',
+  textBox: 'text-box-193917254',
+  textBoxY: 'y10',
+  row: 'row-1304501646',
+  leftCol: 'col-901932855',
+  topGap: 'gap-1182039191',
+  breadcrumbText: 'text-1244128777',
+  headingText: 'text-700628076',
+  gap1: 'gap-1604216309',
+  gap1b: 'gap-474200673',
+  gap1bClass: 'gap-element clearfix show-for-small',
+  descText: 'text-1232967560',
+  gap2: 'gap-2132235472',
+  gap2Class: 'gap-element clearfix show-for-small',
+  gap2b: 'gap-193824015',
+  ctaText: 'text-315635000',
+  rightCol: 'col-411984466',
+  imageWrapper: 'image_1524550594',
+};
+
 export interface ServiceHeroProps {
   hero: HeroContent;
   heroImage?: AssetRef | null;
@@ -237,7 +393,8 @@ export function ServiceHero({
                                   </Fragment>
                                 ))}
                               </span>
-                              {breadcrumb.length > 0 && ` ${breadcrumb[breadcrumb.length - 1].label}`}
+                              {breadcrumb.length > 0 &&
+                                ` ${breadcrumb[breadcrumb.length - 1].label}`}
                               <br />
                             </p>
                           </div>
@@ -261,6 +418,13 @@ export function ServiceHero({
                             ))}
                           </h1>
                         </div>
+                        {ids.headingGap && (
+                          <div
+                            id={ids.headingGap}
+                            className="gap-element clearfix show-for-small"
+                            style={{ display: 'block', height: 'auto' }}
+                          />
+                        )}
                         {ids.gap1 && (
                           <div
                             id={ids.gap1}
@@ -271,7 +435,7 @@ export function ServiceHero({
                         {ids.gap1b && (
                           <div
                             id={ids.gap1b}
-                            className="gap-element clearfix"
+                            className={ids.gap1bClass ?? 'gap-element clearfix'}
                             style={{ display: 'block', height: 'auto' }}
                           />
                         )}
@@ -283,7 +447,7 @@ export function ServiceHero({
                         {ids.gap2 && (
                           <div
                             id={ids.gap2}
-                            className="gap-element clearfix"
+                            className={ids.gap2Class ?? 'gap-element clearfix'}
                             style={{ display: 'block', height: 'auto' }}
                           />
                         )}

@@ -224,6 +224,114 @@ export const SERVICE_ICON_CARDS_IDS_VPS_EN: ServiceIconCardsIds = {
   ],
 };
 
+export const SERVICE_ICON_CARDS_IDS_EMAIL_VI: ServiceIconCardsIds = {
+  section: 'section_136281833',
+  topGap: 'gap-1364641479',
+  headingRow: 'row-346934960',
+  headingCol: 'col-1550501874',
+  eyebrowText: 'text-992473170',
+  titleText: 'text-1144763253',
+  cardsRow: 'row-1167421910',
+  cards: [
+    {
+      col: 'col-1141403958',
+      title: 'text-852335787',
+      gap: 'gap-180605023',
+      body: 'text-2876889789',
+      iconWidth: 60,
+    },
+    {
+      col: 'col-1204001545',
+      title: 'text-2399578551',
+      gap: 'gap-2137935284',
+      body: 'text-4283565623',
+      iconWidth: 60,
+    },
+    {
+      col: 'col-78206038',
+      title: 'text-2837002741',
+      gap: 'gap-358573751',
+      body: 'text-1208467542',
+      iconWidth: 75,
+    },
+    {
+      col: 'col-317232088',
+      title: 'text-30817619',
+      gap: 'gap-1157681380',
+      body: 'text-708914999',
+      iconWidth: 60,
+    },
+    {
+      col: 'col-896913034',
+      title: 'text-2199902645',
+      gap: 'gap-1017448083',
+      body: 'text-3800039018',
+      iconWidth: 60,
+    },
+    {
+      col: 'col-1393005518',
+      title: 'text-423011978',
+      gap: 'gap-653773283',
+      body: 'text-3694642610',
+      iconWidth: 60,
+    },
+  ],
+};
+
+export const SERVICE_ICON_CARDS_IDS_EMAIL_EN: ServiceIconCardsIds = {
+  section: 'section_676662741',
+  topGap: 'gap-1514023911',
+  headingRow: 'row-832391331',
+  headingCol: 'col-969420034',
+  eyebrowText: 'text-59254589',
+  titleText: 'text-3811370133',
+  cardsRow: 'row-1937987832',
+  cards: [
+    {
+      col: 'col-234083237',
+      title: 'text-1376557375',
+      gap: 'gap-405684514',
+      body: 'text-2930920107',
+      iconWidth: 60,
+    },
+    {
+      col: 'col-710745342',
+      title: 'text-671656355',
+      gap: 'gap-2106350822',
+      body: 'text-2619531297',
+      iconWidth: 60,
+    },
+    {
+      col: 'col-1056316208',
+      title: 'text-4018043934',
+      gap: 'gap-1620866741',
+      body: 'text-4144741985',
+      iconWidth: 75,
+    },
+    {
+      col: 'col-577275401',
+      title: 'text-1294996525',
+      gap: 'gap-246876458',
+      body: 'text-2257666443',
+      iconWidth: 60,
+    },
+    {
+      col: 'col-1927245720',
+      title: 'text-2438175366',
+      gap: 'gap-1488257935',
+      body: 'text-516314287',
+      iconWidth: 60,
+    },
+    {
+      col: 'col-1686403941',
+      title: 'text-920438534',
+      gap: 'gap-111338782',
+      body: 'text-3062435420',
+      iconWidth: 60,
+    },
+  ],
+};
+
 export interface ServiceIconCardsProps {
   copy?: SectionCopy;
   benefits: Feature[];

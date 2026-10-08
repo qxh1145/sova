@@ -90,9 +90,11 @@ export const postCategories: (PostCategory & { sources: SourceRef[] })[] = ${JSO
   await writeTs(
     path.join(DATA, 'projects.ts'),
     `${HEADER}
-import type { Project } from '@/types/content';
+import type { EntityId, Project } from '@/types/content';
 
 export const projects: Project[] = ${JSON.stringify(project.projects)};
+
+export const featuredItemOrder: EntityId[] = ${JSON.stringify(project.featuredItemOrder)};
 `,
   );
   await writeTs(
@@ -232,14 +234,35 @@ export const listingSettings: ListingSettings[] = ${JSON.stringify(page.listingS
 export const listingSnapshots: ListingSnapshot[] = ${JSON.stringify(snapshots)};
 
 export const blogListingCopy = {
-  title: 'Góc nhìn',
-  breadcrumbHome: 'Trang chủ',
-  breadcrumbBlog: 'Góc nhìn',
-  readMore: 'Đọc tiếp →',
-  pagination: {
-    nav: 'Phân trang bài viết',
-    prev: 'Trang trước',
-    next: 'Trang tiếp theo',
+  vi: {
+    title: 'Góc nhìn',
+    breadcrumbHome: 'Trang chủ',
+    breadcrumbBlog: 'Góc nhìn',
+    readMore: 'Đọc tiếp →',
+    searchTitle: 'Tìm kiếm',
+    categoriesTitle: 'Danh mục bài viết',
+    searchPlaceholder: 'Search…',
+    searchSubmit: 'Gửi',
+    pagination: {
+      nav: 'Phân trang bài viết',
+      prev: 'Trang trước',
+      next: 'Trang tiếp theo',
+    },
+  },
+  en: {
+    title: 'Insight',
+    breadcrumbHome: 'Home',
+    breadcrumbBlog: 'Insight',
+    readMore: 'Read more →',
+    searchTitle: 'Search',
+    categoriesTitle: 'Categories',
+    searchPlaceholder: 'Search…',
+    searchSubmit: 'Submit',
+    pagination: {
+      nav: 'Post pagination',
+      prev: 'Previous page',
+      next: 'Next page',
+    },
   },
 };
 

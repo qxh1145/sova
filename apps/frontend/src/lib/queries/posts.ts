@@ -56,6 +56,14 @@ export function searchPosts(
   return repository.searchPosts(input);
 }
 
+export interface BlogListingPageInput {
+  routeId?: string;
+  category?: string;
+  page?: number;
+  pageSize?: number;
+  locale?: Locale;
+}
+
 export interface BlogListingPageData {
   posts: Post[];
   thumbnailAssets: AssetRef[];
@@ -64,17 +72,51 @@ export interface BlogListingPageData {
   total: number;
   totalPages: number;
   settings: ListingSettings | null;
-  copy: typeof blogListingCopy;
+  categories: (PostCategory & { count: number })[];
+  basePath: string;
+  copy: (typeof blogListingCopy)['vi'] | (typeof blogListingCopy)['en'];
 }
 
 export async function getBlogListingPage(
-  page = 1,
-  pageSize = 6,
+  input: BlogListingPageInput = {},
   repository: ContentRepository = getRepository(),
-): Promise<BlogListingPageData> {
-  const [result, settings] = await Promise.all([
-    repository.listPosts({ locale: 'vi', page, pageSize }),
-    repository.getListingSettings('route-goc-nhin'),
+): Promise<BlogListingPageData | null> {
+  const { page = 1, pageSize = 6, locale = 'vi', category } = input;
+
+  const routes = await repository.listRoutes();
+
+  let routeId = input.routeId;
+  let targetRoute: (typeof routes)[0] | undefined;
+
+  if (routeId) {
+    targetRoute = routes.find((r) => r.id === routeId);
+  } else if (category) {
+    const catPath = page === 1 ? `/${category}/` : `/${category}/page/${page}/`;
+    targetRoute = routes.find((r) => r.locale === locale && r.path === catPath);
+    if (targetRoute) {
+      routeId = targetRoute.id;
+    }
+  } else if (locale === 'en') {
+    targetRoute = routes.find((r) => r.locale === 'en' && r.path === '/en/insight/');
+    if (targetRoute) {
+      routeId = targetRoute.id;
+    }
+  } else {
+    const gocNhinPath = page === 1 ? '/goc-nhin/' : `/goc-nhin/page/${page}/`;
+    targetRoute = routes.find((r) => r.locale === 'vi' && r.path === gocNhinPath);
+    if (targetRoute) {
+      routeId = targetRoute.id;
+    }
+  }
+
+  if (!targetRoute || targetRoute.kind !== 'post-list') {
+    return null;
+  }
+
+  const [result, settings, categories] = await Promise.all([
+    repository.listPosts({ locale, category, page, pageSize }),
+    routeId ? repository.getListingSettings(routeId) : null,
+    repository.getPostCategories(locale),
   ]);
 
   const thumbnailIds = result.items
@@ -84,6 +126,9 @@ export async function getBlogListingPage(
   const thumbnailAssets = thumbnailIds.length ? await repository.getAssets(thumbnailIds) : [];
   const totalPages = result.pageSize > 0 ? Math.ceil(result.total / result.pageSize) : 1;
 
+  const basePath = category ? `/${category}/` : locale === 'en' ? '/en/insight/' : '/goc-nhin/';
+  const copy = blogListingCopy[locale];
+
   return {
     posts: result.items,
     thumbnailAssets,
@@ -92,7 +137,9 @@ export async function getBlogListingPage(
     total: result.total,
     totalPages,
     settings,
-    copy: blogListingCopy,
+    categories,
+    basePath,
+    copy,
   };
 }
 

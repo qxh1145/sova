@@ -191,5 +191,24 @@ export function importProjects(erasDir: string, registry: AssetRegistry, stats: 
   for (const project of projects)
     project.relatedProjectIds = project.relatedProjectIds.map((slug) => idBySlug.get(slug)!);
 
-  return { projects, categories, terms };
+  let featuredItemOrder: EntityId[] = [];
+  const featuredItemArchive = path.join(erasDir, 'featured_item/index.html');
+  if (existsSync(featuredItemArchive)) {
+    const { root } = load(erasDir, 'featured_item/index.html');
+    const cols = root.querySelectorAll('div.col[data-terms]');
+    featuredItemOrder = cols
+      .map((col) => {
+        const href = col.querySelector('a[href]')?.getAttribute('href') || '';
+        const slug = href
+          .replace(/^\.\.\/featured_item\//, '')
+          .replace(/\/index\.html$/, '')
+          .replace(/^\/featured_item\//, '')
+          .replace(/\/$/, '');
+        return idBySlug.get(slug);
+      })
+      .filter((id): id is EntityId => Boolean(id));
+  }
+
+  return { projects, categories, terms, featuredItemOrder };
 }
+
