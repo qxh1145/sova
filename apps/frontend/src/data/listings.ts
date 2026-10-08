@@ -273,6 +273,7 @@ export const blogDetailCopy = {
   breadcrumbBlog: 'Góc nhìn',
   breadcrumbCurrent: 'Chi tiết',
   headingBackgroundImage: '/wp-content/uploads/2024/03/ec9c55cfcb4d0c64ecafd52d957c13e9.png',
+  relatedTitle: 'Bài viết liên quan:',
 };
 
 export const projectListingCopy = {

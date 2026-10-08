@@ -1,10 +1,15 @@
-import { expect, expectNoDuplicateIds, isAllowedUrl, test } from './fixtures';
+import { expect, expectNoDuplicateIds, STAGING, test } from './fixtures';
 import { assets } from '../../src/data/assets';
 import { posts } from '../../src/data/posts';
 import { listingSnapshots } from '../../src/data/listings';
 
+import { routes } from '../../src/data/routes';
+
 const postMap = new Map(posts.map((p) => [p.id, p]));
 const assetMap = new Map(assets.map((a) => [a.id, a]));
+const postDetailRoutePaths = new Set(
+  routes.filter((r) => r.kind === 'post-detail').map((r) => r.path),
+);
 
 test.describe('Blog listing and post detail', () => {
   test('Listing /goc-nhin/ renders 6 cards in order, pagination items, and navigates to detail', async ({
@@ -81,14 +86,9 @@ test.describe('Blog listing and post detail', () => {
     expect(res?.status()).toBe(404);
   });
 
-  test('All 27 post paths render title, hero image, meta and body', async ({ page }) => {
+  test('All 27 post paths render title, hero image, meta, rich media, and related posts', async ({ page }) => {
     expect(posts).toHaveLength(27);
-    // Some post bodies hotlink source images (e.g. mona.media, registered in data/assets.ts).
-    // Abort them here so this content check does not trip the fixture's external-request guard.
-    await page.route(
-      (url) => !isAllowedUrl(url.href),
-      (route) => (route.request().resourceType() === 'image' ? route.abort() : route.fallback()),
-    );
+
     for (const post of posts) {
       const res = await page.goto(post.path);
       expect(res?.status(), `Status 200 for ${post.path}`).toBe(200);
@@ -99,10 +99,57 @@ test.describe('Blog listing and post detail', () => {
       await expect(heroImg).toHaveAttribute('fetchpriority', 'high');
       await expect(page.locator('.blog-single .meta .author')).toHaveText(post.author.name);
       await expect(page.locator('.blog-single .meta .date')).toHaveText(post.displayDate!);
-      const bodyText = await page
-        .locator('.blog-single .col.large-12 > div:not(.post-image):not(.meta)')
-        .innerText();
+      const bodyLocator = page.locator('.blog-single .col.large-12 > div:not(.post-image):not(.meta):not(.relatedcat)');
+      const bodyText = await bodyLocator.innerText();
       expect(bodyText.trim().length, `Body text for ${post.path}`).toBeGreaterThan(0);
+
+      // Verify DOM counts of rich content match post.body.html tag counts
+      const html = post.body.html;
+      const expectedTables = (html.match(/<table\b[^>]*>/gi) || []).length;
+      const expectedFigures = (html.match(/<figure\b[^>]*>/gi) || []).length;
+      const expectedBlockquotes = (html.match(/<blockquote\b[^>]*>/gi) || []).length;
+      const expectedVideos = (html.match(/<video\b[^>]*>/gi) || []).length;
+
+      await expect(bodyLocator.locator('table')).toHaveCount(expectedTables);
+      await expect(bodyLocator.locator('figure')).toHaveCount(expectedFigures);
+      await expect(bodyLocator.locator('blockquote')).toHaveCount(expectedBlockquotes);
+      await expect(bodyLocator.locator('video')).toHaveCount(expectedVideos);
+
+      // Related posts section verification
+      const relatedSection = page.locator('.blog-single .relatedcat');
+      await expect(relatedSection).toBeVisible();
+
+      const expectedRelatedCount = post.relatedPostIds.length;
+      const relatedCards = relatedSection.locator('.related-post-item');
+      await expect(relatedCards).toHaveCount(expectedRelatedCount);
+
+      if (expectedRelatedCount === 0) {
+        await expect(relatedSection.locator('.title-lienquan')).toHaveCount(0);
+      } else {
+        await expect(relatedSection.locator('.title-lienquan')).toHaveText('Bài viết liên quan:');
+
+        for (let i = 0; i < expectedRelatedCount; i++) {
+          const card = relatedCards.nth(i);
+          const relPostId = post.relatedPostIds[i];
+          const relPost = postMap.get(relPostId)!;
+
+          await expect(card).toHaveClass(new RegExp(`item-${i + 1}`));
+          await expect(card.locator('h5')).toHaveText(relPost.title);
+
+          const link = card.locator('a');
+          await expect(link).toHaveAttribute('href', relPost.path);
+          await expect(link).toHaveAttribute('title', relPost.title);
+          expect(postDetailRoutePaths.has(relPost.path), `${relPost.path} is a post-detail route`).toBe(true);
+
+          const relThumbId = relPost.thumbnailId ?? relPost.featuredImageId;
+          const relThumbAsset = relThumbId ? assetMap.get(relThumbId) : null;
+          if (relThumbAsset && relThumbAsset.status !== 'missing' && relThumbAsset.src) {
+            await expect(card.locator('img')).toHaveAttribute('src', relThumbAsset.src);
+          } else {
+            await expect(card.locator('img')).toHaveCount(0);
+          }
+        }
+      }
     }
   });
 
@@ -318,5 +365,71 @@ test.describe('Blog listing and post detail', () => {
     const res = await page.goto('/goc-nhin');
     expect(page.url()).toMatch(/\/goc-nhin\/$/);
     expect(res?.status()).toBe(200);
+  });
+
+  test('Dev-fixture happy-path renders hero, body media, and related post card', async ({
+    page,
+  }) => {
+    test.skip(STAGING, 'Dev fixtures are not deployed to staging');
+
+    await page.goto('/dev-fixtures/blog/happy-path');
+    await expect(page.locator('h1.cs-page_title')).toHaveText('Fixture');
+
+    // Hero image present
+    const heroImg = page.locator('.blog-single .post-image img');
+    await expect(heroImg).toHaveAttribute('src', '/fixture.png');
+
+    // Body media present
+    const bodyLocator = page.locator(
+      '.blog-single .col.large-12 > div:not(.post-image):not(.meta):not(.relatedcat)',
+    );
+    await expect(bodyLocator.locator('img[src="/fixture.png"]')).toBeVisible();
+    await expect(bodyLocator.locator('video source[src="/fixture-video.mp4"]')).toBeAttached();
+
+    // Related card present with thumbnail
+    const relatedSection = page.locator('.blog-single .relatedcat');
+    await expect(relatedSection.locator('.related-post-item')).toHaveCount(1);
+    const relatedCard = relatedSection.locator('.related-post-item.item-1');
+    await expect(relatedCard.locator('h5')).toHaveText('Fixture 2');
+    await expect(relatedCard.locator('img')).toHaveAttribute('src', '/fixture.png');
+  });
+
+  test('Dev-fixture missing-media omits hero, related card img, and marks body media missing with no missing requests', async ({
+    page,
+  }) => {
+    test.skip(STAGING, 'Dev fixtures are not deployed to staging');
+
+    const requestedUrls: string[] = [];
+    page.on('request', (req) => requestedUrls.push(req.url()));
+
+    await page.goto('/dev-fixtures/blog/missing-media');
+    await expect(page.locator('h1.cs-page_title')).toHaveText('Fixture');
+
+    // Hero omitted
+    await expect(page.locator('.blog-single .post-image img')).toHaveCount(0);
+
+    // Body media elements kept, src dropped, marked missing
+    const bodyLocator = page.locator(
+      '.blog-single .col.large-12 > div:not(.post-image):not(.meta):not(.relatedcat)',
+    );
+    const missingImgs = bodyLocator.locator('img[data-media-status="missing"]');
+    await expect(missingImgs).toHaveCount(1);
+    await expect(missingImgs).not.toHaveAttribute('src');
+
+    const missingSources = bodyLocator.locator('source[data-media-status="missing"]');
+    await expect(missingSources).toHaveCount(1);
+    await expect(missingSources).not.toHaveAttribute('src');
+
+    // Related card has title and link, but no img
+    const relatedSection = page.locator('.blog-single .relatedcat');
+    await expect(relatedSection.locator('.related-post-item')).toHaveCount(1);
+    const relatedCard = relatedSection.locator('.related-post-item.item-1');
+    await expect(relatedCard.locator('h5')).toHaveText('Fixture 2');
+    await expect(relatedCard.locator('a')).toHaveAttribute('href', /^\/fixture-post-2\/?$/);
+    await expect(relatedCard.locator('img')).toHaveCount(0);
+
+    // No request to missing sources
+    expect(requestedUrls.some((u) => u.includes('fixture.png'))).toBe(false);
+    expect(requestedUrls.some((u) => u.includes('fixture-video.mp4'))).toBe(false);
   });
 });
