@@ -28,7 +28,13 @@ export const storageServices: Service[] = [
         sources: [{ file: 'giai-phap-luu-tru/index.html', line: 716 }],
       },
       imageId: 'asset-b539c5339b',
+      bgImageId: 'asset-40c494b5f4',
       cta: { label: 'Kết nối ngay →', href: '/lien-he/' },
+      breadcrumb: [
+        { label: 'Trang chủ', href: '/' },
+        { label: 'Dịch vụ' },
+        { label: 'Giải pháp lưu trữ' },
+      ],
     },
     benefits: [],
     faqs: [
@@ -60,6 +66,17 @@ export const storageServices: Service[] = [
       {
         id: 'service-storage-vi-offering-hosting-doanh-nghiep',
         title: 'Hosting Doanh Nghiệp',
+        slideTitle: 'Business hosting',
+        items: [
+          'Hạ tầng mạnh mẽ',
+          'An toàn – Bảo mật',
+          'Hỗ trợ liên tục 24/7/365',
+          'Cài đặt website nhanh chóng',
+          'Truy xuất nhanh – Tăng tốc xử lý',
+          'Backup dữ liệu hàng tuần',
+          'Trải nghiệm 03 ngày miễn phí',
+        ],
+        cta: { label: 'Xem chi tiết\u00a0 \u00a0→ ', routeId: 'route-hosting-doanh-nghiep' },
         content: {
           format: 'sanitized-html',
           html: '<ul><li>Hạ tầng mạnh mẽ</li><li>An toàn – Bảo mật</li><li>Hỗ trợ liên tục 24/7/365</li><li>Cài đặt website nhanh chóng</li><li>Truy xuất nhanh – Tăng tốc xử lý</li><li>Backup dữ liệu hàng tuần</li><li>Trải nghiệm 03 ngày miễn phí</li></ul><p><a href="/hosting-doanh-nghiep/">Xem chi tiết   → </a></p>',
@@ -71,6 +88,17 @@ export const storageServices: Service[] = [
       {
         id: 'service-storage-vi-offering-vps-doanh-nghiep',
         title: 'VPS Doanh Nghiệp',
+        slideTitle: 'Cloud VPS',
+        items: [
+          'Tối ưu hoá vì tốc độ',
+          'Máy chủ hiệu năng cao',
+          'Hỗ trợ liên tục 24/7/365',
+          'Phục vụ tận tình, chu đáo',
+          'SSD Storages/NVMe Enterprise',
+          'Backup dữ liệu hàng tuần',
+          'Trải nghiệm 03 ngày miễn phí',
+        ],
+        cta: { label: 'Xem chi tiết\u00a0 \u00a0→ ', routeId: 'route-vps-doanh-nghiep' },
         content: {
           format: 'sanitized-html',
           html: '<ul><li>Tối ưu hoá vì tốc độ</li><li>Máy chủ hiệu năng cao</li><li>Hỗ trợ liên tục 24/7/365</li><li>Phục vụ tận tình, chu đáo</li><li>SSD Storages/NVMe Enterprise</li><li>Backup dữ liệu hàng tuần</li><li>Trải nghiệm 03 ngày miễn phí</li></ul><p><a href="/vps-doanh-nghiep/">Xem chi tiết   → </a></p>',
@@ -82,6 +110,17 @@ export const storageServices: Service[] = [
       {
         id: 'service-storage-vi-offering-e-mail-doanh-nghiep',
         title: 'E-mail Doanh Nghiệp',
+        slideTitle: 'E-mail doanh nghiệp',
+        items: [
+          'Chống Spam/Virut',
+          'Nhanh chóng – Bảo mật',
+          'Giao diện quản lý thân thiện',
+          'Hỗ trợ liên tục 24/7/365',
+          'Check mail trên Outlook và Webmail',
+          'Backup dữ liệu hàng tuần',
+          'Trải nghiệm 3 ngày miễn phí',
+        ],
+        cta: { label: 'Xem chi tiết\u00a0 \u00a0→ ', routeId: 'route-e-mail-doanh-nghiep' },
         content: {
           format: 'sanitized-html',
           html: '<ul><li>Chống Spam/Virut</li><li>Nhanh chóng – Bảo mật</li><li>Giao diện quản lý thân thiện</li><li>Hỗ trợ liên tục 24/7/365</li><li>Check mail trên Outlook và Webmail</li><li>Backup dữ liệu hàng tuần</li><li>Trải nghiệm 3 ngày miễn phí</li></ul><p><a href="/e-mail-doanh-nghiep/">Xem chi tiết   → </a></p>',
@@ -103,7 +142,7 @@ export const storageServices: Service[] = [
         title: 'Khách hàng nhận xét về chúng tôi',
         titleLines: ['Khách hàng nhận xét', 'về chúng tôi'],
       },
-      faq: { title: 'Những câu hỏi thường gặp' },
+      faq: { eyebrow: 'GIẢI ĐÁP', title: 'Những câu hỏi thường gặp' },
     },
   },
   {
@@ -132,7 +171,13 @@ export const storageServices: Service[] = [
         sources: [{ file: 'en/storage-solution/index.html', line: 716 }],
       },
       imageId: 'asset-b539c5339b',
+      bgImageId: 'asset-40c494b5f4',
       cta: { label: 'Connect Now →', href: '/en/contact-us/' },
+      breadcrumb: [
+        { label: 'Home', href: '/en/home/' },
+        { label: 'Services' },
+        { label: 'Storage solutions' },
+      ],
     },
     benefits: [],
     faqs: [
@@ -157,6 +202,17 @@ export const storageServices: Service[] = [
       {
         id: 'service-storage-en-offering-business-hosting',
         title: 'Business Hosting',
+        slideTitle: 'Business hosting',
+        items: [
+          'Robust Infrastructure',
+          'Secure & Protected',
+          '24/7/365 Continuous Support',
+          'Instant Website Setup',
+          'High-Speed Access & Processing',
+          'Weekly Data Backups',
+          'Enjoy a 3-Day Free Trial',
+        ],
+        cta: { label: 'See Detail\u00a0 \u00a0→ ', routeId: 'route-en--business-hosting' },
         content: {
           format: 'sanitized-html',
           html: '<ul><li>Robust Infrastructure</li><li>Secure &amp; Protected</li><li>24/7/365 Continuous Support</li><li>Instant Website Setup</li><li>High-Speed Access &amp; Processing</li><li>Weekly Data Backups</li><li>Enjoy a 3-Day Free Trial</li></ul><p><a href="/en/business-hosting/">See Detail   → </a></p>',
@@ -168,6 +224,17 @@ export const storageServices: Service[] = [
       {
         id: 'service-storage-en-offering-business-vps',
         title: 'Business VPS',
+        slideTitle: 'Cloud VPS',
+        items: [
+          'Speed-Optimized Performance',
+          'High-Performance Servers',
+          '24/7/365 Continuous Support',
+          'Dedicated & Attentive Support',
+          'SSD Storages/NVMe Enterprise',
+          'Weekly Data Backups',
+          'Enjoy a 3-Day Free Trial',
+        ],
+        cta: { label: 'See Detail\u00a0 \u00a0→ ', routeId: 'route-en--business-vps' },
         content: {
           format: 'sanitized-html',
           html: '<ul><li>Speed-Optimized Performance</li><li>High-Performance Servers</li><li>24/7/365 Continuous Support</li><li>Dedicated &amp; Attentive Support</li><li>SSD Storages/NVMe Enterprise</li><li>Weekly Data Backups</li><li>Enjoy a 3-Day Free Trial</li></ul><p><a href="/en/business-vps/">See Detail   → </a></p>',
@@ -179,6 +246,17 @@ export const storageServices: Service[] = [
       {
         id: 'service-storage-en-offering-business-e-mail',
         title: 'Business E-mail',
+        slideTitle: 'Business Email',
+        items: [
+          'Anti-Spam & Virus Protection',
+          'Fast & Secure',
+          'User-Friendly Control Panel',
+          '24/7/365 Continuous Support',
+          'Email Access via Outlook & Webmail',
+          'Weekly Data Backups',
+          'Enjoy a 3-Day Free Trial',
+        ],
+        cta: { label: 'See Detail\u00a0 \u00a0→ ', routeId: 'route-en--business-e-mail' },
         content: {
           format: 'sanitized-html',
           html: '<ul><li>Anti-Spam &amp; Virus Protection</li><li>Fast &amp; Secure</li><li>User-Friendly Control Panel</li><li>24/7/365 Continuous Support</li><li>Email Access via Outlook &amp; Webmail</li><li>Weekly Data Backups</li><li>Enjoy a 3-Day Free Trial</li></ul><p><a href="/en/business-e-mail/">See Detail   → </a></p>',
@@ -196,7 +274,7 @@ export const storageServices: Service[] = [
         titleLines: ['Some Recent Works', 'We’re Really Proud Of.'],
       },
       testimonials: { eyebrow: 'Sova', title: 'Customer Reviews' },
-      faq: { title: 'Frequently Asked Questions' },
+      faq: { eyebrow: 'FAQs', title: 'Frequently Asked Questions' },
     },
   },
 ];

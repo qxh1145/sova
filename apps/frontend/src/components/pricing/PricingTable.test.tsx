@@ -3,29 +3,33 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { parse } from 'node-html-parser';
 import { hostingPricing } from '@/data/pricing/hosting';
 import { vpsPricing } from '@/data/pricing/vps';
-import { PricingTable, PRICING_TABLE_IDS_HOSTING_VI, type TablePricing } from './PricingTable';
+import { emailPricing } from '@/data/pricing/email';
+import {
+  PricingTable,
+  PRICING_TABLE_IDS_EMAIL_VI,
+  PRICING_TABLE_IDS_HOSTING_VI,
+  type TablePricing,
+} from './PricingTable';
 
 const asTable = (p: (typeof hostingPricing)[number]) => {
   if (p.kind !== 'table') throw new Error('expected table pricing');
   return p;
 };
 
-const render = (pricing: TablePricing) =>
+const render = (pricing: TablePricing, ids = PRICING_TABLE_IDS_HOSTING_VI) =>
   parse(
     renderToStaticMarkup(
-      <PricingTable
-        pricing={pricing}
-        copy={{ eyebrow: 'Eyebrow', title: 'Title' }}
-        ids={PRICING_TABLE_IDS_HOSTING_VI}
-      />,
+      <PricingTable pricing={pricing} copy={{ eyebrow: 'Eyebrow', title: 'Title' }} ids={ids} />,
     ),
   );
 
 describe('PricingTable', () => {
   it('renders one row per plan and one cell per column', () => {
-    for (const [pricing, rows] of [
-      [asTable(hostingPricing[0]), 8],
-      [asTable(vpsPricing[0]), 6],
+    for (const [pricing, rows, cols] of [
+      [asTable(hostingPricing[0]), 8, 8],
+      [asTable(vpsPricing[0]), 6, 8],
+      [asTable(emailPricing[0]), 7, 7],
+      [asTable(emailPricing[1]), 5, 7],
     ] as const) {
       const root = render(pricing);
       expect(root.querySelectorAll('.vps-table-wrapper > table.vps-table')).toHaveLength(1);
@@ -34,8 +38,27 @@ describe('PricingTable', () => {
       );
       const trs = root.querySelectorAll('tbody tr');
       expect(trs).toHaveLength(rows);
-      for (const tr of trs) expect(tr.querySelectorAll('td')).toHaveLength(8);
+      for (const tr of trs) expect(tr.querySelectorAll('td')).toHaveLength(cols);
     }
+  });
+
+  it('renders email pricing with wrapper id and without upgrade triggers or popups', () => {
+    const root = render(asTable(emailPricing[0]), PRICING_TABLE_IDS_EMAIL_VI);
+    expect(root.querySelector('.vps-table-wrapper')?.getAttribute('id')).toBe('vps-email-dn-1');
+    expect(root.querySelectorAll('.vps-actions')).toHaveLength(0);
+    expect(root.querySelectorAll('.vps-btn-config')).toHaveLength(0);
+    expect(root.querySelectorAll('[id*="popup"]')).toHaveLength(0);
+  });
+
+  it('shows the email top gap on small screens while hosting keeps hide-for-small', () => {
+    const email = render(asTable(emailPricing[0]), PRICING_TABLE_IDS_EMAIL_VI);
+    expect(email.querySelector('#gap-1496315896')?.getAttribute('class')).toBe(
+      'gap-element clearfix',
+    );
+    const hosting = render(asTable(hostingPricing[0]));
+    expect(
+      hosting.querySelector(`#${PRICING_TABLE_IDS_HOSTING_VI.topGap}`)?.getAttribute('class'),
+    ).toBe('gap-element clearfix hide-for-small');
   });
 
   it('renders money as td.vps-price and the plan name in bold', () => {

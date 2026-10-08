@@ -312,6 +312,150 @@ export const TESTIMONIALS_IDS_VPS_EN: TestimonialsIds = {
   ],
 };
 
+export const TESTIMONIALS_IDS_EMAIL_VI: TestimonialsIds = {
+  section: 'section_1984183481',
+  row: 'row-114143651',
+  leftCol: 'col-1068355559',
+  imageWrapper: 'image_331740629',
+  rightCol: 'col-901618470',
+  eyebrowText: 'text-3837946768',
+  titleText: 'text-1298323406',
+  sliderWrapper: 'slider-114261328',
+  innerGap: 'gap-1424382467',
+  bottomGap: 'gap-1531803359',
+  slides: [
+    {
+      row: 'row-1206751867',
+      col: 'col-794361294',
+      ndKh: 'text-1628036239',
+      line: 'text-1168134763',
+      iconBoxText: 'text-2116874641',
+    },
+    {
+      row: 'row-847301732',
+      col: 'col-200154738',
+      ndKh: 'text-1399452221',
+      line: 'text-1476327395',
+      iconBoxText: 'text-1917514466',
+    },
+    {
+      row: 'row-68234570',
+      col: 'col-249943998',
+      ndKh: 'text-2113135161',
+      line: 'text-1378018257',
+      iconBoxText: 'text-3113930760',
+    },
+  ],
+};
+
+export const TESTIMONIALS_IDS_EMAIL_EN: TestimonialsIds = {
+  section: 'section_2136010649',
+  row: 'row-103329289',
+  leftCol: 'col-1651344776',
+  imageWrapper: 'image_412222799',
+  rightCol: 'col-901269700',
+  eyebrowText: 'text-3202874702',
+  titleText: 'text-3557437193',
+  sliderWrapper: 'slider-1505677085',
+  innerGap: 'gap-37007440',
+  bottomGap: 'gap-343316009',
+  slides: [
+    {
+      row: 'row-1701249391',
+      col: 'col-38225116',
+      ndKh: 'text-4243389167',
+      line: 'text-1571621388',
+      iconBoxText: 'text-1622937273',
+    },
+    {
+      row: 'row-1403061539',
+      col: 'col-480395229',
+      ndKh: 'text-358670330',
+      line: 'text-706941177',
+      iconBoxText: 'text-3720002696',
+    },
+    {
+      row: 'row-673922830',
+      col: 'col-1766384887',
+      ndKh: 'text-159124821',
+      line: 'text-2470805889',
+      iconBoxText: 'text-1126978856',
+    },
+  ],
+};
+
+export const TESTIMONIALS_IDS_STORAGE_VI: TestimonialsIds = {
+  section: 'section_1048537414',
+  row: 'row-25758408',
+  leftCol: 'col-843771208',
+  imageWrapper: 'image_1272530354',
+  rightCol: 'col-1996022406',
+  eyebrowText: 'text-5758991',
+  titleText: 'text-572381340',
+  sliderWrapper: 'slider-1012747863',
+  innerGap: 'gap-739066263',
+  bottomGap: 'gap-1581933415',
+  slides: [
+    {
+      row: 'row-165762780',
+      col: 'col-392856623',
+      ndKh: 'text-127529271',
+      line: 'text-2992918654',
+      iconBoxText: 'text-4205616960',
+    },
+    {
+      row: 'row-1717395982',
+      col: 'col-1185392647',
+      ndKh: 'text-2783597054',
+      line: 'text-1999390591',
+      iconBoxText: 'text-76864968',
+    },
+    {
+      row: 'row-945081940',
+      col: 'col-1682012185',
+      ndKh: 'text-3809134423',
+      line: 'text-2218992351',
+      iconBoxText: 'text-531156222',
+    },
+  ],
+};
+
+export const TESTIMONIALS_IDS_STORAGE_EN: TestimonialsIds = {
+  section: 'section_2078920882',
+  row: 'row-2111227539',
+  leftCol: 'col-1919169037',
+  imageWrapper: 'image_1214714786',
+  rightCol: 'col-1460778604',
+  eyebrowText: 'text-3882111148',
+  titleText: 'text-167914798',
+  sliderWrapper: 'slider-1592250510',
+  innerGap: 'gap-1883425874',
+  bottomGap: 'gap-1288694242',
+  slides: [
+    {
+      row: 'row-489551706',
+      col: 'col-220362461',
+      ndKh: 'text-1489963960',
+      line: 'text-2668653613',
+      iconBoxText: 'text-3691187742',
+    },
+    {
+      row: 'row-439442504',
+      col: 'col-1137686727',
+      ndKh: 'text-864123362',
+      line: 'text-2885720343',
+      iconBoxText: 'text-841831541',
+    },
+    {
+      row: 'row-233250147',
+      col: 'col-799590295',
+      ndKh: 'text-3744976074',
+      line: 'text-2703850797',
+      iconBoxText: 'text-908824235',
+    },
+  ],
+};
+
 export const TESTIMONIALS_LABELS: Record<Locale, CarouselLabels> = {
   vi: {
     prev: 'Trước',
