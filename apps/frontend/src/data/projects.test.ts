@@ -8,7 +8,7 @@ import { assets } from './assets';
 import { utilityContent } from './content';
 import { listingSettings } from './listings';
 import { projectCategories } from './project-categories';
-import { projects } from './projects';
+import { featuredItemOrder, projects } from './projects';
 
 const PAGE_SIZE = 6;
 const assetById = new Map(assets.map((a) => [a.id, a]));
@@ -91,12 +91,13 @@ test('every project image resolves to a local /wp-content/uploads/ or missing as
   expect(projects.flatMap((p) => p.galleryIds)).toHaveLength(136);
 });
 
-test('gallery shapes 0–4 and the 7 pages without a display date', () => {
+test('gallery shapes 0–4 and all 62 pages have displayDate and summary', () => {
   const sizes = projects.map((p) => p.galleryIds.length);
   expect(Math.max(...sizes)).toBe(4);
   expect(sizes.filter((n) => n === 0)).toHaveLength(4);
   expect(sizes.filter((n) => n === 1)).toHaveLength(8);
-  expect(projects.filter((p) => !p.displayDate)).toHaveLength(7);
+  expect(projects.filter((p) => !p.displayDate)).toHaveLength(0);
+  expect(projects.filter((p) => !p.summary)).toHaveLength(0);
 });
 
 test('no Eras word or raw Eras contact value in project, category and terms text', () => {
@@ -147,6 +148,52 @@ test('getProjectListingPage returns locale projects, categories with derived cou
   expect(enData.categories.every((c) => c.count === 0)).toBe(true);
 });
 
+test('getProjectListingPage serves featured archives: 62 all, 59/2/1 by category, THP branding', async () => {
+  const { getProjectListingPage } = await import('@/lib/queries/projects');
+  const repo = createMockRepository({
+    projects,
+    projectCategories,
+    assets,
+    listingSettings,
+  } as unknown as ContentData);
+
+  const archive = await getProjectListingPage('vi', repo, { routeId: 'route-featured_item' });
+  expect(archive.projects).toHaveLength(62);
+  expect(archive.settings?.heading.title).toBe('Công ty Cổ phần Phát triển Công nghệ THP');
+  expect(archive.heroImage).not.toBeNull();
+  expect(archive.bgImage).not.toBeNull();
+
+  const expected = {
+    website: [59, 'Website'],
+    branding: [2, 'Branding'],
+    'mobile-app': [1, 'Mobile App'],
+  };
+  for (const [slug, [count, title]] of Object.entries(expected)) {
+    const data = await getProjectListingPage('vi', repo, {
+      routeId: `route-featured_item_category--${slug}`,
+      category: slug,
+    });
+    expect(
+      data.projects.map((p) => p.id),
+      slug,
+    ).toEqual(idsIn(slug));
+    expect(data.projects).toHaveLength(count as number);
+    expect(data.settings?.heading.title).toBe(title);
+    expect(data.categories.find((c) => c.slug === slug)?.count).toBe(count);
+    expect(data.thumbnailAssets).toHaveLength(count as number);
+  }
+  const branding = await getProjectListingPage('vi', repo, { category: 'branding' });
+  expect(branding.projects.map((p) => p.id)).toContain('project-2348');
+
+  const unknown = await getProjectListingPage('vi', repo, { category: 'nope' });
+  expect(unknown.projects).toHaveLength(0);
+
+  // du-an default is unchanged.
+  const duAn = await getProjectListingPage('vi', repo);
+  expect(duAn.settings?.routeId).toBe('route-du-an');
+  expect(duAn.projects).toHaveLength(62);
+});
+
 test('every listing hero asset id resolves to a committed asset', () => {
   for (const { routeId, hero } of listingSettings)
     for (const id of [hero?.imageId, hero?.bgImageId, hero?.videoId].filter(Boolean))
@@ -163,4 +210,70 @@ test('getProjectListingPage resolves both listing hero images from committed dat
     expect(data.heroImage).not.toBeNull();
     expect(data.bgImage).not.toBeNull();
   }
+});
+
+test('featuredItemOrder has 62 unique project ids in source archive order (STORMICK 19th, Dsmart 23rd)', () => {
+  expect(featuredItemOrder).toHaveLength(62);
+  expect(new Set(featuredItemOrder).size).toBe(62);
+
+  const projectIds = new Set(projects.map((p) => p.id));
+  for (const id of featuredItemOrder) {
+    expect(projectIds).toContain(id);
+  }
+
+  // Source archive order: 19th is STORMICK (project-565), 23rd is Dsmart (project-585)
+  expect(featuredItemOrder[18]).toBe('project-565');
+  const stormick = projects.find((p) => p.id === 'project-565');
+  expect(stormick?.slug).toBe('stormick-cong-ty-tnhh-storm-entertaiment');
+
+  expect(featuredItemOrder[22]).toBe('project-585');
+  const dsmart = projects.find((p) => p.id === 'project-585');
+  expect(dsmart?.slug).toBe('giao-dien-dsmart-giai-phap-dieu-khien-xe-hoi-tren-smartphone');
+});
+
+test('getProjectDetail returns project, assets, terms, related cards or null for unknown slug', async () => {
+  const { getProjectDetail } = await import('@/lib/queries/projects');
+  const repo = createMockRepository({
+    projects,
+    projectCategories,
+    utilityContent,
+    assets,
+  } as unknown as ContentData);
+
+  const unknown = await getProjectDetail('khong-ton-tai', repo);
+  expect(unknown).toBeNull();
+
+  const thp = await getProjectDetail('cong-ty-co-phan-phat-trien-cong-nghe-thp', repo);
+  expect(thp).not.toBeNull();
+  expect(thp!.project.slug).toBe('cong-ty-co-phan-phat-trien-cong-nghe-thp');
+  expect(thp!.heroAsset).not.toBeNull();
+  expect(thp!.galleryAssets).toHaveLength(2);
+  expect(thp!.terms?.id).toBe('project-terms-2');
+  expect(thp!.related).toHaveLength(1);
+  expect(thp!.related[0].project.slug).toBe('stormick-cong-ty-tnhh-storm-entertaiment');
+  expect(thp!.related[0].category?.slug).toBe('branding');
+
+  const centro = await getProjectDetail('centro-noi-that-cao-cap-centro-chau-au', repo);
+  expect(centro).not.toBeNull();
+  expect(centro!.project.slug).toBe('centro-noi-that-cao-cap-centro-chau-au');
+  expect(centro!.galleryAssets).toHaveLength(0);
+  expect(centro!.terms?.id).toBe('project-terms-1');
+  expect(centro!.related.map((r) => r.project.id)).toEqual(
+    centro!.project.relatedProjectIds.slice(0, 4),
+  );
+});
+
+test('getProjectDetail omits unresolved terms and hero asset without throwing', async () => {
+  const { getProjectDetail } = await import('@/lib/queries/projects');
+  const base = projects.find((p) => p.slug === 'centro-noi-that-cao-cap-centro-chau-au')!;
+  const repo = createMockRepository({
+    projects: [{ ...base, deliveryTermsId: 'missing-terms', heroImageId: 'missing-asset' }],
+    projectCategories,
+    utilityContent,
+    assets,
+  } as unknown as ContentData);
+
+  const detail = await getProjectDetail(base.slug, repo);
+  expect(detail!.terms).toBeNull();
+  expect(detail!.heroAsset).toBeNull();
 });

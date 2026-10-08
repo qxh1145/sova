@@ -69,6 +69,7 @@ export function ProjectListView({
         loadingMessage={copy.loadingMessage}
         filterAllLabel={copy.filterAll}
         paginationLabels={copy.pagination}
+        pageSize={6}
       />
     </main>
   );

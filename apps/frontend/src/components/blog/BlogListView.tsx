@@ -13,12 +13,24 @@ export function BlogListView({
   categories,
   basePath,
   copy,
+  searchQuery,
 }: BlogListingPageData) {
   const assetMap = new Map(thumbnailAssets.map((asset) => [asset.id, asset]));
-  const heroH1 = settings?.hero?.headingLines?.[0] || copy.title;
-  const isCategory = basePath !== '/goc-nhin/' && basePath !== '/en/insight/';
+  const isSearch = searchQuery !== undefined;
+  const heroH1 = isSearch
+    ? `${copy.searchResultsTitle}${searchQuery.trim()}`
+    : settings?.hero?.headingLines?.[0] || copy.title;
+  const isCategory = !isSearch && basePath !== '/goc-nhin/' && basePath !== '/en/insight/';
   const categoryTitle = isCategory ? settings?.heading?.title : undefined;
   const homeHref = basePath.startsWith('/en/') ? '/en/home/' : '/';
+
+  const hrefForPage = (p: number) => {
+    if (isSearch) {
+      const encQ = encodeURIComponent(searchQuery);
+      return p === 1 ? `/?s=${encQ}` : `/page/${p}/?s=${encQ}`;
+    }
+    return p === 1 ? basePath : `${basePath}page/${p}/`;
+  };
 
   return (
     <main id="main">
@@ -58,24 +70,30 @@ export function BlogListView({
       >
         <div className="large-8 col small-col-first">
           {categoryTitle && <h2 className="category-title">{categoryTitle}</h2>}
-          {posts.map((post) => (
-            <PostCard
-              key={post.id}
-              post={post}
-              variant="list"
-              thumbnailAsset={post.thumbnailId ? assetMap.get(post.thumbnailId) : undefined}
-              readMoreLabel={copy.readMore}
+          {posts.length === 0 && isSearch ? (
+            <p>{copy.searchNoResults}</p>
+          ) : (
+            posts.map((post) => (
+              <PostCard
+                key={post.id}
+                post={post}
+                variant="list"
+                thumbnailAsset={post.thumbnailId ? assetMap.get(post.thumbnailId) : undefined}
+                readMoreLabel={copy.readMore}
+              />
+            ))
+          )}
+          {posts.length > 0 && (
+            <Pagination
+              current={page}
+              total={totalPages}
+              labels={copy.pagination}
+              hrefForPage={hrefForPage}
             />
-          ))}
-          <Pagination
-            current={page}
-            total={totalPages}
-            labels={copy.pagination}
-            hrefForPage={(p) => (p === 1 ? basePath : `${basePath}page/${p}/`)}
-          />
+          )}
         </div>
         <div className="large-4 col">
-          <BlogSidebar categories={categories} copy={copy} />
+          <BlogSidebar categories={categories} copy={copy} searchQuery={searchQuery} />
         </div>
       </div>
     </main>

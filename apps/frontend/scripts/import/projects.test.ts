@@ -9,7 +9,17 @@ const COUNTS = { website: 59, branding: 2, 'mobile-app': 1 } as const;
 
 /** Minimal mirror with 59/2/1 cards; `overrides` changes one detail page's parts. */
 function mirror(
-  overrides: Record<string, { category?: string; terms?: string; related?: string }> = {},
+  overrides: Record<
+    string,
+    {
+      category?: string;
+      terms?: string;
+      related?: string;
+      date?: string;
+      sidebar?: string;
+      gallery?: string;
+    }
+  > = {},
 ) {
   const dir = mkdtempSync(path.join(tmpdir(), 'projects-mirror-'));
   const write = (file: string, html: string) => {
@@ -39,7 +49,12 @@ function mirror(
         `featured_item/${slug}/index.html`,
         `<html><body class="postid-${category.length * 100 + i} featured-item-category-${o.category ?? category}">` +
           `<h1 class="entry-title">${slug}</h1>` +
+          (o.gallery ? `<div class="slider-wrapper relative" id="slider-duan">${o.gallery}</div>` : '') +
           `<div class="qodef-portfolio-content"><p>${o.terms ?? 'Terms'}</p></div>` +
+          (o.date ? `<div class="qodef-e qodef-info--date">${o.date}</div>` : '') +
+          (o.sidebar
+            ? `<div class="col large-3 small-12"><div class="col-inner"><h3>Thông tin dự án</h3>${o.sidebar}</div></div>`
+            : '') +
           `<div class="portfolio-related">${o.related ? `<a href="${o.related}"><div class="portfolio-box"></div></a>` : ''}</div>` +
           `</body></html>`,
       );
@@ -87,4 +102,51 @@ test('source drift: card count, body category, related href and a 3rd terms vari
   expect(() =>
     run(mirror({ 'website-1': { terms: 'Variant 2' }, 'website-2': { terms: 'Variant 3' } })),
   ).toThrow(/Source drift: featured_item\/website-2\/index.html has terms variant 3/);
+});
+
+test('date markup variants and sidebar excerpt import as displayDate, displayDateMarkup and summary', () => {
+  const { projects } = run(
+    mirror({
+      'website-0': {
+        date: '<h3 class="qodef-e-title">DATE: 24 Tháng Bảy, 2022</h3>',
+        sidebar: '\n  HÌNH THỨC THANH TOÁN:\n » Lần 1 trong...  ',
+      },
+      'website-1': {
+        date: '<p class="qodef-e-title">DATE:</p><p class="entry-date updated">24 Tháng Bảy, 2022</p>',
+      },
+      'website-2': { date: '<p class="qodef-e-title">DATE:</p>\nNgày 22 tháng 4 năm 2023\n' },
+    }),
+  );
+  const pick = (slug: string) => {
+    const p = projects.find((x) => x.slug === slug)!;
+    return [p.displayDate, p.displayDateMarkup, p.summary];
+  };
+  expect(pick('website-0')).toEqual([
+    '24 Tháng Bảy, 2022',
+    'heading',
+    'HÌNH THỨC THANH TOÁN: » Lần 1 trong...',
+  ]);
+  expect(pick('website-1')).toEqual(['24 Tháng Bảy, 2022', 'entry-date', undefined]);
+  expect(pick('website-2')).toEqual(['Ngày 22 tháng 4 năm 2023', 'text', undefined]);
+  expect(pick('website-3')).toEqual([undefined, undefined, undefined]);
+});
+
+test('galleryLayout imports as slider or row based on #slider-duan markup', () => {
+  const { projects } = run(
+    mirror({
+      'website-0': {
+        gallery: '<div class="slider slider-nav-circle"><div class="img col"><img src="1.jpg"></div></div>',
+      },
+      'website-1': {
+        gallery: '<div class="row"><div class="col large-12"><img src="1.jpg"></div></div>',
+      },
+      'website-2': {
+        gallery: '<div class="row"></div>',
+      },
+    }),
+  );
+  expect(projects.find((p) => p.slug === 'website-0')?.galleryLayout).toBe('slider');
+  expect(projects.find((p) => p.slug === 'website-1')?.galleryLayout).toBe('row');
+  expect(projects.find((p) => p.slug === 'website-2')?.galleryLayout).toBe('row');
+  expect(projects.find((p) => p.slug === 'website-3')?.galleryLayout).toBeUndefined();
 });

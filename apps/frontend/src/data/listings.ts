@@ -100,23 +100,71 @@ export const listingSettings: ListingSettings[] = [
   },
   {
     routeId: 'route-featured_item',
-    heading: { title: 'Dự án đồng hành cùng Sova' },
-    hero: { headingLines: ['Dự án đồng hành', 'cùng Sova'] },
+    heading: { title: 'Công ty Cổ phần Phát triển Công nghệ THP' },
+    hero: {
+      headingLines: ['Dự án đồng hành', 'cùng Sova'],
+      description: {
+        format: 'sanitized-html',
+        html: 'Khám phá tư duy thiết kế và triết lý sáng tạo được chúng tôi gửi gắm trong từng dự án.',
+        assetIds: [],
+        sources: [{ file: 'featured_item/index.html', line: 709 }],
+      },
+      cta: { label: 'Kết nối ngay →', href: '/lien-he/' },
+      imageId: 'asset-f85d3636d6',
+      bgImageId: 'asset-40c494b5f4',
+      breadcrumb: [{ label: 'Trang chủ', href: '/' }, { label: 'Dự án' }],
+    },
   },
   {
     routeId: 'route-featured_item_category--branding',
-    heading: { title: 'Dự án đồng hành cùng Sova' },
-    hero: { headingLines: ['Dự án đồng hành', 'cùng Sova'] },
+    heading: { title: 'Branding' },
+    hero: {
+      headingLines: ['Dự án đồng hành', 'cùng Sova'],
+      description: {
+        format: 'sanitized-html',
+        html: 'Khám phá tư duy thiết kế và triết lý sáng tạo được chúng tôi gửi gắm trong từng dự án.',
+        assetIds: [],
+        sources: [{ file: 'featured_item_category/branding/index.html', line: 707 }],
+      },
+      cta: { label: 'Kết nối ngay →', href: '/lien-he/' },
+      imageId: 'asset-f85d3636d6',
+      bgImageId: 'asset-40c494b5f4',
+      breadcrumb: [{ label: 'Trang chủ', href: '/' }, { label: 'Dự án' }],
+    },
   },
   {
     routeId: 'route-featured_item_category--mobile-app',
-    heading: { title: 'Dự án đồng hành cùng Sova' },
-    hero: { headingLines: ['Dự án đồng hành', 'cùng Sova'] },
+    heading: { title: 'Mobile App' },
+    hero: {
+      headingLines: ['Dự án đồng hành', 'cùng Sova'],
+      description: {
+        format: 'sanitized-html',
+        html: 'Khám phá tư duy thiết kế và triết lý sáng tạo được chúng tôi gửi gắm trong từng dự án.',
+        assetIds: [],
+        sources: [{ file: 'featured_item_category/mobile-app/index.html', line: 707 }],
+      },
+      cta: { label: 'Kết nối ngay →', href: '/lien-he/' },
+      imageId: 'asset-f85d3636d6',
+      bgImageId: 'asset-40c494b5f4',
+      breadcrumb: [{ label: 'Trang chủ', href: '/' }, { label: 'Dự án' }],
+    },
   },
   {
     routeId: 'route-featured_item_category--website',
-    heading: { title: 'Dự án đồng hành cùng Sova' },
-    hero: { headingLines: ['Dự án đồng hành', 'cùng Sova'] },
+    heading: { title: 'Website' },
+    hero: {
+      headingLines: ['Dự án đồng hành', 'cùng Sova'],
+      description: {
+        format: 'sanitized-html',
+        html: 'Khám phá tư duy thiết kế và triết lý sáng tạo được chúng tôi gửi gắm trong từng dự án.',
+        assetIds: [],
+        sources: [{ file: 'featured_item_category/website/index.html', line: 708 }],
+      },
+      cta: { label: 'Kết nối ngay →', href: '/lien-he/' },
+      imageId: 'asset-f85d3636d6',
+      bgImageId: 'asset-40c494b5f4',
+      breadcrumb: [{ label: 'Trang chủ', href: '/' }, { label: 'Dự án' }],
+    },
   },
 ];
 export const listingSnapshots: ListingSnapshot[] = [
@@ -197,6 +245,8 @@ export const blogListingCopy = {
     categoriesTitle: 'Danh mục bài viết',
     searchPlaceholder: 'Search…',
     searchSubmit: 'Gửi',
+    searchResultsTitle: 'Kết quả tìm kiếm: ',
+    searchNoResults: 'Không tìm thấy bài viết phù hợp.',
     pagination: {
       nav: 'Phân trang bài viết',
       prev: 'Trang trước',
@@ -212,6 +262,8 @@ export const blogListingCopy = {
     categoriesTitle: 'Categories',
     searchPlaceholder: 'Search…',
     searchSubmit: 'Submit',
+    searchResultsTitle: 'Search results: ',
+    searchNoResults: 'No matching posts found.',
     pagination: {
       nav: 'Post pagination',
       prev: 'Previous page',
@@ -225,6 +277,7 @@ export const blogDetailCopy = {
   breadcrumbBlog: 'Góc nhìn',
   breadcrumbCurrent: 'Chi tiết',
   headingBackgroundImage: '/wp-content/uploads/2024/03/ec9c55cfcb4d0c64ecafd52d957c13e9.png',
+  relatedTitle: 'Bài viết liên quan:',
 };
 
 export const projectListingCopy = {

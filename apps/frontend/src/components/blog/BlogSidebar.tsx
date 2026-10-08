@@ -5,9 +5,10 @@ import type { blogListingCopy } from '@/data/listings';
 export interface BlogSidebarProps {
   categories: (PostCategory & { count: number })[];
   copy: (typeof blogListingCopy)['vi'] | (typeof blogListingCopy)['en'];
+  searchQuery?: string;
 }
 
-export function BlogSidebar({ categories, copy }: BlogSidebarProps) {
+export function BlogSidebar({ categories, copy, searchQuery }: BlogSidebarProps) {
   // Source: empty #secondary (no asides) when the locale has no categories (EN)
   if (categories.length === 0) {
     return (
@@ -29,7 +30,7 @@ export function BlogSidebar({ categories, copy }: BlogSidebarProps) {
                 type="search"
                 className="search-field mb-0"
                 name="s"
-                defaultValue=""
+                defaultValue={searchQuery ?? ''}
                 id="s"
                 placeholder={copy.searchPlaceholder}
               />

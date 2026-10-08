@@ -150,12 +150,44 @@ export function importProjects(erasDir: string, registry: AssetRegistry, stats: 
       file,
       lineOf,
     );
-    const galleryIds = root
-      .querySelectorAll('#slider-duan img')
-      .map((img) => registry.image(img, file, lineOf))
-      .filter((id): id is string => !!id);
+    const sliderDuan = root.querySelector('#slider-duan');
+    const galleryLayout: Project['galleryLayout'] = sliderDuan
+      ? sliderDuan.querySelector('.slider')
+        ? 'slider'
+        : sliderDuan.querySelector('.row')
+          ? 'row'
+          : undefined
+      : undefined;
+    const galleryIds = sliderDuan
+      ? sliderDuan
+          .querySelectorAll('img')
+          .map((img) => registry.image(img, file, lineOf))
+          .filter((id): id is string => !!id)
+      : [];
     const description = root.querySelector('meta[name="description"]')?.getAttribute('content');
-    const displayDate = root.querySelector('.qodef-info--date .entry-date')?.rawText.trim();
+    const dateBox = root.querySelector('.qodef-info--date');
+    const displayDate = dateBox?.rawText
+      .replace(/\s+/g, ' ')
+      .trim()
+      .replace(/^DATE:\s*/i, '')
+      .trim();
+    const displayDateMarkup = dateBox?.querySelector('h3.qodef-e-title')
+      ? 'heading'
+      : dateBox?.querySelector('.entry-date')
+        ? 'entry-date'
+        : 'text';
+
+    const sidebarInner =
+      root.querySelector('.col.large-3.small-12 .col-inner') ??
+      root.querySelector('.col.large-3 .col-inner');
+    const sidebarH3 = sidebarInner?.querySelector('h3');
+    const summary = sidebarInner
+      ? sidebarInner.text
+          .replace(sidebarH3 ? sidebarH3.text : '', '')
+          .replace(/\s+/g, ' ')
+          .trim()
+      : undefined;
+
     const projectPath = `/featured_item/${card.slug}/` as PublicPath;
 
     const project: Project = {
@@ -166,6 +198,7 @@ export function importProjects(erasDir: string, registry: AssetRegistry, stats: 
       slug: card.slug,
       categoryIds: [`project-category-${card.categorySlug}`],
       galleryIds,
+      galleryLayout,
       body: { format: 'sanitized-html', html: '', assetIds: [], sources: [contentSource] },
       metadata: [],
       deliveryTermsId: termsRecord.id,
@@ -181,7 +214,11 @@ export function importProjects(erasDir: string, registry: AssetRegistry, stats: 
     };
     if (card.thumbnailId) project.thumbnailId = card.thumbnailId;
     if (heroImageId) project.heroImageId = heroImageId;
-    if (displayDate) project.displayDate = processText(displayDate, stats);
+    if (displayDate) {
+      project.displayDate = processText(displayDate, stats);
+      project.displayDateMarkup = displayDateMarkup;
+    }
+    if (summary) project.summary = processText(summary, stats);
     if (description) project.seo.description = processText(description, stats).trim();
     if (seoImageId) project.seo.imageId = seoImageId;
     projects.push(project);
@@ -191,5 +228,23 @@ export function importProjects(erasDir: string, registry: AssetRegistry, stats: 
   for (const project of projects)
     project.relatedProjectIds = project.relatedProjectIds.map((slug) => idBySlug.get(slug)!);
 
-  return { projects, categories, terms };
+  let featuredItemOrder: EntityId[] = [];
+  const featuredItemArchive = path.join(erasDir, 'featured_item/index.html');
+  if (existsSync(featuredItemArchive)) {
+    const { root } = load(erasDir, 'featured_item/index.html');
+    const cols = root.querySelectorAll('div.col[data-terms]');
+    featuredItemOrder = cols
+      .map((col) => {
+        const href = col.querySelector('a[href]')?.getAttribute('href') || '';
+        const slug = href
+          .replace(/^\.\.\/featured_item\//, '')
+          .replace(/\/index\.html$/, '')
+          .replace(/^\/featured_item\//, '')
+          .replace(/\/$/, '');
+        return idBySlug.get(slug);
+      })
+      .filter((id): id is EntityId => Boolean(id));
+  }
+
+  return { projects, categories, terms, featuredItemOrder };
 }

@@ -75,6 +75,7 @@ export interface BlogListingPageData {
   categories: (PostCategory & { count: number })[];
   basePath: string;
   copy: (typeof blogListingCopy)['vi'] | (typeof blogListingCopy)['en'];
+  searchQuery?: string;
 }
 
 export async function getBlogListingPage(
@@ -143,9 +144,86 @@ export async function getBlogListingPage(
   };
 }
 
+export interface BlogSearchPageInput {
+  query: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export async function getBlogSearchPage(
+  input: BlogSearchPageInput,
+  repository: ContentRepository = getRepository(),
+): Promise<BlogListingPageData | null> {
+  const { query, page = 1, pageSize = 6 } = input;
+  const locale: Locale = 'vi';
+
+  const [result, categories] = await Promise.all([
+    repository.searchPosts({ locale, query, page, pageSize }),
+    repository.getPostCategories(locale),
+  ]);
+
+  const totalPages = result.pageSize > 0 ? Math.ceil(result.total / result.pageSize) : 1;
+  if (page > 1 && page > totalPages) {
+    return null;
+  }
+
+  const thumbnailIds = result.items
+    .map((p) => p.thumbnailId)
+    .filter((id): id is string => Boolean(id));
+
+  const thumbnailAssets = thumbnailIds.length ? await repository.getAssets(thumbnailIds) : [];
+  const copy = blogListingCopy[locale];
+
+  return {
+    posts: result.items,
+    thumbnailAssets,
+    page: result.page,
+    pageSize: result.pageSize,
+    total: result.total,
+    totalPages,
+    settings: null,
+    categories,
+    basePath: '/',
+    copy,
+    searchQuery: query,
+  };
+}
+
+function applyMediaFallback(html: string, missingSrcs: Set<string>): string {
+  if (missingSrcs.size === 0) return html;
+  const stripped = html.replace(/<(img|source|video)\b([^>]*?)(\/?)>/gi, (match, tag, attrs, selfClose) => {
+    const srcMatch = attrs.match(/\bsrc\s*=\s*(["'])(.*?)\1/i);
+    if (!srcMatch) return match;
+    const src = srcMatch[2];
+    if (missingSrcs.has(src)) {
+      const strippedAttrs = attrs
+        .replace(/\bsrc\s*=\s*(["']).*?\1/i, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      const closeSuffix = selfClose ? ' /' : '';
+      return `<${tag}${strippedAttrs ? ' ' + strippedAttrs : ''} data-media-status="missing"${closeSuffix}>`;
+    }
+    return match;
+  });
+  // A video whose every <source> lost its src is itself missing: mark it so the empty-box CSS applies.
+  return stripped.replace(/<video\b([^>]*)>([\s\S]*?)<\/video>/gi, (match, attrs, inner) =>
+    /<source\b/i.test(inner) &&
+    !/<source\b[^>]*\ssrc\s*=/i.test(inner) &&
+    !attrs.includes('data-media-status')
+      ? `<video${attrs} data-media-status="missing">${inner}</video>`
+      : match,
+  );
+}
+
+export interface RelatedPostCard {
+  post: Post;
+  thumbnailAsset: AssetRef | null;
+}
+
 export interface PostDetailData {
   post: Post;
   featuredAsset: AssetRef | null;
+  related: RelatedPostCard[];
   copy: typeof blogDetailCopy;
 }
 
@@ -159,12 +237,55 @@ export async function getPostDetail(
   }
 
   const assetId = post.featuredImageId ?? post.thumbnailId;
-  const assets = assetId ? await repository.getAssets([assetId]) : [];
-  const featuredAsset = assets[0] ?? null;
+  const bodyAssetIds = post.body?.assetIds ?? [];
+  const neededAssetIds = Array.from(new Set([...(assetId ? [assetId] : []), ...bodyAssetIds]));
+
+  const [assets, relatedPosts] = await Promise.all([
+    neededAssetIds.length ? repository.getAssets(neededAssetIds) : Promise.resolve([]),
+    getRelatedPosts(post.id, repository),
+  ]);
+
+  const assetMap = new Map(assets.map((a) => [a.id, a]));
+  const featuredAsset = assetId ? assetMap.get(assetId) ?? null : null;
+
+  const missingSrcs = new Set(
+    bodyAssetIds
+      .map((id) => assetMap.get(id))
+      .filter((a): a is AssetRef => Boolean(a && a.status === 'missing' && a.src))
+      .map((a) => a.src),
+  );
+
+  const fallbackAppliedBody = post.body
+    ? {
+        ...post.body,
+        html: applyMediaFallback(post.body.html, missingSrcs),
+      }
+    : post.body;
+
+  const relatedThumbnailIds = relatedPosts
+    .map((p) => p.thumbnailId ?? p.featuredImageId)
+    .filter((id): id is string => Boolean(id));
+
+  const relatedThumbnails = relatedThumbnailIds.length
+    ? await repository.getAssets(relatedThumbnailIds)
+    : [];
+  const relatedThumbnailMap = new Map(relatedThumbnails.map((a) => [a.id, a]));
+
+  const related: RelatedPostCard[] = relatedPosts.map((relatedPost) => {
+    const thumbId = relatedPost.thumbnailId ?? relatedPost.featuredImageId;
+    return {
+      post: relatedPost,
+      thumbnailAsset: thumbId ? relatedThumbnailMap.get(thumbId) ?? null : null,
+    };
+  });
 
   return {
-    post,
+    post: {
+      ...post,
+      body: fallbackAppliedBody,
+    },
     featuredAsset,
+    related,
     copy: blogDetailCopy,
   };
 }

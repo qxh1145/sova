@@ -121,10 +121,13 @@ export interface Project extends LocalizedIdentity {
   thumbnailId?: EntityId;
   heroImageId?: EntityId;
   galleryIds: EntityId[];
+  galleryLayout?: 'slider' | 'row';
   summary?: string;
   body: RichContent;
   publishedAt?: string;
   displayDate?: string;
+  /** Source date markup: `h3` "DATE: x", `p` "DATE:" + `p.entry-date`, or `p` "DATE:" + bare text. */
+  displayDateMarkup?: 'heading' | 'entry-date' | 'text';
   clientName?: string;
   metadata: { label: string; value: string }[];
   /** A `UtilityContent` id. */
