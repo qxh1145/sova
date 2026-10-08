@@ -296,6 +296,43 @@ test.describe('/featured_item/ archive and /featured_item_category/* archives', 
     );
   });
 
+  // Legacy per-route CSS targets these source hero ids; each route must carry its own set.
+  const HERO_IDS = [
+    {
+      path: '/featured_item/',
+      banner: 'banner-1513224978',
+      heading: 'text-1186201538',
+      gap: 'gap-1700866820',
+    },
+    {
+      path: '/featured_item_category/website/',
+      banner: 'banner-669224451',
+      heading: 'text-1283775997',
+      gap: 'gap-1582094197',
+    },
+    {
+      path: '/featured_item_category/branding/',
+      banner: 'banner-1437243260',
+      heading: 'text-3643032278',
+      gap: 'gap-163447323',
+    },
+    {
+      path: '/featured_item_category/mobile-app/',
+      banner: 'banner-819223527',
+      heading: 'text-4093867166',
+      gap: 'gap-447887585',
+    },
+  ];
+
+  for (const { path, banner, heading, gap } of HERO_IDS) {
+    test(`Hero on ${path} carries source ids ${banner}, ${heading}, ${gap}`, async ({ page }) => {
+      await page.goto(path);
+      await expect(page.locator(`#${banner}.banner-project`)).toHaveCount(1);
+      // headingGap renders directly after the heading text box
+      await expect(page.locator(`#${banner} #${heading} + #${gap}.gap-element`)).toHaveCount(1);
+    });
+  }
+
   test('Archive filter: Branding 2 (incl. THP), Mobile App 1, Website 59, Tất cả 62; URL unchanged', async ({
     page,
   }) => {

@@ -17,6 +17,12 @@ export default async function ViFeaturedItemArchivePage() {
   const sortedProjects = [...data.projects].sort(
     (a, b) => (ORDER_MAP.get(a.id) ?? 999) - (ORDER_MAP.get(b.id) ?? 999),
   );
-  return <ProjectArchiveView {...data} projects={sortedProjects} ids={IDS} listingPath="/featured_item/" />;
+  return (
+    <ProjectArchiveView
+      {...data}
+      projects={sortedProjects}
+      ids={IDS}
+      listingPath="/featured_item/"
+    />
+  );
 }
-
