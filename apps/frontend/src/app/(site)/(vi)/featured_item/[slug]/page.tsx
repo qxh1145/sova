@@ -46,7 +46,7 @@ export default async function ViProjectDetailPage({ params }: ProjectDetailPageP
   return (
     <div className="portfolio-page-wrapper portfolio-single-page">
       <ProjectHero title={project.title} heroImage={heroAsset} />
-      <ProjectGallery galleryAssets={galleryAssets} />
+      <ProjectGallery galleryAssets={galleryAssets} galleryLayout={project.galleryLayout} />
       <ProjectBodyLayout
         title={project.title}
         sidebar={<ProjectInfoSidebar summary={project.summary} />}

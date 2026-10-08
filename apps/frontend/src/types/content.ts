@@ -121,6 +121,7 @@ export interface Project extends LocalizedIdentity {
   thumbnailId?: EntityId;
   heroImageId?: EntityId;
   galleryIds: EntityId[];
+  galleryLayout?: 'slider' | 'row';
   summary?: string;
   body: RichContent;
   publishedAt?: string;

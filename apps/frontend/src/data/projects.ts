@@ -10,6 +10,7 @@ export const projects: Project[] = [
     slug: 'evc-athena-cong-ty-tnhh-evc-athena',
     categoryIds: ['project-category-website'],
     galleryIds: [],
+    galleryLayout: 'row',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -106,6 +107,7 @@ export const projects: Project[] = [
     slug: 'centro-noi-that-cao-cap-centro-chau-au',
     categoryIds: ['project-category-website'],
     galleryIds: [],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -205,6 +207,7 @@ export const projects: Project[] = [
     slug: 'muagiday-san-thuong-mai-dien-tu-xuyen-bien-gioi-hang-dau-viet-nam',
     categoryIds: ['project-category-website'],
     galleryIds: [],
+    galleryLayout: 'row',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -308,6 +311,7 @@ export const projects: Project[] = [
     slug: 'pink-nail-spa-beauty',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-a7e02243b0'],
+    galleryLayout: 'row',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -400,6 +404,7 @@ export const projects: Project[] = [
     slug: 'pa-marketing-don-vi-dao-tao-hang-dau-ve-marketing',
     categoryIds: ['project-category-website'],
     galleryIds: [],
+    galleryLayout: 'row',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -502,6 +507,7 @@ export const projects: Project[] = [
     slug: 'nhamoi-architechture-kien-truc-dep-cho-moi-nha',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-75dd41901d'],
+    galleryLayout: 'row',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -604,6 +610,7 @@ export const projects: Project[] = [
     slug: 'cong-ty-co-phan-kien-truc-va-xay-dung-gt-house',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-9ec64ec23e'],
+    galleryLayout: 'row',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -706,6 +713,7 @@ export const projects: Project[] = [
     slug: 'bossman-cong-ty-co-phan-bossman-viet-nam',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-374a31241b'],
+    galleryLayout: 'row',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -805,6 +813,7 @@ export const projects: Project[] = [
     slug: 'iphone-hd-iphone-trong-tam-tay',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-a3be7e047a'],
+    galleryLayout: 'row',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -901,6 +910,7 @@ export const projects: Project[] = [
     slug: 'ichi-japan-xuat-khau-lao-dong-nhat-ban-luong-cao-chi-phi-thap',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-cb300f7275'],
+    galleryLayout: 'row',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -1004,6 +1014,7 @@ export const projects: Project[] = [
     slug: 'xanhthienthanh-cong-ty-co-phan-dau-tu-va-phat-trien-xanh-thien-thanh',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-3297810c7d', 'asset-e5ad014284', 'asset-f1abdff04e', 'asset-2563015555'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -1107,6 +1118,7 @@ export const projects: Project[] = [
     slug: 'cinvico-lean-pro-cong-ty-co-phan-hop-tac-dau-tu-cong-nghe-cinvico',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-f186b5f4cb', 'asset-eb09acbe8a'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -1210,6 +1222,7 @@ export const projects: Project[] = [
     slug: 'wewell-cong-ty-co-phan-duoc-lieu-va-thuc-pham-viet-nam',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-aa1cf68ee2', 'asset-6e9836c762'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -1312,6 +1325,7 @@ export const projects: Project[] = [
     slug: 'giang-lam-dung-cu-co-khi',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-fd32fc651f', 'asset-bf3473e899'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -1404,6 +1418,7 @@ export const projects: Project[] = [
     slug: 'wisdomland-international-preschool',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-09e327e9db'],
+    galleryLayout: 'row',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -1500,6 +1515,7 @@ export const projects: Project[] = [
     slug: 'forex-robot-automated-trading-robots',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-c10d06625d'],
+    galleryLayout: 'row',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -1599,6 +1615,7 @@ export const projects: Project[] = [
     slug: 'hoang-gia-cong-ty-cp-xay-dung-va-noi-that-hoang-gia',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-e532069691', 'asset-dbf821def3'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -1701,6 +1718,7 @@ export const projects: Project[] = [
     slug: 'moonstore-thoi-trang-cong-so-moonstore',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-842a79d6cd', 'asset-f7a080d5fd'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -1800,6 +1818,7 @@ export const projects: Project[] = [
     slug: 'nutrition-fitness-cong-ty-co-phan-nutrition-fitness',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-5b1db4cca1', 'asset-cc44d87f3a'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -1902,6 +1921,7 @@ export const projects: Project[] = [
     slug: 'binh-phat-cong-ty-tnhh-may-xay-dung-binh-phat',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-960193a139', 'asset-8a196ff740'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -2004,6 +2024,7 @@ export const projects: Project[] = [
     slug: 'hung-an-group-dich-vu-cung-ung-nhan-luc-uy-tin-nhat',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-fee54030b9', 'asset-ac4770ba66'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -2106,6 +2127,7 @@ export const projects: Project[] = [
     slug: 'sua-tivi-chuyen-nghiep-dich-vu-sua-chua-tivi-thiet-bi-am-thanh-chinh-hang',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-f2f9988f6a', 'asset-daaad1eef5'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -2209,6 +2231,7 @@ export const projects: Project[] = [
     slug: 'weha-dua-cong-nghe-gan-gui-hon-voi-doi-song',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-7d07270901', 'asset-29d9220862'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -2308,6 +2331,7 @@ export const projects: Project[] = [
     slug: 'novopharm-tan-tam-cho-su-sang-tao-chat-luong',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-eb81435eba', 'asset-d9d9ad4ad9'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -2410,6 +2434,7 @@ export const projects: Project[] = [
     slug: 'applesmile-cua-hang-san-pham-apple-chinh-hang',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-082bdea432', 'asset-60e9f76ce6'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -2512,6 +2537,7 @@ export const projects: Project[] = [
     slug: 'tengroup-all-for-the-best',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-aae4d2dbf8', 'asset-4d97b5eac8', 'asset-c3fb0f89be'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -2604,6 +2630,7 @@ export const projects: Project[] = [
     slug: 'banh-nuong-an-vat-co-ti',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-85bce1408a', 'asset-d56cd24622'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -2696,6 +2723,7 @@ export const projects: Project[] = [
     slug: 'an-phat-cong-ty-co-phan-cong-nghe-thuong-mai-an-phat',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-7f747226a1', 'asset-261cabfeab'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -2798,6 +2826,7 @@ export const projects: Project[] = [
     slug: 'nikico-cong-ty-tnhh-nihon-kizai',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-8770261900', 'asset-ba4003f0b5'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -2894,6 +2923,7 @@ export const projects: Project[] = [
     slug: 'dwatch-luxury-dong-ho-thuy-sy',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-56adb4352b', 'asset-03ee9f489d'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -2990,6 +3020,7 @@ export const projects: Project[] = [
     slug: 'drnhanh-cong-ty-tnhh-tu-van-giao-duc-dr-nhanh',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-3bce149754', 'asset-03daf82950', 'asset-9b18bb2b44'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -3092,6 +3123,7 @@ export const projects: Project[] = [
     slug: 'hoanglan-logistics-don-vi-van-chuyen-hang-trung-viet-hang-dau-viet-nam',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-8ee40604af', 'asset-977b1a5c63'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -3195,6 +3227,7 @@ export const projects: Project[] = [
     slug: 'hop-hao-huc-cong-ty-tnhh-mam-nho',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-6d3e42ad29', 'asset-37092e677a', 'asset-676fa9277c'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -3291,6 +3324,7 @@ export const projects: Project[] = [
     slug: 'cong-ty-cp-dau-tu-xay-dung-vina2',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-f82fabb560', 'asset-639de5cd33', 'asset-58b77233ea'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -3387,6 +3421,7 @@ export const projects: Project[] = [
     slug: 'cong-ty-cp-du-lich-thuong-mai-khung-troi-viet',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-69694bf2c0', 'asset-ce547d4601', 'asset-0f8426d4da'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -3489,6 +3524,7 @@ export const projects: Project[] = [
     slug: 'cong-ty-tnhh-son-nero-thuong-hieu-modena',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-68442fa581', 'asset-7d9f230f44', 'asset-a84aabe83a'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -3588,6 +3624,7 @@ export const projects: Project[] = [
     slug: 'trangmoon-shop-cay-canh-de-ban-hop-phong-thuy',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-7aded68e05', 'asset-2609f3cf76', 'asset-548eae569c'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -3690,6 +3727,7 @@ export const projects: Project[] = [
     slug: 'pro-car-parts-viet-nam-phan-phoi-phu-tung-bao-duong-gam-o-to',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-74d70dcd19', 'asset-a991456ce5'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -3792,6 +3830,7 @@ export const projects: Project[] = [
     slug: 'ppmvn-cong-ty-tnhh-quan-ly-tai-san-premier-viet-nam',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-d160adaf53', 'asset-20dab22156', 'asset-a995a9d6c2'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -3894,6 +3933,7 @@ export const projects: Project[] = [
     slug: 'viet-tht-production-cong-ty-co-phan-viet-tht',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-5abdf84348', 'asset-f099e5924d', 'asset-8141fdb251'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -3996,6 +4036,7 @@ export const projects: Project[] = [
     slug: 'lien-doan-thuong-mai-va-cong-nghiep-viet-nam-tai-da-nang-vcci-da-nang',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-04fdc0a983', 'asset-ee0aef83d0', 'asset-b40dd22e78'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -4099,6 +4140,7 @@ export const projects: Project[] = [
     slug: 'pa-store-cong-ty-tnhh-pa-marketing',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-c199c79e05', 'asset-907c40d2fb', 'asset-d2d479eaeb'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -4195,6 +4237,7 @@ export const projects: Project[] = [
     slug: 'cong-ty-luat-legal-art',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-606f8c7669', 'asset-d60465068d'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -4287,6 +4330,7 @@ export const projects: Project[] = [
     slug: 'cong-ty-tnhh-nha-khoa-viva-dental',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-803aed4997', 'asset-ac31ecf8fc'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -4383,6 +4427,7 @@ export const projects: Project[] = [
     slug: 'nha-khoa-tham-my-quoc-te-viet-phap',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-490760fa86', 'asset-b0b31c151b'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -4479,6 +4524,7 @@ export const projects: Project[] = [
     slug: 'cong-ty-cp-cong-nghe-an-ninh-mang-quoc-gia-viet-nam',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-f85247d37f', 'asset-7a704efe2e', 'asset-daf4d79c1b'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -4581,6 +4627,7 @@ export const projects: Project[] = [
     slug: 'hrzone-kien-tao-cong-dong-nhan-su-quoc-te',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-813579fff9', 'asset-d12a608b35', 'asset-e138d6e04e'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -4680,6 +4727,7 @@ export const projects: Project[] = [
     slug: 'tintuc365-cong-ty-co-phan-truyen-thong-thuong-mai-viet',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-dc167d38a9', 'asset-afa5d64ece', 'asset-8250f37420'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -4782,6 +4830,7 @@ export const projects: Project[] = [
     slug: 'an-phu-decor-kien-tao-giac-mo',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-2413e3f719', 'asset-f2147e5ad3', 'asset-33a37c0b23'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -4878,6 +4927,7 @@ export const projects: Project[] = [
     slug: 'aya-spa-beauty-cong-ty-co-phan-go-do',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-fdada6fd9b', 'asset-1feaaa1ec7', 'asset-4bb033c9c8'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -4977,6 +5027,7 @@ export const projects: Project[] = [
     slug: 'truong-trung-hoc-pho-thong-huynh-thuc-khang',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-bc4d5feda5', 'asset-81e8121540', 'asset-53063ac46b'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -5076,6 +5127,7 @@ export const projects: Project[] = [
     slug: 'nha-khoa-viva-dental-he-thong-chuoi-nha-khoa-tieu-chuan-my-dau-tien-tai-viet-nam',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-bafa44d838', 'asset-e55dbc471a', 'asset-0a6fc92eb2'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -5179,6 +5231,7 @@ export const projects: Project[] = [
     slug: 'nha-khoa-viet-phap-he-thong-chuoi-nha-khoa-tieu-chuan-phap-dau-tien-tai-viet-nam',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-bb10eadd0a', 'asset-7c2fc1f311', 'asset-edb8816ad5'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -5282,6 +5335,7 @@ export const projects: Project[] = [
     slug: 'beework-cong-ty-tnhh-beework-viet-nam',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-04aba1faa1', 'asset-e570a03cc0', 'asset-e1562f496c'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -5381,6 +5435,7 @@ export const projects: Project[] = [
     slug: 'cong-ty-co-phan-square-orange',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-a34e8f035b', 'asset-3e9cf5bfc4', 'asset-a6abfa6a8c'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -5477,6 +5532,7 @@ export const projects: Project[] = [
     slug: 'cong-ty-tnhh-konnertec-viet-nam',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-0ecf4d345b', 'asset-91d6485a4b', 'asset-31ea68fe92'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -5573,6 +5629,7 @@ export const projects: Project[] = [
     slug: 'so-y-te-benh-vien-mat-ha-giang',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-9b35e73d89', 'asset-7418ac0d65', 'asset-53ef380de0'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -5669,6 +5726,7 @@ export const projects: Project[] = [
     slug: 'sencom-home-decor-lighting-design',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-7dde2a1c25', 'asset-ea653cc427', 'asset-91ac93a3d5'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -5766,6 +5824,7 @@ export const projects: Project[] = [
     slug: 'flexius-cong-ty-co-phan-the-gioi-bang',
     categoryIds: ['project-category-website'],
     galleryIds: ['asset-599d722681', 'asset-a3ed430ec2', 'asset-860e584152'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -5865,6 +5924,7 @@ export const projects: Project[] = [
     slug: 'stormick-cong-ty-tnhh-storm-entertaiment',
     categoryIds: ['project-category-branding'],
     galleryIds: ['asset-d6640dbce6', 'asset-7371521e92'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -5905,6 +5965,7 @@ export const projects: Project[] = [
     slug: 'cong-ty-co-phan-phat-trien-cong-nghe-thp',
     categoryIds: ['project-category-branding'],
     galleryIds: ['asset-3005f09701', 'asset-26590d7997'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
@@ -5945,6 +6006,7 @@ export const projects: Project[] = [
     slug: 'giao-dien-dsmart-giai-phap-dieu-khien-xe-hoi-tren-smartphone',
     categoryIds: ['project-category-mobile-app'],
     galleryIds: ['asset-b473c3b1c4', 'asset-763f8c4172', 'asset-39a64b8ae9'],
+    galleryLayout: 'slider',
     body: {
       format: 'sanitized-html',
       html: '',
