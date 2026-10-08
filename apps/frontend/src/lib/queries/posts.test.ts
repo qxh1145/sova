@@ -56,6 +56,19 @@ test('getPostCategories computes category counts in source order', async () => {
   expect(categories.map((c) => c.count)).toEqual([1, 6, 7, 12, 3, 2]);
 });
 
+test('getPostCategories counts a newly added mock post with no code change', async () => {
+  const before = await getPostCategories('vi', repository);
+  const added = { ...posts[0], id: 'post-added-test', slug: 'post-added-test' };
+  const repoWithAdded = createMockRepository({
+    ...defaultContentData,
+    posts: [...defaultContentData.posts, added],
+  });
+  const after = await getPostCategories('vi', repoWithAdded);
+  expect(after.map((c) => c.count)).toEqual(
+    before.map((c) => c.count + (added.categoryIds.includes(c.id) ? 1 : 0)),
+  );
+});
+
 test('getRelatedPosts returns posts in relatedPostIds order, skipping unknown ids', async () => {
   const post = posts[0];
   const related = await getRelatedPosts(post.id, repository);
@@ -70,28 +83,47 @@ test('getRelatedPosts returns posts in relatedPostIds order, skipping unknown id
       {
         ...post,
         id: 'test-parent',
-        relatedPostIds: ['unknown-1', post.id, 'unknown-2'],
+        relatedPostIds: ['unknown-1', posts[2].id, 'unknown-2', posts[1].id],
       },
-      post,
+      posts[1],
+      posts[2],
     ],
   });
   const filtered = await getRelatedPosts('test-parent', repoWithMissing);
-  expect(filtered.map((p) => p.id)).toEqual([post.id]);
+  expect(filtered.map((p) => p.id)).toEqual([posts[2].id, posts[1].id]);
 });
 
 test('getRelatedProjects returns projects in relatedProjectIds order, skipping unknown ids', async () => {
-  const related = await getRelatedProjects('project-473', repository);
-  expect(related.length).toBeGreaterThan(0);
-  expect(related[0].id).toBe('project-477');
+  const project = defaultContentData.projects.find((p) => p.id === 'project-473')!;
+  const related = await getRelatedProjects(project.id, repository);
+  expect(related.map((p) => p.id)).toEqual(project.relatedProjectIds);
 
   const unknown = await getRelatedProjects('unknown-project', repository);
   expect(unknown).toEqual([]);
+
+  const [first, second] = defaultContentData.projects;
+  const repoWithMissing = createMockRepository({
+    ...defaultContentData,
+    projects: [
+      {
+        ...project,
+        id: 'test-parent',
+        relatedProjectIds: ['unknown-1', second.id, 'unknown-2', first.id],
+      },
+      first,
+      second,
+    ],
+  });
+  const filtered = await getRelatedProjects('test-parent', repoWithMissing);
+  expect(filtered.map((p) => p.id)).toEqual([second.id, first.id]);
 });
 
 test('searchPosts searches title, excerpt, and tag-stripped body HTML with accents and case folding', async () => {
-  const blank = await searchPosts({ locale: 'vi', query: '   ', page: 1, pageSize: 6 }, repository);
-  expect(blank.total).toBe(27);
-  expect(blank.items).toHaveLength(6);
+  for (const query of ['', '   ']) {
+    const blank = await searchPosts({ locale: 'vi', query, page: 1, pageSize: 6 }, repository);
+    expect(blank.total).toBe(27);
+    expect(blank.items.map((p) => p.id)).toEqual(posts.slice(0, 6).map((p) => p.id));
+  }
 
   // Accent & case folding: "thu thuat" matches "Thủ thuật"
   const accentResult = await searchPosts(
@@ -110,11 +142,11 @@ test('searchPosts searches title, excerpt, and tag-stripped body HTML with accen
     ...posts[0],
     id: 'post-html-test',
     slug: 'post-html-test',
-    title: 'Clean Title',
-    excerpt: 'Clean Excerpt',
+    title: 'Đường Tiêu Đề',
+    excerpt: 'Mô tả ngắn gọn',
     body: {
       format: 'sanitized-html',
-      html: '<p class="secret-attr-only">Visible Body Content</p>',
+      html: '<p class="secret-attr-only">Visible Body Content</p>\n<p><strong>Next</strong>  paragraph</p>',
       assetIds: [],
       sources: [],
     },
@@ -135,6 +167,20 @@ test('searchPosts searches title, excerpt, and tag-stripped body HTML with accen
   );
   expect(bodyMatch.total).toBe(1);
 
+  // One field each, case folding, đ→d folding, phrase across tag boundaries
+  for (const query of [
+    'DUONG TIEU DE',
+    'mo ta ngan',
+    'visible body content',
+    'content next paragraph',
+  ]) {
+    const match = await searchPosts({ locale: 'vi', query, page: 1, pageSize: 10 }, htmlRepo);
+    expect(
+      match.items.map((p) => p.id),
+      query,
+    ).toEqual(['post-html-test']);
+  }
+
   const noMatch = await searchPosts(
     { locale: 'vi', query: 'xyznonexistentterm123', page: 1, pageSize: 10 },
     repository,
@@ -151,6 +197,7 @@ test('draft fixture post is excluded from getPost, listPosts, getRelatedPosts, g
     slug: 'post-draft-test',
     title: 'Unique Draft Title For Test',
     categoryIds: publishedPost.categoryIds,
+    relatedPostIds: [publishedPost.id],
     editorial: {
       status: 'draft',
       updatedAt: '2026-10-08',
@@ -179,6 +226,7 @@ test('draft fixture post is excluded from getPost, listPosts, getRelatedPosts, g
   // getRelatedPosts excludes draft
   const related = await testRepo.getRelatedPosts(publishedPost.id);
   expect(related).toEqual([]);
+  expect(await testRepo.getRelatedPosts(draftPost.id)).toEqual([]);
 
   // getPostCategories excludes draft from count
   const cats = await testRepo.getPostCategories('vi');
