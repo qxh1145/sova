@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, type RefObject } from 'react';
 import type { AssetRef } from '@/types/content';
 import { Dialog } from '@/components/ui/Dialog';
 
@@ -8,6 +8,8 @@ export interface GalleryLightboxProps {
   assets: AssetRef[];
   isOpen: boolean;
   initialIndex?: number;
+  /** Link that opened the lightbox; focus returns here on close (no Radix Trigger exists). */
+  returnFocusRef: RefObject<HTMLElement | null>;
   onClose: () => void;
 }
 
@@ -15,6 +17,7 @@ export function GalleryLightbox({
   assets,
   isOpen,
   initialIndex = 0,
+  returnFocusRef,
   onClose,
 }: GalleryLightboxProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
@@ -74,6 +77,10 @@ export function GalleryLightbox({
       title="Xem ảnh dự án" // business-text-ok: lightbox accessible title
       titleHidden
       labels={{ close: 'Đóng' }} // business-text-ok: close button label
+      onCloseAutoFocus={(event) => {
+        event.preventDefault();
+        returnFocusRef.current?.focus({ preventScroll: true });
+      }}
     >
       <div className="mfp-figure">
         <figure>

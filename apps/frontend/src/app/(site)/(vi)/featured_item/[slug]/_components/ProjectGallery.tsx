@@ -1,4 +1,4 @@
-import type { AssetRef } from '@/types/content';
+import type { AssetRef, Project } from '@/types/content';
 import {
   ProjectGallerySingle,
   ProjectGallerySlider,
@@ -6,7 +6,7 @@ import {
 
 export interface ProjectGalleryProps {
   galleryAssets: AssetRef[];
-  galleryLayout?: 'slider' | 'row';
+  galleryLayout?: Project['galleryLayout'];
 }
 
 export function ProjectGallery({ galleryAssets, galleryLayout }: ProjectGalleryProps) {

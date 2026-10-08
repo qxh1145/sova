@@ -157,16 +157,19 @@ export function Carousel({
     () => 0,
   );
 
-  const initialCanPrev = !!loop && !isSingle;
+  // Embla silently drops `loop` when the slides cannot fill the viewport (e.g. 2 wide cells);
+  // Flickity wrapAround still wraps there, so the arrows stay enabled and wrap via scrollTo.
+  const wrapArrows = !!loop && !isSingle;
+  const initialCanPrev = wrapArrows;
   const canScrollPrev = useSyncExternalStore(
     subscribe,
-    () => (emblaApi ? emblaApi.canScrollPrev() : initialCanPrev),
+    () => wrapArrows || (emblaApi ? emblaApi.canScrollPrev() : initialCanPrev),
     () => initialCanPrev,
   );
 
   const canScrollNext = useSyncExternalStore(
     subscribe,
-    () => (emblaApi ? emblaApi.canScrollNext() : !isSingle),
+    () => wrapArrows || (emblaApi ? emblaApi.canScrollNext() : !isSingle),
     () => !isSingle,
   );
 
@@ -199,14 +202,22 @@ export function Carousel({
   }, [emblaApi]);
 
   const scrollPrev = useCallback(() => {
-    emblaApi?.scrollPrev();
+    if (emblaApi && wrapArrows && !emblaApi.canScrollPrev()) {
+      emblaApi.scrollTo(emblaApi.scrollSnapList().length - 1);
+    } else {
+      emblaApi?.scrollPrev();
+    }
     stopAutoplay();
-  }, [emblaApi, stopAutoplay]);
+  }, [emblaApi, wrapArrows, stopAutoplay]);
 
   const scrollNext = useCallback(() => {
-    emblaApi?.scrollNext();
+    if (emblaApi && wrapArrows && !emblaApi.canScrollNext()) {
+      emblaApi.scrollTo(0);
+    } else {
+      emblaApi?.scrollNext();
+    }
     stopAutoplay();
-  }, [emblaApi, stopAutoplay]);
+  }, [emblaApi, wrapArrows, stopAutoplay]);
 
   const scrollTo = useCallback(
     (index: number) => {

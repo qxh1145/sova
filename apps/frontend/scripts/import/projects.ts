@@ -151,7 +151,7 @@ export function importProjects(erasDir: string, registry: AssetRegistry, stats: 
       lineOf,
     );
     const sliderDuan = root.querySelector('#slider-duan');
-    const galleryLayout: 'slider' | 'row' | undefined = sliderDuan
+    const galleryLayout: Project['galleryLayout'] = sliderDuan
       ? sliderDuan.querySelector('.slider')
         ? 'slider'
         : sliderDuan.querySelector('.row')
