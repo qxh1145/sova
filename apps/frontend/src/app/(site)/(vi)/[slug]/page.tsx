@@ -1,10 +1,10 @@
 import '@/styles/legacy/sections/route-goc-nhin.css';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { categorySlugs } from '@/lib/routes';
 import { listRoutes } from '@/lib/queries/site';
 import { getBlogListingPage, getPostDetail } from '@/lib/queries/posts';
 import { BlogListView } from '@/components/blog/BlogListView';
-import Link from 'next/link';
 import { ArticleHeroImage } from './_components/ArticleHeroImage';
 import { PostMeta } from './_components/PostMeta';
 import { ArticleBody } from './_components/ArticleBody';

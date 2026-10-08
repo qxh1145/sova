@@ -109,6 +109,9 @@ test('getPostDetail applies missing-media fallback to body media elements', asyn
   expect(html).not.toContain('/vid-missing.mp4');
   expect(html).toContain('<img alt="miss" width="100" height="50" data-media-status="missing" />');
   expect(html).toContain('<source type="video/mp4" data-media-status="missing">');
+  // Video with every source missing is marked too
+  expect(html).toContain('<video controls width="640" height="360" data-media-status="missing">');
+  expect(html).not.toContain('<video controls width="640" height="360">');
 });
 
 test('getBlogListingPage returns page 1 with thumbnails and total pages', async () => {

@@ -145,7 +145,7 @@ export async function getBlogListingPage(
 
 function applyMediaFallback(html: string, missingSrcs: Set<string>): string {
   if (missingSrcs.size === 0) return html;
-  return html.replace(/<(img|source|video)\b([^>]*?)(\/?)>/gi, (match, tag, attrs, selfClose) => {
+  const stripped = html.replace(/<(img|source|video)\b([^>]*?)(\/?)>/gi, (match, tag, attrs, selfClose) => {
     const srcMatch = attrs.match(/\bsrc\s*=\s*(["'])(.*?)\1/i);
     if (!srcMatch) return match;
     const src = srcMatch[2];
@@ -159,6 +159,14 @@ function applyMediaFallback(html: string, missingSrcs: Set<string>): string {
     }
     return match;
   });
+  // A video whose every <source> lost its src is itself missing: mark it so the empty-box CSS applies.
+  return stripped.replace(/<video\b([^>]*)>([\s\S]*?)<\/video>/gi, (match, attrs, inner) =>
+    /<source\b/i.test(inner) &&
+    !/<source\b[^>]*\ssrc\s*=/i.test(inner) &&
+    !attrs.includes('data-media-status')
+      ? `<video${attrs} data-media-status="missing">${inner}</video>`
+      : match,
+  );
 }
 
 export interface RelatedPostCard {

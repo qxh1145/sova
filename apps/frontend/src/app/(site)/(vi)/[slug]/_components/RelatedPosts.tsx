@@ -3,10 +3,10 @@ import type { RelatedPostCard } from '@/lib/queries/posts';
 
 export interface RelatedPostsProps {
   related: RelatedPostCard[];
-  title?: string;
+  title: string;
 }
 
-export function RelatedPosts({ related, title = 'Bài viết liên quan:' }: RelatedPostsProps) {
+export function RelatedPosts({ related, title }: RelatedPostsProps) {
   if (related.length === 0) {
     return <div className="relatedcat" />;
   }

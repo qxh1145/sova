@@ -10,6 +10,11 @@ const assetMap = new Map(assets.map((a) => [a.id, a]));
 const postDetailRoutePaths = new Set(
   routes.filter((r) => r.kind === 'post-detail').map((r) => r.path),
 );
+// Unique <video> elements per post detail in docs/evidence/pages.json (kind 'post-detail').
+const evidenceVideoCounts: Record<string, number> = {
+  '/hieu-tu-a-z-ve-thiet-ke-website-responsive/': 4,
+  '/huong-dan-xoa-cache-trinh-duyet-va-may-tinh/': 1,
+};
 
 test.describe('Blog listing and post detail', () => {
   test('Listing /goc-nhin/ renders 6 cards in order, pagination items, and navigates to detail', async ({
@@ -88,6 +93,7 @@ test.describe('Blog listing and post detail', () => {
 
   test('All 27 post paths render title, hero image, meta, rich media, and related posts', async ({ page }) => {
     expect(posts).toHaveLength(27);
+    const totals = { table: 0, figure: 0, blockquote: 0, video: 0 };
 
     for (const post of posts) {
       const res = await page.goto(post.path);
@@ -114,6 +120,46 @@ test.describe('Blog listing and post detail', () => {
       await expect(bodyLocator.locator('figure')).toHaveCount(expectedFigures);
       await expect(bodyLocator.locator('blockquote')).toHaveCount(expectedBlockquotes);
       await expect(bodyLocator.locator('video')).toHaveCount(expectedVideos);
+      expect(expectedVideos, `Evidence video count for ${post.path}`).toBe(
+        evidenceVideoCounts[post.path] ?? 0,
+      );
+      totals.table += expectedTables;
+      totals.figure += expectedFigures;
+      totals.blockquote += expectedBlockquotes;
+      totals.video += expectedVideos;
+
+      // Missing body media keep their element, lose src and carry the missing marker
+      const missingSrcs = new Set(
+        post.body.assetIds
+          .map((id) => assetMap.get(id))
+          .filter((a) => a?.status === 'missing' && a.src)
+          .map((a) => a!.src),
+      );
+      const mediaTags = html.match(/<(img|source)\b[^>]*>/gi) || [];
+      const expectedMissingTags = mediaTags.filter((tag) =>
+        missingSrcs.has(tag.match(/\ssrc\s*=\s*(["'])(.*?)\1/i)?.[2] ?? ''),
+      ).length;
+      const expectedMissingVideos = (html.match(/<video\b[\s\S]*?<\/video>/gi) || []).filter(
+        (video) => {
+          const sources = video.match(/<source\b[^>]*>/gi) || [];
+          return (
+            sources.length > 0 &&
+            sources.every((tag) =>
+              missingSrcs.has(tag.match(/\ssrc\s*=\s*(["'])(.*?)\1/i)?.[2] ?? ''),
+            )
+          );
+        },
+      ).length;
+      await expect(bodyLocator.locator('[data-media-status="missing"]')).toHaveCount(
+        expectedMissingTags + expectedMissingVideos,
+      );
+      const renderedSrcs = await bodyLocator
+        .locator('img[src], source[src]')
+        .evaluateAll((els) => els.map((el) => el.getAttribute('src')));
+      expect(
+        renderedSrcs.filter((src) => src && missingSrcs.has(src)),
+        `No missing body src rendered for ${post.path}`,
+      ).toEqual([]);
 
       // Related posts section verification
       const relatedSection = page.locator('.blog-single .relatedcat');
@@ -151,6 +197,9 @@ test.describe('Blog listing and post detail', () => {
         }
       }
     }
+
+    // Aggregate rich-content counts across the 27 posts
+    expect(totals).toEqual({ table: 1, figure: 9, blockquote: 8, video: 5 });
   });
 
   test('Pages 2 to 5 render expected cards and pagination links', async ({ page }) => {
@@ -419,6 +468,7 @@ test.describe('Blog listing and post detail', () => {
     const missingSources = bodyLocator.locator('source[data-media-status="missing"]');
     await expect(missingSources).toHaveCount(1);
     await expect(missingSources).not.toHaveAttribute('src');
+    await expect(bodyLocator.locator('video[data-media-status="missing"]')).toHaveCount(1);
 
     // Related card has title and link, but no img
     const relatedSection = page.locator('.blog-single .relatedcat');
@@ -431,5 +481,15 @@ test.describe('Blog listing and post detail', () => {
     // No request to missing sources
     expect(requestedUrls.some((u) => u.includes('fixture.png'))).toBe(false);
     expect(requestedUrls.some((u) => u.includes('fixture-video.mp4'))).toBe(false);
+  });
+
+  test('Dev-fixture error renders the page error state in VI and EN', async ({ page }) => {
+    test.skip(STAGING, 'Dev fixtures are not deployed to staging');
+
+    await page.goto('/dev-fixtures/blog/error');
+    await expect(page.locator('.page-error-main')).toBeVisible();
+
+    await page.goto('/dev-fixtures/blog/error?locale=en');
+    await expect(page.locator('.page-error-main')).toBeVisible();
   });
 });
