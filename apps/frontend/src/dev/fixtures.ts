@@ -217,6 +217,7 @@ export const fixtures: ContentData = {
       body: rich,
       author: { id: 'author-1', name: 'Fixture' },
       relatedPostIds: [],
+      editorial: { status: 'published', updatedAt: '2023-10-01', revision: 1 },
     },
   ],
   postCategories: [

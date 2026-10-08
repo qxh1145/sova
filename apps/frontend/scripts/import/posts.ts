@@ -266,6 +266,12 @@ export function importPosts(erasDir: string, registry: AssetRegistry, stats: Sta
         .querySelectorAll('.relatedcat .related-post-item a[href]')
         .map((a) => postSlug(a.getAttribute('href')!, file, slugs))
         .map((slug) => [...cards.values()].find((c) => c.slug === slug)!.postId),
+      editorial: {
+        status: 'published',
+        updatedAt: modifiedAt ?? publishedAt ?? '2023-10-01T00:00:00+07:00',
+        revision: 1,
+        publishedAt: publishedAt ?? undefined,
+      },
       seo: {
         title: processText(root.querySelector('title')?.rawText ?? '', stats).trim(),
         canonicalPath: postPath,

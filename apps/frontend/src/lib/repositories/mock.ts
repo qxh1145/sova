@@ -31,7 +31,7 @@ import { siteSettings } from '@/data/site';
 import { stats } from '@/data/stats';
 import { testimonials } from '@/data/testimonials';
 import { resolveDeep } from '@/lib/queries/tokens';
-import type { EntityId, Locale, PageResult } from '@/types/content';
+import type { EntityId, Locale, PageResult, Post } from '@/types/content';
 import type { ContentData, ContentRepository } from './contracts';
 
 function paginate<T>(items: T[], page: number, pageSize: number): PageResult<T> {
@@ -94,6 +94,20 @@ export function createMockRepository(data: ContentData): ContentRepository {
   return withSiteTokens(createRawRepository(data), data);
 }
 
+const isPublished = (post: Post) => post.editorial.status === 'published';
+
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, ' ');
+}
+
+function normalizeSearchText(text: string): string {
+  return text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[đĐ]/g, (m) => (m === 'đ' ? 'd' : 'D'))
+    .toLowerCase();
+}
+
 function createRawRepository(data: ContentData): ContentRepository {
   return {
     async getSiteSettings(locale) {
@@ -133,7 +147,8 @@ function createRawRepository(data: ContentData): ContentRepository {
       return paginate(items, page, pageSize);
     },
     async getPost(slug) {
-      return data.posts.find((p) => p.slug === slug) ?? null;
+      const post = data.posts.find((p) => p.slug === slug);
+      return post && isPublished(post) ? post : null;
     },
     async listPosts({ locale, category, page, pageSize }) {
       const categoryIds = data.postCategories
@@ -142,9 +157,42 @@ function createRawRepository(data: ContentData): ContentRepository {
       const items = data.posts.filter(
         (p) =>
           p.locale === locale &&
+          isPublished(p) &&
           (!category || p.categoryIds.some((id) => categoryIds.includes(id))),
       );
       return paginate(items, page, pageSize);
+    },
+    async getPostCategories(locale) {
+      const publishedPosts = data.posts.filter((p) => p.locale === locale && isPublished(p));
+      return data.postCategories
+        .filter((c) => c.locale === locale)
+        .map((category) => {
+          const count = publishedPosts.filter((p) => p.categoryIds.includes(category.id)).length;
+          return { ...category, count };
+        });
+    },
+    async getRelatedPosts(id) {
+      const post = data.posts.find((p) => p.id === id);
+      if (!post) return [];
+      return byIds(data.posts, post.relatedPostIds, (p) => isPublished(p));
+    },
+    async getRelatedProjects(id) {
+      const project = data.projects.find((p) => p.id === id);
+      if (!project) return [];
+      return byIds(data.projects, project.relatedProjectIds);
+    },
+    async searchPosts({ locale, query, page, pageSize }) {
+      const publishedPosts = data.posts.filter((p) => p.locale === locale && isPublished(p));
+      const trimmed = query.trim();
+      if (!trimmed) {
+        return paginate(publishedPosts, page, pageSize);
+      }
+      const normalizedQuery = normalizeSearchText(trimmed);
+      const matched = publishedPosts.filter((post) => {
+        const textToSearch = `${post.title} ${post.excerpt} ${stripHtml(post.body.html)}`;
+        return normalizeSearchText(textToSearch).includes(normalizedQuery);
+      });
+      return paginate(matched, page, pageSize);
     },
     async getFAQs(ids, locale) {
       return byIds(data.faqs, ids, (f) => f.locale === locale);
