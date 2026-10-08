@@ -34,13 +34,64 @@ test('getPostDetail falls back to thumbnailId without a featured image', async (
 });
 
 test('getBlogListingPage returns page 1 with thumbnails and total pages', async () => {
-  const data = await getBlogListingPage(1, 6, repository);
-  expect(data.posts).toHaveLength(6);
-  expect(data.total).toBe(27);
-  expect(data.totalPages).toBe(5);
-  expect(data.thumbnailAssets.map((a) => a.id).sort()).toEqual(
-    data.posts.map((p) => p.thumbnailId).sort(),
+  const data = await getBlogListingPage({}, repository);
+  expect(data).not.toBeNull();
+  expect(data!.posts).toHaveLength(6);
+  expect(data!.total).toBe(27);
+  expect(data!.totalPages).toBe(5);
+  expect(data!.thumbnailAssets.map((a) => a.id).sort()).toEqual(
+    data!.posts.map((p) => p.thumbnailId).sort(),
   );
+  expect(data!.categories.map((c) => c.count)).toEqual([1, 6, 7, 12, 3, 2]);
+});
+
+test('getBlogListingPage slices category pages correctly', async () => {
+  const thuThuatPage1 = await getBlogListingPage(
+    { category: 'thu-thuat', page: 1, pageSize: 6 },
+    repository,
+  );
+  expect(thuThuatPage1).not.toBeNull();
+  expect(thuThuatPage1!.posts).toHaveLength(6);
+  expect(thuThuatPage1!.total).toBe(12);
+  expect(thuThuatPage1!.totalPages).toBe(2);
+  expect(thuThuatPage1!.basePath).toBe('/thu-thuat/');
+
+  const thuThuatPage2 = await getBlogListingPage(
+    { category: 'thu-thuat', page: 2, pageSize: 6 },
+    repository,
+  );
+  expect(thuThuatPage2).not.toBeNull();
+  expect(thuThuatPage2!.posts).toHaveLength(6);
+
+  const socialPage2 = await getBlogListingPage(
+    { category: 'social-marketing', page: 2, pageSize: 6 },
+    repository,
+  );
+  expect(socialPage2).not.toBeNull();
+  expect(socialPage2!.posts).toHaveLength(1);
+  expect(socialPage2!.total).toBe(7);
+});
+
+test('getBlogListingPage returns null for unknown route or unsourced page', async () => {
+  expect(await getBlogListingPage({ routeId: 'route-non-existent' }, repository)).toBeNull();
+  // /tin-tuc/ only has page 1 in routes
+  expect(await getBlogListingPage({ category: 'tin-tuc', page: 2 }, repository)).toBeNull();
+  // /goc-nhin/page/6/ not in routes
+  expect(await getBlogListingPage({ page: 6 }, repository)).toBeNull();
+  // category slug that resolves to a non-post-list route
+  expect(await getBlogListingPage({ category: 'gioi-thieu' }, repository)).toBeNull();
+});
+
+test('getBlogListingPage returns EN shell with no posts for en insight', async () => {
+  const enInsight = await getBlogListingPage(
+    { routeId: 'route-en--insight', locale: 'en' },
+    repository,
+  );
+  expect(enInsight).not.toBeNull();
+  expect(enInsight!.posts).toHaveLength(0);
+  expect(enInsight!.categories).toHaveLength(0);
+  expect(enInsight!.copy.title).toBe('Insight');
+  expect(enInsight!.basePath).toBe('/en/insight/');
 });
 
 test('getPostCategories computes category counts in source order', async () => {

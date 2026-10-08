@@ -4,6 +4,7 @@ import { hostingServices } from '@/data/services/hosting';
 import { websitePricing } from '@/data/pricing/website';
 import { HostingServiceView } from './HostingServiceView';
 import { VpsServiceView } from './VpsServiceView';
+import { EmailServiceView } from './EmailServiceView';
 
 const page = (pricing: ServicePage['pricing']): ServicePage => ({
   service: hostingServices[0],
@@ -17,6 +18,7 @@ const assets = {} as ServiceAssets;
 describe.each([
   ['HostingServiceView', HostingServiceView],
   ['VpsServiceView', VpsServiceView],
+  ['EmailServiceView', EmailServiceView],
 ])('%s', (_, View) => {
   it('throws when pricing is missing', () => {
     expect(() => View({ page: page(null), assets, locale: 'vi' })).toThrow(/table pricing/);
