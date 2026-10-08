@@ -19,3 +19,10 @@ export function getProjectCategories(
 ): Promise<ProjectCategory[]> {
   return repository.getProjectCategories();
 }
+
+export function getRelatedProjects(
+  id: string,
+  repository: ContentRepository = getRepository(),
+): Promise<Project[]> {
+  return repository.getRelatedProjects(id);
+}

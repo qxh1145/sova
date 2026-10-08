@@ -1,7 +1,15 @@
 import { blogDetailCopy, blogListingCopy } from '@/data/listings';
 import { getRepository } from '@/lib/repositories';
 import type { ContentRepository } from '@/lib/repositories/contracts';
-import type { AssetRef, ListingSettings, Locale, PageResult, Post } from '@/types/content';
+import type {
+  AssetRef,
+  EntityId,
+  ListingSettings,
+  Locale,
+  PageResult,
+  Post,
+  PostCategory,
+} from '@/types/content';
 
 export function getPost(
   slug: string,
@@ -20,6 +28,32 @@ export function listPosts(
   repository: ContentRepository = getRepository(),
 ): Promise<PageResult<Post>> {
   return repository.listPosts(input);
+}
+
+export function getPostCategories(
+  locale: Locale,
+  repository: ContentRepository = getRepository(),
+): Promise<(PostCategory & { count: number })[]> {
+  return repository.getPostCategories(locale);
+}
+
+export function getRelatedPosts(
+  id: EntityId,
+  repository: ContentRepository = getRepository(),
+): Promise<Post[]> {
+  return repository.getRelatedPosts(id);
+}
+
+export function searchPosts(
+  input: {
+    locale: Locale;
+    query: string;
+    page: number;
+    pageSize: number;
+  },
+  repository: ContentRepository = getRepository(),
+): Promise<PageResult<Post>> {
+  return repository.searchPosts(input);
 }
 
 export interface BlogListingPageData {

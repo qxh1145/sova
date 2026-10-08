@@ -24,6 +24,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2458', 'post-2417', 'post-2331'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-05-25T17:36:42+07:00',
+      revision: 1,
+      publishedAt: '2023-10-12T02:26:00+07:00',
+    },
     seo: {
       title:
         'Website động và tĩnh là gì? Phân biệt sự khác nhau giữa 2 khái niệm - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -75,6 +81,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2475', 'post-2434', 'post-2396'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-05-26T16:10:35+07:00',
+      revision: 1,
+      publishedAt: '2023-10-05T01:49:22+07:00',
+    },
     seo: {
       title:
         'Kích thước ảnh chuẩn trên website giúp nâng cao hiệu quả SEO - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -122,6 +134,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2492', 'post-2434', 'post-2396'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-05-26T16:14:48+07:00',
+      revision: 1,
+      publishedAt: '2023-09-14T03:06:12+07:00',
+    },
     seo: {
       title:
         'Thay đổi đường dẫn wp-admin trong WordPress - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -169,6 +187,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2515', 'post-2417', 'post-2331'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-05-26T16:21:45+07:00',
+      revision: 1,
+      publishedAt: '2023-08-01T11:18:27+07:00',
+    },
     seo: {
       title:
         'Tổng hợp các lỗi thường gặp khi thiết kế web cơ bản - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -225,6 +249,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2492', 'post-2475', 'post-2396'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-05-26T16:28:51+07:00',
+      revision: 1,
+      publishedAt: '2023-07-26T02:45:17+07:00',
+    },
     seo: {
       title:
         'Hướng dẫn xoá cache trình duyệt và máy tính - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -274,6 +304,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2515', 'post-2458', 'post-2331'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-05-26T16:38:00+07:00',
+      revision: 1,
+      publishedAt: '2023-07-17T14:37:06+07:00',
+    },
     seo: {
       title:
         'Thuê thiết kế website cần lưu ý gì? 9 yếu tố quan trọng cần nhớ - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -333,6 +369,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2492', 'post-2475', 'post-2434'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-05-26T16:41:41+07:00',
+      revision: 1,
+      publishedAt: '2023-07-10T00:21:01+07:00',
+    },
     seo: {
       title:
         'Thông tin SMTP Gmail, Cách cấu hình SMTP Gmail Free vào WordPress - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -385,6 +427,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2492', 'post-2475', 'post-2434'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-05-26T17:14:14+07:00',
+      revision: 1,
+      publishedAt: '2023-07-05T15:00:40+07:00',
+    },
     seo: {
       title:
         'Hướng Dẫn Cách Backup Website WordPress Chi Tiết Nhất - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -432,6 +480,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2492', 'post-2475', 'post-2434'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-05-26T17:26:09+07:00',
+      revision: 1,
+      publishedAt: '2023-07-04T14:21:52+07:00',
+    },
     seo: {
       title:
         'Tích hợp Zalo chat cho website wordpress đơn giản nhất - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -475,6 +529,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-815', 'post-803', 'post-794'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-05-26T17:30:41+07:00',
+      revision: 1,
+      publishedAt: '2023-07-03T01:33:31+07:00',
+    },
     seo: {
       title:
         'Thiết kế website bán hàng nhưng mãi mà không có đơn hàng nào - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -525,6 +585,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2515', 'post-2492', 'post-2475'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-06-08T15:46:56+07:00',
+      revision: 1,
+      publishedAt: '2023-07-01T09:06:54+07:00',
+    },
     seo: {
       title:
         'Phát triển ứng dụng di động cho doanh nghiệp – Hướng dẫn chi tiết - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -563,6 +629,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2492'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-06-08T16:09:15+07:00',
+      revision: 1,
+      publishedAt: '2023-06-30T02:58:04+07:00',
+    },
     seo: {
       title:
         '5 yếu tố cải thiện trải nghiệm người dùng UX - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -649,6 +721,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2492', 'post-2475', 'post-2434'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-06-08T16:18:41+07:00',
+      revision: 1,
+      publishedAt: '2023-06-29T10:00:02+07:00',
+    },
     seo: {
       title:
         'Yoast SEO là gì? Hướng dẫn thiết lập và sử dụng Yoast SEO - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -699,6 +777,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2492', 'post-2475', 'post-2434'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-06-08T16:28:47+07:00',
+      revision: 1,
+      publishedAt: '2023-06-29T09:09:03+07:00',
+    },
     seo: {
       title:
         'Hướng dẫn cách tạo bài viết trong WordPress đơn giản nhất - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -742,6 +826,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: [],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-06-08T16:36:08+07:00',
+      revision: 1,
+      publishedAt: '2023-06-11T15:07:00+07:00',
+    },
     seo: {
       title:
         'Cải thiện trải nghiệm của khách hàng qua những điểm chạm tinh tế - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -790,6 +880,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2492', 'post-2475', 'post-2434'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-06-08T16:41:16+07:00',
+      revision: 1,
+      publishedAt: '2023-06-11T15:05:31+07:00',
+    },
     seo: {
       title:
         'Hiểu từ A-Z về Thiết kế Website Responsive - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -824,6 +920,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2515', 'post-2458', 'post-2417'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-06-08T16:54:17+07:00',
+      revision: 1,
+      publishedAt: '2023-06-11T15:01:32+07:00',
+    },
     seo: {
       title:
         'Thời đại website giá rẻ liệu đã hết ? - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -858,6 +960,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2492', 'post-2475', 'post-2434'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2026-06-08T17:13:29+07:00',
+      revision: 1,
+      publishedAt: '2023-06-11T14:58:29+07:00',
+    },
     seo: {
       title:
         'Kinh nghiệm tạo website để bán hàng online - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -894,6 +1002,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-826', 'post-815'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2025-08-21T22:44:18+07:00',
+      revision: 1,
+      publishedAt: '2023-06-11T14:56:59+07:00',
+    },
     seo: {
       title:
         'Kinh doanh nhỏ lẻ có nên xây dựng website bán hàng ? - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -946,6 +1060,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2515', 'post-2492', 'post-2475'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2025-08-21T22:44:56+07:00',
+      revision: 1,
+      publishedAt: '2023-06-11T14:55:30+07:00',
+    },
     seo: {
       title: 'Hướng dẫn viết bài chuẩn SEO 2021 - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/huong-dan-viet-bai-chuan-seo-2021/',
@@ -987,6 +1107,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-853', 'post-815'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2025-08-21T22:45:49+07:00',
+      revision: 1,
+      publishedAt: '2023-06-11T14:14:54+07:00',
+    },
     seo: {
       title:
         'Kinh doanh thời trang online nên có website hay không ? - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -1033,6 +1159,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2345', 'post-853', 'post-826'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2025-08-21T22:46:25+07:00',
+      revision: 1,
+      publishedAt: '2023-06-11T14:12:37+07:00',
+    },
     seo: {
       title:
         'Phương pháp định vị thương hiệu cơ bản & mở rộng - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -1085,6 +1217,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2345', 'post-815', 'post-794'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2025-08-21T22:46:48+07:00',
+      revision: 1,
+      publishedAt: '2023-06-11T14:09:18+07:00',
+    },
     seo: {
       title:
         'Hiểu đúng insights khách hàng trong hành trình mua hàng trên Social Media - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -1134,6 +1272,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2345', 'post-815', 'post-803'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2025-08-21T22:47:05+07:00',
+      revision: 1,
+      publishedAt: '2023-06-11T14:06:43+07:00',
+    },
     seo: {
       title:
         'Sự thuận tiện chi phối quyết định mua hàng của người tiêu dùng - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -1181,6 +1325,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2345', 'post-815', 'post-803'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2025-08-21T22:47:43+07:00',
+      revision: 1,
+      publishedAt: '2023-06-11T14:04:09+07:00',
+    },
     seo: {
       title:
         'Bán Hàng Online Gì Hiệu Quả Chỉ Với 10 Triệu ? - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -1219,6 +1369,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2345', 'post-815', 'post-803'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2025-08-21T22:48:08+07:00',
+      revision: 1,
+      publishedAt: '2023-06-11T14:01:33+07:00',
+    },
     seo: {
       title:
         'Giải pháp bán hàng online tổng thể 2021 - Công ty thiết kế website chuyên nghiệp | Sova',
@@ -1253,6 +1409,12 @@ export const posts: Post[] = [
     },
     author: { id: 'author-quantri', name: 'quantri' },
     relatedPostIds: ['post-2345', 'post-815', 'post-803'],
+    editorial: {
+      status: 'published',
+      updatedAt: '2025-08-21T22:48:23+07:00',
+      revision: 1,
+      publishedAt: '2023-06-11T13:57:33+07:00',
+    },
     seo: {
       title: 'Cách bán hàng đa kênh hiệu quả - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/cach-ban-hang-da-kenh-hieu-qua/',

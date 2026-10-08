@@ -1,7 +1,14 @@
 import { expect, test } from 'vitest';
 import { createMockRepository, defaultContentData } from '@/lib/repositories/mock';
 import { posts } from '@/data/posts';
-import { getBlogListingPage, getPostDetail } from './posts';
+import {
+  getBlogListingPage,
+  getPostCategories,
+  getPostDetail,
+  getRelatedPosts,
+  searchPosts,
+} from './posts';
+import { getRelatedProjects } from './projects';
 
 const repository = createMockRepository(defaultContentData);
 
@@ -34,4 +41,162 @@ test('getBlogListingPage returns page 1 with thumbnails and total pages', async 
   expect(data.thumbnailAssets.map((a) => a.id).sort()).toEqual(
     data.posts.map((p) => p.thumbnailId).sort(),
   );
+});
+
+test('getPostCategories computes category counts in source order', async () => {
+  const categories = await getPostCategories('vi', repository);
+  expect(categories.map((c) => c.slug)).toEqual([
+    'creative-branding',
+    'goc-nhin-website',
+    'social-marketing',
+    'thu-thuat',
+    'tin-tuc',
+    'ux-ui',
+  ]);
+  expect(categories.map((c) => c.count)).toEqual([1, 6, 7, 12, 3, 2]);
+});
+
+test('getRelatedPosts returns posts in relatedPostIds order, skipping unknown ids', async () => {
+  const post = posts[0];
+  const related = await getRelatedPosts(post.id, repository);
+  expect(related.map((p) => p.id)).toEqual(post.relatedPostIds);
+
+  const unknown = await getRelatedPosts('unknown-id', repository);
+  expect(unknown).toEqual([]);
+
+  const repoWithMissing = createMockRepository({
+    ...defaultContentData,
+    posts: [
+      {
+        ...post,
+        id: 'test-parent',
+        relatedPostIds: ['unknown-1', post.id, 'unknown-2'],
+      },
+      post,
+    ],
+  });
+  const filtered = await getRelatedPosts('test-parent', repoWithMissing);
+  expect(filtered.map((p) => p.id)).toEqual([post.id]);
+});
+
+test('getRelatedProjects returns projects in relatedProjectIds order, skipping unknown ids', async () => {
+  const related = await getRelatedProjects('project-473', repository);
+  expect(related.length).toBeGreaterThan(0);
+  expect(related[0].id).toBe('project-477');
+
+  const unknown = await getRelatedProjects('unknown-project', repository);
+  expect(unknown).toEqual([]);
+});
+
+test('searchPosts searches title, excerpt, and tag-stripped body HTML with accents and case folding', async () => {
+  const blank = await searchPosts({ locale: 'vi', query: '   ', page: 1, pageSize: 6 }, repository);
+  expect(blank.total).toBe(27);
+  expect(blank.items).toHaveLength(6);
+
+  // Accent & case folding: "thu thuat" matches "Thủ thuật"
+  const accentResult = await searchPosts(
+    { locale: 'vi', query: 'thu thuat', page: 1, pageSize: 50 },
+    repository,
+  );
+  expect(accentResult.total).toBeGreaterThan(0);
+  expect(
+    accentResult.items.some(
+      (p) => p.title.includes('Thủ thuật') || p.body.html.includes('thủ thuật'),
+    ),
+  ).toBe(true);
+
+  // Tag stripping: text inside attribute must not match
+  const customPost: (typeof posts)[0] = {
+    ...posts[0],
+    id: 'post-html-test',
+    slug: 'post-html-test',
+    title: 'Clean Title',
+    excerpt: 'Clean Excerpt',
+    body: {
+      format: 'sanitized-html',
+      html: '<p class="secret-attr-only">Visible Body Content</p>',
+      assetIds: [],
+      sources: [],
+    },
+  };
+  const htmlRepo = createMockRepository({
+    ...defaultContentData,
+    posts: [customPost],
+  });
+  const attrMatch = await searchPosts(
+    { locale: 'vi', query: 'secret-attr-only', page: 1, pageSize: 10 },
+    htmlRepo,
+  );
+  expect(attrMatch.total).toBe(0);
+
+  const bodyMatch = await searchPosts(
+    { locale: 'vi', query: 'Visible Body Content', page: 1, pageSize: 10 },
+    htmlRepo,
+  );
+  expect(bodyMatch.total).toBe(1);
+
+  const noMatch = await searchPosts(
+    { locale: 'vi', query: 'xyznonexistentterm123', page: 1, pageSize: 10 },
+    repository,
+  );
+  expect(noMatch.items).toEqual([]);
+  expect(noMatch.total).toBe(0);
+});
+
+test('draft fixture post is excluded from getPost, listPosts, getRelatedPosts, getPostCategories and searchPosts', async () => {
+  const publishedPost = posts[0];
+  const draftPost: (typeof posts)[0] = {
+    ...posts[1],
+    id: 'post-draft-test',
+    slug: 'post-draft-test',
+    title: 'Unique Draft Title For Test',
+    categoryIds: publishedPost.categoryIds,
+    editorial: {
+      status: 'draft',
+      updatedAt: '2026-10-08',
+      revision: 1,
+    },
+  };
+  const testRepo = createMockRepository({
+    ...defaultContentData,
+    posts: [
+      {
+        ...publishedPost,
+        relatedPostIds: [draftPost.id],
+      },
+      draftPost,
+    ],
+  });
+
+  // getPost returns null
+  expect(await testRepo.getPost(draftPost.slug)).toBeNull();
+
+  // listPosts excludes draft
+  const list = await testRepo.listPosts({ locale: 'vi', page: 1, pageSize: 10 });
+  expect(list.items.map((p) => p.id)).toEqual([publishedPost.id]);
+  expect(list.total).toBe(1);
+
+  // getRelatedPosts excludes draft
+  const related = await testRepo.getRelatedPosts(publishedPost.id);
+  expect(related).toEqual([]);
+
+  // getPostCategories excludes draft from count
+  const cats = await testRepo.getPostCategories('vi');
+  for (const cat of cats) {
+    if (publishedPost.categoryIds.includes(cat.id)) {
+      expect(cat.count).toBe(1);
+    } else {
+      expect(cat.count).toBe(0);
+    }
+  }
+
+  // searchPosts excludes draft even when query matches
+  const search = await testRepo.searchPosts({
+    locale: 'vi',
+    query: 'Unique Draft Title',
+    page: 1,
+    pageSize: 10,
+  });
+  expect(search.total).toBe(0);
+  expect(search.items).toEqual([]);
 });
