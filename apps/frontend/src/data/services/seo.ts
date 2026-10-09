@@ -32,6 +32,7 @@ export const seoServices: Service[] = [
         { label: 'Seo từ khoá Website' },
       ],
       cta: { label: 'Kết nối ngay', href: '/seo-tu-khoa-website/' },
+      ctaIconId: 'asset-d17ec3ffd1',
     },
     advantagesPhotoId: 'asset-82cc1b9e6c',
     advantagesDecoId: 'asset-bcb1d8243f',
@@ -217,7 +218,7 @@ export const seoServices: Service[] = [
         title: 'Khách hàng nhận xét về chúng tôi',
         titleLines: ['Khách hàng nhận xét', 'về chúng tôi'],
       },
-      faq: { title: 'Những câu hỏi thường gặp' },
+      faq: { eyebrow: 'GIẢI ĐÁP', title: 'Những câu hỏi thường gặp' },
     },
   },
   {
@@ -420,8 +421,7 @@ export const seoServices: Service[] = [
         titleLines: ['Some Recent Works', 'We’re Really Proud Of.'],
       },
       testimonials: { eyebrow: 'Sova', title: 'Customer Reviews' },
-      faq: { title: 'Frequently Asked Questions' },
+      faq: { eyebrow: 'FAQs', title: 'Frequently Asked Questions' },
     },
   },
 ];
-

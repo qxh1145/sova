@@ -10,6 +10,8 @@ export interface ServiceAdvantageCardIds {
 
 export interface ServiceAdvantagesIds {
   section: string;
+  /** 30px gap above the heading row. */
+  topGap: string;
   headingRow: string;
   headingCol: string;
   headingText: string;
@@ -19,13 +21,19 @@ export interface ServiceAdvantagesIds {
   bodyRow: string;
   photoCol: string;
   photoImg: string;
+  /** Source `srcset` of the photo `<img>`; omitted when the source has none. */
+  photoSrcSet?: string;
   cardsCol: string;
   cardsRow: string;
   cards: ServiceAdvantageCardIds[];
 }
 
+const SEO_PHOTO_SRCSET =
+  '/wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash.webp 1000w, /wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-320x400.webp 320w, /wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-640x800.webp 640w, /wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-768x960.webp 768w';
+
 export const SERVICE_ADVANTAGES_IDS_SEO_VI: ServiceAdvantagesIds = {
   section: 'section_922596210',
+  topGap: 'gap-317319870',
   headingRow: 'row-1348957617',
   headingCol: 'col-1321606406',
   headingText: 'text-1694087428',
@@ -35,6 +43,7 @@ export const SERVICE_ADVANTAGES_IDS_SEO_VI: ServiceAdvantagesIds = {
   bodyRow: 'row-19869988',
   photoCol: 'col-1242512278',
   photoImg: 'image_1758650088',
+  photoSrcSet: SEO_PHOTO_SRCSET,
   cardsCol: 'col-239772777',
   cardsRow: 'row-2091606999',
   cards: [
@@ -67,6 +76,7 @@ export const SERVICE_ADVANTAGES_IDS_SEO_VI: ServiceAdvantagesIds = {
 
 export const SERVICE_ADVANTAGES_IDS_SEO_EN: ServiceAdvantagesIds = {
   section: 'section_1367982414',
+  topGap: 'gap-1060614001',
   headingRow: 'row-1716765680',
   headingCol: 'col-206688807',
   headingText: 'text-2321965541',
@@ -76,6 +86,7 @@ export const SERVICE_ADVANTAGES_IDS_SEO_EN: ServiceAdvantagesIds = {
   bodyRow: 'row-1190004748',
   photoCol: 'col-1545747609',
   photoImg: 'image_996127523',
+  photoSrcSet: SEO_PHOTO_SRCSET,
   cardsCol: 'col-862225993',
   cardsRow: 'row-1613739936',
   cards: [
@@ -132,6 +143,11 @@ export function ServiceAdvantages({
       <div className="section-bg fill" />
 
       <div className="section-content relative">
+        <div
+          id={ids.topGap}
+          className="gap-element clearfix"
+          style={{ display: 'block', height: 'auto' }}
+        />
         <div className="row align-bottom" id={ids.headingRow}>
           <div id={ids.headingCol} className="col medium-6 small-12 large-6">
             <div className="col-inner">
@@ -210,8 +226,8 @@ export function ServiceAdvantages({
                       src={photo.src}
                       className="attachment-original size-original"
                       alt={photo.alt ?? ''}
-                      srcSet={`${photo.src} 1000w, /wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-320x400.webp 320w, /wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-640x800.webp 640w, /wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-768x960.webp 768w`}
-                      sizes="auto, (max-width: 1000px) 100vw, 1000px"
+                      srcSet={ids.photoSrcSet}
+                      sizes={ids.photoSrcSet && 'auto, (max-width: 1000px) 100vw, 1000px'}
                       loading="lazy"
                     />
                   </div>

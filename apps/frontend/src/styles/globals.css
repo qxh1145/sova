@@ -106,6 +106,66 @@ html.has-custom-cursor .cursor-ring {
   font-family: Poppins, sans-serif !important;
 }
 
+/* SEO package card titles 1-3 (grid + slider, VI + EN): same source inline rule; card 4 has none. */
+#text-494824446 h2,
+#text-2043975176 h2,
+#text-1523480848 h2,
+#text-1002710887 h2,
+#text-1139255846 h2,
+#text-2735994447 h2,
+#text-841039287 h2,
+#text-347169200 h2,
+#text-1253327573 h2,
+#text-2566137859 h2,
+#text-4120876264 h2,
+#text-3433546042 h2 {
+  font-family: Poppins, sans-serif !important;
+}
+
+/* SEO advantage card titles: in source a per-id <style> follows each h3, so `.last-reset :last-child`
+   never zeroes its 0.5em bottom margin. */
+#section_922596210 .icon-box-text > .text > h3,
+#section_1367982414 .icon-box-text > .text > h3 {
+  margin-bottom: 0.5em;
+}
+
+/* SEO FAQ answers: source per-id rule on every answer `.text` (`font-size: 1.1rem; color: #fff`). */
+#col-161830420 .accordion-inner > .text,
+#col-1084451967 .accordion-inner > .text {
+  font-size: 1.1rem;
+  color: rgb(255, 255, 255);
+}
+
+/* SEO FAQ titles: source `a.accordion-title`; the shared Accordion renders a <button>, which picks up
+   Flatsome button metrics (2.4em line-height, 1em margins, bold, letter-spacing). Reset to the anchor's.
+   ponytail: scoped to the SEO FAQ; drop once Accordion stops inheriting button styles everywhere. */
+#col-161830420 .ac-luutru .accordion-title,
+#col-1084451967 .ac-luutru .accordion-title {
+  margin: 0;
+  min-height: 0;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 1.6;
+  vertical-align: baseline;
+  text-rendering: auto;
+}
+
+/* Its toggle is a <span> here but a Flatsome <button> in source: give it the button box. */
+#col-161830420 .ac-luutru .accordion-title .toggle,
+#col-1084451967 .ac-luutru .accordion-title .toggle {
+  border: 1px solid transparent;
+  padding-right: 0;
+  min-width: 24px;
+  min-height: 2.5em;
+  font-size: 0.97em;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
 [data-media-status='missing'] {
   display: inline-block;
   background-color: rgba(255, 255, 255, 0.05);

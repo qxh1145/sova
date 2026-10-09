@@ -199,7 +199,6 @@ export function PageHero({
                             </p>
                           </div>
                         )}
-
                       </div>
                     </div>
 
