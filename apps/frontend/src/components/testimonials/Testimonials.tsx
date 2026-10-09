@@ -528,6 +528,78 @@ export const TESTIMONIALS_IDS_SEO_EN: TestimonialsIds = {
   ],
 };
 
+export const TESTIMONIALS_IDS_BRANDING_VI: TestimonialsIds = {
+  section: 'section_1502022357',
+  row: 'row-892214119',
+  leftCol: 'col-2066013981',
+  imageWrapper: 'image_1640056916',
+  rightCol: 'col-1087438141',
+  eyebrowText: 'text-132396275',
+  titleText: 'text-3427176542',
+  sliderWrapper: 'slider-1683474440',
+  innerGap: 'gap-286215994',
+  bottomGap: 'gap-907732655',
+  slides: [
+    {
+      row: 'row-1183734666',
+      col: 'col-3641444',
+      ndKh: 'text-4199205319',
+      line: 'text-2934671928',
+      iconBoxText: 'text-3737413789',
+    },
+    {
+      row: 'row-935593802',
+      col: 'col-340579823',
+      ndKh: 'text-4203082640',
+      line: 'text-439225718',
+      iconBoxText: 'text-4153297682',
+    },
+    {
+      row: 'row-841982413',
+      col: 'col-1290883295',
+      ndKh: 'text-1909532206',
+      line: 'text-3813892155',
+      iconBoxText: 'text-591270540',
+    },
+  ],
+};
+
+export const TESTIMONIALS_IDS_BRANDING_EN: TestimonialsIds = {
+  section: 'section_1058517608',
+  row: 'row-1555165122',
+  leftCol: 'col-716292567',
+  imageWrapper: 'image_1092981218',
+  rightCol: 'col-1431510694',
+  eyebrowText: 'text-2111398339',
+  titleText: 'text-3924253219',
+  sliderWrapper: 'slider-2036154995',
+  innerGap: 'gap-67453680',
+  bottomGap: 'gap-1297812330',
+  slides: [
+    {
+      row: 'row-1200332702',
+      col: 'col-1806662353',
+      ndKh: 'text-2540247936',
+      line: 'text-934044303',
+      iconBoxText: 'text-2030310328',
+    },
+    {
+      row: 'row-1072477452',
+      col: 'col-806909601',
+      ndKh: 'text-224544616',
+      line: 'text-232645698',
+      iconBoxText: 'text-3071157152',
+    },
+    {
+      row: 'row-484425520',
+      col: 'col-884657944',
+      ndKh: 'text-3864214019',
+      line: 'text-3880951653',
+      iconBoxText: 'text-189976429',
+    },
+  ],
+};
+
 export const TESTIMONIALS_LABELS: Record<Locale, CarouselLabels> = {
   vi: {
     prev: 'Trước',

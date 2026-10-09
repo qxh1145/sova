@@ -6637,4 +6637,17 @@ export const assets: AssetRef[] = [
     width: 768,
     height: 960,
   },
+  {
+    id: 'asset-e83e570e84',
+    src: '/wp-content/uploads/2024/02/scdscszdcs-scaled-1.webp',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'ui-ux-branding-design/index.html', line: 628 },
+      { file: 'en/ui-ux-branding-design-2/index.html', line: 628 },
+    ],
+    width: 2560,
+    height: 1085,
+  },
 ];

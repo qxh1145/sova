@@ -976,3 +976,255 @@ test.describe('SEO Service Pages (Story 5.5)', () => {
   }
 });
 
+const BRANDING_SERVICES_ROUTES = [
+  {
+    locale: 'vi',
+    path: '/ui-ux-branding-design/',
+    sectionIds: [
+      'banner-5834555',
+      'section_1240484658',
+      'section_282263172',
+      'section_2117777695',
+      'section_1502022357',
+      'section_1909361623',
+    ],
+    headingLines: ['UI/UX,', 'Branding Design'],
+    breadcrumb: 'Trang chủ / Dịch vụ / UI/UX, Branding Design',
+    homeHref: '/',
+    homeLabel: 'Trang chủ',
+    breadcrumbId: 'text-427293232',
+    heroCtaId: 'text-3358106738',
+    advantagesTopGapId: 'gap-1534842904',
+    decoImageId: 'image_1727408718',
+    offeringsTitleId: 'text-2802465451',
+    faqEyebrowId: 'text-1109536633',
+    faqEyebrow: 'GIẢI ĐÁP',
+    advantagesEyebrow: 'Dịch vụ thiết kế UI/UX',
+    advantagesTitle: 'Tại Sova',
+    advantagesSubtitle: 'Chúng tôi thiết kế dựa trên cốt lõi văn hóa doanh nghiệp',
+    advantageTitles: [
+      'Nghiên cứu văn hoá doanh nghiệp',
+      'Thiết kế trải nghiệm doanh nghiệp',
+      'Phát triển chiến lược sản phẩm',
+      'Tạo dựng giá trị bền vững',
+    ],
+    offeringsEyebrow: 'Những dịch vụ',
+    offeringsTitle: 'Thiết kế UI/UX\ntại Sova',
+    packageTitles: [
+      'THIẾT KẾ LOGO THƯƠNG HIỆU',
+      'THIẾT KẾ UI/UX WEB/APP',
+      'THIẾT KẾ NHẬN DIỆN THƯƠNG HIỆU',
+      'THIẾT KẾ NHẬN DIỆN TẠI ĐIỂM BÁN',
+    ],
+    faqCount: 10,
+  },
+  {
+    locale: 'en',
+    path: '/en/ui-ux-branding-design-2/',
+    sectionIds: [
+      'banner-1642333106',
+      'section_1111233762',
+      'section_879951789',
+      'section_1698149091',
+      'section_1058517608',
+      'section_1106628234',
+    ],
+    headingLines: ['UI/UX,', 'Branding Design'],
+    breadcrumb: 'Home / Services / UI/UX, Branding Design',
+    homeHref: '/en/',
+    homeLabel: 'Home',
+    breadcrumbId: 'text-931641378',
+    heroCtaId: 'text-1083235922',
+    advantagesTopGapId: 'gap-313452462',
+    decoImageId: 'image_1583733878',
+    offeringsTitleId: 'text-1082219404',
+    faqEyebrowId: 'text-3191336055',
+    faqEyebrow: 'FAQs',
+    advantagesEyebrow: 'UI/UX Design Service',
+    advantagesTitle: 'At Sova',
+    advantagesSubtitle: 'We design with your corporate culture at the core',
+    advantageTitles: [
+      'Corporate Culture Research',
+      'Enterprise Experience Design',
+      'Product Strategy Development',
+      'Building Sustainable Value',
+    ],
+    offeringsEyebrow: 'Services',
+    offeringsTitle: 'UI/UX Design at Sova',
+    packageTitles: [
+      'BRAND LOGO DESIGN',
+      'UI/UX DESIGN FOR WEB & APP',
+      'BRAND IDENTITY DESIGN',
+      'RETAIL BRAND IDENTITY DESIGN',
+    ],
+    faqCount: 10,
+  },
+];
+
+test.describe('Branding Service Pages (Story 5.6)', () => {
+  for (const config of BRANDING_SERVICES_ROUTES) {
+    test(`Sections render in source order and structure on ${config.path}`, async ({ page }) => {
+      const { brandingServices } = await import('../../src/data/services/branding');
+      const { siteSettings } = await import('../../src/data/site');
+      const zaloHref = siteSettings.find((x) => x.locale === config.locale)?.zaloHref;
+      const service = brandingServices.find((s) => s.locale === config.locale);
+      if (!service) throw new Error('branding service missing');
+
+      await page.goto(config.path);
+
+      // Section order verification inside main
+      const sectionIds = await page.evaluate(() =>
+        Array.from(
+          document.querySelectorAll('main#main > .banner, main#main > section'),
+          (el) => el.id,
+        ),
+      );
+      expect(sectionIds).toEqual(config.sectionIds);
+      await expectNoDuplicateIds(page);
+
+      // No tablist, 0 tables
+      await expect(page.locator('[role=tablist]')).toHaveCount(0);
+      await expect(page.locator('main table')).toHaveCount(0);
+
+      // Video banner present in advantages
+      await expect(page.locator('main video')).toHaveCount(1);
+
+      // Projects slot is present and empty ss-decor
+      const projectsSlot = page.locator(`#${config.sectionIds[3]}`);
+      await expect(projectsSlot).toHaveClass(/ss-decor/);
+
+      // H1 heading lines with typewriter
+      const h1 = page.locator('main h1');
+      await expect(h1).toHaveCount(1);
+      await expect(h1.locator('.typewriter')).toHaveText(config.headingLines);
+
+      // Hero breadcrumb
+      const breadcrumb = page.locator(`#${config.breadcrumbId}`);
+      await expect(breadcrumb).toContainText(config.breadcrumb);
+      await expect(
+        breadcrumb.getByRole('link', { name: config.homeLabel }),
+      ).toHaveAttribute('href', config.homeHref);
+
+      // Hero CTA (no icon) and background image
+      const heroCta = page.locator(`#${config.heroCtaId} a.but-lh`);
+      await expect(heroCta).toHaveAttribute('href', service.hero.cta!.href);
+      await expect(heroCta).toHaveText(service.hero.cta!.label);
+      await expect(heroCta.locator('img')).toHaveCount(0);
+      const heroBg = page.locator(
+        `#${config.sectionIds[0]} .banner-bg img.bg[src*="scdscszdcs-scaled-1.webp"]`,
+      );
+      await expect(heroBg).toHaveCount(1);
+      await expect
+        .poll(() => heroBg.evaluate((img: HTMLImageElement) => img.naturalWidth))
+        .toBeGreaterThan(0);
+
+      // Advantages section: heading, subtitle, deco, video, and 4 cards with titles
+      const advantagesSection = page.locator(`#${config.sectionIds[1]}`);
+      await expect(page.locator(`#${config.advantagesTopGapId}`)).toHaveClass(
+        'gap-element clearfix hide-for-small',
+      );
+      await expect(
+        advantagesSection.locator(`#${config.decoImageId} img[src*="Deco-1-6.svg"]`),
+      ).toHaveCount(1);
+      await expect(advantagesSection).toContainText(config.advantagesEyebrow);
+      await expect(advantagesSection.locator('h2').first()).toHaveText(config.advantagesTitle);
+      await expect(advantagesSection).toContainText(config.advantagesSubtitle);
+
+      const advantageCards = advantagesSection.locator('.row.align-equal > .col');
+      await expect(advantageCards).toHaveCount(4);
+      for (let i = 0; i < 4; i++) {
+        await expect(advantageCards.nth(i).locator('h3')).toHaveText(config.advantageTitles[i]);
+      }
+      expect(
+        await advantageCards
+          .locator('.icon-box-img')
+          .evaluateAll((els) => els.map((el) => (el as HTMLElement).style.width)),
+      ).toEqual(['80px', '79px', '80px', '80px']);
+
+      // Package cards desktop grid: 4 package cards (item counts: 7, 7, 7, 5)
+      const packagesSection = page.locator(`#${config.sectionIds[2]}`);
+      await expect(packagesSection).toContainText(config.offeringsEyebrow);
+      await expect(
+        packagesSection.locator('.section-bg img[src*="b64598d7e18308083c456d32c69bae66.webp"]'),
+      ).toHaveCount(1);
+      expect(await packagesSection.locator(`#${config.offeringsTitleId} h2`).innerText()).toBe(
+        config.offeringsTitle,
+      );
+      const gridCards = packagesSection.locator('.eras-table-price > .col');
+      await expect(gridCards).toHaveCount(4);
+      const expectedItemCounts = [7, 7, 7, 5];
+      for (let i = 0; i < 4; i++) {
+        const card = gridCards.nth(i);
+        const offering = service.offerings[i];
+        await expect(card.locator('h3')).toHaveText(config.packageTitles[i]);
+        await expect(card.locator('.text p')).toHaveText(offering.description ?? '');
+        await expect(card.locator('.icon-box h5')).toHaveText(offering.items ?? []);
+        await expect(card.locator('.icon-box h5')).toHaveCount(expectedItemCounts[i]);
+        await expect(card.locator('p a.but-lh')).toHaveAttribute('href', zaloHref!);
+      }
+
+      // Testimonials (3 slides)
+      await expect(
+        page.locator(`#${config.sectionIds[4]} .slide-kh .flickity-slider > *`),
+      ).toHaveCount(3);
+
+      // FAQ items count per locale (10 items, first open)
+      const faqSection = page.locator(`#${config.sectionIds[5]}`);
+      await expect(faqSection.locator(`#${config.faqEyebrowId}`)).toHaveText(config.faqEyebrow);
+      const faqItems = faqSection.locator('.accordion-item');
+      await expect(faqItems).toHaveCount(config.faqCount);
+      await expect(faqItems.first().locator('.accordion-title')).toHaveClass(/active/);
+    });
+
+    test(`Grid hidden and slider visible at mobile viewports with no page scroll on ${config.path}`, async ({
+      page,
+    }) => {
+      for (const width of [390, 549]) {
+        await page.setViewportSize({ width, height: 844 });
+        await page.goto(config.path);
+
+        const offerings = page.locator(`#${config.sectionIds[2]}`);
+        const grid = offerings.locator('.eras-table-price.hide-for-small');
+        const slider = offerings.locator('.eras-table-price-slider.slide_ui');
+
+        await expect(grid).toBeHidden();
+        await expect(slider).toBeVisible();
+
+        // 4 slides in carousel
+        const slides = slider.locator('.flickity-slider > .row');
+        await expect(slides).toHaveCount(4);
+        for (let i = 0; i < 4; i++) {
+          const slide = slides.nth(i);
+          await expect(slide.locator('h3')).toHaveText(config.packageTitles[i]);
+          // Source highlights only the first slide's column
+          if (i === 0) await expect(slide.locator('> .col')).toHaveClass(/col-blur-blue/);
+          else await expect(slide.locator('> .col')).not.toHaveClass(/col-blur-blue/);
+        }
+
+        // Carousel dots and arrows present
+        await expect(slider.locator('.flickity-page-dots')).toBeVisible();
+        await expect(slider.locator('.flickity-prev-next-button')).toHaveCount(2);
+
+        // Wraps: previous from the first slide selects the last, next returns to the first.
+        // Legacy CSS hides the arrows below 550px, so dispatch the click directly.
+        await expect(slides.nth(0)).toHaveClass(/is-selected/);
+        await slider.locator('.flickity-prev-next-button.previous').dispatchEvent('click');
+        await expect(slides.nth(3)).toHaveClass(/is-selected/);
+        await slider.locator('.flickity-prev-next-button.next').dispatchEvent('click');
+        await expect(slides.nth(0)).toHaveClass(/is-selected/);
+
+        // No horizontal page scroll
+        const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+        const innerWidth = await page.evaluate(() => window.innerWidth);
+        expect(scrollWidth, `${width}px scrollWidth <= innerWidth`).toBeLessThanOrEqual(innerWidth);
+      }
+
+      // At >= 550px: slider hidden, grid visible
+      await page.setViewportSize({ width: 550, height: 844 });
+      await page.goto(config.path);
+      const offerings550 = page.locator(`#${config.sectionIds[2]}`);
+      await expect(offerings550.locator('.eras-table-price.hide-for-small')).toBeVisible();
+      await expect(offerings550.locator('.eras-table-price-slider.slide_ui')).toBeHidden();
+    });
+  }
+});
