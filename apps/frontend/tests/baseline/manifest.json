@@ -206,11 +206,61 @@
       "reason": "exception: A12 THP heading before the shared hero"
     },
     {
+      "key": "projects-category-website",
+      "url": "/featured_item_category/website/",
+      "family": "projects",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "projects-category-branding",
+      "url": "/featured_item_category/branding/",
+      "family": "projects",
+      "locale": "vi",
+      "reason": "exception: THP A11, 2 items"
+    },
+    {
       "key": "blog-vi",
       "url": "/goc-nhin/",
       "family": "blog",
       "locale": "vi",
       "reason": "family"
+    },
+    {
+      "key": "blog-page-2",
+      "url": "/goc-nhin/page/2/",
+      "family": "blog",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "blog-page-5",
+      "url": "/goc-nhin/page/5/",
+      "family": "blog",
+      "locale": "vi",
+      "reason": "exception: partial page, 3 posts"
+    },
+    {
+      "key": "blog-category-vi",
+      "url": "/thu-thuat/",
+      "family": "blog",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "blog-category-page-2",
+      "url": "/thu-thuat/page/2/",
+      "family": "blog",
+      "locale": "vi",
+      "reason": "family"
+    },
+    {
+      "key": "search-vi",
+      "url": "/?s=cache",
+      "file": "goc-nhin/index.html",
+      "family": "blog",
+      "locale": "vi",
+      "reason": "exception: search results layout reuses blog listing layout; source has no search HTML"
     },
     {
       "key": "blog-en",

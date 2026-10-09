@@ -2,7 +2,7 @@ import type { AssetRef, Project } from '@/types/content';
 import {
   ProjectGallerySingle,
   ProjectGallerySlider,
-} from './ProjectGalleryInteractive';
+} from './ProjectGallerySlider';
 
 export interface ProjectGalleryProps {
   galleryAssets: AssetRef[];

@@ -1,13 +1,13 @@
 import type { ProjectListingPageData } from '@/lib/queries/projects';
-import { ServiceHero, type ServiceHeroIds } from '@/components/services/ServiceHero';
-import { ProjectCard } from './ProjectCard';
+import { PageHero, type PageHeroIds } from '@/components/hero/PageHero';
+import { ProjectCard, toCardData, categoryLabel } from './ProjectCard';
 import { ProjectFilters } from './ProjectFilters';
 import { ProjectGrid } from './ProjectGrid';
 
 export interface ProjectArchiveIds {
   section: string;
   portfolio: string;
-  hero: ServiceHeroIds;
+  hero: PageHeroIds;
 }
 
 export interface ProjectArchiveViewProps extends ProjectListingPageData {
@@ -33,13 +33,7 @@ export function ProjectArchiveView({
 }: ProjectArchiveViewProps) {
   const assetMap = new Map(thumbnailAssets.map((a) => [a.id, a]));
   const categoryMap = new Map(categories.map((c) => [c.id, c.label]));
-  const cards = projects.map(({ id, path, title, thumbnailId, categoryIds }) => ({
-    id,
-    path,
-    title,
-    thumbnailId,
-    categoryIds,
-  }));
+  const cards = projects.map(toCardData);
 
   return (
     <main id="main">
@@ -56,7 +50,7 @@ export function ProjectArchiveView({
           <div className="section-bg fill" />
           <div className="section-content relative">
             {settings?.hero && (
-              <ServiceHero
+              <PageHero
                 hero={settings.hero}
                 heroImage={heroImage}
                 bgImage={bgImage}
@@ -92,10 +86,7 @@ export function ProjectArchiveView({
                     thumbnailAsset={
                       project.thumbnailId ? assetMap.get(project.thumbnailId) : undefined
                     }
-                    categoryLabel={project.categoryIds
-                      .map((id) => categoryMap.get(id))
-                      .filter(Boolean)
-                      .join(', ')}
+                    categoryLabel={categoryLabel(project.categoryIds, categoryMap)}
                   />
                 ))}
               </ProjectGrid>

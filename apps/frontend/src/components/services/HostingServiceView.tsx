@@ -1,10 +1,10 @@
 import type { Locale } from '@/types/content';
 import type { ServiceAssets, ServicePage } from '@/lib/queries/services';
+import { PageHero } from '@/components/hero/PageHero';
 import {
-  ServiceHero,
   SERVICE_HERO_IDS_HOSTING_EN,
   SERVICE_HERO_IDS_HOSTING_VI,
-} from './ServiceHero';
+} from './serviceHeroIds';
 import {
   ServiceIconCards,
   SERVICE_ICON_CARDS_IDS_HOSTING_EN,
@@ -62,7 +62,7 @@ export function HostingServiceView({ page, assets, locale }: HostingServiceViewP
   return (
     <main id="main">
       {/* 1. Service Hero */}
-      <ServiceHero
+      <PageHero
         hero={service.hero}
         heroImage={assets.heroImage}
         bgImage={assets.heroBgImage}
