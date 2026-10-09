@@ -25,6 +25,12 @@ export const websiteServices: Service[] = [
         sources: [{ file: 'thiet-ke-website/index.html', line: 689 }],
       },
       imageId: 'asset-29a02b2e8f',
+      bgImageId: 'asset-3a2f0e6140',
+      breadcrumb: [
+        { label: 'Trang chủ', href: '/' },
+        { label: 'Dịch vụ' },
+        { label: 'Thiết kế website' },
+      ],
       videoId: 'asset-a4fba457f5',
       cta: { label: 'Kết nối ngay →', href: '/lien-he/' },
     },
@@ -114,6 +120,15 @@ export const websiteServices: Service[] = [
           assetIds: [],
           sources: [{ file: 'thiet-ke-website/index.html', line: 4624 }],
         },
+        items: [
+          'Tăng khả năng tiếp cận khách hàng',
+          'Tạo dựng uy tín và thương hiệu',
+          'Tiết kiệm chi phí quảng cáo',
+          'Cải thiện dịch vụ khách hàng',
+          'Tăng doanh thu và khả năng chuyển đổi',
+          'Phân tích và đo lường hiệu quả',
+          'Tự động hóa các quy trình kinh doanh',
+        ],
       },
       {
         id: 'service-website-vi-offering-cam-ket',
@@ -124,6 +139,15 @@ export const websiteServices: Service[] = [
           assetIds: [],
           sources: [{ file: 'thiet-ke-website/index.html', line: 4873 }],
         },
+        items: [
+          'Giao diện thân thiện và dễ sử dụng',
+          'Thiết kế chuyên nghiệp và độc đáo',
+          'Tối ưu hóa trên mọi thiết bị',
+          'Tối ưu hoá chuẩn SEO',
+          'Tốc độ tải trang nhanh',
+          'Bảo mật dữ liệu website',
+          'Hỗ trợ và bảo trì sau khi hoàn thành',
+        ],
       },
       {
         id: 'service-website-vi-offering-san-pham-nhan-duoc',
@@ -134,6 +158,15 @@ export const websiteServices: Service[] = [
           assetIds: [],
           sources: [{ file: 'thiet-ke-website/index.html', line: 5122 }],
         },
+        items: [
+          'Website hoàn thiện chuyên nghiệp',
+          'Tích hợp với Mạng xã hội',
+          'Bộ mã nguồn (Source Code)',
+          'Hướng dẫn sử dụng và Quản lý website',
+          'Tài Khoản Web Hosting (Nếu có)',
+          'Tính năng và Chức năng thân thiện',
+          'Tài Khoản Web Hosting (Nếu có)',
+        ],
       },
     ],
     sectionCopy: {
@@ -141,6 +174,7 @@ export const websiteServices: Service[] = [
         eyebrow: 'Thiết kế Website tại Sova',
         title: 'Phát triển lợi thế doanh nghiệp của bạn trên nền tảng số',
         titleLines: ['Phát triển lợi thế doanh nghiệp', 'của bạn trên nền tảng số'],
+        mobileTitleLines: ['Phát triển lợi thế', 'doanh nghiệp của bạn', 'trên nền tảng số'],
       },
       pricing: { eyebrow: 'Bảng giá dịch vụ', title: 'Thiết kế website' },
       offerings: {
@@ -158,7 +192,7 @@ export const websiteServices: Service[] = [
         title: 'Khách hàng nhận xét về chúng tôi',
         titleLines: ['Khách hàng nhận xét', 'về chúng tôi'],
       },
-      faq: { title: 'Những câu hỏi thường gặp' },
+      faq: { eyebrow: 'GIẢI ĐÁP', title: 'Những câu hỏi thường gặp' },
       contact: {
         eyebrow: '100 MÃ ƯU ĐÃI THÁNG NÀY',
         title: 'Bạn muốn hỗ trợ nhanh nhất để có ngay Website',
@@ -189,6 +223,12 @@ export const websiteServices: Service[] = [
         sources: [{ file: 'en/website-development/index.html', line: 689 }],
       },
       imageId: 'asset-29a02b2e8f',
+      bgImageId: 'asset-3a2f0e6140',
+      breadcrumb: [
+        { label: 'Home', href: '/en/' },
+        { label: 'Services' },
+        { label: 'Website Development' },
+      ],
       videoId: 'asset-a4fba457f5',
       cta: { label: 'Connect now →', href: '/lien-he/' },
     },
@@ -271,6 +311,15 @@ export const websiteServices: Service[] = [
           assetIds: [],
           sources: [{ file: 'en/website-development/index.html', line: 4477 }],
         },
+        items: [
+          'Expand Your Customer Reach',
+          'Establish Brand Authority & Trust',
+          'Optimize Advertising Costs',
+          'Enhance Customer Experience',
+          'Drive Revenue & Improve Conversion Rates',
+          'Measure & Optimize Performance',
+          'Automate Business Workflows',
+        ],
       },
       {
         id: 'service-website-en-offering-commitments',
@@ -281,6 +330,15 @@ export const websiteServices: Service[] = [
           assetIds: [],
           sources: [{ file: 'en/website-development/index.html', line: 4726 }],
         },
+        items: [
+          'User-Friendly and Intuitive Interface',
+          'Professional and Unique Design',
+          'Optimized for All Devices',
+          'SEO-Optimized for Search Engine Visibility',
+          'Fast Page Load Speed',
+          'Robust Website Security',
+          'Post-Launch Support and Maintenance',
+        ],
       },
       {
         id: 'service-website-en-offering-products-received',
@@ -291,6 +349,15 @@ export const websiteServices: Service[] = [
           assetIds: [],
           sources: [{ file: 'en/website-development/index.html', line: 4975 }],
         },
+        items: [
+          'Completed Professional Website',
+          'Social Media Integration',
+          'Source Code Package',
+          'User and Website Management Guide',
+          'Web Hosting Account (If applicable)',
+          'User-Friendly Features and Functions',
+          'Web Hosting Account (If applicable)',
+        ],
       },
     ],
     sectionCopy: {
@@ -306,7 +373,7 @@ export const websiteServices: Service[] = [
         titleLines: ['Some Recent Works', 'We’re Really Proud Of.'],
       },
       testimonials: { eyebrow: 'Sova', title: 'Customer Reviews' },
-      faq: { title: 'Frequently Asked Questions' },
+      faq: { eyebrow: 'FAQs', title: 'Frequently Asked Questions' },
       contact: {
         title: 'You want support fastest to have an immediate Website',
         description: 'Contact Sova',
@@ -314,3 +381,4 @@ export const websiteServices: Service[] = [
     },
   },
 ];
+

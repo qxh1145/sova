@@ -5,6 +5,8 @@ import { Carousel } from '@/components/ui/Carousel';
 import { TestimonialsSlider } from '@/components/testimonials/Testimonials';
 import { getHomePage } from '@/lib/queries/pages';
 import { mockRepository } from '@/lib/repositories/mock';
+import { PricingCardsSlider, PRICING_CARDS_IDS_VI } from '@/components/pricing/PricingCards';
+import { SUBTRACT_ICON_ID } from '@/lib/queries/services';
 import { FIXTURE_CAROUSEL_LABELS } from './constants';
 import '@/styles/legacy/sections/route-root.css';
 import '@/styles/legacy/sections/route-thiet-ke-website.css';
@@ -100,45 +102,25 @@ export default async function FixtureCarouselPage({
   const pricing = await mockRepository.getPricing('pricing-website', 'vi');
   const plans = pricing?.plans ?? [];
   const items = isSingle ? plans.slice(0, 1) : plans;
+  const features = pricing && 'features' in pricing ? pricing.features : [];
+
+  const [subtractIcon, ...planIcons] = await mockRepository.getAssets([
+    SUBTRACT_ICON_ID,
+    'asset-017f167e30',
+    'asset-0284853c00',
+    'asset-4314679580',
+  ]);
 
   return (
-    <div
-      className="slider-wrapper relative slide_mobi_new slide_tke1 eras-table-price-slider show-for-small" // business-text-ok: source CSS class name
-      id="slider-74016963"
-    >
-      <Carousel
-        className="slider slider-nav-circle slider-nav-large slider-nav-light slider-style-container"
-        align="center"
-        loop
-        autoplayMs={6000}
-        pauseOnHover
-        adaptiveHeight
-        arrows
-        dots
-        dragThreshold={10}
-        labels={FIXTURE_CAROUSEL_LABELS}
-      >
-        {items.map((plan) => (
-          <div key={plan.id} className="row" id={`plan-${plan.id}`}>
-            <div className="col col-logo-tke medium-4 small-12 large-4">
-              <div className="col-inner" style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}>
-                <div className="icon-box-text last-reset">
-                  <div className="text">
-                    <h3>
-                      <strong>{plan.name}</strong>
-                    </h3>
-                  </div>
-                  {plan.discountLabel && (
-                    <div className="text text_sale">
-                      <h3>{plan.discountLabel}</h3>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </Carousel>
-    </div>
+    <PricingCardsSlider
+      plans={items}
+      features={features}
+      sliderCards={PRICING_CARDS_IDS_VI.sliderCards}
+      sliderWrapperId="slider-74016963"
+      planIcons={planIcons}
+      subtractIcon={subtractIcon}
+      labels={FIXTURE_CAROUSEL_LABELS}
+    />
   );
 }
+
