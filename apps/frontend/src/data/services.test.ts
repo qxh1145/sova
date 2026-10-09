@@ -116,6 +116,8 @@ test('every reference resolves in the same locale', () => {
       service.hero.bgImageId,
       service.hero.videoId,
       service.benefitsBgImageId,
+      service.advantagesDecoId,
+      service.offeringsBgImageId,
       service.seo.imageId,
       ...service.benefits.map((b) => b.iconId),
       ...service.offerings.map((o) => o.mediaId),

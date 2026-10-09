@@ -6,7 +6,11 @@ export interface ServicePackageCardIds {
   col: string;
   isBlur?: boolean;
   titleText: string;
+  titleGap?: string;
+  descText?: string;
+  extraDescGap?: string;
   itemGaps: string[];
+  extraGapBeforeBtn?: string;
   gapBeforeBtn: string;
 }
 
@@ -20,6 +24,7 @@ export interface ServicePackageCardsIds {
   headingRow: string;
   headingCol: string;
   headingText: string;
+  alignEqual?: boolean;
   gridRow: string;
   gridCards: ServicePackageCardIds[];
   sliderWrapper: string;
@@ -286,6 +291,300 @@ export const SERVICE_PACKAGE_CARDS_IDS_SEO_EN: ServicePackageCardsIds = {
   ],
 };
 
+export const SERVICE_PACKAGE_CARDS_IDS_BRANDING_VI: ServicePackageCardsIds = {
+  section: 'section_282263172',
+  topGap: 'gap-898919677',
+  headingRow: 'row-1853797763',
+  headingCol: 'col-1642115028',
+  headingText: 'text-2802465451',
+  alignEqual: true,
+  gridRow: 'row-844969292',
+  gridCards: [
+    {
+      col: 'col-288557190',
+      isBlur: true,
+      titleText: 'text-416182715',
+      titleGap: 'gap-979453332',
+      descText: 'text-2871946480',
+      extraDescGap: 'gap-878681165',
+      itemGaps: [
+        'gap-2096830992',
+        'gap-1257620839',
+        'gap-1215587242',
+        'gap-500241105',
+        'gap-938170228',
+        'gap-289049552',
+      ],
+      gapBeforeBtn: 'gap-330687905',
+    },
+    {
+      col: 'col-353073457',
+      isBlur: false,
+      titleText: 'text-3561662835',
+      titleGap: 'gap-68253985',
+      descText: 'text-1967494968',
+      itemGaps: [
+        'gap-250886269',
+        'gap-212136136',
+        'gap-893423993',
+        'gap-211030328',
+        'gap-173027493',
+        'gap-2130156156',
+      ],
+      gapBeforeBtn: 'gap-1829963525',
+    },
+    {
+      col: 'col-213315848',
+      isBlur: false,
+      titleText: 'text-2769390199',
+      titleGap: 'gap-778117657',
+      descText: 'text-3782908919',
+      itemGaps: [
+        'gap-2103539505',
+        'gap-546484392',
+        'gap-69060397',
+        'gap-786222626',
+        'gap-1376809002',
+        'gap-416863344',
+      ],
+      gapBeforeBtn: 'gap-2124748131',
+    },
+    {
+      col: 'col-1484448905',
+      isBlur: false,
+      titleText: 'text-2965169389',
+      titleGap: 'gap-615453650',
+      descText: 'text-984069717',
+      itemGaps: [
+        'gap-1790440585',
+        'gap-1036277898',
+        'gap-1309205038',
+        'gap-1852310801',
+      ],
+      extraGapBeforeBtn: 'gap-689723330',
+      gapBeforeBtn: 'gap-1000469319',
+    },
+  ],
+  sliderWrapper: 'slider-710407781',
+  sliderCards: [
+    {
+      row: 'row-956497403',
+      col: 'col-1397015768',
+      isBlur: true,
+      titleText: 'text-468364383',
+      titleGap: 'gap-1284079901',
+      descText: 'text-549122100',
+      extraDescGap: 'gap-508826295',
+      itemGaps: [
+        'gap-365680078',
+        'gap-296000174',
+        'gap-1590073151',
+        'gap-1397733892',
+        'gap-23665567',
+        'gap-16741275',
+      ],
+      gapBeforeBtn: 'gap-1095497670',
+    },
+    {
+      row: 'row-955365350',
+      col: 'col-303223269',
+      isBlur: false,
+      titleText: 'text-230387822',
+      titleGap: 'gap-1023565637',
+      descText: 'text-2515806093',
+      itemGaps: [
+        'gap-1009827362',
+        'gap-90753583',
+        'gap-337965638',
+        'gap-600090777',
+        'gap-488331816',
+        'gap-1595079850',
+      ],
+      gapBeforeBtn: 'gap-1669911576',
+    },
+    {
+      row: 'row-1843831429',
+      col: 'col-1192510081',
+      isBlur: false,
+      titleText: 'text-4183536390',
+      titleGap: 'gap-747367432',
+      descText: 'text-389573248',
+      itemGaps: [
+        'gap-1079186940',
+        'gap-273976219',
+        'gap-365477518',
+        'gap-1716659457',
+        'gap-1109198492',
+        'gap-1695899005',
+      ],
+      gapBeforeBtn: 'gap-468581396',
+    },
+    {
+      row: 'row-1360493154',
+      col: 'col-1243835748',
+      isBlur: false,
+      titleText: 'text-444195937',
+      titleGap: 'gap-1350788908',
+      descText: 'text-1272220084',
+      itemGaps: [
+        'gap-85348813',
+        'gap-637193070',
+        'gap-1736968316',
+        'gap-370272283',
+      ],
+      extraGapBeforeBtn: 'gap-424264258',
+      gapBeforeBtn: 'gap-1898347681',
+    },
+  ],
+};
+
+export const SERVICE_PACKAGE_CARDS_IDS_BRANDING_EN: ServicePackageCardsIds = {
+  section: 'section_879951789',
+  topGap: 'gap-1108839704',
+  headingRow: 'row-1785856708',
+  headingCol: 'col-1788701577',
+  headingText: 'text-1082219404',
+  alignEqual: true,
+  gridRow: 'row-530539848',
+  gridCards: [
+    {
+      col: 'col-76919759',
+      isBlur: true,
+      titleText: 'text-1087990166',
+      titleGap: 'gap-12233792',
+      descText: 'text-947694152',
+      extraDescGap: 'gap-2020343215',
+      itemGaps: [
+        'gap-1214515400',
+        'gap-1705287538',
+        'gap-3857366',
+        'gap-1856072941',
+        'gap-240019620',
+        'gap-738210196',
+      ],
+      gapBeforeBtn: 'gap-1625951630',
+    },
+    {
+      col: 'col-1257321242',
+      isBlur: false,
+      titleText: 'text-857844955',
+      titleGap: 'gap-1677458814',
+      descText: 'text-4196715828',
+      itemGaps: [
+        'gap-1345182510',
+        'gap-328219328',
+        'gap-105486506',
+        'gap-1290990776',
+        'gap-345775971',
+        'gap-603343660',
+      ],
+      gapBeforeBtn: 'gap-1950446281',
+    },
+    {
+      col: 'col-482866708',
+      isBlur: false,
+      titleText: 'text-3557948308',
+      titleGap: 'gap-357687588',
+      descText: 'text-1451700546',
+      itemGaps: [
+        'gap-21351904',
+        'gap-642817378',
+        'gap-632755070',
+        'gap-925360903',
+        'gap-1018996177',
+        'gap-1233278873',
+      ],
+      gapBeforeBtn: 'gap-2140931587',
+    },
+    {
+      col: 'col-2070851429',
+      isBlur: false,
+      titleText: 'text-4097438956',
+      titleGap: 'gap-1003079185',
+      descText: 'text-334632791',
+      itemGaps: [
+        'gap-72030617',
+        'gap-1513956506',
+        'gap-1865515865',
+        'gap-1832442383',
+      ],
+      extraGapBeforeBtn: 'gap-107903591',
+      gapBeforeBtn: 'gap-2066558912',
+    },
+  ],
+  sliderWrapper: 'slider-1183610583',
+  sliderCards: [
+    {
+      row: 'row-85332590',
+      col: 'col-1907083791',
+      isBlur: true,
+      titleText: 'text-1459112478',
+      titleGap: 'gap-1779820636',
+      descText: 'text-3013199458',
+      extraDescGap: 'gap-574141242',
+      itemGaps: [
+        'gap-381043314',
+        'gap-88915068',
+        'gap-1167250003',
+        'gap-1387425053',
+        'gap-108122333',
+        'gap-528314852',
+      ],
+      gapBeforeBtn: 'gap-2059319790',
+    },
+    {
+      row: 'row-1125748096',
+      col: 'col-545895140',
+      isBlur: false,
+      titleText: 'text-4105864399',
+      titleGap: 'gap-698954930',
+      descText: 'text-2172456801',
+      itemGaps: [
+        'gap-1565543768',
+        'gap-1252139522',
+        'gap-929030004',
+        'gap-600003363',
+        'gap-1667255632',
+        'gap-1599057679',
+      ],
+      gapBeforeBtn: 'gap-1758003873',
+    },
+    {
+      row: 'row-533982894',
+      col: 'col-167798415',
+      isBlur: false,
+      titleText: 'text-933025357',
+      titleGap: 'gap-1138211845',
+      descText: 'text-593033513',
+      itemGaps: [
+        'gap-1526332100',
+        'gap-1472989755',
+        'gap-871245178',
+        'gap-1016451090',
+        'gap-1098886334',
+        'gap-1813852321',
+      ],
+      gapBeforeBtn: 'gap-46154512',
+    },
+    {
+      row: 'row-1340561042',
+      col: 'col-1256888224',
+      isBlur: false,
+      titleText: 'text-3351464585',
+      titleGap: 'gap-237149774',
+      descText: 'text-4258147755',
+      itemGaps: [
+        'gap-1066580906',
+        'gap-1230168127',
+        'gap-1793904744',
+        'gap-959724399',
+      ],
+      extraGapBeforeBtn: 'gap-1970270194',
+      gapBeforeBtn: 'gap-432832933',
+    },
+  ],
+};
+
 export interface ServicePackageCardsProps {
   copy: SectionCopy;
   offerings: OfferingPanel[];
@@ -318,14 +617,43 @@ function CardContent({
         }}
       />
       <div id={cardIds.titleText} className="text">
-        <h2>{offering.title}</h2>
-        {offering.description && (
+        {cardIds.descText ? (
+          <h3>{offering.title}</h3>
+        ) : (
+          <h2>{offering.title}</h2>
+        )}
+        {!cardIds.descText && offering.description && (
           <p>
             {offering.description}
             <br />
           </p>
         )}
       </div>
+
+      {cardIds.titleGap && (
+        <div
+          id={cardIds.titleGap}
+          className="gap-element clearfix"
+          style={{ display: 'block', height: 'auto' }}
+        />
+      )}
+
+      {cardIds.descText && offering.description && (
+        <div id={cardIds.descText} className="text">
+          <p>
+            {offering.description}
+            <br />
+          </p>
+        </div>
+      )}
+
+      {cardIds.extraDescGap && (
+        <div
+          id={cardIds.extraDescGap}
+          className="gap-element clearfix"
+          style={{ display: 'block', height: 'auto' }}
+        />
+      )}
 
       {items.map((item, itemIdx) => (
         <div key={itemIdx}>
@@ -368,6 +696,14 @@ function CardContent({
           style={{ display: 'block', height: 'auto' }}
         />
       ))}
+
+      {cardIds.extraGapBeforeBtn && (
+        <div
+          id={cardIds.extraGapBeforeBtn}
+          className="gap-element clearfix"
+          style={{ display: 'block', height: 'auto' }}
+        />
+      )}
 
       <div
         id={cardIds.gapBeforeBtn}
@@ -461,7 +797,7 @@ export function ServicePackageCards({
 
         {/* Desktop Grid: hide-for-small (hidden <= 549px) */}
         <div
-          className="row row-small row-ndv hover_gra eras-table-price hide-for-small" // business-text-ok: source CSS class name
+          className={`row row-small ${ids.alignEqual ? 'align-equal ' : ''}row-ndv hover_gra eras-table-price hide-for-small`} // business-text-ok: source CSS class name
           id={ids.gridRow}
         >
           {offerings.map((offering, idx) => {
@@ -511,7 +847,7 @@ export function ServicePackageCards({
                 >
                   <div
                     id={slideIds?.col}
-                    className="col medium-3 small-12 large-3"
+                    className={`col ${slideIds?.isBlur ? 'col-blur-blue ' : ''}medium-3 small-12 large-3`}
                   >
                     {slideIds && (
                       <CardContent

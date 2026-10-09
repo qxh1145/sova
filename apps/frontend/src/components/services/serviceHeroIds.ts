@@ -223,3 +223,43 @@ export const SERVICE_HERO_IDS_SEO_EN: PageHeroIds = {
   imageWrapper: 'image_580160889',
   bottomGap: 'gap-832751667',
 };
+
+export const SERVICE_HERO_IDS_BRANDING_VI: PageHeroIds = {
+  banner: 'banner-5834555',
+  textBox: 'text-box-1219285313',
+  textBoxY: 'y10',
+  row: 'row-471901224',
+  leftCol: 'col-1715987027',
+  topGap: 'gap-15194992',
+  breadcrumbText: 'text-427293232',
+  headingText: 'text-2370816109',
+  gap1: 'gap-1443729080',
+  descText: 'text-3758262607',
+  gap2: 'gap-1042273031',
+  gap2Class: 'gap-element clearfix show-for-small',
+  gap2b: 'gap-1457367162',
+  ctaText: 'text-3358106738',
+  rightCol: 'col-1354430383',
+  imageWrapper: 'image_774116603',
+  bottomGap: 'gap-1551652140',
+};
+
+export const SERVICE_HERO_IDS_BRANDING_EN: PageHeroIds = {
+  banner: 'banner-1642333106',
+  textBox: 'text-box-907142283',
+  textBoxY: 'y10',
+  row: 'row-1765927486',
+  leftCol: 'col-212622425',
+  topGap: 'gap-1745052723',
+  breadcrumbText: 'text-931641378',
+  headingText: 'text-2928406345',
+  gap1: 'gap-237769046',
+  descText: 'text-3731462312',
+  gap2: 'gap-1895701864',
+  gap2Class: 'gap-element clearfix show-for-small',
+  gap2b: 'gap-57345781',
+  ctaText: 'text-1083235922',
+  rightCol: 'col-918123307',
+  imageWrapper: 'image_1057710240',
+  bottomGap: 'gap-654644653',
+};
