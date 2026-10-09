@@ -65,6 +65,8 @@ export interface HeroContent {
   bgImageId?: EntityId;
   videoId?: EntityId;
   cta?: LinkModel;
+  /** Arrow icon after the CTA label (SEO VI `2024/02/Vector-Stroke.svg`). */
+  ctaIconId?: EntityId;
   breadcrumb?: { label: string; href?: string }[];
 }
 
@@ -88,6 +90,12 @@ export interface Service extends LocalizedIdentity {
   pricingId?: EntityId;
   /** Background image of the benefits icon-card section (hosting/VPS `ss-ndv-seo`). */
   benefitsBgImageId?: EntityId;
+  /** Photo in the advantages section (SEO `arthur-osipyan`). */
+  advantagesPhotoId?: EntityId;
+  /** Decorative graphic in the advantages heading row (SEO `Deco-1-6.svg`). */
+  advantagesDecoId?: EntityId;
+  /** Background image of the offerings section (SEO `b64598d7e18308083c456d32c69bae66.webp`). */
+  offeringsBgImageId?: EntityId;
   seo: SEO;
   /** Why-choose-us (website/mobile), packages (SEO/branding), hub summaries (storage); else []. */
   offerings: OfferingPanel[];
@@ -102,10 +110,12 @@ export interface OfferingPanel {
   id: EntityId;
   title: string;
   slideTitle?: string;
+  description?: string;
   content: RichContent;
   items?: string[];
   mediaId?: EntityId;
   cta?: { label: string; routeId: EntityId };
+  ctaHref?: { label: string; href: string };
 }
 
 export interface WebsiteContent {

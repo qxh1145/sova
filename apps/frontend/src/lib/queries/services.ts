@@ -34,6 +34,14 @@ export interface ServiceAssets {
   heroBgImage: AssetRef | null;
   /** Hosting/VPS icon-card section background (`service.benefitsBgImageId`). */
   benefitsBgImage?: AssetRef | null;
+  /** SEO advantages photo (`service.advantagesPhotoId`). */
+  advantagesPhoto?: AssetRef | null;
+  /** SEO advantages decorative graphic (`service.advantagesDecoId`). */
+  advantagesDeco?: AssetRef | null;
+  /** SEO offerings section background (`service.offeringsBgImageId`). */
+  offeringsBgImage?: AssetRef | null;
+  /** CTA icon (e.g. Vector-Stroke arrow). */
+  ctaIcon?: AssetRef | null;
   benefitsVideo: AssetRef | null;
   benefitIcons: AssetRef[];
   offeringMedia: AssetRef[];
@@ -64,7 +72,11 @@ export async function getServiceAssets(
   const { service, testimonials } = page;
   const heroImageId = service.hero.imageId;
   const heroBgImageId = service.hero.bgImageId;
+  const heroCtaIconId = service.hero.ctaIconId;
   const benefitsBgImageId = service.benefitsBgImageId;
+  const advantagesPhotoId = service.advantagesPhotoId;
+  const advantagesDecoId = service.advantagesDecoId;
+  const offeringsBgImageId = service.offeringsBgImageId;
   const videoId = service.hero.videoId;
   const benefitIconIds = service.benefits
     .map((b) => b.iconId)
@@ -80,6 +92,10 @@ export async function getServiceAssets(
     heroImages,
     heroBgImages,
     benefitsBgImages,
+    advantagesPhotos,
+    advantagesDecos,
+    offeringsBgImages,
+    ctaIcons,
     videoAssets,
     benefitIcons,
     offeringMedia,
@@ -90,6 +106,10 @@ export async function getServiceAssets(
     heroImageId ? repository.getAssets([heroImageId]) : Promise.resolve([]),
     heroBgImageId ? repository.getAssets([heroBgImageId]) : Promise.resolve([]),
     benefitsBgImageId ? repository.getAssets([benefitsBgImageId]) : Promise.resolve([]),
+    advantagesPhotoId ? repository.getAssets([advantagesPhotoId]) : Promise.resolve([]),
+    advantagesDecoId ? repository.getAssets([advantagesDecoId]) : Promise.resolve([]),
+    offeringsBgImageId ? repository.getAssets([offeringsBgImageId]) : Promise.resolve([]),
+    heroCtaIconId ? repository.getAssets([heroCtaIconId]) : Promise.resolve([]),
     videoId ? repository.getAssets([videoId]) : Promise.resolve([]),
     benefitIconIds.length ? repository.getAssets(benefitIconIds) : Promise.resolve([]),
     offeringMediaIds.length ? repository.getAssets(offeringMediaIds) : Promise.resolve([]),
@@ -113,6 +133,10 @@ export async function getServiceAssets(
     heroImage: heroImages[0] ?? null,
     heroBgImage: heroBgImages[0] ?? null,
     benefitsBgImage: benefitsBgImages[0] ?? null,
+    advantagesPhoto: advantagesPhotos[0] ?? null,
+    advantagesDeco: advantagesDecos[0] ?? null,
+    offeringsBgImage: offeringsBgImages[0] ?? null,
+    ctaIcon: ctaIcons[0] ?? null,
     benefitsVideo: videoAssets[0] ?? null,
     benefitIcons,
     offeringMedia,

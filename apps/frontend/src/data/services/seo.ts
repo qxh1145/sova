@@ -25,8 +25,18 @@ export const seoServices: Service[] = [
         sources: [{ file: 'seo-tu-khoa-website/index.html', line: 702 }],
       },
       imageId: 'asset-617f9283d2',
+      bgImageId: 'asset-358b4a1d92',
+      breadcrumb: [
+        { label: 'Trang chủ', href: '/' },
+        { label: 'Dịch vụ' },
+        { label: 'Seo từ khoá Website' },
+      ],
       cta: { label: 'Kết nối ngay', href: '/seo-tu-khoa-website/' },
+      ctaIconId: 'asset-d17ec3ffd1',
     },
+    advantagesPhotoId: 'asset-82cc1b9e6c',
+    advantagesDecoId: 'asset-bcb1d8243f',
+    offeringsBgImageId: 'asset-e0d6652ff9',
     benefits: [
       {
         id: 'service-seo-vi-benefit-tang-thu-hang-ben-vung-tren-google',
@@ -106,6 +116,17 @@ export const seoServices: Service[] = [
       {
         id: 'service-seo-vi-offering-seo-onpage',
         title: 'SEO ONPAGE',
+        description: 'SEO Onpage là quá trình tối ưu hóa trực tiếp trên trang web để cải thiện thứ hạng trên công cụ tìm kiếm (Google, Bing,…).',
+        items: [
+          'Tối Ưu Nội Dung Chuẩn SEO',
+          'Tối Ưu URL Chuẩn SEO',
+          'Tối Ưu Thẻ Meta',
+          'Tối Ưu Hình Ảnh & Video',
+          'Xây Dựng Liên Kết Nội Bộ & Liên Kết Ngoài',
+          'Tăng Tốc Độ Tải Trang',
+          'Tối Ưu Trải Nghiệm Người Dùng (UX/UI)',
+        ],
+        ctaHref: { label: 'Tư vấn miễn phí\u00a0 \u00a0→ ', href: '{{site.zaloHref}}' },
         content: {
           format: 'sanitized-html',
           html: '<p>SEO Onpage là quá trình tối ưu hóa trực tiếp trên trang web để cải thiện thứ hạng trên công cụ tìm kiếm (Google, Bing,…).</p><ul><li>Tối Ưu Nội Dung Chuẩn SEO</li><li>Tối Ưu URL Chuẩn SEO</li><li>Tối Ưu Thẻ Meta</li><li>Tối Ưu Hình Ảnh &amp; Video</li><li>Xây Dựng Liên Kết Nội Bộ &amp; Liên Kết Ngoài</li><li>Tăng Tốc Độ Tải Trang</li><li>Tối Ưu Trải Nghiệm Người Dùng (UX/UI)</li></ul><p><a href="{{site.zaloHref}}">Tư vấn miễn phí   → </a></p>',
@@ -116,6 +137,17 @@ export const seoServices: Service[] = [
       {
         id: 'service-seo-vi-offering-seo-offpage',
         title: 'SEO OFFPAGE',
+        description: 'SEO Offpage là quá trình tối ưu hóa các yếu tố bên ngoài trang web nhằm tăng độ uy tín, cải thiện thứ hạng trên Google.',
+        items: [
+          'PR Online & Báo Chí',
+          'Social Media Marketing',
+          'Xây Dựng Backlink Chất Lượng',
+          'Google My Business & Local SEO',
+          'Chiến Lược Influencer Marketing',
+          'Tạo Sự Kiện & Webinar Trực Tuyến',
+          'Kéo Traffic Tự Nhiên Từ Các Nguồn Khác',
+        ],
+        ctaHref: { label: 'Tư vấn miễn phí\u00a0 \u00a0→ ', href: '{{site.zaloHref}}' },
         content: {
           format: 'sanitized-html',
           html: '<p>SEO Offpage là quá trình tối ưu hóa các yếu tố bên ngoài trang web nhằm tăng độ uy tín, cải thiện thứ hạng trên Google.</p><ul><li>PR Online &amp; Báo Chí</li><li>Social Media Marketing</li><li>Xây Dựng Backlink Chất Lượng</li><li>Google My Business &amp; Local SEO</li><li>Chiến Lược Influencer Marketing</li><li>Tạo Sự Kiện &amp; Webinar Trực Tuyến</li><li>Kéo Traffic Tự Nhiên Từ Các Nguồn Khác</li></ul><p><a href="{{site.zaloHref}}">Tư vấn miễn phí   → </a></p>',
@@ -126,6 +158,17 @@ export const seoServices: Service[] = [
       {
         id: 'service-seo-vi-offering-cham-soc-website',
         title: 'CHĂM SÓC WEBSITE',
+        description: 'Dịch vụ chăm sóc nội dung website giúp trang web luôn tươi mới, thu hút khách hàng và cải thiện thứ hạng trên Google.',
+        items: [
+          'Viết Bài Chuẩn SEO',
+          'Tối Ưu Lại Nội Dung Cũ',
+          'Thiết Kế & Tối Ưu Hình Ảnh, Video',
+          'Quản Lý & Cập Nhật Sản Phẩm/Dịch Vụ',
+          'Xây Dựng Liên Kết Nội Bộ & Liên Kết Ngoài',
+          'Tối Ưu Nội Dung Theo Hành Vi Người Dùng',
+          'Đăng Bài & Quản Lý Lịch Nội Dung',
+        ],
+        ctaHref: { label: 'Tư vấn miễn phí\u00a0 \u00a0→ ', href: '{{site.zaloHref}}' },
         content: {
           format: 'sanitized-html',
           html: '<p>Dịch vụ chăm sóc nội dung website giúp trang web luôn tươi mới, thu hút khách hàng và cải thiện thứ hạng trên Google.</p><ul><li>Viết Bài Chuẩn SEO</li><li>Tối Ưu Lại Nội Dung Cũ</li><li>Thiết Kế &amp; Tối Ưu Hình Ảnh, Video</li><li>Quản Lý &amp; Cập Nhật Sản Phẩm/Dịch Vụ</li><li>Xây Dựng Liên Kết Nội Bộ &amp; Liên Kết Ngoài</li><li>Tối Ưu Nội Dung Theo Hành Vi Người Dùng</li><li>Đăng Bài &amp; Quản Lý Lịch Nội Dung</li></ul><p><a href="{{site.zaloHref}}">Tư vấn miễn phí   → </a></p>',
@@ -136,6 +179,17 @@ export const seoServices: Service[] = [
       {
         id: 'service-seo-vi-offering-content-writer',
         title: 'CONTENT WRITER',
+        description: 'Sáng tạo nội dung chất lượng, thu hút người đọc và tối ưu SEO để tăng hiệu quả truyền thông.',
+        items: [
+          'Viết Bài Blog, Bài PR, Bài SEO',
+          'Sáng Tạo Nội Dung Cho Mạng Xã Hội',
+          'Viết Nội Dung Website',
+          'Viết Email Marketing & Nội Dung Quảng Cáo',
+          'Viết Nội Dung Cho Ấn Phẩm & Tài Liệu Marketing',
+          'Biên Tập, Chỉnh Sửa & Cập Nhật Nội Dung',
+          'Nghiên Cứu & Phân Tích Nội Dung',
+        ],
+        ctaHref: { label: 'Tư vấn miễn phí\u00a0 \u00a0→ ', href: '{{site.zaloHref}}' },
         content: {
           format: 'sanitized-html',
           html: '<p>Sáng tạo nội dung chất lượng, thu hút người đọc và tối ưu SEO để tăng hiệu quả truyền thông.</p><ul><li>Viết Bài Blog, Bài PR, Bài SEO</li><li>Sáng Tạo Nội Dung Cho Mạng Xã Hội</li><li>Viết Nội Dung Website</li><li>Viết Email Marketing &amp; Nội Dung Quảng Cáo</li><li>Viết Nội Dung Cho Ấn Phẩm &amp; Tài Liệu Marketing</li><li>Biên Tập, Chỉnh Sửa &amp; Cập Nhật Nội Dung</li><li>Nghiên Cứu &amp; Phân Tích Nội Dung</li></ul><p><a href="{{site.zaloHref}}">Tư vấn miễn phí   → </a></p>',
@@ -164,7 +218,7 @@ export const seoServices: Service[] = [
         title: 'Khách hàng nhận xét về chúng tôi',
         titleLines: ['Khách hàng nhận xét', 'về chúng tôi'],
       },
-      faq: { title: 'Những câu hỏi thường gặp' },
+      faq: { eyebrow: 'GIẢI ĐÁP', title: 'Những câu hỏi thường gặp' },
     },
   },
   {
@@ -190,8 +244,17 @@ export const seoServices: Service[] = [
         sources: [{ file: 'en/website-keyword-seo/index.html', line: 702 }],
       },
       imageId: 'asset-617f9283d2',
+      bgImageId: 'asset-358b4a1d92',
+      breadcrumb: [
+        { label: 'Home', href: '/en/' },
+        { label: 'Services' },
+        { label: 'Website keyword SEO' },
+      ],
       cta: { label: 'Connect now →', href: '/en/contact-us/' },
     },
+    advantagesPhotoId: 'asset-82cc1b9e6c',
+    advantagesDecoId: 'asset-bcb1d8243f',
+    offeringsBgImageId: 'asset-e0d6652ff9',
     benefits: [
       {
         id: 'service-seo-en-benefit-achieve-sustainable-google-rankings',
@@ -264,6 +327,17 @@ export const seoServices: Service[] = [
       {
         id: 'service-seo-en-offering-seo-onpage',
         title: 'SEO ONPAGE',
+        description: 'On-Page SEO refers to the optimization process performed directly on the website to improve rankings on search engines like Google, Bing, and others.',
+        items: [
+          'SEO Content Optimization',
+          'SEO URL Optimization',
+          'SEO Meta Tag Optimization',
+          'Image & Video Optimization',
+          'Internal & External Link Building',
+          'Page Speed Optimization',
+          'User Experience (UX/UI) Optimization',
+        ],
+        ctaHref: { label: 'Consult now\u00a0 \u00a0→ ', href: '{{site.zaloHref}}' },
         content: {
           format: 'sanitized-html',
           html: '<p>On-Page SEO refers to the optimization process performed directly on the website to improve rankings on search engines like Google, Bing, and others.</p><ul><li>SEO Content Optimization</li><li>SEO URL Optimization</li><li>SEO Meta Tag Optimization</li><li>Image &amp; Video Optimization</li><li>Internal &amp; External Link Building</li><li>Page Speed Optimization</li><li>User Experience (UX/UI) Optimization</li></ul><p><a href="{{site.zaloHref}}">Consult now   → </a></p>',
@@ -274,6 +348,17 @@ export const seoServices: Service[] = [
       {
         id: 'service-seo-en-offering-seo-offpage',
         title: 'SEO OFFPAGE',
+        description: 'Off-Page SEO refers to the process of optimizing external factors to increase your website’s authority and improve its ranking on Google.',
+        items: [
+          'Online PR & Media Coverage',
+          'Social Media Marketing',
+          'Quality Backlink Building',
+          'Google My Business & Local SEO',
+          'Influencer Marketing Strategy',
+          'Event & Online Webinar Creation',
+          'Organic Traffic Generation from Other Sources',
+        ],
+        ctaHref: { label: 'Consult now\u00a0 \u00a0→ ', href: '{{site.zaloHref}}' },
         content: {
           format: 'sanitized-html',
           html: '<p>Off-Page SEO refers to the process of optimizing external factors to increase your website’s authority and improve its ranking on Google.</p><ul><li>Online PR &amp; Media Coverage</li><li>Social Media Marketing</li><li>Quality Backlink Building</li><li>Google My Business &amp; Local SEO</li><li>Influencer Marketing Strategy</li><li>Event &amp; Online Webinar Creation</li><li>Organic Traffic Generation from Other Sources</li></ul><p><a href="{{site.zaloHref}}">Consult now   → </a></p>',
@@ -284,6 +369,17 @@ export const seoServices: Service[] = [
       {
         id: 'service-seo-en-offering-website-maintenance',
         title: 'WEBSITE MAINTENANCE',
+        description: 'Our website content maintenance service ensures your site remains fresh, engaging for visitors, and improves its Google rankings.',
+        items: [
+          'SEO Content Writing',
+          'Update & Optimize Existing Content',
+          'Design & Optimize Images & Videos',
+          'Product/Service Management & Updates',
+          'Internal & External Link Building',
+          'Optimize Content Based on User Behavior',
+          'Content Posting & Content Calendar Management',
+        ],
+        ctaHref: { label: 'Consult now\u00a0 \u00a0→ ', href: '{{site.zaloHref}}' },
         content: {
           format: 'sanitized-html',
           html: '<p>Our website content maintenance service ensures your site remains fresh, engaging for visitors, and improves its Google rankings.</p><ul><li>SEO Content Writing</li><li>Update &amp; Optimize Existing Content</li><li>Design &amp; Optimize Images &amp; Videos</li><li>Product/Service Management &amp; Updates</li><li>Internal &amp; External Link Building</li><li>Optimize Content Based on User Behavior</li><li>Content Posting &amp; Content Calendar Management</li></ul><p><a href="{{site.zaloHref}}">Consult now   → </a></p>',
@@ -294,6 +390,17 @@ export const seoServices: Service[] = [
       {
         id: 'service-seo-en-offering-content-writer',
         title: 'CONTENT WRITER',
+        description: 'Crafting high-quality content that captivates audiences and is fully optimized for SEO, ensuring maximum impact on your brand’s communication strategy.',
+        items: [
+          'Blog Posts, PR Articles, and SEO Content Writing',
+          'Social Media Content Creation',
+          'Website Content Writing',
+          'Email Marketing & Advertising Content',
+          'Marketing Collateral & Promotional Materials Content Writing',
+          'Content Editing, Proofreading & Updates',
+          'Content Research & Analysis',
+        ],
+        ctaHref: { label: 'Consult now\u00a0 \u00a0→ ', href: '{{site.zaloHref}}' },
         content: {
           format: 'sanitized-html',
           html: '<p>Crafting high-quality content that captivates audiences and is fully optimized for SEO, ensuring maximum impact on your brand’s communication strategy.</p><ul><li>Blog Posts, PR Articles, and SEO Content Writing</li><li>Social Media Content Creation</li><li>Website Content Writing</li><li>Email Marketing &amp; Advertising Content</li><li>Marketing Collateral &amp; Promotional Materials Content Writing</li><li>Content Editing, Proofreading &amp; Updates</li><li>Content Research &amp; Analysis</li></ul><p><a href="{{site.zaloHref}}">Consult now   → </a></p>',
@@ -314,7 +421,7 @@ export const seoServices: Service[] = [
         titleLines: ['Some Recent Works', 'We’re Really Proud Of.'],
       },
       testimonials: { eyebrow: 'Sova', title: 'Customer Reviews' },
-      faq: { title: 'Frequently Asked Questions' },
+      faq: { eyebrow: 'FAQs', title: 'Frequently Asked Questions' },
     },
   },
 ];

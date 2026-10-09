@@ -1,7 +1,7 @@
 import '@/styles/legacy/sections/route-featured_item.css';
 import { getProjectListingPage } from '@/lib/queries/projects';
 import { ProjectArchiveView } from '@/components/projects/ProjectArchiveView';
-import { PROJECT_HERO_IDS_FEATURED } from '@/components/services/ServiceHero';
+import { PROJECT_HERO_IDS_FEATURED } from '@/components/projects/projectHeroIds';
 import { featuredItemOrder } from '@/data/projects';
 
 const IDS = {
