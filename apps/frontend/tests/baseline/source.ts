@@ -92,7 +92,9 @@ async function serveSource(
 /** Route the source and navigate to a manifest row. */
 export async function openSource(page: Page, row: ManifestRow): Promise<Evidence> {
   const evidence: Evidence = { fulfilled: [], missing: [], local: [], blocked: [], continued: [] };
-  await serveSource(page.context(), evidence, row.file ? { [row.url]: row.file } : {});
+  // serveSource looks overrides up by pathname, so a row URL with a query (`/?s=`) must key by pathname too.
+  const overrides = row.file ? { [new URL(row.url, SOURCE_ORIGIN).pathname]: row.file } : {};
+  await serveSource(page.context(), evidence, overrides);
   await page.goto(SOURCE_ORIGIN + row.url, { waitUntil: 'load' });
   return evidence;
 }

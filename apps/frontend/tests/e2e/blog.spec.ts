@@ -590,6 +590,22 @@ test.describe('Blog listing and post detail', () => {
     await page.locator('#secondary button.ux-search-submit').click();
     await page.waitForURL('**/?s=cache');
     await expect(page.locator('#section_1769897078 h1')).toContainText('Kết quả tìm kiếm: cache');
+
+    // 9. Repeated query param ?s=cache&s=wordpress returns 200 with results for first value
+    const resRepeat = await page.goto('/?s=cache&s=wordpress');
+    expect(resRepeat?.status()).toBe(200);
+    await expect(page.locator('#section_1769897078 h1')).toContainText('Kết quả tìm kiếm: cache');
+    await expect(page.locator('#secondary input.search-field')).toHaveValue('cache');
+
+    // 10. Direct /tim-kiem/ with repeated params (bypasses proxy) uses the first value
+    const resDirectS = await page.goto('/tim-kiem/?s=cache&s=wordpress');
+    expect(resDirectS?.status()).toBe(200);
+    await expect(page.locator('#section_1769897078 h1')).toContainText('Kết quả tìm kiếm: cache');
+    await expect(page.locator('#post-list article')).toHaveCount(1);
+
+    const resDirectPage = await page.goto('/tim-kiem/?s=wordpress&page=2&page=3');
+    expect(resDirectPage?.status()).toBe(200);
+    await expect(page.locator('#post-list article')).toHaveCount(1);
   });
 
   test('Dev-fixture search variant excludes draft post from results', async ({ page }) => {

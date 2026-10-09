@@ -7,7 +7,6 @@ export interface ProjectGridProps {
   mediumColumns?: number;
   smallColumns?: number;
   rowIsotope?: boolean;
-  className?: string;
 }
 
 export function ProjectGrid({
@@ -17,7 +16,6 @@ export function ProjectGrid({
   mediumColumns = 2,
   smallColumns = 1,
   rowIsotope = true,
-  className = '',
 }: ProjectGridProps) {
   const classes = [
     'row',
@@ -26,7 +24,6 @@ export function ProjectGrid({
     `medium-columns-${mediumColumns}`,
     `small-columns-${smallColumns}`,
     'row-small',
-    className,
   ]
     .filter(Boolean)
     .join(' ');

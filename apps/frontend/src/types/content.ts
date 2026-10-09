@@ -212,6 +212,8 @@ export interface PostCategory {
   sourceDisplayCount?: number;
 }
 
+export type PostCategoryWithCount = PostCategory & { count: number };
+
 export interface Money {
   amount: number;
   currency: 'VND' | 'USD';

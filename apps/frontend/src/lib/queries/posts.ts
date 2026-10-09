@@ -3,58 +3,12 @@ import { getRepository } from '@/lib/repositories';
 import type { ContentRepository } from '@/lib/repositories/contracts';
 import type {
   AssetRef,
-  EntityId,
   ListingSettings,
   Locale,
   PageResult,
   Post,
-  PostCategory,
+  PostCategoryWithCount,
 } from '@/types/content';
-
-export function getPost(
-  slug: string,
-  repository: ContentRepository = getRepository(),
-): Promise<Post | null> {
-  return repository.getPost(slug);
-}
-
-export function listPosts(
-  input: {
-    locale: Locale;
-    category?: string;
-    page: number;
-    pageSize: number;
-  },
-  repository: ContentRepository = getRepository(),
-): Promise<PageResult<Post>> {
-  return repository.listPosts(input);
-}
-
-export function getPostCategories(
-  locale: Locale,
-  repository: ContentRepository = getRepository(),
-): Promise<(PostCategory & { count: number })[]> {
-  return repository.getPostCategories(locale);
-}
-
-export function getRelatedPosts(
-  id: EntityId,
-  repository: ContentRepository = getRepository(),
-): Promise<Post[]> {
-  return repository.getRelatedPosts(id);
-}
-
-export function searchPosts(
-  input: {
-    locale: Locale;
-    query: string;
-    page: number;
-    pageSize: number;
-  },
-  repository: ContentRepository = getRepository(),
-): Promise<PageResult<Post>> {
-  return repository.searchPosts(input);
-}
 
 export interface BlogListingPageInput {
   routeId?: string;
@@ -72,10 +26,43 @@ export interface BlogListingPageData {
   total: number;
   totalPages: number;
   settings: ListingSettings | null;
-  categories: (PostCategory & { count: number })[];
+  categories: PostCategoryWithCount[];
   basePath: string;
   copy: (typeof blogListingCopy)['vi'] | (typeof blogListingCopy)['en'];
   searchQuery?: string;
+}
+
+async function resolveListingTail(
+  result: PageResult<Post>,
+  categories: PostCategoryWithCount[],
+  repository: ContentRepository,
+  options: {
+    basePath: string;
+    copy: BlogListingPageData['copy'];
+    settings?: ListingSettings | null;
+    searchQuery?: string;
+  },
+): Promise<BlogListingPageData> {
+  const thumbnailIds = result.items
+    .map((p) => p.thumbnailId)
+    .filter((id): id is string => Boolean(id));
+
+  const thumbnailAssets = thumbnailIds.length ? await repository.getAssets(thumbnailIds) : [];
+  const totalPages = Math.ceil(result.total / result.pageSize);
+
+  return {
+    posts: result.items,
+    thumbnailAssets,
+    page: result.page,
+    pageSize: result.pageSize,
+    total: result.total,
+    totalPages,
+    settings: options.settings ?? null,
+    categories,
+    basePath: options.basePath,
+    copy: options.copy,
+    ...(options.searchQuery !== undefined ? { searchQuery: options.searchQuery } : {}),
+  };
 }
 
 export async function getBlogListingPage(
@@ -120,28 +107,14 @@ export async function getBlogListingPage(
     repository.getPostCategories(locale),
   ]);
 
-  const thumbnailIds = result.items
-    .map((p) => p.thumbnailId)
-    .filter((id): id is string => Boolean(id));
-
-  const thumbnailAssets = thumbnailIds.length ? await repository.getAssets(thumbnailIds) : [];
-  const totalPages = result.pageSize > 0 ? Math.ceil(result.total / result.pageSize) : 1;
-
   const basePath = category ? `/${category}/` : locale === 'en' ? '/en/insight/' : '/goc-nhin/';
   const copy = blogListingCopy[locale];
 
-  return {
-    posts: result.items,
-    thumbnailAssets,
-    page: result.page,
-    pageSize: result.pageSize,
-    total: result.total,
-    totalPages,
-    settings,
-    categories,
+  return resolveListingTail(result, categories, repository, {
     basePath,
     copy,
-  };
+    settings,
+  });
 }
 
 export interface BlogSearchPageInput {
@@ -162,31 +135,19 @@ export async function getBlogSearchPage(
     repository.getPostCategories(locale),
   ]);
 
-  const totalPages = result.pageSize > 0 ? Math.ceil(result.total / result.pageSize) : 1;
+  const totalPages = Math.ceil(result.total / result.pageSize);
   if (page > 1 && page > totalPages) {
     return null;
   }
 
-  const thumbnailIds = result.items
-    .map((p) => p.thumbnailId)
-    .filter((id): id is string => Boolean(id));
-
-  const thumbnailAssets = thumbnailIds.length ? await repository.getAssets(thumbnailIds) : [];
   const copy = blogListingCopy[locale];
 
-  return {
-    posts: result.items,
-    thumbnailAssets,
-    page: result.page,
-    pageSize: result.pageSize,
-    total: result.total,
-    totalPages,
-    settings: null,
-    categories,
+  return resolveListingTail(result, categories, repository, {
     basePath: '/',
     copy,
+    settings: null,
     searchQuery: query,
-  };
+  });
 }
 
 function applyMediaFallback(html: string, missingSrcs: Set<string>): string {
@@ -236,16 +197,21 @@ export async function getPostDetail(
     return null;
   }
 
+  const relatedPosts = await repository.getRelatedPosts(post.id);
+
   const assetId = post.featuredImageId ?? post.thumbnailId;
   const bodyAssetIds = post.body?.assetIds ?? [];
-  const neededAssetIds = Array.from(new Set([...(assetId ? [assetId] : []), ...bodyAssetIds]));
+  const relatedThumbnailIds = relatedPosts
+    .map((p) => p.thumbnailId ?? p.featuredImageId)
+    .filter((id): id is string => Boolean(id));
 
-  const [assets, relatedPosts] = await Promise.all([
-    neededAssetIds.length ? repository.getAssets(neededAssetIds) : Promise.resolve([]),
-    getRelatedPosts(post.id, repository),
-  ]);
+  const neededAssetIds = Array.from(
+    new Set([...(assetId ? [assetId] : []), ...bodyAssetIds, ...relatedThumbnailIds]),
+  );
 
+  const assets = neededAssetIds.length ? await repository.getAssets(neededAssetIds) : [];
   const assetMap = new Map(assets.map((a) => [a.id, a]));
+
   const featuredAsset = assetId ? assetMap.get(assetId) ?? null : null;
 
   const missingSrcs = new Set(
@@ -262,20 +228,11 @@ export async function getPostDetail(
       }
     : post.body;
 
-  const relatedThumbnailIds = relatedPosts
-    .map((p) => p.thumbnailId ?? p.featuredImageId)
-    .filter((id): id is string => Boolean(id));
-
-  const relatedThumbnails = relatedThumbnailIds.length
-    ? await repository.getAssets(relatedThumbnailIds)
-    : [];
-  const relatedThumbnailMap = new Map(relatedThumbnails.map((a) => [a.id, a]));
-
   const related: RelatedPostCard[] = relatedPosts.map((relatedPost) => {
     const thumbId = relatedPost.thumbnailId ?? relatedPost.featuredImageId;
     return {
       post: relatedPost,
-      thumbnailAsset: thumbId ? relatedThumbnailMap.get(thumbId) ?? null : null,
+      thumbnailAsset: thumbId ? assetMap.get(thumbId) ?? null : null,
     };
   });
 

@@ -1,10 +1,11 @@
 import type { ProjectListingPageData } from '@/lib/queries/projects';
+import { PageHero } from '@/components/hero/PageHero';
 import {
-  ServiceHero,
   PROJECT_HERO_IDS_VI,
   PROJECT_HERO_IDS_EN,
-} from '@/components/services/ServiceHero';
+} from './projectHeroIds';
 import { ProjectFilters } from './ProjectFilters';
+import { toCardData } from './ProjectCard';
 
 export interface ProjectListViewProps extends ProjectListingPageData {
   loading?: boolean;
@@ -42,7 +43,7 @@ export function ProjectListView({
       <section className="section ss-duan" id={sectionId}>
         <div className="section-bg fill" />
         <div className="section-content relative">
-          <ServiceHero
+          <PageHero
             hero={hero}
             heroImage={heroImage}
             bgImage={bgImage}
@@ -53,13 +54,7 @@ export function ProjectListView({
       </section>
 
       <ProjectFilters
-        projects={projects.map(({ id, path, title, thumbnailId, categoryIds }) => ({
-          id,
-          path,
-          title,
-          thumbnailId,
-          categoryIds,
-        }))}
+        projects={projects.map(toCardData)}
         listingPath={isEn ? '/en/our-project/' : '/du-an/'}
         categories={categories}
         thumbnailAssets={thumbnailAssets}

@@ -637,4 +637,81 @@ test.describe('Storage service pages (Story 5.4)', () => {
       await expect(offerings550.locator('.eras-table-price-slider.show-for-small')).toBeHidden();
     });
   }
+
+  test.describe('Carousel wrap guard (retro A4)', () => {
+    test.beforeEach(async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+    });
+
+    test('mobile slider (slide_tkap) wraps next and prev at 390px with both arrows enabled', async ({
+      page,
+    }) => {
+      await page.goto('/thiet-ke-app-mobile/');
+      const slider = page.locator('.eras-table-price-slider.slide_tkap');
+      await expect(slider).toBeVisible();
+
+      const prevBtn = slider.locator('.flickity-prev-next-button.previous');
+      const nextBtn = slider.locator('.flickity-prev-next-button.next');
+      const slides = slider.locator('.flickity-slider > .row');
+      const slideCount = await slides.count();
+      expect(slideCount).toBe(3);
+
+      // Both arrows stay enabled (DOM attribute check; elements have display:none on mobile per Flatsome CSS)
+      await expect(prevBtn).toBeAttached();
+      await expect(nextBtn).toBeAttached();
+      await expect(prevBtn).toBeEnabled();
+      await expect(nextBtn).toBeEnabled();
+
+      // Initially slide 0 is selected
+      await expect(slides.nth(0)).toHaveClass(/is-selected/);
+
+      // Prev on slide 0 goes to last slide (slide 2)
+      await prevBtn.dispatchEvent('click');
+      await expect(slides.nth(slideCount - 1)).toHaveClass(/is-selected/);
+      await expect(prevBtn).toBeEnabled();
+      await expect(nextBtn).toBeEnabled();
+
+      // Next on last slide wraps to slide 0
+      await nextBtn.dispatchEvent('click');
+      await expect(slides.nth(0)).toHaveClass(/is-selected/);
+      await expect(prevBtn).toBeEnabled();
+      await expect(nextBtn).toBeEnabled();
+    });
+
+    test('storage slider (slide_gplt) wraps next and prev at 390px with both arrows enabled', async ({
+      page,
+    }) => {
+      await page.goto('/giai-phap-luu-tru/');
+      const slider = page.locator('.eras-table-price-slider.slide_gplt');
+      await expect(slider).toBeVisible();
+
+      const prevBtn = slider.locator('.flickity-prev-next-button.previous');
+      const nextBtn = slider.locator('.flickity-prev-next-button.next');
+      const slides = slider.locator('.flickity-slider > .row');
+      const slideCount = await slides.count();
+      expect(slideCount).toBe(3);
+
+      // Both arrows stay enabled (DOM attribute check; elements have display:none on mobile per Flatsome CSS)
+      await expect(prevBtn).toBeAttached();
+      await expect(nextBtn).toBeAttached();
+      await expect(prevBtn).toBeEnabled();
+      await expect(nextBtn).toBeEnabled();
+
+      // Initially slide 0 is selected
+      await expect(slides.nth(0)).toHaveClass(/is-selected/);
+
+      // Prev on slide 0 goes to last slide (slide 2)
+      await prevBtn.dispatchEvent('click');
+      await expect(slides.nth(slideCount - 1)).toHaveClass(/is-selected/);
+      await expect(prevBtn).toBeEnabled();
+      await expect(nextBtn).toBeEnabled();
+
+      // Next on last slide wraps to slide 0
+      await nextBtn.dispatchEvent('click');
+      await expect(slides.nth(0)).toHaveClass(/is-selected/);
+      await expect(prevBtn).toBeEnabled();
+      await expect(nextBtn).toBeEnabled();
+    });
+  });
 });
+

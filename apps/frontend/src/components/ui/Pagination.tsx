@@ -11,7 +11,6 @@ export interface PaginationBaseProps {
   current: number;
   total: number;
   labels: PaginationLabels;
-  className?: string;
 }
 
 export type PaginationProps = PaginationBaseProps &
@@ -27,7 +26,7 @@ export type PaginationProps = PaginationBaseProps &
   );
 
 export function Pagination(props: PaginationProps) {
-  const { current, total, labels, className } = props;
+  const { current, total, labels } = props;
 
   if (total <= 1) {
     return null;
@@ -39,7 +38,7 @@ export function Pagination(props: PaginationProps) {
 
   return (
     <nav
-      className={['pagination', className].filter(Boolean).join(' ')}
+      className="pagination"
       aria-label={labels.nav}
     >
       {isLinkMode ? (
