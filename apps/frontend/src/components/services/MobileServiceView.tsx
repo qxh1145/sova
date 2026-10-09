@@ -1,10 +1,10 @@
 import type { Locale } from '@/types/content';
 import type { ServiceAssets, ServicePage } from '@/lib/queries/services';
+import { PageHero } from '@/components/hero/PageHero';
 import {
-  ServiceHero,
   SERVICE_HERO_IDS_EN,
   SERVICE_HERO_IDS_VI,
-} from './ServiceHero';
+} from './serviceHeroIds';
 import {
   ServiceBenefits,
   SERVICE_BENEFITS_IDS_EN,
@@ -38,7 +38,7 @@ export function MobileServiceView({ page, assets, locale }: MobileServiceViewPro
   return (
     <main id="main">
       {/* 1. Service Hero */}
-      <ServiceHero
+      <PageHero
         hero={service.hero}
         heroImage={assets.heroImage}
         bgImage={assets.heroBgImage}

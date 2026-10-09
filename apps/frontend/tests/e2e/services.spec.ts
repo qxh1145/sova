@@ -637,4 +637,342 @@ test.describe('Storage service pages (Story 5.4)', () => {
       await expect(offerings550.locator('.eras-table-price-slider.show-for-small')).toBeHidden();
     });
   }
+
+  test.describe('Carousel wrap guard (retro A4)', () => {
+    test.beforeEach(async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+    });
+
+    test('mobile slider (slide_tkap) wraps next and prev at 390px with both arrows enabled', async ({
+      page,
+    }) => {
+      await page.goto('/thiet-ke-app-mobile/');
+      const slider = page.locator('.eras-table-price-slider.slide_tkap');
+      await expect(slider).toBeVisible();
+
+      const prevBtn = slider.locator('.flickity-prev-next-button.previous');
+      const nextBtn = slider.locator('.flickity-prev-next-button.next');
+      const slides = slider.locator('.flickity-slider > .row');
+      const slideCount = await slides.count();
+      expect(slideCount).toBe(3);
+
+      // Both arrows stay enabled (DOM attribute check; elements have display:none on mobile per Flatsome CSS)
+      await expect(prevBtn).toBeAttached();
+      await expect(nextBtn).toBeAttached();
+      await expect(prevBtn).toBeEnabled();
+      await expect(nextBtn).toBeEnabled();
+
+      // Initially slide 0 is selected
+      await expect(slides.nth(0)).toHaveClass(/is-selected/);
+
+      // Prev on slide 0 goes to last slide (slide 2)
+      await prevBtn.dispatchEvent('click');
+      await expect(slides.nth(slideCount - 1)).toHaveClass(/is-selected/);
+      await expect(prevBtn).toBeEnabled();
+      await expect(nextBtn).toBeEnabled();
+
+      // Next on last slide wraps to slide 0
+      await nextBtn.dispatchEvent('click');
+      await expect(slides.nth(0)).toHaveClass(/is-selected/);
+      await expect(prevBtn).toBeEnabled();
+      await expect(nextBtn).toBeEnabled();
+    });
+
+    test('storage slider (slide_gplt) wraps next and prev at 390px with both arrows enabled', async ({
+      page,
+    }) => {
+      await page.goto('/giai-phap-luu-tru/');
+      const slider = page.locator('.eras-table-price-slider.slide_gplt');
+      await expect(slider).toBeVisible();
+
+      const prevBtn = slider.locator('.flickity-prev-next-button.previous');
+      const nextBtn = slider.locator('.flickity-prev-next-button.next');
+      const slides = slider.locator('.flickity-slider > .row');
+      const slideCount = await slides.count();
+      expect(slideCount).toBe(3);
+
+      // Both arrows stay enabled (DOM attribute check; elements have display:none on mobile per Flatsome CSS)
+      await expect(prevBtn).toBeAttached();
+      await expect(nextBtn).toBeAttached();
+      await expect(prevBtn).toBeEnabled();
+      await expect(nextBtn).toBeEnabled();
+
+      // Initially slide 0 is selected
+      await expect(slides.nth(0)).toHaveClass(/is-selected/);
+
+      // Prev on slide 0 goes to last slide (slide 2)
+      await prevBtn.dispatchEvent('click');
+      await expect(slides.nth(slideCount - 1)).toHaveClass(/is-selected/);
+      await expect(prevBtn).toBeEnabled();
+      await expect(nextBtn).toBeEnabled();
+
+      // Next on last slide wraps to slide 0
+      await nextBtn.dispatchEvent('click');
+      await expect(slides.nth(0)).toHaveClass(/is-selected/);
+      await expect(prevBtn).toBeEnabled();
+      await expect(nextBtn).toBeEnabled();
+    });
+
+    for (const path of ['/seo-tu-khoa-website/', '/en/website-keyword-seo/']) {
+      test(`seo slider (slide_seo) wraps next and prev at 390px with both arrows enabled on ${path}`, async ({
+        page,
+      }) => {
+        await page.goto(path);
+        const slider = page.locator('.eras-table-price-slider.slide_seo');
+        await expect(slider).toBeVisible();
+
+        const prevBtn = slider.locator('.flickity-prev-next-button.previous');
+        const nextBtn = slider.locator('.flickity-prev-next-button.next');
+        const slides = slider.locator('.flickity-slider > .row');
+        const slideCount = await slides.count();
+        expect(slideCount).toBe(4);
+
+        // Both arrows stay enabled (DOM attribute check; elements have display:none on mobile per Flatsome CSS)
+        await expect(prevBtn).toBeAttached();
+        await expect(nextBtn).toBeAttached();
+        await expect(prevBtn).toBeEnabled();
+        await expect(nextBtn).toBeEnabled();
+
+        // Initially slide 0 is selected
+        await expect(slides.nth(0)).toHaveClass(/is-selected/);
+
+        // Prev on slide 0 goes to last slide (slide 3)
+        await prevBtn.dispatchEvent('click');
+        await expect(slides.nth(slideCount - 1)).toHaveClass(/is-selected/);
+        await expect(prevBtn).toBeEnabled();
+        await expect(nextBtn).toBeEnabled();
+
+        // Next on last slide wraps to slide 0
+        await nextBtn.dispatchEvent('click');
+        await expect(slides.nth(0)).toHaveClass(/is-selected/);
+        await expect(prevBtn).toBeEnabled();
+        await expect(nextBtn).toBeEnabled();
+      });
+    }
+  });
 });
+
+const SEO_SERVICES_ROUTES = [
+  {
+    locale: 'vi',
+    path: '/seo-tu-khoa-website/',
+    sectionIds: [
+      'banner-1838497058',
+      'section_922596210',
+      'section_148064088',
+      'section_1443166173',
+      'section_994856196',
+      'section_1595200881',
+    ],
+    headingLines: ['Dịch vụ SEO TOP', 'từ khoá website'],
+    breadcrumb: 'Trang chủ / Dịch vụ / Seo từ khoá Website',
+    homeHref: '/',
+    homeLabel: 'Trang chủ',
+    breadcrumbId: 'text-639428615',
+    topGapId: 'gap-463430753',
+    heroCtaId: 'text-1784037823',
+    ctaIconCount: 1,
+    offeringsTitleId: 'text-1492573675',
+    faqEyebrowId: 'text-1069659283',
+    faqEyebrow: 'GIẢI ĐÁP',
+    advantagesEyebrow: 'Dịch vụ SEO website',
+    advantagesTitle: 'Lợi thế khi chọn dịch vụ SEO của chúng tôi',
+    advantageTitles: [
+      'Tăng thứ hạng bền vững trên Google',
+      'Tối ưu SEO toàn diện (Onpage & Offpage)',
+      'Báo cáo & theo dõi minh bạch',
+      'Đội ngũ chuyên gia giàu kinh nghiệm',
+    ],
+    offeringsEyebrow: 'Những dịch vụ',
+    // Source splits the VI title with <br>.
+    offeringsTitle: 'SEO top Google tại\nSova',
+    packageTitles: [
+      'SEO ONPAGE',
+      'SEO OFFPAGE',
+      'CHĂM SÓC WEBSITE',
+      'CONTENT WRITER',
+    ],
+    faqCount: 8,
+  },
+  {
+    locale: 'en',
+    path: '/en/website-keyword-seo/',
+    sectionIds: [
+      'banner-1245691485',
+      'section_1367982414',
+      'section_1771281465',
+      'section_1303915883',
+      'section_1195289173',
+      'section_1520280801',
+    ],
+    headingLines: ['Top-Ranking', 'SEO Services'],
+    breadcrumb: 'Home / Services / Website keyword SEO',
+    homeHref: '/en/',
+    homeLabel: 'Home',
+    breadcrumbId: 'text-4167340980',
+    topGapId: 'gap-716151157',
+    heroCtaId: 'text-2349830623',
+    ctaIconCount: 0,
+    offeringsTitleId: 'text-3610428661',
+    faqEyebrowId: 'text-712709189',
+    faqEyebrow: 'FAQs',
+    advantagesEyebrow: 'Website Keyword SEO',
+    advantagesTitle: 'Advantages of Choosing Our SEO Services',
+    advantageTitles: [
+      'Achieve Sustainable Google Rankings',
+      'Comprehensive SEO Optimization',
+      'Transparent Reporting & Monitoring',
+      'Experienced SEO Experts',
+    ],
+    offeringsEyebrow: 'Services',
+    offeringsTitle: 'SEO top Google at Sova',
+    packageTitles: [
+      'SEO ONPAGE',
+      'SEO OFFPAGE',
+      'WEBSITE MAINTENANCE',
+      'CONTENT WRITER',
+    ],
+    faqCount: 8,
+  },
+];
+
+test.describe('SEO Service Pages (Story 5.5)', () => {
+  for (const config of SEO_SERVICES_ROUTES) {
+    test(`Sections render in source order and structure on ${config.path}`, async ({ page }) => {
+      const { seoServices } = await import('../../src/data/services/seo');
+      const { siteSettings } = await import('../../src/data/site');
+      const zaloHref = siteSettings.find((x) => x.locale === config.locale)?.zaloHref;
+      const service = seoServices.find((s) => s.locale === config.locale);
+      if (!service) throw new Error('seo service missing');
+
+      await page.goto(config.path);
+
+      // Section order verification inside main
+      const sectionIds = await page.evaluate(() =>
+        Array.from(
+          document.querySelectorAll('main#main > .banner, main#main > section'),
+          (el) => el.id,
+        ),
+      );
+      expect(sectionIds).toEqual(config.sectionIds);
+      await expectNoDuplicateIds(page);
+
+      // No tablist, video, or table
+      await expect(page.locator('[role=tablist]')).toHaveCount(0);
+      await expect(page.locator('main table')).toHaveCount(0);
+      await expect(page.locator('main video')).toHaveCount(0);
+
+      // Projects slot is present and empty ss-decor
+      const projectsSlot = page.locator(`#${config.sectionIds[3]}`);
+      await expect(projectsSlot).toHaveClass(/ss-decor/);
+
+      // H1 heading lines with typewriter
+      const h1 = page.locator('main h1');
+      await expect(h1).toHaveCount(1);
+      await expect(h1.locator('.typewriter')).toHaveText(config.headingLines);
+
+      // Hero breadcrumb
+      const breadcrumb = page.locator(`#${config.breadcrumbId}`);
+      await expect(breadcrumb).toContainText(config.breadcrumb);
+      await expect(
+        breadcrumb.getByRole('link', { name: config.homeLabel }),
+      ).toHaveAttribute('href', config.homeHref);
+
+      // Hero: top gap is mobile-only; VI CTA carries the Vector-Stroke arrow, EN has none
+      await expect(page.locator(`#${config.topGapId}`)).toHaveClass(
+        'gap-element clearfix show-for-small',
+      );
+      await expect(
+        page.locator(`#${config.heroCtaId} a.but-lh img[src*="Vector-Stroke.svg"]`),
+      ).toHaveCount(config.ctaIconCount);
+
+      // Advantages section: 4 cards with titles
+      const advantagesSection = page.locator(`#${config.sectionIds[1]}`);
+      await expect(advantagesSection).toContainText(config.advantagesEyebrow);
+      await expect(
+        advantagesSection.locator(config.locale === 'en' ? 'h3' : 'h2').first(),
+      ).toHaveText(config.advantagesTitle);
+      const advantageCards = advantagesSection.locator('.row.align-equal > .col');
+      await expect(advantageCards).toHaveCount(4);
+      for (let i = 0; i < 4; i++) {
+        await expect(advantageCards.nth(i).locator('h3')).toHaveText(config.advantageTitles[i]);
+      }
+
+      // Package cards desktop grid: 4 package cards
+      const packagesSection = page.locator(`#${config.sectionIds[2]}`);
+      await expect(packagesSection).toContainText(config.offeringsEyebrow);
+      expect(await packagesSection.locator(`#${config.offeringsTitleId} h2`).innerText()).toBe(
+        config.offeringsTitle,
+      );
+      const gridCards = packagesSection.locator('.eras-table-price > .col');
+      await expect(gridCards).toHaveCount(4);
+      for (let i = 0; i < 4; i++) {
+        const card = gridCards.nth(i);
+        const offering = service.offerings[i];
+        await expect(card.locator('h2')).toHaveText(config.packageTitles[i]);
+        await expect(card.locator('.text p')).toHaveText(offering.description ?? '');
+        await expect(card.locator('.icon-box h5')).toHaveText(offering.items ?? []);
+        await expect(card.locator('p a.but-lh')).toHaveAttribute('href', zaloHref!);
+      }
+
+      // Testimonials (3 slides)
+      await expect(
+        page.locator(`#${config.sectionIds[4]} .slide-kh .flickity-slider > *`),
+      ).toHaveCount(3);
+
+      // FAQ items count per locale (8 items, first open)
+      const faqSection = page.locator(`#${config.sectionIds[5]}`);
+      await expect(faqSection.locator(`#${config.faqEyebrowId}`)).toHaveText(config.faqEyebrow);
+      const faqItems = faqSection.locator('.accordion-item');
+      await expect(faqItems).toHaveCount(config.faqCount);
+      await expect(faqItems.first().locator('.accordion-title')).toHaveClass(/active/);
+
+      // A05 check on VI item 7: answer text contains literal </p
+      if (config.locale === 'vi') {
+        const item7Answer = faqItems.nth(6).locator('.accordion-inner');
+        await expect(item7Answer).toContainText('</p');
+      }
+    });
+
+    test(`Grid hidden and slider visible at mobile viewports with no page scroll on ${config.path}`, async ({
+      page,
+    }) => {
+      for (const width of [390, 549]) {
+        await page.setViewportSize({ width, height: 844 });
+        await page.goto(config.path);
+
+        const offerings = page.locator(`#${config.sectionIds[2]}`);
+        const grid = offerings.locator('.eras-table-price.hide-for-small');
+        const slider = offerings.locator('.eras-table-price-slider.slide_seo');
+
+        await expect(grid).toBeHidden();
+        await expect(slider).toBeVisible();
+
+        // 4 slides in carousel
+        const slides = slider.locator('.flickity-slider > .row');
+        await expect(slides).toHaveCount(4);
+        for (let i = 0; i < 4; i++) {
+          const slide = slides.nth(i);
+          await expect(slide.locator('h2')).toHaveText(config.packageTitles[i]);
+        }
+
+        // Carousel dots and arrows present
+        await expect(slider.locator('.flickity-page-dots')).toBeVisible();
+        await expect(slider.locator('.flickity-prev-next-button')).toHaveCount(2);
+
+        // No horizontal page scroll
+        const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+        const innerWidth = await page.evaluate(() => window.innerWidth);
+        expect(scrollWidth, `${width}px scrollWidth <= innerWidth`).toBeLessThanOrEqual(innerWidth);
+      }
+
+      // At >= 550px: slider hidden, grid visible
+      await page.setViewportSize({ width: 550, height: 844 });
+      await page.goto(config.path);
+      const offerings550 = page.locator(`#${config.sectionIds[2]}`);
+      await expect(offerings550.locator('.eras-table-price.hide-for-small')).toBeVisible();
+      await expect(offerings550.locator('.eras-table-price-slider.slide_seo')).toBeHidden();
+    });
+  }
+});
+

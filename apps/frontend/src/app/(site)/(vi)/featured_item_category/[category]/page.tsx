@@ -11,7 +11,7 @@ import {
   PROJECT_HERO_IDS_FEATURED_BRANDING,
   PROJECT_HERO_IDS_FEATURED_MOBILE_APP,
   PROJECT_HERO_IDS_FEATURED_WEBSITE,
-} from '@/components/services/ServiceHero';
+} from '@/components/projects/projectHeroIds';
 
 // Source element ids per category archive; legacy CSS targets them.
 const IDS: Record<string, ProjectArchiveIds> = {

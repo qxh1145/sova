@@ -1,6 +1,7 @@
 import type { Locale } from '@/types/content';
 import type { ServiceAssets, ServicePage } from '@/lib/queries/services';
-import { ServiceHero, SERVICE_HERO_IDS_VPS_EN, SERVICE_HERO_IDS_VPS_VI } from './ServiceHero';
+import { PageHero } from '@/components/hero/PageHero';
+import { SERVICE_HERO_IDS_VPS_EN, SERVICE_HERO_IDS_VPS_VI } from './serviceHeroIds';
 import {
   ServiceIconCards,
   SERVICE_ICON_CARDS_IDS_VPS_EN,
@@ -56,7 +57,7 @@ export function VpsServiceView({ page, assets, locale }: VpsServiceViewProps) {
   return (
     <main id="main">
       {/* 1. Service Hero */}
-      <ServiceHero
+      <PageHero
         hero={service.hero}
         heroImage={assets.heroImage}
         bgImage={assets.heroBgImage}
