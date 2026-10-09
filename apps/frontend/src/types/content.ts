@@ -101,10 +101,37 @@ export interface Service extends LocalizedIdentity {
   offerings: OfferingPanel[];
   /** Section headings; `contact` is the website form copy. */
   sectionCopy: Partial<Record<ServiceSection, SectionCopy>>;
+  /** Contact form labels and messages for website service consultation banner. */
+  contactForm?: WebsiteContactFormLabels;
 }
+
+export interface WebsiteContactFormLabels {
+  heading: string;
+  nameLabel: string;
+  namePlaceholder: string;
+  nameRequired: string;
+  phoneLabel: string;
+  phonePlaceholder: string;
+  phoneInvalid: string;
+  businessLabel: string;
+  businessPlaceholder: string;
+  businessRequired: string;
+  messageLabel: string;
+  messagePlaceholder: string;
+  submit: string;
+  submitting: string;
+  success: string;
+  error: string;
+  demoBadge: string;
+  hotlineAria?: string;
+  hotlineLabel?: string;
+  hotlineHref?: string;
+}
+
 
 export type ServiceSection =
   'intro' | 'benefits' | 'offerings' | 'pricing' | 'projects' | 'testimonials' | 'faq' | 'contact';
+
 
 export interface OfferingPanel {
   id: EntityId;
@@ -431,7 +458,9 @@ export interface SectionCopy {
   /** Source `<br>` line breaks of a separate mobile-only (`show-for-small`) heading, when they differ from `titleLines`. */
   mobileTitleLines?: string[];
   description?: string;
+  descriptionLines?: string[];
 }
+
 
 export interface HomePageContent extends LocalizedIdentity {
   hero: HeroContent;

@@ -1466,3 +1466,216 @@ test.describe('Website Service Pages (Story 5.7)', () => {
   }
 });
 
+test.describe('Website Contact Form Banner (Story 5.8)', () => {
+  const BANNER_CONFIGS = [
+    {
+      locale: 'vi',
+      path: '/thiet-ke-website/',
+      bannerId: 'banner-1813159824',
+      formBoxId: 'text-box-1917404396',
+      formId: 'wpcf7-f6818-p7233-o1',
+      promoBoxId: 'text-box-324172340',
+      promoText: '100 MÃ ƯU ĐÃI THÁNG NÀY',
+      submitText: 'Gửi yêu cầu tư vấn  →',
+      namePlaceholder: 'Họ & tên của bạn',
+      phonePlaceholder: 'Số điện thoại của bạn',
+      businessPlaceholder: 'Lĩnh vực bạn đang kinh doanh',
+      nameRequiredTip: 'Vui lòng nhập họ và tên',
+      businessRequiredTip: 'Vui lòng nhập lĩnh vực kinh doanh',
+      phoneInvalidTip: 'Số điện thoại không hợp lệ',
+    },
+    {
+      locale: 'en',
+      path: '/en/website-development/',
+      bannerId: 'banner-1313966365',
+      formBoxId: 'text-box-1136070934',
+      formId: 'wpcf7-f6823-p7372-o1',
+      promoBoxId: null,
+      promoText: null,
+      submitText: 'Send a consultation request →',
+      namePlaceholder: 'Your full name',
+      phonePlaceholder: 'Your phone number',
+      businessPlaceholder: 'Your field of business',
+      nameRequiredTip: 'Please enter your full name',
+      businessRequiredTip: 'Please enter your field of business',
+      phoneInvalidTip: 'Invalid phone number',
+    },
+  ];
+
+  for (const config of BANNER_CONFIGS) {
+    test(`Renders exactly one form with unique IDs, required fields, and hotline href on ${config.path}`, async ({
+      page,
+    }) => {
+      await page.goto(config.path);
+
+      // Exactly one form in the banner
+      const banner = page.locator(`#${config.bannerId}`);
+      await expect(banner).toBeVisible();
+      const form = banner.locator('form');
+      await expect(form).toHaveCount(1);
+      await expect(form).toHaveClass(/wpcf7-form init/);
+
+      // Unique IDs across page
+      await expectNoDuplicateIds(page);
+
+      // Check fields and aria-required
+      const nameInput = banner.locator('input[name="your-name"]');
+      const phoneInput = banner.locator('input[name="your-phone"]');
+      const businessInput = banner.locator('input[name="your-lvuc"]');
+      const messageInput = banner.locator('textarea[name="your-message"]');
+      const submitInput = banner.locator('input.wpcf7-submit');
+
+      await expect(nameInput).toHaveAttribute('aria-required', 'true');
+      await expect(nameInput).toHaveAttribute('placeholder', config.namePlaceholder);
+
+      // Phone is optional: no aria-required
+      await expect(phoneInput).not.toHaveAttribute('aria-required', 'true');
+      await expect(phoneInput).toHaveAttribute('placeholder', config.phonePlaceholder);
+
+      await expect(businessInput).toHaveAttribute('aria-required', 'true');
+      await expect(businessInput).toHaveAttribute('placeholder', config.businessPlaceholder);
+
+      await expect(messageInput).toBeAttached();
+      await expect(submitInput).toHaveValue(config.submitText);
+
+      // Hotline button check
+      const hotlineLink = banner.locator('a.button.white.is-shade');
+      await expect(hotlineLink).toHaveAttribute('href', 'tel:0000000000');
+      await expect(hotlineLink).toContainText('0000 000 000');
+
+      // Promo box on VI only
+      if (config.promoBoxId) {
+        const promoBox = banner.locator(`#${config.promoBoxId}`);
+        await expect(promoBox).toBeVisible();
+        await expect(promoBox).toContainText(config.promoText!);
+      } else {
+        await expect(banner.locator('#text-box-324172340')).toHaveCount(0);
+      }
+    });
+
+    test(`Validation tips and aria-invalid work on empty and invalid inputs on ${config.path}`, async ({
+      page,
+    }) => {
+      await page.goto(config.path);
+
+      const banner = page.locator(`#${config.bannerId}`);
+      const submitBtn = banner.locator('input.wpcf7-submit');
+      const nameInput = banner.locator('input[name="your-name"]');
+      const phoneInput = banner.locator('input[name="your-phone"]');
+      const businessInput = banner.locator('input[name="your-lvuc"]');
+
+      // Click submit with empty form
+      await submitBtn.click();
+
+      // Check tips appear
+      const tips = banner.locator('.wpcf7-not-valid-tip');
+      await expect(tips).toHaveCount(2);
+      await expect(tips.nth(0)).toHaveText(config.nameRequiredTip);
+      await expect(tips.nth(1)).toHaveText(config.businessRequiredTip);
+      await expect(nameInput).toHaveAttribute('aria-invalid', 'true');
+      await expect(nameInput).toBeFocused();
+
+      // Fill name & business, put bad phone
+      await nameInput.fill('Nguyen Van A');
+      await businessInput.fill('Retail');
+      await phoneInput.fill('bad-phone-123');
+      await submitBtn.click();
+
+      await expect(banner.locator('.wpcf7-not-valid-tip')).toHaveCount(1);
+      await expect(banner.locator('.wpcf7-not-valid-tip')).toHaveText(config.phoneInvalidTip);
+      await expect(phoneInput).toHaveAttribute('aria-invalid', 'true');
+    });
+
+    test(`Valid submit resolves to demo-success with demo badge and no storage/network on ${config.path}`, async ({
+      page,
+    }) => {
+      await page.goto(config.path);
+
+      const banner = page.locator(`#${config.bannerId}`);
+      const nameInput = banner.locator('input[name="your-name"]');
+      const businessInput = banner.locator('input[name="your-lvuc"]');
+      const submitBtn = banner.locator('input.wpcf7-submit');
+
+      await nameInput.fill('Nguyen Van A');
+      await businessInput.fill('Tech Retail');
+      await submitBtn.click();
+
+      // Demo-success output
+      const form = banner.locator('form');
+      await expect(form).toHaveClass(/sent/);
+      const responseOutput = banner.locator('.wpcf7-response-output');
+      await expect(responseOutput).toBeVisible();
+      await expect(responseOutput.locator('.wpcf7-demo-badge')).toBeVisible();
+
+      // Inputs kept
+      await expect(nameInput).toHaveValue('Nguyen Van A');
+      await expect(businessInput).toHaveValue('Tech Retail');
+
+      // No storage or cookies
+      const storageState = await page.evaluate(() => ({
+        local: localStorage.length,
+        session: sessionStorage.length,
+        cookies: document.cookie,
+      }));
+      expect(storageState.local).toBe(0);
+      expect(storageState.session).toBe(0);
+      expect(storageState.cookies).toBe('');
+    });
+
+    test(`No horizontal overflow at 390px and 549px viewports on ${config.path}`, async ({ page }) => {
+      for (const width of [390, 549]) {
+        await page.setViewportSize({ width, height: 844 });
+        await page.goto(config.path);
+
+        const banner = page.locator(`#${config.bannerId}`);
+        await expect(banner).toBeVisible();
+
+        const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+        const innerWidth = await page.evaluate(() => window.innerWidth);
+        expect(scrollWidth, `${width}px scrollWidth <= innerWidth`).toBeLessThanOrEqual(innerWidth);
+      }
+    });
+  }
+
+  test('Gated fixture: enters submitting state, demo-error keeps inputs, and resubmit works', async ({
+    page,
+  }) => {
+    await page.goto('/dev-fixtures/website-form/error');
+
+    const nameInput = page.locator('input[name="your-name"]');
+    const businessInput = page.locator('input[name="your-lvuc"]');
+    const submitBtn = page.locator('input.wpcf7-submit');
+    const releaseBtn = page.locator('[data-testid="fixture-release"]');
+
+    await nameInput.fill('Demo User');
+    await businessInput.fill('Software');
+
+    // Submit enters gated pending state
+    await submitBtn.click();
+    await expect(submitBtn).toBeDisabled();
+    await expect(submitBtn).toHaveAttribute('aria-busy', 'true');
+    await expect(page.locator('form')).toHaveClass(/submitting/);
+
+    // Release gate to error outcome
+    await releaseBtn.click();
+
+    // Form status becomes failed, response output visible
+    await expect(page.locator('form')).toHaveClass(/failed/);
+    const responseOutput = page.locator('.wpcf7-response-output');
+    await expect(responseOutput).toBeVisible();
+    await expect(responseOutput.locator('.wpcf7-demo-badge')).toHaveText('Bản demo — chưa gửi thông tin');
+
+    // Inputs kept
+    await expect(nameInput).toHaveValue('Demo User');
+    await expect(businessInput).toHaveValue('Software');
+
+    // Button re-enabled, resubmit works
+    await expect(submitBtn).not.toBeDisabled();
+    await submitBtn.click();
+    await expect(submitBtn).toBeDisabled();
+    await releaseBtn.click();
+    await expect(page.locator('form')).toHaveClass(/failed/);
+  });
+});
+
+

@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { consultSchema, phoneSchema } from './schemas';
+import {
+  consultSchema,
+  optionalPhoneSchema,
+  phoneSchema,
+  websiteContactSchema,
+} from './schemas';
 
 describe('form schemas', () => {
   const messages = {
@@ -64,6 +69,27 @@ describe('form schemas', () => {
     });
   });
 
+  describe('optionalPhoneSchema', () => {
+    const schema = optionalPhoneSchema(messages.invalid);
+
+    it('accepts empty and whitespace-only strings', () => {
+      expect(schema.safeParse('').success).toBe(true);
+      expect(schema.safeParse('   ').success).toBe(true);
+    });
+
+    it('rejects invalid phones when provided', () => {
+      const result = schema.safeParse('abc');
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe(messages.invalid);
+      }
+    });
+
+    it('accepts valid phones', () => {
+      expect(schema.safeParse('0988606539').success).toBe(true);
+    });
+  });
+
   describe('consultSchema', () => {
     it('validates consult form with required phone', () => {
       const schema = consultSchema({
@@ -85,4 +111,74 @@ describe('form schemas', () => {
       }
     });
   });
+
+  describe('websiteContactSchema', () => {
+    const websiteMessages = {
+      nameRequired: 'Vui lòng nhập họ và tên',
+      businessRequired: 'Vui lòng nhập lĩnh vực kinh doanh',
+      phoneInvalid: 'Số điện thoại không hợp lệ',
+    };
+    const schema = websiteContactSchema(websiteMessages);
+
+    it('accepts valid inputs with phone omitted or empty', () => {
+      const result = schema.safeParse({
+        'your-name': 'Nguyễn Văn A',
+        'your-lvuc': 'Bán lẻ',
+        'your-phone': '',
+      });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data['your-name']).toBe('Nguyễn Văn A');
+        expect(result.data['your-lvuc']).toBe('Bán lẻ');
+      }
+    });
+
+    it('accepts empty message', () => {
+      const result = schema.safeParse({
+        'your-name': 'Nguyễn Văn A',
+        'your-lvuc': 'Bán lẻ',
+        'your-phone': '0988606539',
+        'your-message': '',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('rejects empty name with nameRequired message', () => {
+      const result = schema.safeParse({
+        'your-name': '   ',
+        'your-lvuc': 'Bán lẻ',
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.format()['your-name']?._errors[0]).toBe(websiteMessages.nameRequired);
+      }
+    });
+
+    it('rejects empty business with businessRequired message', () => {
+      const result = schema.safeParse({
+        'your-name': 'Nguyễn Văn A',
+        'your-lvuc': '',
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.format()['your-lvuc']?._errors[0]).toBe(
+          websiteMessages.businessRequired,
+        );
+      }
+    });
+
+    it('rejects invalid phone when provided', () => {
+      const result = schema.safeParse({
+        'your-name': 'Nguyễn Văn A',
+        'your-lvuc': 'Bán lẻ',
+        'your-phone': '12345',
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.format()['your-phone']?._errors[0]).toBe(websiteMessages.phoneInvalid);
+      }
+    });
+  });
 });
+
+
