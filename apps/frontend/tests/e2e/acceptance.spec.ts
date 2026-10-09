@@ -483,3 +483,52 @@ for (const { locale, route, sections, absent } of HOME_LOCALES) {
     });
   });
 }
+
+test.describe('Acceptance: Collections', () => {
+  test.beforeEach(async ({ page }) => {
+    setupConsoleCollector(page);
+  });
+
+  test.afterEach(async ({ page }) => {
+    verifyConsoleCollector(page);
+  });
+
+  const COLLECTION_ROUTES = [
+    { name: 'Projects listing (VI)', path: '/du-an/', landmark: '#portfolio-results' },
+    { name: 'Projects listing (EN)', path: '/en/our-project/', landmark: '.banner-project' },
+    { name: 'Projects archive (VI)', path: '/featured_item/', landmark: '#portfolio-1541637127' },
+    {
+      name: 'Project category archive',
+      path: '/featured_item_category/website/',
+      landmark: '#portfolio-200128785',
+    },
+    {
+      name: 'Project detail',
+      path: '/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/',
+      landmark: '.portfolio-single-page',
+    },
+    { name: 'Blog listing (VI)', path: '/goc-nhin/', landmark: '#post-list' },
+    { name: 'Blog listing page 5 (VI)', path: '/goc-nhin/page/5/', landmark: '#post-list' },
+    { name: 'Blog category archive', path: '/thu-thuat/', landmark: '#post-list' },
+    {
+      name: 'Post detail',
+      path: '/website-dong-va-tinh-la-gi-phan-biet-su-khac-nhau-giua-2-khai-niem/',
+      landmark: '.blog-single',
+    },
+    { name: 'Blog listing (EN)', path: '/en/insight/', landmark: '#post-list' },
+    { name: 'Search results', path: '/?s=cache', landmark: '#post-list' },
+  ];
+
+  for (const { name, path: routePath, landmark } of COLLECTION_ROUTES) {
+    test(`${name} (${routePath}) returns 200, renders key landmark, and keeps console clean`, async ({
+      page,
+    }) => {
+      const response = await page.goto(routePath);
+      expect(response?.ok(), `Route ${routePath} returned status ${response?.status()}`).toBe(true);
+      await expect(
+        page.locator(landmark).first(),
+        `Landmark ${landmark} visible on ${routePath}`,
+      ).toBeVisible();
+    });
+  }
+});
