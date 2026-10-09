@@ -1251,6 +1251,9 @@ const WEBSITE_SERVICES_ROUTES = [
     whyChooseUsId: 'section_2045360196',
     whyChooseUsSliderId: 'slider-1976037433',
     breadcrumbId: 'text-560624937',
+    benefitsCardsRowId: 'row-2045382502',
+    mobileHeadingId: 'text-3235701455',
+    mobileHeadingLines: ['Phát triển lợi thế', 'doanh nghiệp của bạn', 'trên nền tảng số'],
     faqSectionId: 'section_852011045',
     faqCount: 8,
     plans: [
@@ -1280,6 +1283,9 @@ const WEBSITE_SERVICES_ROUTES = [
     whyChooseUsId: 'section_720050151',
     whyChooseUsSliderId: 'slider-1884506166',
     breadcrumbId: 'text-2147121753',
+    benefitsCardsRowId: 'row-850357972',
+    mobileHeadingId: 'text-2812727029',
+    mobileHeadingLines: ['Drive Your Business Growth with a Strategic Digital Presence'],
     faqSectionId: 'section_581402483',
     faqCount: 8,
     plans: [
@@ -1290,11 +1296,16 @@ const WEBSITE_SERVICES_ROUTES = [
   },
 ];
 
+const PLAN_ICON_FILES = ['Glass-Left-1.svg', 'Group-1000001808.svg', 'Group-1000001809.svg'];
+
 test.describe('Website Service Pages (Story 5.7)', () => {
   for (const config of WEBSITE_SERVICES_ROUTES) {
     test(`Sections render in source order and structure on ${config.path}`, async ({ page }) => {
+      const { websiteServices } = await import('../../src/data/services/website');
       const { siteSettings } = await import('../../src/data/site');
       const zaloHref = siteSettings.find((x) => x.locale === config.locale)?.zaloHref;
+      const service = websiteServices.find((s) => s.locale === config.locale);
+      if (!service) throw new Error('website service missing');
 
       await page.goto(config.path);
 
@@ -1314,6 +1325,25 @@ test.describe('Website Service Pages (Story 5.7)', () => {
 
       // Video banner present in advantages
       await expect(page.locator('main video')).toHaveCount(1);
+
+      // Benefits: 4 website-variant cards with icon, title and body from data
+      const benefitCards = page.locator(`#${config.benefitsCardsRowId} > .col`);
+      await expect(benefitCards).toHaveCount(4);
+      for (let i = 0; i < 4; i++) {
+        const card = benefitCards.nth(i);
+        await expect(card.locator('.icon-box-img img')).toHaveCount(1);
+        await expect(card.locator('.icon-box h3')).toHaveText(service.benefits[i].title);
+        await expect(card.locator('.col-inner > .text')).not.toBeEmpty();
+      }
+
+      // Mobile benefits heading line breaks match source
+      const mobileHeading = page.locator(`#${config.mobileHeadingId} h2`);
+      await expect(mobileHeading.locator('br')).toHaveCount(config.mobileHeadingLines.length - 1);
+      expect(
+        (await mobileHeading.innerHTML())
+          .split(/<br\s*\/?>/)
+          .map((line) => line.replace(/<[^>]+>/g, '').trim()),
+      ).toEqual(config.mobileHeadingLines);
 
       // Projects slot is present and empty ss-decor
       const projectsSlot = page.locator(`#${config.sectionIds[4]}`);
@@ -1335,9 +1365,10 @@ test.describe('Website Service Pages (Story 5.7)', () => {
       const heroCta = page.locator('main .banner a.but-lh');
       await expect(heroCta).toHaveAttribute('href', '/lien-he/');
 
-      // Marquee present
+      // Marquee present, with Ellipse-2351.svg separator
       const marquee = page.locator('.cs-moving_text_wrap');
       await expect(marquee).toBeVisible();
+      await expect(marquee.locator('img[src*="Ellipse-2351.svg"]').first()).toBeAttached();
 
       // Pricing cards desktop grid (3 plans, 9 features + CTA each)
       const pricingSection = page.locator(`#${config.pricingSectionId}`);
@@ -1348,6 +1379,9 @@ test.describe('Website Service Pages (Story 5.7)', () => {
         const card = gridCards.nth(i);
         const plan = config.plans[i];
         await expect(card.locator('h3').first()).toHaveText(plan.name);
+        await expect(
+          card.locator(`.icon-tke .icon-inner img[src*="${PLAN_ICON_FILES[i]}"]`),
+        ).toHaveCount(1);
 
         if (plan.recommended) {
           await expect(card).toHaveClass(/col-blur-blue/);
@@ -1358,8 +1392,8 @@ test.describe('Website Service Pages (Story 5.7)', () => {
         if ('badge' in plan && plan.badge) {
           await expect(card.locator('.text_sale h3')).toHaveText(plan.badge);
         } else if ('price' in plan && plan.price) {
-          await expect(card.locator('p.gia_giam')).toContainText(plan.originalPrice);
-          await expect(card.locator('.text').filter({ hasText: plan.price }).first()).toBeVisible();
+          await expect(card.locator('p.gia_giam')).toHaveText(plan.originalPrice);
+          await expect(card.locator('p.gia_giam + h3')).toHaveText(plan.price);
         }
 
         // 9 features
@@ -1372,6 +1406,11 @@ test.describe('Website Service Pages (Story 5.7)', () => {
       const whyChooseUsSection = page.locator(`#${config.whyChooseUsId}`);
       const whyCards = whyChooseUsSection.locator('.eras-table-price > .col');
       await expect(whyCards).toHaveCount(3);
+      for (let i = 0; i < 3; i++) {
+        await expect(whyCards.nth(i).locator('.icon-box-text p')).toHaveText(
+          service.offerings[i].items ?? [],
+        );
+      }
 
       // Testimonials (3 slides)
       await expect(

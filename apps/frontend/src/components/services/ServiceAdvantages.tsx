@@ -39,6 +39,8 @@ export interface ServiceAdvantagesIds {
   cardsRow: string;
   cardsRowClass?: string;
   cardsColClass?: string;
+  /** `website`: icon box + separate gap/body siblings (website source markup). */
+  cardVariant?: 'website';
   cards: ServiceAdvantageCardIds[];
 }
 
@@ -248,6 +250,7 @@ export const SERVICE_ADVANTAGES_IDS_WEBSITE_VI: ServiceAdvantagesIds = {
   cardsRow: 'row-2045382502',
   cardsRowClass: 'row align-equal row_ptien',
   cardsColClass: 'col medium-6 small-12 large-6',
+  cardVariant: 'website',
   cards: [
     {
       col: 'col-1331061223',
@@ -296,6 +299,7 @@ export const SERVICE_ADVANTAGES_IDS_WEBSITE_EN: ServiceAdvantagesIds = {
   cardsRow: 'row-850357972',
   cardsRowClass: 'row align-equal row_ptien',
   cardsColClass: 'col medium-6 small-12 large-6',
+  cardVariant: 'website',
   cards: [
     {
       col: 'col-1050488050',
@@ -392,17 +396,14 @@ export function ServiceAdvantages({
                   </div>
                   <div id={ids.mobileHeadingText} className="text show-for-small">
                     <h2>
-                      {isEn ? (
-                        copy.title
-                      ) : (
-                        copy.title.split(' ').reduce<React.ReactNode[]>((acc, word, idx) => {
-                          // Break at "doanh" (index 4) and "trên" (index 9) for 3 lines matching design
-                          if (idx === 4 || idx === 9) {
-                            return [...acc, <br key={idx} />, word, ' '];
-                          }
-                          return [...acc, word, ' '];
-                        }, [])
-                      )}
+                      {copy.mobileTitleLines
+                        ? copy.mobileTitleLines.map((line, idx) => (
+                            <span key={idx}>
+                              {line}
+                              {idx < copy.mobileTitleLines!.length - 1 && <br />}
+                            </span>
+                          ))
+                        : copy.title}
                     </h2>
                   </div>
                 </>
@@ -558,7 +559,7 @@ export function ServiceAdvantages({
                   const cardIds = ids.cards[idx];
                   const icon = benefit.iconId ? iconMap.get(benefit.iconId) : null;
                   const iconWidth = cardIds?.iconWidth ?? 80;
-                  const isWebsiteCard = Boolean(ids.cardsRowClass?.includes('row_ptien'));
+                  const isWebsiteCard = ids.cardVariant === 'website';
 
                   if (isWebsiteCard) {
                     return (
