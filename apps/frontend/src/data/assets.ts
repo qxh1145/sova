@@ -6650,4 +6650,38 @@ export const assets: AssetRef[] = [
     width: 2560,
     height: 1085,
   },
+  {
+    id: 'asset-017f167e30',
+    src: '/wp-content/uploads/2024/02/Glass-Left-1.svg',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'thiet-ke-website/index.html', line: 1332 },
+      { file: 'en/website-development/index.html', line: 1328 },
+    ],
+  },
+  {
+    id: 'asset-0284853c00',
+    src: '/wp-content/uploads/2024/02/Group-1000001808.svg',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'thiet-ke-website/index.html', line: 1780 },
+      { file: 'en/website-development/index.html', line: 1776 },
+    ],
+  },
+  {
+    id: 'asset-4314679580',
+    src: '/wp-content/uploads/2024/02/Group-1000001809.svg',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'thiet-ke-website/index.html', line: 2223 },
+      { file: 'en/website-development/index.html', line: 2219 },
+    ],
+  },
 ];
+

@@ -52,6 +52,8 @@ export interface ServiceAssets {
     quoteIcon: AssetRef;
     line: AssetRef;
   };
+  planIcons?: AssetRef[];
+  marqueeSeparator?: AssetRef | null;
 }
 
 export const TESTIMONIAL_ART_IDS = {
@@ -102,6 +104,7 @@ export async function getServiceAssets(
     subtractAssets,
     testimonialAvatars,
     artAssets,
+    extraAssets,
   ] = await Promise.all([
     heroImageId ? repository.getAssets([heroImageId]) : Promise.resolve([]),
     heroBgImageId ? repository.getAssets([heroBgImageId]) : Promise.resolve([]),
@@ -120,6 +123,14 @@ export async function getServiceAssets(
       TESTIMONIAL_ART_IDS.quoteIconId,
       TESTIMONIAL_ART_IDS.lineId,
     ]),
+    service.key === 'website'
+      ? repository.getAssets([
+          'asset-017f167e30',
+          'asset-0284853c00',
+          'asset-4314679580',
+          'asset-400b882328',
+        ])
+      : Promise.resolve([]),
   ]);
 
   const photo = artAssets.find((a) => a.id === TESTIMONIAL_ART_IDS.photoId);
@@ -128,6 +139,10 @@ export async function getServiceAssets(
   if (!photo || !quoteIcon || !line) {
     throw new Error('Testimonial art assets missing from repository');
   }
+
+  const websiteAssets = service.key === 'website' ? extraAssets : [];
+  const planIcons = websiteAssets.filter((a) => a.id !== 'asset-400b882328');
+  const marqueeSeparator = websiteAssets.find((a) => a.id === 'asset-400b882328') ?? null;
 
   return {
     heroImage: heroImages[0] ?? null,
@@ -143,6 +158,8 @@ export async function getServiceAssets(
     subtractIcon: subtractAssets[0] ?? null,
     testimonialAvatars,
     testimonialArt: { photo, quoteIcon, line },
+    planIcons,
+    marqueeSeparator,
   };
 }
 
