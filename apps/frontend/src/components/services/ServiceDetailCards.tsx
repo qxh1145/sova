@@ -17,12 +17,14 @@ export interface ServiceDetailCardsIds {
   sliderWrapper: string;
   sliderCards: {
     row: string;
+    rowClass?: string;
     col: string;
     titleText: string;
     gap: string;
     itemTexts: string[];
   }[];
 }
+
 
 export const SERVICE_DETAIL_CARDS_IDS_VI: ServiceDetailCardsIds = {
   section: 'section_1129413203',
@@ -226,6 +228,211 @@ export const SERVICE_DETAIL_CARDS_IDS_EN: ServiceDetailCardsIds = {
   ],
 };
 
+export const SERVICE_DETAIL_CARDS_IDS_WEBSITE_VI: ServiceDetailCardsIds = {
+  section: 'section_2045360196',
+  headingRow: 'row-1518428203',
+  headingCol: 'col-1569333820',
+  headingEyebrow: 'text-2610696603',
+  headingTitle: 'text-1306801483',
+  gridRow: 'row-106839715',
+  gridCards: [
+    {
+      col: 'col-1193552611',
+      titleText: 'text-928475185',
+      gap: 'gap-608623598',
+      itemTexts: [
+        'text-543767919',
+        'text-565384461',
+        'text-2702591327',
+        'text-663772641',
+        'text-2334703959',
+        'text-421237886',
+        'text-3963051509',
+      ],
+    },
+    {
+      col: 'col-738744122',
+      titleText: 'text-79520304',
+      gap: 'gap-1547391341',
+      itemTexts: [
+        'text-166137742',
+        'text-3546235738',
+        'text-1200106463',
+        'text-1296799399',
+        'text-1751695483',
+        'text-2404075628',
+        'text-888839690',
+      ],
+    },
+    {
+      col: 'col-567249448',
+      titleText: 'text-731457928',
+      gap: 'gap-709440818',
+      itemTexts: [
+        'text-3414830680',
+        'text-1449847316',
+        'text-2379584536',
+        'text-602204890',
+        'text-4219048527',
+        'text-3844543062',
+        'text-1965358910',
+      ],
+    },
+  ],
+  sliderWrapper: 'slider-1976037433',
+  sliderCards: [
+    {
+      row: 'row-497409351',
+      col: 'col-2124065722',
+      titleText: 'text-2426393134',
+      gap: 'gap-1504813131',
+      itemTexts: [
+        'text-2857419147',
+        'text-4275528809',
+        'text-271558410',
+        'text-609057464',
+        'text-1403335197',
+        'text-486502218',
+        'text-2353194299',
+      ],
+    },
+    {
+      row: 'row-674862051',
+      col: 'col-1290359911',
+      titleText: 'text-2586431292',
+      gap: 'gap-1548174592',
+      itemTexts: [
+        'text-1725427317',
+        'text-2585126597',
+        'text-1038688171',
+        'text-3026934605',
+        'text-2471223182',
+        'text-1143386889',
+        'text-1177740813',
+      ],
+    },
+    {
+      row: 'row-2076056571',
+      rowClass: 'row align-equal hover_gra',
+      col: 'col-1060787753',
+      titleText: 'text-1474222443',
+      gap: 'gap-684549068',
+      itemTexts: [
+        'text-902634206',
+        'text-2085580014',
+        'text-1167545474',
+        'text-2416174111',
+        'text-1790126402',
+        'text-686264326',
+        'text-3468535698',
+      ],
+    },
+  ],
+};
+
+export const SERVICE_DETAIL_CARDS_IDS_WEBSITE_EN: ServiceDetailCardsIds = {
+  section: 'section_720050151',
+  headingRow: 'row-758903368',
+  headingCol: 'col-1952769449',
+  headingEyebrow: 'text-1499760673',
+  headingTitle: 'text-516151424',
+  gridRow: 'row-714537549',
+  gridCards: [
+    {
+      col: 'col-1359166462',
+      titleText: 'text-2622370424',
+      gap: 'gap-1086004528',
+      itemTexts: [
+        'text-1614520789',
+        'text-742811371',
+        'text-2347822341',
+        'text-2047015367',
+        'text-3178043351',
+        'text-801003899',
+        'text-1217345706',
+      ],
+    },
+    {
+      col: 'col-912847152',
+      titleText: 'text-1424492535',
+      gap: 'gap-1521239104',
+      itemTexts: [
+        'text-1310382406',
+        'text-2749343575',
+        'text-821343611',
+        'text-171325972',
+        'text-179211488',
+        'text-4242979008',
+        'text-201318270',
+      ],
+    },
+    {
+      col: 'col-2085354630',
+      titleText: 'text-4202630873',
+      gap: 'gap-529248054',
+      itemTexts: [
+        'text-2372817881',
+        'text-1950527604',
+        'text-3671351337',
+        'text-2112217375',
+        'text-937021526',
+        'text-1862579519',
+        'text-244791935',
+      ],
+    },
+  ],
+  sliderWrapper: 'slider-1884506166',
+  sliderCards: [
+    {
+      row: 'row-260142367',
+      col: 'col-1582518658',
+      titleText: 'text-1514289912',
+      gap: 'gap-1737469584',
+      itemTexts: [
+        'text-2346365267',
+        'text-1208172550',
+        'text-3094706259',
+        'text-52937089',
+        'text-3881032034',
+        'text-3793677485',
+        'text-2685014656',
+      ],
+    },
+    {
+      row: 'row-596477572',
+      col: 'col-1179635668',
+      titleText: 'text-2562581441',
+      gap: 'gap-1596921958',
+      itemTexts: [
+        'text-1318508156',
+        'text-2935043096',
+        'text-259202561',
+        'text-2026997022',
+        'text-102055848',
+        'text-3522834524',
+        'text-1022733857',
+      ],
+    },
+    {
+      row: 'row-1909714010',
+      rowClass: 'row align-equal hover_gra',
+      col: 'col-1006384877',
+      titleText: 'text-2506306521',
+      gap: 'gap-1157174072',
+      itemTexts: [
+        'text-2553774199',
+        'text-80023855',
+        'text-1376530472',
+        'text-3644419902',
+        'text-1228943975',
+        'text-598944686',
+        'text-1004364982',
+      ],
+    },
+  ],
+};
+
+
 export const SERVICE_CAROUSEL_LABELS: Record<Locale, CarouselLabels> = {
   vi: {
     prev: 'Trước',
@@ -245,6 +452,8 @@ export interface ServiceDetailCardsProps {
   subtractIcon?: AssetRef | null;
   ids: ServiceDetailCardsIds;
   labels: CarouselLabels;
+  sliderClass?: string;
+  dots?: boolean;
 }
 
 export function ServiceDetailCards({
@@ -253,6 +462,8 @@ export function ServiceDetailCards({
   subtractIcon,
   ids,
   labels,
+  sliderClass,
+  dots,
 }: ServiceDetailCardsProps) {
   if (!offerings.length) return null;
 
@@ -365,7 +576,7 @@ export function ServiceDetailCards({
         {/* Mobile Slider: show-for-small (visible <= 549px) */}
         <div
           id={ids.sliderWrapper}
-          className="slider-wrapper relative slide_mobi_new slide_tkap eras-table-price-slider show-for-small" // business-text-ok: source CSS class name
+          className={`slider-wrapper relative slide_mobi_new ${sliderClass ?? 'slide_tkap eras-table-price-slider'} show-for-small`} // business-text-ok: source CSS class name
         >
           <Carousel
             align="center"
@@ -373,6 +584,7 @@ export function ServiceDetailCards({
             autoplayMs={6000}
             pauseOnHover
             arrows
+            dots={dots}
             containScroll="trimSnaps"
             adaptiveHeight
             dragThreshold={10}

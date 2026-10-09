@@ -1228,3 +1228,241 @@ test.describe('Branding Service Pages (Story 5.6)', () => {
     });
   }
 });
+
+const WEBSITE_SERVICES_ROUTES = [
+  {
+    locale: 'vi',
+    path: '/thiet-ke-website/',
+    headingLines: ['Thiết kế Website', 'Chuyên Nghiệp'],
+    breadcrumb: 'Trang chủ / Dịch vụ / Thiết kế website',
+    homeHref: '/',
+    homeLabel: 'Trang chủ',
+    sectionIds: [
+      'banner-719407594',
+      'section_949181512',
+      'section_1346750226',
+      'section_2045360196',
+      'section_1384595751',
+      'section_1621881932',
+      'section_852011045',
+    ],
+    pricingSectionId: 'section_1346750226',
+    pricingSliderId: 'slider-74016963',
+    whyChooseUsId: 'section_2045360196',
+    whyChooseUsSliderId: 'slider-1976037433',
+    breadcrumbId: 'text-560624937',
+    benefitsCardsRowId: 'row-2045382502',
+    mobileHeadingId: 'text-3235701455',
+    mobileHeadingLines: ['Phát triển lợi thế', 'doanh nghiệp của bạn', 'trên nền tảng số'],
+    faqSectionId: 'section_852011045',
+    faqCount: 8,
+    plans: [
+      { name: 'CƠ BẢN', badge: 'Giảm 50%', recommended: false },
+      { name: 'NÂNG CAO', badge: 'Giảm 45%', recommended: true },
+      { name: 'CHUYÊN NGHIỆP', badge: 'Giảm 35%', recommended: false },
+    ],
+  },
+  {
+    locale: 'en',
+    path: '/en/website-development/',
+    headingLines: ['Professional', 'Website Development'],
+    breadcrumb: 'Home / Services / Website Development',
+    homeHref: '/en/',
+    homeLabel: 'Home',
+    sectionIds: [
+      'banner-653181182',
+      'section_1040334430',
+      'section_1856214289',
+      'section_720050151',
+      'section_1784272447',
+      'section_374756684',
+      'section_581402483',
+    ],
+    pricingSectionId: 'section_1856214289',
+    pricingSliderId: 'slider-1604990153',
+    whyChooseUsId: 'section_720050151',
+    whyChooseUsSliderId: 'slider-1884506166',
+    breadcrumbId: 'text-2147121753',
+    benefitsCardsRowId: 'row-850357972',
+    mobileHeadingId: 'text-2812727029',
+    mobileHeadingLines: ['Drive Your Business Growth with a Strategic Digital Presence'],
+    faqSectionId: 'section_581402483',
+    faqCount: 8,
+    plans: [
+      { name: 'STANDARD', price: '5.000.000 VNĐ', originalPrice: '7.000.000 VNĐ', recommended: false },
+      { name: 'ADVANCED', price: '8.000.000 VNĐ', originalPrice: '10.000.000 VNĐ', recommended: true },
+      { name: 'PROFESSIONAL', price: '+15.000.000 VNĐ', originalPrice: '18.000.000 VNĐ', recommended: false },
+    ],
+  },
+];
+
+const PLAN_ICON_FILES = ['Glass-Left-1.svg', 'Group-1000001808.svg', 'Group-1000001809.svg'];
+
+test.describe('Website Service Pages (Story 5.7)', () => {
+  for (const config of WEBSITE_SERVICES_ROUTES) {
+    test(`Sections render in source order and structure on ${config.path}`, async ({ page }) => {
+      const { websiteServices } = await import('../../src/data/services/website');
+      const { siteSettings } = await import('../../src/data/site');
+      const zaloHref = siteSettings.find((x) => x.locale === config.locale)?.zaloHref;
+      const service = websiteServices.find((s) => s.locale === config.locale);
+      if (!service) throw new Error('website service missing');
+
+      await page.goto(config.path);
+
+      // Section order verification inside main
+      const sectionIds = await page.evaluate(() =>
+        Array.from(
+          document.querySelectorAll('main#main > .banner, main#main > section'),
+          (el) => el.id,
+        ),
+      );
+      expect(sectionIds).toEqual(config.sectionIds);
+      await expectNoDuplicateIds(page);
+
+      // No tablist, 0 tables
+      await expect(page.locator('[role=tablist]')).toHaveCount(0);
+      await expect(page.locator('main table')).toHaveCount(0);
+
+      // Video banner present in advantages
+      await expect(page.locator('main video')).toHaveCount(1);
+
+      // Benefits: 4 website-variant cards with icon, title and body from data
+      const benefitCards = page.locator(`#${config.benefitsCardsRowId} > .col`);
+      await expect(benefitCards).toHaveCount(4);
+      for (let i = 0; i < 4; i++) {
+        const card = benefitCards.nth(i);
+        await expect(card.locator('.icon-box-img img')).toHaveCount(1);
+        await expect(card.locator('.icon-box h3')).toHaveText(service.benefits[i].title);
+        await expect(card.locator('.col-inner > .text')).not.toBeEmpty();
+      }
+
+      // Mobile benefits heading line breaks match source
+      const mobileHeading = page.locator(`#${config.mobileHeadingId} h2`);
+      await expect(mobileHeading.locator('br')).toHaveCount(config.mobileHeadingLines.length - 1);
+      expect(
+        (await mobileHeading.innerHTML())
+          .split(/<br\s*\/?>/)
+          .map((line) => line.replace(/<[^>]+>/g, '').trim()),
+      ).toEqual(config.mobileHeadingLines);
+
+      // Projects slot is present and empty ss-decor
+      const projectsSlot = page.locator(`#${config.sectionIds[4]}`);
+      await expect(projectsSlot).toHaveClass(/ss-decor/);
+
+      // H1 heading lines with typewriter
+      const h1 = page.locator('main h1');
+      await expect(h1).toHaveCount(1);
+      await expect(h1.locator('.typewriter')).toHaveText(config.headingLines);
+
+      // Hero breadcrumb
+      const breadcrumb = page.locator(`#${config.breadcrumbId}`);
+      await expect(breadcrumb).toContainText(config.breadcrumb);
+      await expect(
+        breadcrumb.getByRole('link', { name: config.homeLabel }),
+      ).toHaveAttribute('href', config.homeHref);
+
+      // Hero CTA
+      const heroCta = page.locator('main .banner a.but-lh');
+      await expect(heroCta).toHaveAttribute('href', '/lien-he/');
+
+      // Marquee present, with Ellipse-2351.svg separator
+      const marquee = page.locator('.cs-moving_text_wrap');
+      await expect(marquee).toBeVisible();
+      await expect(marquee.locator('img[src*="Ellipse-2351.svg"]').first()).toBeAttached();
+
+      // Pricing cards desktop grid (3 plans, 9 features + CTA each)
+      const pricingSection = page.locator(`#${config.pricingSectionId}`);
+      const gridCards = pricingSection.locator('.eras-table-price > .col');
+      await expect(gridCards).toHaveCount(3);
+
+      for (let i = 0; i < 3; i++) {
+        const card = gridCards.nth(i);
+        const plan = config.plans[i];
+        await expect(card.locator('h3').first()).toHaveText(plan.name);
+        await expect(
+          card.locator(`.icon-tke .icon-inner img[src*="${PLAN_ICON_FILES[i]}"]`),
+        ).toHaveCount(1);
+
+        if (plan.recommended) {
+          await expect(card).toHaveClass(/col-blur-blue/);
+        } else {
+          await expect(card).not.toHaveClass(/col-blur-blue/);
+        }
+
+        if ('badge' in plan && plan.badge) {
+          await expect(card.locator('.text_sale h3')).toHaveText(plan.badge);
+        } else if ('price' in plan && plan.price) {
+          await expect(card.locator('p.gia_giam')).toHaveText(plan.originalPrice);
+          await expect(card.locator('p.gia_giam + h3')).toHaveText(plan.price);
+        }
+
+        // 9 features
+        await expect(card.locator('.icon-box-left .text p')).toHaveCount(9);
+        // CTA
+        await expect(card.locator('a.but-lh')).toHaveAttribute('href', zaloHref!);
+      }
+
+      // Why choose us (3 cols desktop)
+      const whyChooseUsSection = page.locator(`#${config.whyChooseUsId}`);
+      const whyCards = whyChooseUsSection.locator('.eras-table-price > .col');
+      await expect(whyCards).toHaveCount(3);
+      for (let i = 0; i < 3; i++) {
+        await expect(whyCards.nth(i).locator('.icon-box-text p')).toHaveText(
+          service.offerings[i].items ?? [],
+        );
+      }
+
+      // Testimonials (3 slides)
+      await expect(
+        page.locator(`#${config.sectionIds[5]} .slide-kh .flickity-slider > *`),
+      ).toHaveCount(3);
+
+      // FAQ items count per locale (8 items, first open)
+      const faqSection = page.locator(`#${config.faqSectionId}`);
+      const faqItems = faqSection.locator('.accordion-item');
+      await expect(faqItems).toHaveCount(config.faqCount);
+      await expect(faqItems.first().locator('.accordion-title')).toHaveClass(/active/);
+    });
+
+    test(`Pricing and why-choose-us mobile sliders work at mobile viewports on ${config.path}`, async ({
+      page,
+    }) => {
+      for (const width of [390, 549]) {
+        await page.setViewportSize({ width, height: 844 });
+        await page.goto(config.path);
+
+        // Pricing slider
+        const pricingSlider = page.locator(`#${config.pricingSliderId}`);
+        await expect(pricingSlider).toBeVisible();
+
+        const pricingSlides = pricingSlider.locator('.flickity-slider > *');
+        await expect(pricingSlides).toHaveCount(3);
+
+        // Slider wrap verification
+        await expect(pricingSlides.nth(0)).toHaveClass(/is-selected/);
+        await pricingSlider.locator('.flickity-prev-next-button.previous').dispatchEvent('click');
+        await expect(pricingSlides.nth(2)).toHaveClass(/is-selected/);
+        await pricingSlider.locator('.flickity-prev-next-button.next').dispatchEvent('click');
+        await expect(pricingSlides.nth(0)).toHaveClass(/is-selected/);
+
+        // Why-choose-us mobile slider
+        const whySlider = page.locator(`#${config.whyChooseUsSliderId}`);
+        await expect(whySlider).toBeVisible();
+        const whySlides = whySlider.locator('.flickity-slider > .row');
+        await expect(whySlides).toHaveCount(3);
+
+        // No horizontal page scroll
+        const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+        const innerWidth = await page.evaluate(() => window.innerWidth);
+        expect(scrollWidth, `${width}px scrollWidth <= innerWidth`).toBeLessThanOrEqual(innerWidth);
+      }
+
+      // At >= 550px: sliders hidden, grids visible
+      await page.setViewportSize({ width: 550, height: 844 });
+      await page.goto(config.path);
+      await expect(page.locator(`#${config.pricingSliderId}`)).toBeHidden();
+      await expect(page.locator(`#${config.whyChooseUsSliderId}`)).toBeHidden();
+    });
+  }
+});
+

@@ -428,6 +428,8 @@ export interface SectionCopy {
   title: string;
   /** Source `<br>` line breaks of `title`, set only when the heading has more than one line. */
   titleLines?: string[];
+  /** Source `<br>` line breaks of a separate mobile-only (`show-for-small`) heading, when they differ from `titleLines`. */
+  mobileTitleLines?: string[];
   description?: string;
 }
 

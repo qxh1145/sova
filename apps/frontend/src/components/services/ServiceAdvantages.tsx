@@ -12,17 +12,21 @@ export interface ServiceAdvantageCardIds {
 export interface ServiceAdvantagesIds {
   section: string;
   /** 30px gap above the heading row. */
-  topGap: string;
+  topGap?: string;
   topGapClass?: string;
   headingRow: string;
+  headingRowClass?: string;
   headingCol: string;
-  headingText: string;
+  headingColClass?: string;
+  headingText?: string;
+  desktopHeadingText?: string;
+  mobileHeadingText?: string;
   headingTag?: 'h2' | 'h3';
   emptyCol?: string;
   subtitleCol?: string;
   subtitleText?: string;
-  decoCol: string;
-  decoImg: string;
+  decoCol?: string;
+  decoImg?: string;
   bodyRow: string;
   photoCol?: string;
   photoImg?: string;
@@ -33,8 +37,13 @@ export interface ServiceAdvantagesIds {
   videoTextBox?: string;
   cardsCol: string;
   cardsRow: string;
+  cardsRowClass?: string;
+  cardsColClass?: string;
+  /** `website`: icon box + separate gap/body siblings (website source markup). */
+  cardVariant?: 'website';
   cards: ServiceAdvantageCardIds[];
 }
+
 
 const SEO_PHOTO_SRCSET =
   '/wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash.webp 1000w, /wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-320x400.webp 320w, /wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-640x800.webp 640w, /wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-768x960.webp 768w';
@@ -225,6 +234,105 @@ export const SERVICE_ADVANTAGES_IDS_BRANDING_EN: ServiceAdvantagesIds = {
   ],
 };
 
+export const SERVICE_ADVANTAGES_IDS_WEBSITE_VI: ServiceAdvantagesIds = {
+  section: 'section_949181512',
+  headingRow: 'row-2285635',
+  headingRowClass: 'row',
+  headingCol: 'col-1880356826',
+  headingColClass: 'col medium-7 small-12 large-7',
+  desktopHeadingText: 'text-2948944799',
+  mobileHeadingText: 'text-3235701455',
+  bodyRow: 'row-1560373545',
+  videoCol: 'col-1025921237',
+  videoBanner: 'banner-644070803',
+  videoTextBox: 'text-box-269891299',
+  cardsCol: 'col-1342073919',
+  cardsRow: 'row-2045382502',
+  cardsRowClass: 'row align-equal row_ptien',
+  cardsColClass: 'col medium-6 small-12 large-6',
+  cardVariant: 'website',
+  cards: [
+    {
+      col: 'col-1331061223',
+      iconWidth: 70,
+      titleText: 'text-1287138822',
+      gap: 'gap-1932181810',
+      bodyText: 'text-3258247748',
+    },
+    {
+      col: 'col-1978096326',
+      iconWidth: 70,
+      titleText: 'text-2781562584',
+      gap: 'gap-189281138',
+      bodyText: 'text-3590107780',
+    },
+    {
+      col: 'col-406556557',
+      iconWidth: 70,
+      titleText: 'text-1263260627',
+      gap: 'gap-645067529',
+      bodyText: 'text-2104520649',
+    },
+    {
+      col: 'col-975033032',
+      iconWidth: 70,
+      titleText: 'text-2030508387',
+      gap: 'gap-1123327146',
+      bodyText: 'text-4128536957',
+    },
+  ],
+};
+
+export const SERVICE_ADVANTAGES_IDS_WEBSITE_EN: ServiceAdvantagesIds = {
+  section: 'section_1040334430',
+  headingRow: 'row-1059151307',
+  headingRowClass: 'row',
+  headingCol: 'col-1406916647',
+  headingColClass: 'col medium-7 small-12 large-7',
+  desktopHeadingText: 'text-1424794342',
+  mobileHeadingText: 'text-2812727029',
+  bodyRow: 'row-606912823',
+  videoCol: 'col-539783114',
+  videoBanner: 'banner-2133342878',
+  videoTextBox: 'text-box-1885850864',
+  cardsCol: 'col-304003918',
+  cardsRow: 'row-850357972',
+  cardsRowClass: 'row align-equal row_ptien',
+  cardsColClass: 'col medium-6 small-12 large-6',
+  cardVariant: 'website',
+  cards: [
+    {
+      col: 'col-1050488050',
+      iconWidth: 70,
+      titleText: 'text-2640228091',
+      gap: 'gap-535267302',
+      bodyText: 'text-378822190',
+    },
+    {
+      col: 'col-1117407955',
+      iconWidth: 70,
+      titleText: 'text-247861760',
+      gap: 'gap-836444618',
+      bodyText: 'text-3756345624',
+    },
+    {
+      col: 'col-1824994730',
+      iconWidth: 70,
+      titleText: 'text-1577618236',
+      gap: 'gap-1687219844',
+      bodyText: 'text-2514668345',
+    },
+    {
+      col: 'col-1005804488',
+      iconWidth: 70,
+      titleText: 'text-1269864916',
+      gap: 'gap-2026136659',
+      bodyText: 'text-561887912',
+    },
+  ],
+};
+
+
 export interface ServiceAdvantagesProps {
   copy: SectionCopy;
   benefits: Feature[];
@@ -253,13 +361,15 @@ export function ServiceAdvantages({
       <div className="section-bg fill" />
 
       <div className="section-content relative">
-        <div
-          id={ids.topGap}
-          className={ids.topGapClass ?? 'gap-element clearfix'}
-          style={{ display: 'block', height: 'auto' }}
-        />
-        <div className="row align-bottom" id={ids.headingRow}>
-          <div id={ids.headingCol} className="col medium-6 small-12 large-6">
+        {ids.topGap && (
+          <div
+            id={ids.topGap}
+            className={ids.topGapClass ?? 'gap-element clearfix'}
+            style={{ display: 'block', height: 'auto' }}
+          />
+        )}
+        <div className={ids.headingRowClass ?? 'row align-bottom'} id={ids.headingRow}>
+          <div id={ids.headingCol} className={ids.headingColClass ?? 'col medium-6 small-12 large-6'}>
             <div className="col-inner">
               {copy.eyebrow && (
                 <p>
@@ -268,21 +378,52 @@ export function ServiceAdvantages({
                   </strong>
                 </p>
               )}
-              <div id={ids.headingText} className="text">
-                {ids.headingTag === 'h2' ? (
-                  <h2>{copy.title}</h2>
-                ) : ids.headingTag === 'h3' ? (
-                  <h3>
-                    <strong>{copy.title}</strong>
-                  </h3>
-                ) : isEn ? (
-                  <h3>
-                    <strong>{copy.title}</strong>
-                  </h3>
-                ) : (
-                  <h2>{copy.title}</h2>
-                )}
-              </div>
+              {ids.desktopHeadingText && ids.mobileHeadingText ? (
+                <>
+                  <div id={ids.desktopHeadingText} className="text hide-for-small">
+                    <h2>
+                      {copy.titleLines && copy.titleLines.length > 1 ? (
+                        copy.titleLines.map((line, idx) => (
+                          <span key={idx}>
+                            {line}
+                            {idx < copy.titleLines!.length - 1 && <br />}
+                          </span>
+                        ))
+                      ) : (
+                        copy.title
+                      )}
+                    </h2>
+                  </div>
+                  <div id={ids.mobileHeadingText} className="text show-for-small">
+                    <h2>
+                      {copy.mobileTitleLines
+                        ? copy.mobileTitleLines.map((line, idx) => (
+                            <span key={idx}>
+                              {line}
+                              {idx < copy.mobileTitleLines!.length - 1 && <br />}
+                            </span>
+                          ))
+                        : copy.title}
+                    </h2>
+                  </div>
+                </>
+              ) : (
+                <div id={ids.headingText} className="text">
+                  {ids.headingTag === 'h2' ? (
+                    <h2>{copy.title}</h2>
+                  ) : ids.headingTag === 'h3' ? (
+                    <h3>
+                      <strong>{copy.title}</strong>
+                    </h3>
+                  ) : isEn ? (
+                    <h3>
+                      <strong>{copy.title}</strong>
+                    </h3>
+                  ) : (
+                    <h2>{copy.title}</h2>
+                  )}
+                </div>
+              )}
               <div
                 className="is-divider divider clearfix"
                 style={{
@@ -293,6 +434,7 @@ export function ServiceAdvantages({
               />
             </div>
           </div>
+
 
           {ids.subtitleCol && ids.subtitleText && copy.description ? (
             <div id={ids.subtitleCol} className="col medium-6 small-12 large-6">
@@ -316,29 +458,31 @@ export function ServiceAdvantages({
             )
           )}
 
-          <div
-            id={ids.decoCol}
-            className="col hide-for-small medium-2 small-12 large-2"
-          >
-            <div className="col-inner">
-              {deco && (
-                <div
-                  className="img has-hover x md-x lg-x y md-y lg-y"
-                  id={ids.decoImg}
-                >
-                  <div className="img-inner dark">
-                    <img
-                      decoding="async"
-                      src={deco.src}
-                      className="attachment-original size-original"
-                      alt={deco.alt ?? ''}
-                      loading="lazy"
-                    />
+          {ids.decoCol && (
+            <div
+              id={ids.decoCol}
+              className="col hide-for-small medium-2 small-12 large-2"
+            >
+              <div className="col-inner">
+                {deco && (
+                  <div
+                    className="img has-hover x md-x lg-x y md-y lg-y"
+                    id={ids.decoImg}
+                  >
+                    <div className="img-inner dark">
+                      <img
+                        decoding="async"
+                        src={deco.src}
+                        className="attachment-original size-original"
+                        alt={deco.alt ?? ''}
+                        loading="lazy"
+                      />
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="row" id={ids.bodyRow}>
@@ -410,17 +554,78 @@ export function ServiceAdvantages({
 
           <div id={ids.cardsCol} className="col medium-6 small-12 large-6">
             <div className="col-inner">
-              <div className="row align-equal" id={ids.cardsRow}>
+              <div className={ids.cardsRowClass ?? 'row align-equal'} id={ids.cardsRow}>
                 {benefits.slice(0, 4).map((benefit, idx) => {
                   const cardIds = ids.cards[idx];
                   const icon = benefit.iconId ? iconMap.get(benefit.iconId) : null;
                   const iconWidth = cardIds?.iconWidth ?? 80;
+                  const isWebsiteCard = ids.cardVariant === 'website';
+
+                  if (isWebsiteCard) {
+                    return (
+                      <div
+                        key={benefit.id}
+                        id={cardIds?.col}
+                        className={ids.cardsColClass ?? 'col medium-6 small-12 large-6'}
+                      >
+                        <div
+                          className="col-inner"
+                          style={{ backgroundColor: 'rgba(66, 66, 77, 0.259)' }}
+                        >
+                          <div
+                            className="icon-box featured-box icon-box-left text-left"
+                            style={{ margin: '0px 0px 0px 0px' }}
+                          >
+                            <div className="icon-box-img" style={{ width: iconWidth }}>
+                              <div className="icon">
+                                <div className="icon-inner">
+                                  {icon && (
+                                    <img
+                                      decoding="async"
+                                      width={icon.width ?? 1}
+                                      height={icon.height ?? 1}
+                                      src={icon.src}
+                                      className="attachment-medium size-medium"
+                                      alt={icon.alt ?? ''}
+                                      loading="lazy"
+                                    />
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="icon-box-text last-reset">
+                              <div id={cardIds?.titleText} className="text">
+                                <h3>
+                                  <span style={{ color: '#0065df' }}>
+                                    {benefit.title}
+                                    <br />
+                                  </span>
+                                </h3>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            id={cardIds?.gap}
+                            className="gap-element clearfix"
+                            style={{ display: 'block', height: 'auto' }}
+                          />
+                          <div id={cardIds?.bodyText} className="text">
+                            <p style={{ fontSize: '16px' }}>
+                              <span style={{ fontSize: '100%' }}>
+                                <RichText content={benefit.body} />
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
 
                   return (
                     <div
                       key={benefit.id}
                       id={cardIds?.col}
-                      className="col small-12 large-12"
+                      className={ids.cardsColClass ?? 'col small-12 large-12'}
                     >
                       <div
                         className="col-inner"
@@ -475,3 +680,4 @@ export function ServiceAdvantages({
     </section>
   );
 }
+

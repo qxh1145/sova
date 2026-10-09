@@ -8,6 +8,8 @@ export interface PageHeroIds {
   textBox: string;
   /** Source text-box vertical position class at small widths; defaults to `y15`. */
   textBoxY?: string;
+  /** Source text-box vertical position class at medium/large widths; defaults to `md-y50 lg-y50`. */
+  textBoxMdLgY?: string;
   row: string;
   leftCol: string;
   /** Gap before the breadcrumb (hosting). */
@@ -37,7 +39,10 @@ export interface PageHeroIds {
   rightCol: string;
   imageWrapper: string;
   bottomGap?: string;
+  /** Classes on bottomGap element; defaults to `gap-element clearfix`. */
+  bottomGapClass?: string;
 }
+
 
 export interface PageHeroProps {
   hero: HeroContent;
@@ -81,7 +86,7 @@ export function PageHero({
             <div className="fill banner-link" />
             <div
               id={ids.textBox}
-              className={`text-box banner-layer x50 md-x50 lg-x50 ${ids.textBoxY ?? 'y15'} md-y50 lg-y50 res-text`}
+              className={`text-box banner-layer x50 md-x50 lg-x50 ${ids.textBoxY ?? 'y15'} ${ids.textBoxMdLgY ?? 'md-y50 lg-y50'} res-text`}
             >
               <div className="text-box-content text dark">
                 <div className="text-inner text-center">
@@ -234,7 +239,7 @@ export function PageHero({
       {ids.bottomGap && (
         <div
           id={ids.bottomGap}
-          className="gap-element clearfix"
+          className={ids.bottomGapClass ?? 'gap-element clearfix'}
           style={{ display: 'block', height: 'auto' }}
         />
       )}
