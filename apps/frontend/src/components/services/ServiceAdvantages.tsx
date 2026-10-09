@@ -6,23 +6,31 @@ export interface ServiceAdvantageCardIds {
   titleText: string;
   gap: string;
   bodyText: string;
+  iconWidth?: number;
 }
 
 export interface ServiceAdvantagesIds {
   section: string;
   /** 30px gap above the heading row. */
   topGap: string;
+  topGapClass?: string;
   headingRow: string;
   headingCol: string;
   headingText: string;
-  emptyCol: string;
+  headingTag?: 'h2' | 'h3';
+  emptyCol?: string;
+  subtitleCol?: string;
+  subtitleText?: string;
   decoCol: string;
   decoImg: string;
   bodyRow: string;
-  photoCol: string;
-  photoImg: string;
+  photoCol?: string;
+  photoImg?: string;
   /** Source `srcset` of the photo `<img>`; omitted when the source has none. */
   photoSrcSet?: string;
+  videoCol?: string;
+  videoBanner?: string;
+  videoTextBox?: string;
   cardsCol: string;
   cardsRow: string;
   cards: ServiceAdvantageCardIds[];
@@ -117,10 +125,111 @@ export const SERVICE_ADVANTAGES_IDS_SEO_EN: ServiceAdvantagesIds = {
   ],
 };
 
+export const SERVICE_ADVANTAGES_IDS_BRANDING_VI: ServiceAdvantagesIds = {
+  section: 'section_1240484658',
+  topGap: 'gap-1534842904',
+  topGapClass: 'gap-element clearfix hide-for-small',
+  headingRow: 'row-1559929790',
+  headingCol: 'col-855511650',
+  headingText: 'text-2661005078',
+  headingTag: 'h2',
+  subtitleCol: 'col-1569647061',
+  subtitleText: 'text-1581880995',
+  decoCol: 'col-1326286860',
+  decoImg: 'image_1727408718',
+  bodyRow: 'row-436213924',
+  videoCol: 'col-604455658',
+  videoBanner: 'banner-1710603312',
+  videoTextBox: 'text-box-30098105',
+  cardsCol: 'col-1005688820',
+  cardsRow: 'row-866241373',
+  cards: [
+    {
+      col: 'col-2137141414',
+      iconWidth: 80,
+      titleText: 'text-3883307467',
+      gap: 'gap-1207970856',
+      bodyText: 'text-1089134732',
+    },
+    {
+      col: 'col-1449850737',
+      iconWidth: 79,
+      titleText: 'text-3306712038',
+      gap: 'gap-714157089',
+      bodyText: 'text-966016600',
+    },
+    {
+      col: 'col-1623933965',
+      iconWidth: 80,
+      titleText: 'text-2408829993',
+      gap: 'gap-2110858663',
+      bodyText: 'text-3207918632',
+    },
+    {
+      col: 'col-1611261011',
+      iconWidth: 80,
+      titleText: 'text-3397838642',
+      gap: 'gap-1727674366',
+      bodyText: 'text-1221595570',
+    },
+  ],
+};
+
+export const SERVICE_ADVANTAGES_IDS_BRANDING_EN: ServiceAdvantagesIds = {
+  section: 'section_1111233762',
+  topGap: 'gap-313452462',
+  topGapClass: 'gap-element clearfix hide-for-small',
+  headingRow: 'row-1898328253',
+  headingCol: 'col-54327341',
+  headingText: 'text-3737092904',
+  headingTag: 'h2',
+  subtitleCol: 'col-1767649827',
+  subtitleText: 'text-3021092962',
+  decoCol: 'col-1653993460',
+  decoImg: 'image_1583733878',
+  bodyRow: 'row-1635133784',
+  videoCol: 'col-1059066968',
+  videoBanner: 'banner-1221640554',
+  videoTextBox: 'text-box-955101577',
+  cardsCol: 'col-439343163',
+  cardsRow: 'row-264186657',
+  cards: [
+    {
+      col: 'col-815265702',
+      iconWidth: 80,
+      titleText: 'text-459149871',
+      gap: 'gap-1047647397',
+      bodyText: 'text-3193686016',
+    },
+    {
+      col: 'col-2035926715',
+      iconWidth: 79,
+      titleText: 'text-607120311',
+      gap: 'gap-1564692039',
+      bodyText: 'text-2218327683',
+    },
+    {
+      col: 'col-1754483910',
+      iconWidth: 80,
+      titleText: 'text-767047930',
+      gap: 'gap-1120019101',
+      bodyText: 'text-2030543088',
+    },
+    {
+      col: 'col-1163761657',
+      iconWidth: 80,
+      titleText: 'text-3466760265',
+      gap: 'gap-2016256232',
+      bodyText: 'text-3201549338',
+    },
+  ],
+};
+
 export interface ServiceAdvantagesProps {
   copy: SectionCopy;
   benefits: Feature[];
   photo?: AssetRef | null;
+  video?: AssetRef | null;
   deco?: AssetRef | null;
   icons?: AssetRef[];
   ids: ServiceAdvantagesIds;
@@ -131,6 +240,7 @@ export function ServiceAdvantages({
   copy,
   benefits,
   photo,
+  video,
   deco,
   icons = [],
   ids,
@@ -145,7 +255,7 @@ export function ServiceAdvantages({
       <div className="section-content relative">
         <div
           id={ids.topGap}
-          className="gap-element clearfix"
+          className={ids.topGapClass ?? 'gap-element clearfix'}
           style={{ display: 'block', height: 'auto' }}
         />
         <div className="row align-bottom" id={ids.headingRow}>
@@ -159,7 +269,13 @@ export function ServiceAdvantages({
                 </p>
               )}
               <div id={ids.headingText} className="text">
-                {isEn ? (
+                {ids.headingTag === 'h2' ? (
+                  <h2>{copy.title}</h2>
+                ) : ids.headingTag === 'h3' ? (
+                  <h3>
+                    <strong>{copy.title}</strong>
+                  </h3>
+                ) : isEn ? (
                   <h3>
                     <strong>{copy.title}</strong>
                   </h3>
@@ -178,12 +294,27 @@ export function ServiceAdvantages({
             </div>
           </div>
 
-          <div
-            id={ids.emptyCol}
-            className="col hide-for-small medium-4 small-12 large-4"
-          >
-            <div className="col-inner" />
-          </div>
+          {ids.subtitleCol && ids.subtitleText && copy.description ? (
+            <div id={ids.subtitleCol} className="col medium-6 small-12 large-6">
+              <div className="col-inner">
+                <div id={ids.subtitleText} className="text">
+                  <p>
+                    {copy.description}
+                    <br />
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            ids.emptyCol && (
+              <div
+                id={ids.emptyCol}
+                className="col hide-for-small medium-4 small-12 large-4"
+              >
+                <div className="col-inner" />
+              </div>
+            )
+          )}
 
           <div
             id={ids.decoCol}
@@ -211,30 +342,71 @@ export function ServiceAdvantages({
         </div>
 
         <div className="row" id={ids.bodyRow}>
-          <div id={ids.photoCol} className="col medium-6 small-12 large-6">
-            <div className="col-inner">
-              {photo && (
-                <div
-                  className="img has-hover x md-x lg-x y md-y lg-y"
-                  id={ids.photoImg}
-                >
-                  <div className="img-inner dark">
-                    <img
-                      decoding="async"
-                      width={photo.width ?? 1000}
-                      height={photo.height ?? 1250}
-                      src={photo.src}
-                      className="attachment-original size-original"
-                      alt={photo.alt ?? ''}
-                      srcSet={ids.photoSrcSet}
-                      sizes={ids.photoSrcSet && 'auto, (max-width: 1000px) 100vw, 1000px'}
-                      loading="lazy"
-                    />
+          {ids.videoCol && ids.videoBanner && (
+            <div id={ids.videoCol} className="col medium-6 small-12 large-6">
+              <div className="col-inner">
+                <div className="banner has-hover has-video" id={ids.videoBanner}>
+                  <div className="banner-inner fill">
+                    <div className="banner-bg fill">
+                      <div className="video-overlay no-click fill visible" />
+                      {video && (
+                        <video
+                          className="video-bg fill visible"
+                          preload="auto"
+                          playsInline
+                          autoPlay
+                          muted
+                          loop
+                        >
+                          <source src={video.src} type="video/mp4" />
+                        </video>
+                      )}
+                    </div>
+                    <div className="banner-layers container">
+                      <div className="fill banner-link" />
+                      {ids.videoTextBox && (
+                        <div
+                          id={ids.videoTextBox}
+                          className="text-box banner-layer x50 md-x50 lg-x50 y50 md-y50 lg-y50 res-text"
+                        >
+                          <div className="text-box-content text dark">
+                            <div className="text-inner text-center" />
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
-          </div>
+          )}
+
+          {ids.photoCol && (
+            <div id={ids.photoCol} className="col medium-6 small-12 large-6">
+              <div className="col-inner">
+                {photo && (
+                  <div
+                    className="img has-hover x md-x lg-x y md-y lg-y"
+                    id={ids.photoImg}
+                  >
+                    <div className="img-inner dark">
+                      <img
+                        decoding="async"
+                        width={photo.width ?? 1000}
+                        height={photo.height ?? 1250}
+                        src={photo.src}
+                        className="attachment-original size-original"
+                        alt={photo.alt ?? ''}
+                        srcSet={ids.photoSrcSet}
+                        sizes={ids.photoSrcSet && 'auto, (max-width: 1000px) 100vw, 1000px'}
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           <div id={ids.cardsCol} className="col medium-6 small-12 large-6">
             <div className="col-inner">
@@ -242,6 +414,7 @@ export function ServiceAdvantages({
                 {benefits.slice(0, 4).map((benefit, idx) => {
                   const cardIds = ids.cards[idx];
                   const icon = benefit.iconId ? iconMap.get(benefit.iconId) : null;
+                  const iconWidth = cardIds?.iconWidth ?? 80;
 
                   return (
                     <div
@@ -257,7 +430,7 @@ export function ServiceAdvantages({
                           className="icon-box featured-box icon-center-new icon-box-left text-left"
                           style={{ margin: '0px 0px 0px 0px' }}
                         >
-                          <div className="icon-box-img" style={{ width: 80 }}>
+                          <div className="icon-box-img" style={{ width: iconWidth }}>
                             <div className="icon">
                               <div className="icon-inner">
                                 {icon && (
@@ -276,7 +449,7 @@ export function ServiceAdvantages({
                           </div>
                           <div className="icon-box-text last-reset">
                             <div id={cardIds?.titleText} className="text">
-                              <h3 style={{ fontSize: idx === 0 ? 23 : 24 }}>
+                              <h3 style={{ fontSize: cardIds?.iconWidth ? 24 : idx === 0 ? 23 : 24 }}>
                                 {benefit.title}
                               </h3>
                             </div>

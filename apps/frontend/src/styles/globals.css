@@ -118,7 +118,20 @@ html.has-custom-cursor .cursor-ring {
 #text-1253327573 h2,
 #text-2566137859 h2,
 #text-4120876264 h2,
-#text-3433546042 h2 {
+#text-3433546042 h2,
+/* Branding package card titles 1-3 (grid + slider, VI + EN): same source inline rule; card 4 has none. */
+#text-416182715 h3,
+#text-3561662835 h3,
+#text-2769390199 h3,
+#text-468364383 h3,
+#text-230387822 h3,
+#text-4183536390 h3,
+#text-1087990166 h3,
+#text-857844955 h3,
+#text-3557948308 h3,
+#text-1459112478 h3,
+#text-4105864399 h3,
+#text-933025357 h3 {
   font-family: Poppins, sans-serif !important;
 }
 
