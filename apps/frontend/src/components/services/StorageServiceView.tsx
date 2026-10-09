@@ -1,11 +1,11 @@
 import type { Locale, RouteEntry } from '@/types/content';
 import type { ServiceAssets, ServicePage } from '@/lib/queries/services';
 import { pathForRouteId } from '@/lib/routes';
+import { PageHero } from '@/components/hero/PageHero';
 import {
-  ServiceHero,
   SERVICE_HERO_IDS_STORAGE_EN,
   SERVICE_HERO_IDS_STORAGE_VI,
-} from './ServiceHero';
+} from './serviceHeroIds';
 import {
   StorageOfferings,
   STORAGE_OFFERINGS_IDS_EN,
@@ -82,7 +82,7 @@ export function StorageServiceView({
   return (
     <main id="main">
       {/* 1. Service Hero */}
-      <ServiceHero
+      <PageHero
         hero={service.hero}
         heroImage={assets.heroImage}
         bgImage={assets.heroBgImage}
