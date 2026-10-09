@@ -12,6 +12,8 @@ export interface PageHeroIds {
   leftCol: string;
   /** Gap before the breadcrumb (hosting). */
   topGap?: string;
+  /** Classes on topGap element; defaults to `gap-element clearfix`. */
+  topGapClass?: string;
   breadcrumbText?: string;
   /** `show-for-small` gap after the breadcrumb (VPS). */
   breadcrumbGap?: string;
@@ -43,6 +45,8 @@ export interface PageHeroProps {
   bgImage?: AssetRef | null;
   ids: PageHeroIds;
   bannerClass?: string;
+  /** Optional icon to render inside the CTA button (e.g. Vector-Stroke arrow). */
+  ctaIcon?: AssetRef | null;
 }
 
 export function PageHero({
@@ -51,6 +55,7 @@ export function PageHero({
   bgImage,
   ids,
   bannerClass = 'banner-service',
+  ctaIcon,
 }: PageHeroProps) {
   const { breadcrumb } = hero;
 
@@ -86,7 +91,7 @@ export function PageHero({
                         {ids.topGap && (
                           <div
                             id={ids.topGap}
-                            className="gap-element clearfix"
+                            className={ids.topGapClass ?? 'gap-element clearfix'}
                             style={{ display: 'block', height: 'auto' }}
                           />
                         )}
@@ -175,11 +180,26 @@ export function PageHero({
                             <p>
                               <Link className="but-lh" href={hero.cta.href}>
                                 {hero.cta.label}
+                                {ctaIcon && (
+                                  <>
+                                    {'\u00a0\u00a0'}
+                                    <img
+                                      decoding="async"
+                                      className="alignnone wp-image-29 size-thumbnail"
+                                      role="img"
+                                      src={ctaIcon.src}
+                                      alt={ctaIcon.alt ?? ''}
+                                      width={ctaIcon.width ?? 15}
+                                      height={ctaIcon.height ?? 15}
+                                    />
+                                  </>
+                                )}
                               </Link>
                               <br />
                             </p>
                           </div>
                         )}
+
                       </div>
                     </div>
 

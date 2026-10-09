@@ -88,12 +88,19 @@ export interface Service extends LocalizedIdentity {
   pricingId?: EntityId;
   /** Background image of the benefits icon-card section (hosting/VPS `ss-ndv-seo`). */
   benefitsBgImageId?: EntityId;
+  /** Photo in the advantages section (SEO `arthur-osipyan`). */
+  advantagesPhotoId?: EntityId;
+  /** Decorative graphic in the advantages heading row (SEO `Deco-1-6.svg`). */
+  advantagesDecoId?: EntityId;
+  /** Background image of the offerings section (SEO `b64598d7e18308083c456d32c69bae66.webp`). */
+  offeringsBgImageId?: EntityId;
   seo: SEO;
   /** Why-choose-us (website/mobile), packages (SEO/branding), hub summaries (storage); else []. */
   offerings: OfferingPanel[];
   /** Section headings; `contact` is the website form copy. */
   sectionCopy: Partial<Record<ServiceSection, SectionCopy>>;
 }
+
 
 export type ServiceSection =
   'intro' | 'benefits' | 'offerings' | 'pricing' | 'projects' | 'testimonials' | 'faq' | 'contact';
@@ -102,11 +109,15 @@ export interface OfferingPanel {
   id: EntityId;
   title: string;
   slideTitle?: string;
+  description?: string;
   content: RichContent;
   items?: string[];
   mediaId?: EntityId;
   cta?: { label: string; routeId: EntityId };
+  ctaHref?: { label: string; href: string };
 }
+
+
 
 export interface WebsiteContent {
   serviceId: EntityId;
