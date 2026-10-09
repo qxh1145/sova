@@ -1,5 +1,5 @@
 import type { ProjectListingPageData } from '@/lib/queries/projects';
-import { ServiceHero, type ServiceHeroIds } from '@/components/services/ServiceHero';
+import { PageHero, type PageHeroIds } from '@/components/hero/PageHero';
 import { ProjectCard, toCardData, categoryLabel } from './ProjectCard';
 import { ProjectFilters } from './ProjectFilters';
 import { ProjectGrid } from './ProjectGrid';
@@ -7,7 +7,7 @@ import { ProjectGrid } from './ProjectGrid';
 export interface ProjectArchiveIds {
   section: string;
   portfolio: string;
-  hero: ServiceHeroIds;
+  hero: PageHeroIds;
 }
 
 export interface ProjectArchiveViewProps extends ProjectListingPageData {
@@ -50,7 +50,7 @@ export function ProjectArchiveView({
           <div className="section-bg fill" />
           <div className="section-content relative">
             {settings?.hero && (
-              <ServiceHero
+              <PageHero
                 hero={settings.hero}
                 heroImage={heroImage}
                 bgImage={bgImage}
