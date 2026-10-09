@@ -712,6 +712,232 @@ test.describe('Storage service pages (Story 5.4)', () => {
       await expect(prevBtn).toBeEnabled();
       await expect(nextBtn).toBeEnabled();
     });
+
+    test('seo slider (slide_seo) wraps next and prev at 390px with both arrows enabled', async ({
+      page,
+    }) => {
+      await page.goto('/seo-tu-khoa-website/');
+      const slider = page.locator('.eras-table-price-slider.slide_seo');
+      await expect(slider).toBeVisible();
+
+      const prevBtn = slider.locator('.flickity-prev-next-button.previous');
+      const nextBtn = slider.locator('.flickity-prev-next-button.next');
+      const slides = slider.locator('.flickity-slider > .row');
+      const slideCount = await slides.count();
+      expect(slideCount).toBe(4);
+
+      // Both arrows stay enabled (DOM attribute check; elements have display:none on mobile per Flatsome CSS)
+      await expect(prevBtn).toBeAttached();
+      await expect(nextBtn).toBeAttached();
+      await expect(prevBtn).toBeEnabled();
+      await expect(nextBtn).toBeEnabled();
+
+      // Initially slide 0 is selected
+      await expect(slides.nth(0)).toHaveClass(/is-selected/);
+
+      // Prev on slide 0 goes to last slide (slide 3)
+      await prevBtn.dispatchEvent('click');
+      await expect(slides.nth(slideCount - 1)).toHaveClass(/is-selected/);
+      await expect(prevBtn).toBeEnabled();
+      await expect(nextBtn).toBeEnabled();
+
+      // Next on last slide wraps to slide 0
+      await nextBtn.dispatchEvent('click');
+      await expect(slides.nth(0)).toHaveClass(/is-selected/);
+      await expect(prevBtn).toBeEnabled();
+      await expect(nextBtn).toBeEnabled();
+    });
   });
+});
+
+const SEO_SERVICES_ROUTES = [
+  {
+    locale: 'vi',
+    path: '/seo-tu-khoa-website/',
+    sectionIds: [
+      'banner-1838497058',
+      'section_922596210',
+      'section_148064088',
+      'section_1443166173',
+      'section_994856196',
+      'section_1595200881',
+    ],
+    headingLines: ['Dịch vụ SEO TOP', 'từ khoá website'],
+    breadcrumb: 'Trang chủ / Dịch vụ / Seo từ khoá Website',
+    homeHref: '/',
+    homeLabel: 'Trang chủ',
+    breadcrumbId: 'text-639428615',
+    advantagesEyebrow: 'Dịch vụ SEO website',
+    advantagesTitle: 'Lợi thế khi chọn dịch vụ SEO của chúng tôi',
+    advantageTitles: [
+      'Tăng thứ hạng bền vững trên Google',
+      'Tối ưu SEO toàn diện (Onpage & Offpage)',
+      'Báo cáo & theo dõi minh bạch',
+      'Đội ngũ chuyên gia giàu kinh nghiệm',
+    ],
+    offeringsEyebrow: 'Những dịch vụ',
+    offeringsTitle: 'SEO top Google tại Sova',
+    packageTitles: [
+      'SEO ONPAGE',
+      'SEO OFFPAGE',
+      'CHĂM SÓC WEBSITE',
+      'CONTENT WRITER',
+    ],
+    faqCount: 8,
+  },
+  {
+    locale: 'en',
+    path: '/en/website-keyword-seo/',
+    sectionIds: [
+      'banner-1245691485',
+      'section_1367982414',
+      'section_1771281465',
+      'section_1303915883',
+      'section_1195289173',
+      'section_1520280801',
+    ],
+    headingLines: ['Top-Ranking', 'SEO Services'],
+    breadcrumb: 'Home / Services / Website keyword SEO',
+    homeHref: '/en/',
+    homeLabel: 'Home',
+    breadcrumbId: 'text-4167340980',
+    advantagesEyebrow: 'Website Keyword SEO',
+    advantagesTitle: 'Advantages of Choosing Our SEO Services',
+    advantageTitles: [
+      'Achieve Sustainable Google Rankings',
+      'Comprehensive SEO Optimization',
+      'Transparent Reporting & Monitoring',
+      'Experienced SEO Experts',
+    ],
+    offeringsEyebrow: 'Services',
+    offeringsTitle: 'SEO top Google at Sova',
+    packageTitles: [
+      'SEO ONPAGE',
+      'SEO OFFPAGE',
+      'WEBSITE MAINTENANCE',
+      'CONTENT WRITER',
+    ],
+    faqCount: 8,
+  },
+];
+
+test.describe('SEO Service Pages (Story 5)', () => {
+  for (const config of SEO_SERVICES_ROUTES) {
+    test(`Sections render in source order and structure on ${config.path}`, async ({ page }) => {
+      await page.goto(config.path);
+
+      // Section order verification inside main
+      const sectionIds = await page.evaluate(() =>
+        Array.from(
+          document.querySelectorAll('main#main > .banner, main#main > section'),
+          (el) => el.id,
+        ),
+      );
+      expect(sectionIds).toEqual(config.sectionIds);
+      await expectNoDuplicateIds(page);
+
+      // No tablist, video, or table
+      await expect(page.locator('[role=tablist]')).toHaveCount(0);
+      await expect(page.locator('main table')).toHaveCount(0);
+      await expect(page.locator('main video')).toHaveCount(0);
+
+      // Projects slot is present and empty ss-decor
+      const projectsSlot = page.locator(`#${config.sectionIds[3]}`);
+      await expect(projectsSlot).toHaveClass(/ss-decor/);
+
+      // H1 heading lines with typewriter
+      const h1 = page.locator('main h1');
+      await expect(h1).toHaveCount(1);
+      await expect(h1.locator('.typewriter')).toHaveText(config.headingLines);
+
+      // Hero breadcrumb
+      const breadcrumb = page.locator(`#${config.breadcrumbId}`);
+      await expect(breadcrumb).toContainText(config.breadcrumb);
+      await expect(
+        breadcrumb.getByRole('link', { name: config.homeLabel }),
+      ).toHaveAttribute('href', config.homeHref);
+
+      // Advantages section: 4 cards with titles
+      const advantagesSection = page.locator(`#${config.sectionIds[1]}`);
+      await expect(advantagesSection).toContainText(config.advantagesEyebrow);
+      await expect(
+        advantagesSection.locator(config.locale === 'en' ? 'h3' : 'h2').first(),
+      ).toHaveText(config.advantagesTitle);
+      const advantageCards = advantagesSection.locator('.row.align-equal > .col');
+      await expect(advantageCards).toHaveCount(4);
+      for (let i = 0; i < 4; i++) {
+        await expect(advantageCards.nth(i).locator('h3')).toHaveText(config.advantageTitles[i]);
+      }
+
+      // Package cards desktop grid: 4 package cards
+      const packagesSection = page.locator(`#${config.sectionIds[2]}`);
+      await expect(packagesSection).toContainText(config.offeringsEyebrow);
+      await expect(packagesSection.locator('.section-title h2, .col h2').first()).toContainText(
+        'SEO top Google',
+      );
+      const gridCards = packagesSection.locator('.eras-table-price > .col');
+      await expect(gridCards).toHaveCount(4);
+      for (let i = 0; i < 4; i++) {
+        await expect(gridCards.nth(i).locator('h2')).toHaveText(config.packageTitles[i]);
+      }
+
+      // Testimonials (3 slides)
+      await expect(
+        page.locator(`#${config.sectionIds[4]} .slide-kh .flickity-slider > *`),
+      ).toHaveCount(3);
+
+      // FAQ items count per locale (8 items, first open)
+      const faqSection = page.locator(`#${config.sectionIds[5]}`);
+      const faqItems = faqSection.locator('.accordion-item');
+      await expect(faqItems).toHaveCount(config.faqCount);
+      await expect(faqItems.first().locator('.accordion-title')).toHaveClass(/active/);
+
+      // A05 check on VI item 7: answer text contains literal </p
+      if (config.locale === 'vi') {
+        const item7Answer = faqItems.nth(6).locator('.accordion-inner');
+        await expect(item7Answer).toContainText('</p');
+      }
+    });
+
+    test(`Grid hidden and slider visible at mobile viewports with no page scroll on ${config.path}`, async ({
+      page,
+    }) => {
+      for (const width of [390, 549]) {
+        await page.setViewportSize({ width, height: 844 });
+        await page.goto(config.path);
+
+        const offerings = page.locator(`#${config.sectionIds[2]}`);
+        const grid = offerings.locator('.eras-table-price.hide-for-small');
+        const slider = offerings.locator('.eras-table-price-slider.slide_seo');
+
+        await expect(grid).toBeHidden();
+        await expect(slider).toBeVisible();
+
+        // 4 slides in carousel
+        const slides = slider.locator('.flickity-slider > .row');
+        await expect(slides).toHaveCount(4);
+        for (let i = 0; i < 4; i++) {
+          const slide = slides.nth(i);
+          await expect(slide.locator('h2')).toHaveText(config.packageTitles[i]);
+        }
+
+        // Carousel dots and arrows present
+        await expect(slider.locator('.flickity-page-dots')).toBeVisible();
+        await expect(slider.locator('.flickity-prev-next-button')).toHaveCount(2);
+
+        // No horizontal page scroll
+        const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+        const innerWidth = await page.evaluate(() => window.innerWidth);
+        expect(scrollWidth, `${width}px scrollWidth <= innerWidth`).toBeLessThanOrEqual(innerWidth);
+      }
+
+      // At >= 550px: slider hidden, grid visible
+      await page.setViewportSize({ width: 550, height: 844 });
+      await page.goto(config.path);
+      const offerings550 = page.locator(`#${config.sectionIds[2]}`);
+      await expect(offerings550.locator('.eras-table-price.hide-for-small')).toBeVisible();
+      await expect(offerings550.locator('.eras-table-price-slider.slide_seo')).toBeHidden();
+    });
+  }
 });
 

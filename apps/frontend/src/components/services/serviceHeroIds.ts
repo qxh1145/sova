@@ -183,3 +183,44 @@ export const SERVICE_HERO_IDS_STORAGE_EN: PageHeroIds = {
   rightCol: 'col-411984466',
   imageWrapper: 'image_1524550594',
 };
+
+export const SERVICE_HERO_IDS_SEO_VI: PageHeroIds = {
+  banner: 'banner-1838497058',
+  textBox: 'text-box-2017708642',
+  textBoxY: 'y10',
+  row: 'row-620429071',
+  leftCol: 'col-362953623',
+  topGap: 'gap-463430753',
+  topGapClass: 'gap-element clearfix show-for-small',
+  breadcrumbText: 'text-639428615',
+  headingText: 'text-3096357586',
+  gap1: 'gap-229851411',
+  descText: 'text-3159619336',
+  gap2: 'gap-1962667582',
+  gap2Class: 'gap-element clearfix hide-for-small',
+  ctaText: 'text-1784037823',
+  rightCol: 'col-1419552812',
+  imageWrapper: 'image_110661338',
+  bottomGap: 'gap-1019205224',
+};
+
+export const SERVICE_HERO_IDS_SEO_EN: PageHeroIds = {
+  banner: 'banner-1245691485',
+  textBox: 'text-box-799730452',
+  textBoxY: 'y10',
+  row: 'row-1781195901',
+  leftCol: 'col-1881840210',
+  topGap: 'gap-716151157',
+  topGapClass: 'gap-element clearfix show-for-small',
+  breadcrumbText: 'text-4167340980',
+  headingText: 'text-620377729',
+  gap1: 'gap-1928757431',
+  descText: 'text-766261375',
+  gap2: 'gap-1561844270',
+  gap2Class: 'gap-element clearfix hide-for-small',
+  ctaText: 'text-2349830623',
+  rightCol: 'col-1507959162',
+  imageWrapper: 'image_580160889',
+  bottomGap: 'gap-832751667',
+};
+

@@ -6560,4 +6560,83 @@ export const assets: AssetRef[] = [
     width: 652,
     height: 517,
   },
+  {
+    id: 'asset-358b4a1d92',
+    src: '/wp-content/uploads/2024/02/szfvsdbsdfbdf.webp',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'seo-tu-khoa-website/index.html', line: 628 },
+      { file: 'en/website-keyword-seo/index.html', line: 628 },
+    ],
+    width: 1920,
+    height: 895,
+  },
+  {
+    id: 'asset-82cc1b9e6c',
+    src: '/wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash.webp',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'seo-tu-khoa-website/index.html', line: 933 },
+      { file: 'en/website-keyword-seo/index.html', line: 933 },
+    ],
+    width: 1000,
+    height: 1250,
+  },
+  {
+    id: 'asset-d17ec3ffd1',
+    src: '/wp-content/uploads/2024/02/Vector-Stroke.svg',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'seo-tu-khoa-website/index.html', line: 730 },
+    ],
+    width: 15,
+    height: 15,
+  },
+  {
+    id: 'asset-837e9246aa',
+    src: '/wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-320x400.webp',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'seo-tu-khoa-website/index.html', line: 933 },
+      { file: 'en/website-keyword-seo/index.html', line: 933 },
+    ],
+    width: 320,
+    height: 400,
+  },
+  {
+    id: 'asset-fb99dce84d',
+    src: '/wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-640x800.webp',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'seo-tu-khoa-website/index.html', line: 933 },
+      { file: 'en/website-keyword-seo/index.html', line: 933 },
+    ],
+    width: 640,
+    height: 800,
+  },
+  {
+    id: 'asset-d6713659af',
+    src: '/wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-768x960.webp',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'seo-tu-khoa-website/index.html', line: 933 },
+      { file: 'en/website-keyword-seo/index.html', line: 933 },
+    ],
+    width: 768,
+    height: 960,
+  },
 ];
+
+
