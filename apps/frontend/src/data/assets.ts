@@ -6683,5 +6683,44 @@ export const assets: AssetRef[] = [
       { file: 'en/website-development/index.html', line: 2219 },
     ],
   },
+  {
+    id: 'asset-anh-nen-new-111',
+    src: '/wp-content/uploads/2025/04/anh-nen-new-111.webp',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'thiet-ke-website/index.html', line: 4188 },
+      { file: 'en/website-development/index.html', line: 4116 },
+    ],
+    width: 1920,
+    height: 1080,
+  },
+  {
+    id: 'asset-anh-nen-doc-111',
+    src: '/wp-content/uploads/2025/04/anh-nen-doc-111.webp',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'thiet-ke-website/index.html', line: 4424 },
+    ],
+    width: 1080,
+    height: 1920,
+  },
+  {
+    id: 'asset-anh-nen-doc-111-450x800',
+    src: '/wp-content/uploads/2025/04/anh-nen-doc-111-450x800.webp',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'en/website-development/index.html', line: 4323 },
+    ],
+    width: 450,
+    height: 800,
+  },
 ];
+
+
 

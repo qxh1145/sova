@@ -185,3 +185,50 @@ html.has-custom-cursor .cursor-ring {
   max-width: 100%;
 }
 
+/* Website consultation banner mobile styling (Story 5.8 / A06 decision) */
+@media (max-width: 549px) {
+  #banner-1813159824,
+  #banner-1313966365 {
+    padding-top: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  #banner-1813159824 .banner-inner,
+  #banner-1313966365 .banner-inner {
+    position: relative !important;
+    height: auto !important;
+  }
+  #banner-1813159824 .banner-layers,
+  #banner-1313966365 .banner-layers {
+    position: relative !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 40px 15px !important;
+  }
+  #banner-1813159824 .banner-layer,
+  #banner-1313966365 .banner-layer {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  #text-box-461418576 .text-inner,
+  #text-box-2108502950 .text-inner {
+    padding: 0 0 20px 0 !important;
+  }
+  #text-box-324172340 {
+    margin-bottom: 20px !important;
+  }
+  #text-box-1917404396 .text-inner,
+  #text-box-1136070934 .text-inner {
+    padding: 25px 20px !important;
+  }
+}
+
+
