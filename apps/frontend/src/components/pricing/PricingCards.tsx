@@ -31,6 +31,8 @@ export interface PricingCardsIds {
   gridRow: string;
   gridCards: PricingCardIds[];
   sliderWrapper: string;
+  /** EN source places the mobile slider after `</section>` instead of inside it. */
+  sliderOutsideSection?: boolean;
   sliderCards: PricingSlideIds[];
 }
 
@@ -236,6 +238,7 @@ export const PRICING_CARDS_IDS_VI: PricingCardsIds = {
 export const PRICING_CARDS_IDS_EN: PricingCardsIds = {
   section: 'section_1856214289',
   sectionClass: 'section',
+  sliderOutsideSection: true,
   headingRow: 'row-1651920418',
   headingCol: 'col-2087406719',
   eyebrowText: 'text-2535450801',
@@ -437,9 +440,7 @@ function renderCardName(plan: PricingPlan, isSlider: boolean) {
             {plan.recommended ? (
               <span style={{ color: '#0065df', fontSize: '140%' }}>{plan.price.displayText}</span>
             ) : (
-              <span style={{ fontSize: '140%' }}>
-                {plan.id.includes('professional') ? `+${plan.price.displayText}` : plan.price.displayText}
-              </span>
+              <span style={{ fontSize: '140%' }}>{plan.price.displayText}</span>
             )}
           </h3>
         </>
@@ -452,8 +453,6 @@ function renderCardName(plan: PricingPlan, isSlider: boolean) {
         <h3 style={{ fontSize: 30 }}>
           {plan.recommended ? (
             <span style={{ color: '#0065df' }}>{plan.price.displayText}</span>
-          ) : plan.id.includes('professional') ? (
-            `+${plan.price.displayText}`
           ) : (
             plan.price.displayText
           )}
@@ -678,8 +677,6 @@ export function PricingCards({
   ids,
   labels,
 }: PricingCardsProps) {
-  const isEn = ids.sliderWrapper === 'slider-1604990153';
-
   const headingContent = (
     <div className="row" id={ids.headingRow}>
       <div id={ids.headingCol} className="col small-12 large-12">
@@ -739,7 +736,7 @@ export function PricingCards({
     />
   );
 
-  if (isEn) {
+  if (ids.sliderOutsideSection) {
     return (
       <>
         <section className={ids.sectionClass ?? 'section'} id={ids.section}>

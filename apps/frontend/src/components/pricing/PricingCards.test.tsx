@@ -73,8 +73,19 @@ describe('PricingCards', () => {
     // No text_sale on EN
     expect(root.querySelectorAll('.text_sale')).toHaveLength(0);
 
-    // gia_giam prices present
-    expect(root.querySelectorAll('.gia_giam').length).toBeGreaterThan(0);
+    // Grid: original price, then discount price verbatim from data (no extra prefix)
+    const gridCards = root.querySelectorAll('#row-308766213 .col-logo-tke');
+    expect(gridCards.map((card) => card.querySelector('.gia_giam')?.text.trim())).toEqual(
+      enPricing.plans.map((plan) => plan.originalPrice?.displayText),
+    );
+    expect(
+      gridCards.map((card) => card.querySelector('.gia_giam + h3')?.text.trim()),
+    ).toEqual(enPricing.plans.map((plan) => plan.price?.displayText));
+    expect(
+      root
+        .querySelectorAll('#slider-1604990153 .gia_giam + h3')
+        .map((el) => el.text.trim()),
+    ).toEqual(enPricing.plans.map((plan) => plan.price?.displayText));
 
     // Slider sits outside section for EN
     expect(root.querySelector('#section_1856214289 #slider-1604990153')).toBeNull();

@@ -174,6 +174,7 @@ export const websiteServices: Service[] = [
         eyebrow: 'Thiết kế Website tại Sova',
         title: 'Phát triển lợi thế doanh nghiệp của bạn trên nền tảng số',
         titleLines: ['Phát triển lợi thế doanh nghiệp', 'của bạn trên nền tảng số'],
+        mobileTitleLines: ['Phát triển lợi thế', 'doanh nghiệp của bạn', 'trên nền tảng số'],
       },
       pricing: { eyebrow: 'Bảng giá dịch vụ', title: 'Thiết kế website' },
       offerings: {
