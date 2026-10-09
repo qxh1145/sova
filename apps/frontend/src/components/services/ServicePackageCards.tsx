@@ -306,8 +306,6 @@ function CardContent({
   subtractIcon?: AssetRef | null;
 }) {
   const items = offering.items ?? [];
-  const ctaLabel = offering.ctaHref?.label ?? offering.cta?.label ?? '';
-  const ctaHref = offering.ctaHref?.href ?? '#';
 
   return (
     <div className="col-inner">
@@ -320,9 +318,7 @@ function CardContent({
         }}
       />
       <div id={cardIds.titleText} className="text">
-        <h2 style={{ fontFamily: 'Poppins, sans-serif !important' }}>
-          {offering.title}
-        </h2>
+        <h2>{offering.title}</h2>
         {offering.description && (
           <p>
             {offering.description}
@@ -379,14 +375,14 @@ function CardContent({
         style={{ display: 'block', height: 'auto' }}
       />
 
-      {ctaLabel && (
+      {offering.ctaHref && (
         <p>
           <Link
             className="but-lh"
             style={{ borderRadius: 12 }}
-            href={ctaHref}
+            href={offering.ctaHref.href}
           >
-            {ctaLabel}
+            {offering.ctaHref.label}
           </Link>
         </p>
       )}
@@ -465,7 +461,7 @@ export function ServicePackageCards({
 
         {/* Desktop Grid: hide-for-small (hidden <= 549px) */}
         <div
-          className="row row-small row-ndv align-equal hover_gra eras-table-price hide-for-small" // business-text-ok: source CSS class name
+          className="row row-small row-ndv hover_gra eras-table-price hide-for-small" // business-text-ok: source CSS class name
           id={ids.gridRow}
         >
           {offerings.map((offering, idx) => {
@@ -493,7 +489,6 @@ export function ServicePackageCards({
           id={ids.sliderWrapper}
           className={`slider-wrapper relative ${sliderClass} eras-table-price-slider show-for-small`} // business-text-ok: source CSS class name
         >
-
           <Carousel
             align="start"
             loop

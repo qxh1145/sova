@@ -61,7 +61,6 @@ export const TESTIMONIAL_ART_IDS = {
 };
 
 export const SUBTRACT_ICON_ID = 'asset-d68ffd5723';
-export const CTA_ARROW_ICON_ID = 'asset-d17ec3ffd1';
 
 /**
  * Resolves all assets required for a service page in parallel (hero, benefits, offerings, testimonials).
@@ -73,6 +72,7 @@ export async function getServiceAssets(
   const { service, testimonials } = page;
   const heroImageId = service.hero.imageId;
   const heroBgImageId = service.hero.bgImageId;
+  const heroCtaIconId = service.hero.ctaIconId;
   const benefitsBgImageId = service.benefitsBgImageId;
   const advantagesPhotoId = service.advantagesPhotoId;
   const advantagesDecoId = service.advantagesDecoId;
@@ -109,9 +109,7 @@ export async function getServiceAssets(
     advantagesPhotoId ? repository.getAssets([advantagesPhotoId]) : Promise.resolve([]),
     advantagesDecoId ? repository.getAssets([advantagesDecoId]) : Promise.resolve([]),
     offeringsBgImageId ? repository.getAssets([offeringsBgImageId]) : Promise.resolve([]),
-    service.locale === 'vi' && service.key === 'seo'
-      ? repository.getAssets([CTA_ARROW_ICON_ID])
-      : Promise.resolve([]),
+    heroCtaIconId ? repository.getAssets([heroCtaIconId]) : Promise.resolve([]),
     videoId ? repository.getAssets([videoId]) : Promise.resolve([]),
     benefitIconIds.length ? repository.getAssets(benefitIconIds) : Promise.resolve([]),
     offeringMediaIds.length ? repository.getAssets(offeringMediaIds) : Promise.resolve([]),
@@ -147,7 +145,6 @@ export async function getServiceAssets(
     testimonialArt: { photo, quoteIcon, line },
   };
 }
-
 
 /**
  * A service joined to its FAQs, testimonials, featured projects and pricing; null when the service is

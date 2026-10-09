@@ -65,6 +65,8 @@ export interface HeroContent {
   bgImageId?: EntityId;
   videoId?: EntityId;
   cta?: LinkModel;
+  /** Arrow icon after the CTA label (SEO VI `2024/02/Vector-Stroke.svg`). */
+  ctaIconId?: EntityId;
   breadcrumb?: { label: string; href?: string }[];
 }
 
@@ -101,7 +103,6 @@ export interface Service extends LocalizedIdentity {
   sectionCopy: Partial<Record<ServiceSection, SectionCopy>>;
 }
 
-
 export type ServiceSection =
   'intro' | 'benefits' | 'offerings' | 'pricing' | 'projects' | 'testimonials' | 'faq' | 'contact';
 
@@ -116,8 +117,6 @@ export interface OfferingPanel {
   cta?: { label: string; routeId: EntityId };
   ctaHref?: { label: string; href: string };
 }
-
-
 
 export interface WebsiteContent {
   serviceId: EntityId;

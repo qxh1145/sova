@@ -44,7 +44,8 @@ const FAQ_IDS = {
     section: 'section_1520280801',
     headingRow: 'row-1373522505',
     headingCol: 'col-277509516',
-    titleText: 'text-712709189',
+    eyebrowText: 'text-712709189',
+    titleText: 'text-2580021667',
     listRow: 'row-38008225',
     listCol: 'col-1084451967',
   },
@@ -92,7 +93,6 @@ export function SeoServiceView({ page, assets, locale }: SeoServiceViewProps) {
         />
       )}
 
-
       {/* 4. Story 9 empty projects slot */}
       <section
         className="section ss-decor"
@@ -124,7 +124,7 @@ export function SeoServiceView({ page, assets, locale }: SeoServiceViewProps) {
             <div className="row" id={faqIds.headingRow}>
               <div id={faqIds.headingCol} className="col small-12 large-12">
                 <div className="col-inner">
-                  {!isEn && 'eyebrowText' in faqIds && copy.faq.eyebrow && (
+                  {copy.faq.eyebrow && (
                     <div id={faqIds.eyebrowText} className="text">
                       <p>
                         <strong>
@@ -153,6 +153,7 @@ export function SeoServiceView({ page, assets, locale }: SeoServiceViewProps) {
                     faqs={faqs}
                     type="single"
                     defaultOpen="first"
+                    className="ac-luutru"
                     labels={{ toggle: isEn ? 'Toggle answer' : 'Mở rộng câu trả lời' }} // business-text-ok: accordion toggle label
                   />
                 </div>

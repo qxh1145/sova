@@ -713,40 +713,42 @@ test.describe('Storage service pages (Story 5.4)', () => {
       await expect(nextBtn).toBeEnabled();
     });
 
-    test('seo slider (slide_seo) wraps next and prev at 390px with both arrows enabled', async ({
-      page,
-    }) => {
-      await page.goto('/seo-tu-khoa-website/');
-      const slider = page.locator('.eras-table-price-slider.slide_seo');
-      await expect(slider).toBeVisible();
+    for (const path of ['/seo-tu-khoa-website/', '/en/website-keyword-seo/']) {
+      test(`seo slider (slide_seo) wraps next and prev at 390px with both arrows enabled on ${path}`, async ({
+        page,
+      }) => {
+        await page.goto(path);
+        const slider = page.locator('.eras-table-price-slider.slide_seo');
+        await expect(slider).toBeVisible();
 
-      const prevBtn = slider.locator('.flickity-prev-next-button.previous');
-      const nextBtn = slider.locator('.flickity-prev-next-button.next');
-      const slides = slider.locator('.flickity-slider > .row');
-      const slideCount = await slides.count();
-      expect(slideCount).toBe(4);
+        const prevBtn = slider.locator('.flickity-prev-next-button.previous');
+        const nextBtn = slider.locator('.flickity-prev-next-button.next');
+        const slides = slider.locator('.flickity-slider > .row');
+        const slideCount = await slides.count();
+        expect(slideCount).toBe(4);
 
-      // Both arrows stay enabled (DOM attribute check; elements have display:none on mobile per Flatsome CSS)
-      await expect(prevBtn).toBeAttached();
-      await expect(nextBtn).toBeAttached();
-      await expect(prevBtn).toBeEnabled();
-      await expect(nextBtn).toBeEnabled();
+        // Both arrows stay enabled (DOM attribute check; elements have display:none on mobile per Flatsome CSS)
+        await expect(prevBtn).toBeAttached();
+        await expect(nextBtn).toBeAttached();
+        await expect(prevBtn).toBeEnabled();
+        await expect(nextBtn).toBeEnabled();
 
-      // Initially slide 0 is selected
-      await expect(slides.nth(0)).toHaveClass(/is-selected/);
+        // Initially slide 0 is selected
+        await expect(slides.nth(0)).toHaveClass(/is-selected/);
 
-      // Prev on slide 0 goes to last slide (slide 3)
-      await prevBtn.dispatchEvent('click');
-      await expect(slides.nth(slideCount - 1)).toHaveClass(/is-selected/);
-      await expect(prevBtn).toBeEnabled();
-      await expect(nextBtn).toBeEnabled();
+        // Prev on slide 0 goes to last slide (slide 3)
+        await prevBtn.dispatchEvent('click');
+        await expect(slides.nth(slideCount - 1)).toHaveClass(/is-selected/);
+        await expect(prevBtn).toBeEnabled();
+        await expect(nextBtn).toBeEnabled();
 
-      // Next on last slide wraps to slide 0
-      await nextBtn.dispatchEvent('click');
-      await expect(slides.nth(0)).toHaveClass(/is-selected/);
-      await expect(prevBtn).toBeEnabled();
-      await expect(nextBtn).toBeEnabled();
-    });
+        // Next on last slide wraps to slide 0
+        await nextBtn.dispatchEvent('click');
+        await expect(slides.nth(0)).toHaveClass(/is-selected/);
+        await expect(prevBtn).toBeEnabled();
+        await expect(nextBtn).toBeEnabled();
+      });
+    }
   });
 });
 
@@ -767,6 +769,12 @@ const SEO_SERVICES_ROUTES = [
     homeHref: '/',
     homeLabel: 'Trang chủ',
     breadcrumbId: 'text-639428615',
+    topGapId: 'gap-463430753',
+    heroCtaId: 'text-1784037823',
+    ctaIconCount: 1,
+    offeringsTitleId: 'text-1492573675',
+    faqEyebrowId: 'text-1069659283',
+    faqEyebrow: 'GIẢI ĐÁP',
     advantagesEyebrow: 'Dịch vụ SEO website',
     advantagesTitle: 'Lợi thế khi chọn dịch vụ SEO của chúng tôi',
     advantageTitles: [
@@ -776,7 +784,8 @@ const SEO_SERVICES_ROUTES = [
       'Đội ngũ chuyên gia giàu kinh nghiệm',
     ],
     offeringsEyebrow: 'Những dịch vụ',
-    offeringsTitle: 'SEO top Google tại Sova',
+    // Source splits the VI title with <br>.
+    offeringsTitle: 'SEO top Google tại\nSova',
     packageTitles: [
       'SEO ONPAGE',
       'SEO OFFPAGE',
@@ -801,6 +810,12 @@ const SEO_SERVICES_ROUTES = [
     homeHref: '/en/',
     homeLabel: 'Home',
     breadcrumbId: 'text-4167340980',
+    topGapId: 'gap-716151157',
+    heroCtaId: 'text-2349830623',
+    ctaIconCount: 0,
+    offeringsTitleId: 'text-3610428661',
+    faqEyebrowId: 'text-712709189',
+    faqEyebrow: 'FAQs',
     advantagesEyebrow: 'Website Keyword SEO',
     advantagesTitle: 'Advantages of Choosing Our SEO Services',
     advantageTitles: [
@@ -821,9 +836,15 @@ const SEO_SERVICES_ROUTES = [
   },
 ];
 
-test.describe('SEO Service Pages (Story 5)', () => {
+test.describe('SEO Service Pages (Story 5.5)', () => {
   for (const config of SEO_SERVICES_ROUTES) {
     test(`Sections render in source order and structure on ${config.path}`, async ({ page }) => {
+      const { seoServices } = await import('../../src/data/services/seo');
+      const { siteSettings } = await import('../../src/data/site');
+      const zaloHref = siteSettings.find((x) => x.locale === config.locale)?.zaloHref;
+      const service = seoServices.find((s) => s.locale === config.locale);
+      if (!service) throw new Error('seo service missing');
+
       await page.goto(config.path);
 
       // Section order verification inside main
@@ -857,6 +878,14 @@ test.describe('SEO Service Pages (Story 5)', () => {
         breadcrumb.getByRole('link', { name: config.homeLabel }),
       ).toHaveAttribute('href', config.homeHref);
 
+      // Hero: top gap is mobile-only; VI CTA carries the Vector-Stroke arrow, EN has none
+      await expect(page.locator(`#${config.topGapId}`)).toHaveClass(
+        'gap-element clearfix show-for-small',
+      );
+      await expect(
+        page.locator(`#${config.heroCtaId} a.but-lh img[src*="Vector-Stroke.svg"]`),
+      ).toHaveCount(config.ctaIconCount);
+
       // Advantages section: 4 cards with titles
       const advantagesSection = page.locator(`#${config.sectionIds[1]}`);
       await expect(advantagesSection).toContainText(config.advantagesEyebrow);
@@ -872,13 +901,18 @@ test.describe('SEO Service Pages (Story 5)', () => {
       // Package cards desktop grid: 4 package cards
       const packagesSection = page.locator(`#${config.sectionIds[2]}`);
       await expect(packagesSection).toContainText(config.offeringsEyebrow);
-      await expect(packagesSection.locator('.section-title h2, .col h2').first()).toContainText(
-        'SEO top Google',
+      expect(await packagesSection.locator(`#${config.offeringsTitleId} h2`).innerText()).toBe(
+        config.offeringsTitle,
       );
       const gridCards = packagesSection.locator('.eras-table-price > .col');
       await expect(gridCards).toHaveCount(4);
       for (let i = 0; i < 4; i++) {
-        await expect(gridCards.nth(i).locator('h2')).toHaveText(config.packageTitles[i]);
+        const card = gridCards.nth(i);
+        const offering = service.offerings[i];
+        await expect(card.locator('h2')).toHaveText(config.packageTitles[i]);
+        await expect(card.locator('.text p')).toHaveText(offering.description ?? '');
+        await expect(card.locator('.icon-box h5')).toHaveText(offering.items ?? []);
+        await expect(card.locator('p a.but-lh')).toHaveAttribute('href', zaloHref!);
       }
 
       // Testimonials (3 slides)
@@ -888,6 +922,7 @@ test.describe('SEO Service Pages (Story 5)', () => {
 
       // FAQ items count per locale (8 items, first open)
       const faqSection = page.locator(`#${config.sectionIds[5]}`);
+      await expect(faqSection.locator(`#${config.faqEyebrowId}`)).toHaveText(config.faqEyebrow);
       const faqItems = faqSection.locator('.accordion-item');
       await expect(faqItems).toHaveCount(config.faqCount);
       await expect(faqItems.first().locator('.accordion-title')).toHaveClass(/active/);

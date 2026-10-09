@@ -223,4 +223,3 @@ export const SERVICE_HERO_IDS_SEO_EN: PageHeroIds = {
   imageWrapper: 'image_580160889',
   bottomGap: 'gap-832751667',
 };
-
