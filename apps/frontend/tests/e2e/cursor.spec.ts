@@ -96,7 +96,8 @@ test.describe('Custom cursor island', () => {
       const button = document.createElement('button');
       button.id = 'cursor-test-button';
       button.textContent = 'Test';
-      button.style.cssText = 'position:fixed;left:300px;top:300px;width:120px;height:60px;z-index:10000';
+      button.style.cssText =
+        'position:fixed;left:300px;top:300px;width:120px;height:60px;z-index:10000';
       document.body.append(button);
     });
 
@@ -153,6 +154,69 @@ test.describe('Custom cursor island', () => {
     await expect(ring).toHaveCSS('height', '40px');
   });
 
+  test('In-locale client navigation preserves cursor state and delegated hover without document reload', async ({
+    page,
+  }) => {
+    await installRafCounter(page);
+
+    await page.goto('/du-an/');
+    await expect(page.locator('html')).toHaveClass(/has-custom-cursor/);
+    await expect(page.locator('.custom-cursor')).toHaveCount(1);
+
+    // Measure initial RAF loop rate
+    await page.evaluate(() =>
+      (window as unknown as { __resetRafCount: () => void }).__resetRafCount(),
+    );
+    await page.waitForTimeout(200);
+    const initialRate = await page.evaluate(() =>
+      (window as unknown as { __getRafCount: () => number }).__getRafCount(),
+    );
+    expect(initialRate).toBeGreaterThan(0);
+
+    // Set a window marker to verify client-side navigation without full document reload
+    await page.evaluate(() => {
+      (window as unknown as { __navMarker?: boolean }).__navMarker = true;
+    });
+
+    // Click header link to /goc-nhin/
+    const gocNhinLink = page.locator('#masthead a[href="/goc-nhin/"]').first();
+    await gocNhinLink.click();
+    await page.waitForURL('**/goc-nhin/');
+
+    // Assert navigation happened without document reload (window marker survives)
+    const markerSurvives = await page.evaluate(
+      () => (window as unknown as { __navMarker?: boolean }).__navMarker === true,
+    );
+    expect(markerSurvives, 'In-locale navigation should not reload document').toBe(true);
+
+    // Exactly one custom-cursor node survives
+    await expect(page.locator('.custom-cursor')).toHaveCount(1);
+
+    // Single RAF loop persists: in-locale navigation must not spawn an extra loop
+    await page.evaluate(() =>
+      (window as unknown as { __resetRafCount: () => void }).__resetRafCount(),
+    );
+    await page.waitForTimeout(200);
+    const postRate = await page.evaluate(() =>
+      (window as unknown as { __getRafCount: () => number }).__getRafCount(),
+    );
+    expect(postRate).toBeGreaterThan(0);
+    expect(postRate).toBeLessThan(initialRate * 1.6);
+
+    // Hover a post link rendered by /goc-nhin/ (not the persistent header) grows ring
+    const ring = page.locator('.cursor-ring');
+    const interactiveTarget = page.locator('#post-list article a').first();
+    await interactiveTarget.hover();
+
+    await expect(ring).toHaveCSS('width', '60px');
+    await expect(ring).toHaveCSS('height', '60px');
+
+    // Move away to non-interactive point
+    await page.mouse.move(10, 10);
+    await expect(ring).toHaveCSS('width', '40px');
+    await expect(ring).toHaveCSS('height', '40px');
+  });
+
   test('Reduced motion fallback: native cursor auto, cursor hidden, no RAF loop', async ({
     page,
   }) => {
@@ -183,7 +247,9 @@ test.describe('Custom cursor island', () => {
     await expect(page.locator('.custom-cursor')).toHaveCount(1);
 
     // Measure initial RAF loop rate
-    await page.evaluate(() => (window as unknown as { __resetRafCount: () => void }).__resetRafCount());
+    await page.evaluate(() =>
+      (window as unknown as { __resetRafCount: () => void }).__resetRafCount(),
+    );
     await page.waitForTimeout(200);
     const initialRate = await page.evaluate(() =>
       (window as unknown as { __getRafCount: () => number }).__getRafCount(),
@@ -199,7 +265,9 @@ test.describe('Custom cursor island', () => {
     await expect(page.locator('.custom-cursor')).toHaveCount(1);
 
     // Measure RAF rate after navigation
-    await page.evaluate(() => (window as unknown as { __resetRafCount: () => void }).__resetRafCount());
+    await page.evaluate(() =>
+      (window as unknown as { __resetRafCount: () => void }).__resetRafCount(),
+    );
     await page.waitForTimeout(200);
     const postRate = await page.evaluate(() =>
       (window as unknown as { __getRafCount: () => number }).__getRafCount(),
