@@ -257,6 +257,36 @@ export function getContactPage(locale: Locale): Promise<ContactPageContent | nul
   return getRepository().getContactPage(locale);
 }
 
+export interface ContactAssets {
+  heroImage: AssetRef;
+  infoIcons: {
+    address: AssetRef;
+    phone: AssetRef;
+    email: AssetRef;
+  };
+}
+
+/** Hero background and 3 info icons; throws on dangling ids. */
+export async function getContactAssets(
+  page: ContactPageContent,
+  repository: ContentRepository = getRepository(),
+): Promise<ContactAssets> {
+  const heroId = page.heroImageId;
+  const { address: addressIconId, phone: phoneIconId, email: emailIconId } = page.infoIconIds;
+  const wanted = [heroId, addressIconId, phoneIconId, emailIconId];
+  const assets = await repository.getAssets(wanted);
+  assertResolved(page.id, missingIds(wanted, assets));
+  const byId = (id: EntityId) => assets.find((a) => a.id === id)!;
+  return {
+    heroImage: byId(heroId),
+    infoIcons: {
+      address: byId(addressIconId),
+      phone: byId(phoneIconId),
+      email: byId(emailIconId),
+    },
+  };
+}
+
 export function getProfile(locale: Locale): Promise<CompanyProfileContent | null> {
   return getRepository().getProfile(locale);
 }
