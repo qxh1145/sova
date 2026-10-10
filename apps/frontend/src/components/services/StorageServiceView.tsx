@@ -2,10 +2,7 @@ import type { Locale, RouteEntry } from '@/types/content';
 import type { ServiceAssets, ServicePage } from '@/lib/queries/services';
 import { pathForRouteId } from '@/lib/routes';
 import { PageHero } from '@/components/hero/PageHero';
-import {
-  SERVICE_HERO_IDS_STORAGE_EN,
-  SERVICE_HERO_IDS_STORAGE_VI,
-} from './serviceHeroIds';
+import { SERVICE_HERO_IDS_STORAGE_EN, SERVICE_HERO_IDS_STORAGE_VI } from './serviceHeroIds';
 import {
   StorageOfferings,
   STORAGE_OFFERINGS_IDS_EN,
@@ -18,7 +15,15 @@ import {
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { FAQList } from '@/components/faq/FAQList';
+import { FeaturedProjects, type FeaturedProjectsIds } from '@/components/projects/FeaturedProjects';
 import { SERVICE_CAROUSEL_LABELS } from './ServiceDetailCards';
+
+export const FEATURED_PROJECTS_IDS_STORAGE_VI: FeaturedProjectsIds = {
+  row: 'row-1255166091',
+  col: 'col-802613459',
+  eyebrow: 'text-1101289681',
+  title: 'text-899631907',
+};
 
 export interface StorageServiceViewProps {
   page: ServicePage;
@@ -75,9 +80,7 @@ export function StorageServiceView({
     }
   }
 
-  const mediaMap = Object.fromEntries(
-    assets.offeringMedia.map((m) => [m.id, m]),
-  );
+  const mediaMap = Object.fromEntries(assets.offeringMedia.map((m) => [m.id, m]));
 
   return (
     <main id="main">
@@ -101,14 +104,19 @@ export function StorageServiceView({
         labels={SERVICE_CAROUSEL_LABELS[locale]}
       />
 
-      {/* 3. Story 9 featured projects slot */}
-      <section
-        className="section ss-decor"
-        id={isEn ? 'section_674888486' : 'section_1086282974'}
-      >
+      {/* 3. Story 9: Featured projects */}
+      <section className="section ss-decor" id={isEn ? 'section_674888486' : 'section_1086282974'}>
         <div className="section-bg fill" />
         <div className="section-content relative">
-          {/* Story 9: FeaturedProjects will be placed here */}
+          {copy.projects && (
+            <FeaturedProjects
+              projects={page.projects}
+              copy={copy.projects}
+              assets={assets.projectAssets}
+              categories={assets.projectCategories}
+              ids={FEATURED_PROJECTS_IDS_STORAGE_VI}
+            />
+          )}
         </div>
       </section>
 

@@ -1,16 +1,18 @@
 import { expect, test, vi } from 'vitest';
 import type { ContentData, ContentRepository } from '@/lib/repositories/contracts';
 import { createMockRepository } from '@/lib/repositories/mock';
+import { assets } from '@/data/assets';
 import { faqs } from '@/data/faq';
 import { hostingPricing } from '@/data/pricing/hosting';
 import { websitePricing } from '@/data/pricing/website';
+import { projectCategories } from '@/data/project-categories';
 import { projects } from '@/data/projects';
 import { hostingServices } from '@/data/services/hosting';
 import { seoServices } from '@/data/services/seo';
 import { websiteServices } from '@/data/services/website';
 import { testimonials } from '@/data/testimonials';
 import type { Pricing, SiteSettings } from '@/types/content';
-import { getPricing, getServicePage } from './services';
+import { getPricing, getServiceAssets, getServicePage } from './services';
 
 let repository: ContentRepository;
 vi.mock('@/lib/repositories', () => ({ getRepository: () => repository }));
@@ -33,10 +35,11 @@ const settings: SiteSettings = {
 const repoWith = (data: Partial<ContentData> = {}) =>
   createMockRepository({
     services: [...websiteServices, ...seoServices, ...hostingServices],
+    assets,
     faqs,
     testimonials,
     projects,
-    projectCategories: [],
+    projectCategories,
     pricing: [...websitePricing, ...hostingPricing],
     siteSettings: [settings],
     ...data,
@@ -55,6 +58,34 @@ test('service page query: FAQs in placement order, 3 testimonials, 6 projects, p
   expect(page?.projects).toHaveLength(6);
   expect(page?.pricing?.id).toBe('pricing-website');
   expect(JSON.stringify(page)).not.toContain('{{site.');
+});
+
+test('getServiceAssets: VI website returns 6 project assets + categories, EN returns empty without calls', async () => {
+  repository = repoWith();
+  const viPage = await getServicePage('website', 'vi');
+  expect(viPage).not.toBeNull();
+  const viAssets = await getServiceAssets(viPage!);
+  expect(viAssets.projectAssets).toHaveLength(6);
+  expect(viAssets.projectAssets.map((a) => a.id)).toEqual(
+    viPage!.projects.map((p) => p.galleryIds[0]),
+  );
+  expect(viAssets.projectCategories.map((c) => c.id)).toEqual(projectCategories.map((c) => c.id));
+
+  const enPage = await getServicePage('website', 'en');
+  expect(enPage).not.toBeNull();
+  expect(enPage!.projects).toHaveLength(0);
+
+  const getAssetsSpy = vi.spyOn(repository, 'getAssets');
+  const getCategoriesSpy = vi.spyOn(repository, 'getProjectCategories');
+
+  const enAssets = await getServiceAssets(enPage!);
+  expect(enAssets.projectAssets).toHaveLength(0);
+  expect(enAssets.projectCategories).toHaveLength(0);
+  expect(getCategoriesSpy).not.toHaveBeenCalled();
+  const requestedAssetIds = getAssetsSpy.mock.calls.flat(2);
+  for (const asset of viAssets.projectAssets) {
+    expect(requestedAssetIds).not.toContain(asset.id);
+  }
 });
 
 test('missing service resolves null', async () => {
