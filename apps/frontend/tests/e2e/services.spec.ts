@@ -1472,6 +1472,7 @@ test.describe('Website Contact Form Banner (Story 5.8)', () => {
       locale: 'vi',
       path: '/thiet-ke-website/',
       bannerId: 'banner-1813159824',
+      headingBoxId: 'text-box-461418576',
       formBoxId: 'text-box-1917404396',
       formId: 'wpcf7-f6818-p7233-o1',
       promoBoxId: 'text-box-324172340',
@@ -1488,6 +1489,7 @@ test.describe('Website Contact Form Banner (Story 5.8)', () => {
       locale: 'en',
       path: '/en/website-development/',
       bannerId: 'banner-1313966365',
+      headingBoxId: 'text-box-2108502950',
       formBoxId: 'text-box-1136070934',
       formId: 'wpcf7-f6823-p7372-o1',
       promoBoxId: null,
@@ -1586,7 +1588,7 @@ test.describe('Website Contact Form Banner (Story 5.8)', () => {
       await expect(phoneInput).toHaveAttribute('aria-invalid', 'true');
     });
 
-    test(`Valid submit resolves to demo-success with demo badge and no storage/network on ${config.path}`, async ({
+    test(`Valid submit resolves to demo-success with demo badge, no storage/network, and invalid resubmit clears result on ${config.path}`, async ({
       page,
     }) => {
       await page.goto(config.path);
@@ -1595,6 +1597,13 @@ test.describe('Website Contact Form Banner (Story 5.8)', () => {
       const nameInput = banner.locator('input[name="your-name"]');
       const businessInput = banner.locator('input[name="your-lvuc"]');
       const submitBtn = banner.locator('input.wpcf7-submit');
+
+      // networkGuard only blocks external hosts; a real submit would send a non-GET request.
+      // GETs are excluded: Next.js prefetch and lazy images load in the background.
+      const requests: string[] = [];
+      page.on('request', (request) => {
+        if (request.method() !== 'GET') requests.push(`${request.method()} ${request.url()}`);
+      });
 
       await nameInput.fill('Nguyen Van A');
       await businessInput.fill('Tech Retail');
@@ -1620,6 +1629,14 @@ test.describe('Website Contact Form Banner (Story 5.8)', () => {
       expect(storageState.local).toBe(0);
       expect(storageState.session).toBe(0);
       expect(storageState.cookies).toBe('');
+      expect(requests, 'no submit request leaves the page').toEqual([]);
+
+      // An invalid resubmit clears the earlier result instead of showing it next to the tip
+      await nameInput.fill('');
+      await submitBtn.click();
+      await expect(banner.locator('.wpcf7-not-valid-tip')).toHaveText(config.nameRequiredTip);
+      await expect(form).toHaveClass(/invalid/);
+      await expect(responseOutput).toHaveCount(0);
     });
 
     test(`No horizontal overflow at 390px and 549px viewports on ${config.path}`, async ({ page }) => {
@@ -1633,6 +1650,17 @@ test.describe('Website Contact Form Banner (Story 5.8)', () => {
         const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
         const innerWidth = await page.evaluate(() => window.innerWidth);
         expect(scrollWidth, `${width}px scrollWidth <= innerWidth`).toBeLessThanOrEqual(innerWidth);
+
+        // Mobile layout: heading and form stack inside the banner without overlap
+        const bannerBox = (await banner.boundingBox())!;
+        const headingBox = (await page.locator(`#${config.headingBoxId}`).boundingBox())!;
+        const formBox = (await page.locator(`#${config.formBoxId}`).boundingBox())!;
+        expect(formBox.y, `${width}px form below heading`).toBeGreaterThanOrEqual(
+          headingBox.y + headingBox.height - 1,
+        );
+        expect(formBox.y + formBox.height, `${width}px form inside banner`).toBeLessThanOrEqual(
+          bannerBox.y + bannerBox.height + 1,
+        );
       }
     });
   }

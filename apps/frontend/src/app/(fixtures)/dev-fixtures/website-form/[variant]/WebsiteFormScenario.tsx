@@ -17,11 +17,7 @@ export function WebsiteFormScenario({ scenario, children }: WebsiteFormScenarioP
   return (
     <SubmitAdapterProvider adapter={adapter}>
       {children}
-      <button
-        type="button"
-        data-testid="fixture-release"
-        onClick={release}
-      >
+      <button type="button" data-testid="fixture-release" onClick={release}>
         Release Gate {/* business-text-ok: fixture button */}
       </button>
     </SubmitAdapterProvider>

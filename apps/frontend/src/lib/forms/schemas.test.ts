@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  consultSchema,
-  optionalPhoneSchema,
-  phoneSchema,
-  websiteContactSchema,
-} from './schemas';
+import { consultSchema, optionalPhoneSchema, phoneSchema, websiteContactSchema } from './schemas';
 
 describe('form schemas', () => {
   const messages = {
@@ -178,7 +173,13 @@ describe('form schemas', () => {
         expect(result.error.format()['your-phone']?._errors[0]).toBe(websiteMessages.phoneInvalid);
       }
     });
+
+    it('rejects values over the source maxlength', () => {
+      const valid = { 'your-name': 'A', 'your-phone': '', 'your-lvuc': 'B' };
+      expect(schema.safeParse({ ...valid, 'your-name': 'a'.repeat(401) }).success).toBe(false);
+      expect(schema.safeParse({ ...valid, 'your-lvuc': 'b'.repeat(401) }).success).toBe(false);
+      expect(schema.safeParse({ ...valid, 'your-message': 'c'.repeat(2001) }).success).toBe(false);
+      expect(schema.safeParse({ ...valid, 'your-message': 'c'.repeat(2000) }).success).toBe(true);
+    });
   });
 });
-
-

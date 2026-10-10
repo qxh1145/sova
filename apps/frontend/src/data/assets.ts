@@ -6592,9 +6592,7 @@ export const assets: AssetRef[] = [
     alt: '',
     kind: 'image',
     status: 'local',
-    sources: [
-      { file: 'seo-tu-khoa-website/index.html', line: 730 },
-    ],
+    sources: [{ file: 'seo-tu-khoa-website/index.html', line: 730 }],
     width: 15,
     height: 15,
   },
@@ -6702,9 +6700,7 @@ export const assets: AssetRef[] = [
     alt: '',
     kind: 'image',
     status: 'local',
-    sources: [
-      { file: 'thiet-ke-website/index.html', line: 4424 },
-    ],
+    sources: [{ file: 'thiet-ke-website/index.html', line: 4424 }],
     width: 1080,
     height: 1920,
   },
@@ -6714,13 +6710,8 @@ export const assets: AssetRef[] = [
     alt: '',
     kind: 'image',
     status: 'local',
-    sources: [
-      { file: 'en/website-development/index.html', line: 4323 },
-    ],
+    sources: [{ file: 'en/website-development/index.html', line: 4323 }],
     width: 450,
     height: 800,
   },
 ];
-
-
-

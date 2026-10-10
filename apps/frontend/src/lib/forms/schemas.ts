@@ -26,10 +26,7 @@ export function phoneSchema(messages: PhoneValidationMessages) {
 }
 
 export function optionalPhoneSchema(invalidMessage: string) {
-  return z
-    .string()
-    .trim()
-    .refine(validatePhone, { message: invalidMessage });
+  return z.string().trim().refine(validatePhone, { message: invalidMessage });
 }
 
 export function consultSchema(messages: PhoneValidationMessages) {
@@ -48,13 +45,12 @@ export interface WebsiteContactValidationMessages {
 
 export function websiteContactSchema(messages: WebsiteContactValidationMessages) {
   return z.object({
-    'your-name': z.string().trim().min(1, { message: messages.nameRequired }),
+    // max() mirrors the source inputs' maxlength (400 / textarea 2000)
+    'your-name': z.string().trim().min(1, { message: messages.nameRequired }).max(400),
     'your-phone': optionalPhoneSchema(messages.phoneInvalid),
-    'your-lvuc': z.string().trim().min(1, { message: messages.businessRequired }),
-    'your-message': z.string().trim().optional(),
+    'your-lvuc': z.string().trim().min(1, { message: messages.businessRequired }).max(400),
+    'your-message': z.string().trim().max(2000).optional(),
   });
 }
 
 export type WebsiteContactFormValues = z.infer<ReturnType<typeof websiteContactSchema>>;
-
-

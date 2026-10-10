@@ -123,15 +123,12 @@ export interface WebsiteContactFormLabels {
   success: string;
   error: string;
   demoBadge: string;
-  hotlineAria?: string;
   hotlineLabel?: string;
   hotlineHref?: string;
 }
 
-
 export type ServiceSection =
   'intro' | 'benefits' | 'offerings' | 'pricing' | 'projects' | 'testimonials' | 'faq' | 'contact';
-
 
 export interface OfferingPanel {
   id: EntityId;
@@ -460,7 +457,6 @@ export interface SectionCopy {
   description?: string;
   descriptionLines?: string[];
 }
-
 
 export interface HomePageContent extends LocalizedIdentity {
   hero: HeroContent;

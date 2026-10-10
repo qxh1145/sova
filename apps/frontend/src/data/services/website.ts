@@ -197,11 +197,9 @@ export const websiteServices: Service[] = [
         eyebrow: '100 MÃ ƯU ĐÃI THÁNG NÀY',
         title: 'Bạn muốn hỗ trợ nhanh nhất để có ngay Website',
         titleLines: ['Bạn muốn hỗ trợ', 'nhanh nhất để có ngay', 'Website'],
-        mobileTitleLines: ['Bạn muốn hỗ trợ', 'nhanh nhất để có', 'ngay Website'],
         description: 'Liên hệ với Sova',
         descriptionLines: ['Liên hệ với', 'Sova'],
       },
-
     },
     contactForm: {
       heading: 'Form liên hệ',
@@ -221,7 +219,6 @@ export const websiteServices: Service[] = [
       success: 'Đã ghi nhận yêu cầu trong bản demo.',
       error: 'Đã có lỗi xảy ra trong quá trình gửi. Vui lòng thử lại.',
       demoBadge: 'Bản demo — chưa gửi thông tin',
-      hotlineAria: 'Hotline',
       hotlineLabel: '{{site.phone}}',
       hotlineHref: '{{site.phoneHref}}',
     },
@@ -407,7 +404,6 @@ export const websiteServices: Service[] = [
         description: 'Contact Sova',
         descriptionLines: ['Contact', 'Sova'],
       },
-
     },
     contactForm: {
       heading: 'Contact form',
@@ -427,12 +423,8 @@ export const websiteServices: Service[] = [
       success: 'Request recorded in demo mode.',
       error: 'An error occurred while sending. Please try again.',
       demoBadge: 'Demo — no data was sent',
-      hotlineAria: 'Hotline',
       hotlineLabel: '{{site.phone}}',
       hotlineHref: '{{site.phoneHref}}',
     },
   },
 ];
-
-
-
