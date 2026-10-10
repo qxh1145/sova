@@ -3,6 +3,58 @@ import type { AssetRef } from '@/types/content';
 
 export const assets: AssetRef[] = [
   {
+    id: 'asset-3313325d4b',
+    src: '/wp-content/uploads/2024/03/contact_hero_bg.jpg',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'lien-he/index.html', line: 628 },
+      { file: 'en/contact-us/index.html', line: 628 },
+    ],
+    width: 1919,
+    height: 647,
+  },
+  {
+    id: 'asset-1207d691fd',
+    src: '/wp-content/uploads/2024/02/Mask-group.svg',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'lien-he/index.html', line: 840 },
+      { file: 'en/contact-us/index.html', line: 840 },
+    ],
+    width: 1,
+    height: 1,
+  },
+  {
+    id: 'asset-e4bba002ba',
+    src: '/wp-content/uploads/2024/02/Mask-group-1.svg',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'lien-he/index.html', line: 864 },
+      { file: 'en/contact-us/index.html', line: 864 },
+    ],
+    width: 1,
+    height: 1,
+  },
+  {
+    id: 'asset-ad8453bc92',
+    src: '/wp-content/uploads/2024/02/Mask-group.png',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'lien-he/index.html', line: 888 },
+      { file: 'en/contact-us/index.html', line: 888 },
+    ],
+    width: 25,
+    height: 25,
+  },
+  {
     id: 'asset-4c87ea5453',
     src: '/wp-content/uploads/2023/10/ERAS-THUMB-WEBSITE-1.webp',
     alt: '',

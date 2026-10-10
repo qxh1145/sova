@@ -360,7 +360,15 @@ export const fixtures: ContentData = {
     },
   ],
   contactPages: [
-    { ...page('contact-1', '/fixture-contact'), heading: 'Fixture', introduction: rich },
+    {
+      ...page('contact-1', '/fixture-contact'),
+      heroImageId: 'asset-1',
+      sectionHeading: 'Fixture',
+      heading: 'Fixture',
+      breadcrumb: { homeLabel: 'Trang chủ', current: 'Liên hệ' },
+      infoIconIds: { address: 'asset-1', phone: 'asset-1', email: 'asset-1' },
+      introduction: rich,
+    },
   ],
   legalPages: [{ ...page('legal-1', '/fixture-legal'), body: rich }],
   paymentGuides: [

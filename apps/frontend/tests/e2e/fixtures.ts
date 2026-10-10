@@ -84,6 +84,20 @@ export async function installRafCounter(page: Page) {
   });
 }
 
+function isMapFrameRequest(request: import('@playwright/test').Request): boolean {
+  let frame: import('@playwright/test').Frame | null = request.frame();
+  while (frame) {
+    if (frame.parentFrame()) {
+      const host = extractHostname(frame.url());
+      if (host && MAPS_EMBED_ALLOWLIST.includes(host)) {
+        return true;
+      }
+    }
+    frame = frame.parentFrame();
+  }
+  return false;
+}
+
 export const test = base.extend<{ networkGuard: string[] }>({
   networkGuard: [
     async ({ context }, use) => {
@@ -96,7 +110,7 @@ export const test = base.extend<{ networkGuard: string[] }>({
           return route.continue({
             headers: { ...request.headers(), 'x-vercel-protection-bypass': bypassSecret },
           });
-        if (isAllowedUrl(url)) return route.continue();
+        if (isAllowedUrl(url) || isMapFrameRequest(request)) return route.continue();
         blocked.push(url);
         return route.abort('blockedbyclient');
       });

@@ -9,7 +9,15 @@ export const contactPages: ContactPageContent[] = [
     title: 'Contact Us',
     sources: [{ file: 'en/contact-us/index.html', line: 645, sourceId: '7363' }],
     translationKey: 'contact',
+    heroImageId: 'asset-3313325d4b',
+    sectionHeading: 'Contact with us',
     heading: 'Sova Technology Solutions Co., Ltd.',
+    breadcrumb: { homeLabel: 'Home', current: 'Contact' },
+    infoIconIds: {
+      address: 'asset-1207d691fd',
+      phone: 'asset-e4bba002ba',
+      email: 'asset-ad8453bc92',
+    },
     introduction: {
       format: 'sanitized-html',
       html: '<p>We always value and welcome feedback from our customers to continuously improve and elevate the service experience as well as the quality of our products.</p>',
@@ -30,7 +38,15 @@ export const contactPages: ContactPageContent[] = [
     title: 'Liên hệ',
     sources: [{ file: 'lien-he/index.html', line: 645, sourceId: '7223' }],
     translationKey: 'contact',
+    heroImageId: 'asset-3313325d4b',
+    sectionHeading: 'Liên hệ với chúng tôi',
     heading: 'Công ty TNHH Giải pháp Công nghệ Sova',
+    breadcrumb: { homeLabel: 'Trang chủ', current: 'Liên hệ' },
+    infoIconIds: {
+      address: 'asset-1207d691fd',
+      phone: 'asset-e4bba002ba',
+      email: 'asset-ad8453bc92',
+    },
     introduction: {
       format: 'sanitized-html',
       html: '<p>Chúng tôi luôn quý trọng và tiếp thu mọi ý kiến đóng góp từ khách hàng, nhằm không ngừng cải thiện và nâng tầm trải nghiệm dịch vụ cũng như chất lượng sản phẩm.</p>',
