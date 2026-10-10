@@ -1,10 +1,7 @@
 import type { Locale } from '@/types/content';
 import type { ServiceAssets, ServicePage } from '@/lib/queries/services';
 import { PageHero } from '@/components/hero/PageHero';
-import {
-  SERVICE_HERO_IDS_WEBSITE_EN,
-  SERVICE_HERO_IDS_WEBSITE_VI,
-} from './serviceHeroIds';
+import { SERVICE_HERO_IDS_WEBSITE_EN, SERVICE_HERO_IDS_WEBSITE_VI } from './serviceHeroIds';
 import {
   ServiceAdvantages,
   SERVICE_ADVANTAGES_IDS_WEBSITE_EN,
@@ -31,7 +28,6 @@ import {
 import { FAQList } from '@/components/faq/FAQList';
 import { WebsiteContactForm } from '@/components/forms/WebsiteContactForm';
 import { PromoVoucherSvg } from './PromoVoucherSvg';
-
 
 export interface WebsiteServiceViewProps {
   page: ServicePage;
@@ -169,30 +165,27 @@ export function WebsiteServiceView({ page, assets, locale }: WebsiteServiceViewP
                       <div className="text-inner text-center">
                         <div id={isEn ? 'text-2024580667' : 'text-3680779718'} className="text">
                           <h2 style={{ marginBottom: 30, fontSize: 43, lineHeight: '55px' }}>
-                            {copy.contact?.titleLines ? (
-                              copy.contact.titleLines.map((line, idx) => (
-                                <span key={idx}>
-                                  {line}
-                                  {idx < (copy.contact?.titleLines?.length ?? 0) - 1 && <br />}
-                                </span>
-                              ))
-                            ) : (
-                              copy.contact?.title
-                            )}
+                            {copy.contact?.titleLines
+                              ? copy.contact.titleLines.map((line, idx) => (
+                                  <span key={idx}>
+                                    {line}
+                                    {idx < (copy.contact?.titleLines?.length ?? 0) - 1 && <br />}
+                                  </span>
+                                ))
+                              : copy.contact?.title}
                           </h2>
                           <h2 style={{ fontSize: 43, lineHeight: '55px' }}>
-                            {copy.contact?.descriptionLines ? (
-                              copy.contact.descriptionLines.map((line, idx) => (
-                                <span key={idx}>
-                                  {line}
-                                  {idx < (copy.contact?.descriptionLines?.length ?? 0) - 1 && <br />}
-                                </span>
-                              ))
-                            ) : (
-                              copy.contact?.description
-                            )}
+                            {copy.contact?.descriptionLines
+                              ? copy.contact.descriptionLines.map((line, idx) => (
+                                  <span key={idx}>
+                                    {line}
+                                    {idx < (copy.contact?.descriptionLines?.length ?? 0) - 1 && (
+                                      <br />
+                                    )}
+                                  </span>
+                                ))
+                              : copy.contact?.description}
                           </h2>
-
                         </div>
                         {service.contactForm?.hotlineHref && (
                           <a
@@ -267,7 +260,6 @@ export function WebsiteServiceView({ page, assets, locale }: WebsiteServiceViewP
       />
       <Marquee items={MARQUEE_ITEMS} separator={assets.marqueeSeparator ?? undefined} />
 
-
       {/* 6. Why choose us: 3 columns desktop + mobile slide_tsao slider */}
       {copy.offerings && (
         <ServiceDetailCards
@@ -282,10 +274,7 @@ export function WebsiteServiceView({ page, assets, locale }: WebsiteServiceViewP
       )}
 
       {/* 7. Story 9: FeaturedProjects empty placeholder */}
-      <section
-        className="section ss-decor"
-        id={isEn ? 'section_1784272447' : 'section_1384595751'}
-      >
+      <section className="section ss-decor" id={isEn ? 'section_1784272447' : 'section_1384595751'}>
         <div className="section-bg fill" />
         <div className="section-content relative">
           {/* Story 9: FeaturedProjects will be placed here */}

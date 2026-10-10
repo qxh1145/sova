@@ -41,7 +41,6 @@ export function WebsiteContactForm({ labels, locale }: WebsiteContactFormProps) 
     },
   });
 
-
   // A failed validation clears earlier demo result per CF7 behavior
   const onSubmit = handleSubmit(async (data) => {
     await submit(data);
@@ -147,7 +146,6 @@ export function WebsiteContactForm({ labels, locale }: WebsiteContactFormProps) 
                 placeholder={labels.messagePlaceholder}
               />
             </FormField>
-
 
             <br />
             <input
