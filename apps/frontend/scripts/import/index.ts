@@ -326,7 +326,7 @@ export const projectListingCopy = {
 import type { UtilityContent } from '@/types/content';
 
 // Utility copy and project delivery terms (Project.deliveryTermsId).
-export const utilityContent: UtilityContent[] = ${JSON.stringify([...project.terms, ...page.thankYou])};
+export const utilityContent: UtilityContent[] = ${JSON.stringify([...project.terms, ...page.thankYou, ...page.sample])};
 `,
   );
 

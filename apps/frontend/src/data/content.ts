@@ -174,11 +174,32 @@ export const utilityContent: UtilityContent[] = [
   },
   {
     id: 'thank-you-vi',
+    seo: {
+      title: 'Sova xin chân thành cảm ơn quý khách - Công ty thiết kế website chuyên nghiệp | Sova',
+      description:
+        'Cảm ơn bạn đã quan tâm đến Sova.Chúng tôi sẽ liên hệ lại ngay để tư vấn chi tiết cho bạn.',
+      canonicalPath: '/eras-xin-chan-thanh-cam-on-quy-khach/',
+    },
     body: {
       format: 'sanitized-html',
       html: '<h1>Gửi thông tin thành công!</h1><p>Cảm ơn bạn đã quan tâm đến Sova.<br>Chúng tôi sẽ liên hệ lại ngay để tư vấn chi tiết cho bạn.</p>',
       assetIds: [],
       sources: [{ file: 'eras-xin-chan-thanh-cam-on-quy-khach/index.html', line: 647 }],
+    },
+  },
+  {
+    id: 'sample-vi',
+    seo: {
+      title: 'Sample Page - Công ty thiết kế website chuyên nghiệp | Sova',
+      description:
+        "This is an example page. It's different from a blog post because it will stay in one place and will show up in your site navigation (in most themes). Most",
+      canonicalPath: '/sample-page/',
+    },
+    body: {
+      format: 'sanitized-html',
+      html: '<p>This is an example page. It’s different from a blog post because it will stay in one place and will show up in your site navigation (in most themes). Most people start with an About page that introduces them to potential site visitors. It might say something like this:</p><blockquote><p>Hi there! I’m a bike messenger by day, aspiring actor by night, and this is my website. I live in Los Angeles, have a great dog named Jack, and I like piña coladas. (And gettin’ caught in the rain.)</p></blockquote><p>…or something like this:</p><blockquote><p>The XYZ Doohickey Company was founded in 1971, and has been providing quality doohickeys to the public ever since. Located in Gotham City, XYZ employs over 2,000 people and does all kinds of awesome things for the Gotham community.</p></blockquote><p>As a new WordPress user, you should go to <a href="/wp-admin/">your dashboard</a> to delete this page and create new pages for your content. Have fun!</p>',
+      assetIds: [],
+      sources: [{ file: 'sample-page/index.html', line: 620 }],
     },
   },
 ];
