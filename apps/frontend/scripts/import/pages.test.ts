@@ -154,7 +154,9 @@ test('services: EN card 2 resolves to mobile service while keeping website arrow
 
 test('faqPage imports banner title, breadcrumb home label, current text, and seo', () => {
   const { root, lineOf } = parsed(
-    `<div id="content">
+    `<title>Câu hỏi thường gặp - Sova</title>
+     <meta name="description" content="Trang chủ Câu hỏi thường gặp"/>
+     <div id="content">
        <div class="banner">
          <div class="text-box">
            <h2><b>CÂU HỎI THƯỜNG GẶP</b></h2>
@@ -195,5 +197,12 @@ test('faqPage imports banner title, breadcrumb home label, current text, and seo
     homeLabel: 'Trang chủ',
     current: 'Câu hỏi thường gặp',
   });
+  expect(page.seo).toEqual({
+    title: 'Câu hỏi thường gặp - Sova',
+    description: 'Trang chủ Câu hỏi thường gặp',
+    canonicalPath: '/cau-hoi-thuong-gap/',
+    imageId: undefined,
+  });
+  expect(page.sources[0].file).toBe('cau-hoi-thuong-gap/index.html');
 });
 

@@ -53,6 +53,9 @@ test('every topic placement resolves to a same-locale FAQ placed on a service pa
       }
     }
   }
+  const topicFaqIds = new Set(faqTopics.flatMap((t) => t.items.map((i) => i.faqId)));
+  for (const faqId of allowlist)
+    expect(topicFaqIds.has(faqId), `stale allowlist entry ${faqId}`).toBe(true);
 });
 
 test.each(['vi', 'en'] as const)('%s has service FAQs for all 8 keys', (locale) => {
