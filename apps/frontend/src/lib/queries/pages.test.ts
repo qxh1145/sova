@@ -4,6 +4,7 @@ import { createMockRepository } from '@/lib/repositories/mock';
 import { assets } from '@/data/assets';
 import { faqs } from '@/data/faq';
 import { navigation } from '@/data/navigation';
+import { aboutPages } from '@/data/pages/about';
 import { contactPages } from '@/data/pages/contact';
 import { homePages } from '@/data/pages/home';
 import { legalPages, paymentGuides } from '@/data/pages/legal';
@@ -23,7 +24,15 @@ import { stats } from '@/data/stats';
 import { testimonials } from '@/data/testimonials';
 import type { ContactPageContent, SiteSettings } from '@/types/content';
 import { getFAQs } from './faq';
-import { getContactPage, getHomeAssets, getHomePage, getLegalPage, getPaymentGuide } from './pages';
+import {
+  getAboutAssets,
+  getAboutPage,
+  getContactPage,
+  getHomeAssets,
+  getHomePage,
+  getLegalPage,
+  getPaymentGuide,
+} from './pages';
 import { getPricing, getService, getServicePage } from './services';
 import { getNavigation } from './site';
 
@@ -66,6 +75,7 @@ const repoWith = (data: Partial<ContentData> = {}) =>
     pricing: websitePricing,
     assets,
     homePages,
+    aboutPages,
     contactPages: [contactWithPhone],
     legalPages,
     paymentGuides,
@@ -304,4 +314,69 @@ test('getHomeAssets reads assets from the repository it is given', async () => {
     home!.projects.map((p) => p.galleryIds[0]).filter(Boolean),
   );
   expect(getCategoriesSpy).toHaveBeenCalledOnce();
+});
+
+test('getAboutAssets resolves hero background, subtract icon and goal icons in goal order', async () => {
+  repository = repoWith();
+  const about = await getAboutPage('vi');
+  const result = await getAboutAssets(about!);
+  expect(result.heroBgImage.id).toBe(about!.hero.imageId);
+  expect(result.subtractIcon.src).toBe('/wp-content/uploads/2024/02/Subtract.svg');
+  expect(result.goalIcons.map((a) => a.id)).toEqual(about!.goals.map((g) => g.iconId));
+});
+
+test('getAboutAssets rejects on a dangling goal icon id', async () => {
+  repository = repoWith();
+  const about = await getAboutPage('vi');
+  const goals = about!.goals.map((g, i) => (i === 2 ? { ...g, iconId: 'asset-nope' } : g));
+  await expect(getAboutAssets({ ...about!, goals })).rejects.toThrow(
+    'about-vi references missing ids: asset-nope',
+  );
+});
+
+test('getAboutPage resolves 3 testimonials in placement order', async () => {
+  repository = repoWith();
+  const about = await getAboutPage('vi');
+  expect(about).not.toBeNull();
+  expect(about!.testimonials).toHaveLength(3);
+  expect(about!.testimonials.map((t) => t.id)).toEqual([
+    'testimonial-feedback-ten',
+    'testimonial-feedback-dong-a',
+    'testimonial-feedback-vinatex',
+  ]);
+  expect(about!.stats).toHaveLength(4);
+  expect(about!.marqueeSeparator.id).toBe('asset-400b882328');
+  expect(about!.purposeImage.id).toBe('asset-e0d6652ff9');
+  expect(about!.timelineDot.id).toBe('asset-c78e42b8a9');
+});
+
+test('getAboutPage rejects when testimonial id is missing', async () => {
+  const aboutRecord = aboutPages.find((p) => p.locale === 'vi')!;
+  repository = repoWith({
+    aboutPages: [
+      {
+        ...aboutRecord,
+        testimonialIds: [...aboutRecord.testimonialIds, 'testimonial-nonexistent'],
+      },
+    ],
+  });
+  await expect(getAboutPage('vi')).rejects.toThrow(
+    'about-vi references missing ids: testimonial-nonexistent',
+  );
+});
+
+test('getAboutPage rejects when an asset id is missing', async () => {
+  const aboutRecord = aboutPages.find((p) => p.locale === 'vi')!;
+  repository = repoWith({ aboutPages: [{ ...aboutRecord, timelineDotId: 'asset-nope' }] });
+  await expect(getAboutPage('vi')).rejects.toThrow('about-vi references missing ids: asset-nope');
+});
+
+test('getAboutPage resolves the EN page with its stats in record order', async () => {
+  repository = repoWith();
+  const about = await getAboutPage('en');
+  const record = aboutPages.find((p) => p.locale === 'en')!;
+  expect(about!.id).toBe('about-en');
+  expect(about!.stats.map((s) => s.id)).toEqual(record.statIds);
+  expect(about!.testimonials.map((t) => t.id)).toEqual(record.testimonialIds);
+  expect(about!.timelineDot.id).toBe(record.timelineDotId);
 });

@@ -68,6 +68,11 @@ const mockPage = (service = storageServices[0]): ServicePage => ({
 const mockAssets: ServiceAssets = {
   heroImage: null,
   heroBgImage: null,
+  benefitsBgImage: null,
+  advantagesPhoto: null,
+  advantagesDeco: null,
+  offeringsBgImage: null,
+  ctaIcon: null,
   benefitsVideo: null,
   benefitIcons: [],
   offeringMedia: [],
@@ -78,6 +83,10 @@ const mockAssets: ServiceAssets = {
     quoteIcon: { id: 'q', src: '/q.svg', alt: '', kind: 'image', status: 'local', sources: [] },
     line: { id: 'l', src: '/l.svg', alt: '', kind: 'image', status: 'local', sources: [] },
   },
+  planIcons: [],
+  marqueeSeparator: null,
+  projectAssets: [],
+  projectCategories: [],
 };
 
 describe('StorageOfferings / StorageServiceView', () => {

@@ -8,10 +8,14 @@ export interface PageHeroIds {
   textBox: string;
   /** Source text-box vertical position class at small widths; defaults to `y15`. */
   textBoxY?: string;
+  /** Source text-box vertical position class at medium/large widths; defaults to `md-y50 lg-y50`. */
+  textBoxMdLgY?: string;
   row: string;
   leftCol: string;
   /** Gap before the breadcrumb (hosting). */
   topGap?: string;
+  /** Classes on topGap element; defaults to `gap-element clearfix`. */
+  topGapClass?: string;
   breadcrumbText?: string;
   /** `show-for-small` gap after the breadcrumb (VPS). */
   breadcrumbGap?: string;
@@ -35,6 +39,8 @@ export interface PageHeroIds {
   rightCol: string;
   imageWrapper: string;
   bottomGap?: string;
+  /** Classes on bottomGap element; defaults to `gap-element clearfix`. */
+  bottomGapClass?: string;
 }
 
 export interface PageHeroProps {
@@ -43,6 +49,8 @@ export interface PageHeroProps {
   bgImage?: AssetRef | null;
   ids: PageHeroIds;
   bannerClass?: string;
+  /** Optional icon to render inside the CTA button (e.g. Vector-Stroke arrow). */
+  ctaIcon?: AssetRef | null;
 }
 
 export function PageHero({
@@ -51,6 +59,7 @@ export function PageHero({
   bgImage,
   ids,
   bannerClass = 'banner-service',
+  ctaIcon,
 }: PageHeroProps) {
   const { breadcrumb } = hero;
 
@@ -76,7 +85,7 @@ export function PageHero({
             <div className="fill banner-link" />
             <div
               id={ids.textBox}
-              className={`text-box banner-layer x50 md-x50 lg-x50 ${ids.textBoxY ?? 'y15'} md-y50 lg-y50 res-text`}
+              className={`text-box banner-layer x50 md-x50 lg-x50 ${ids.textBoxY ?? 'y15'} ${ids.textBoxMdLgY ?? 'md-y50 lg-y50'} res-text`}
             >
               <div className="text-box-content text dark">
                 <div className="text-inner text-center">
@@ -86,7 +95,7 @@ export function PageHero({
                         {ids.topGap && (
                           <div
                             id={ids.topGap}
-                            className="gap-element clearfix"
+                            className={ids.topGapClass ?? 'gap-element clearfix'}
                             style={{ display: 'block', height: 'auto' }}
                           />
                         )}
@@ -175,6 +184,20 @@ export function PageHero({
                             <p>
                               <Link className="but-lh" href={hero.cta.href}>
                                 {hero.cta.label}
+                                {ctaIcon && (
+                                  <>
+                                    {'\u00a0\u00a0'}
+                                    <img
+                                      decoding="async"
+                                      className="alignnone wp-image-29 size-thumbnail"
+                                      role="img"
+                                      src={ctaIcon.src}
+                                      alt={ctaIcon.alt ?? ''}
+                                      width={ctaIcon.width ?? 15}
+                                      height={ctaIcon.height ?? 15}
+                                    />
+                                  </>
+                                )}
                               </Link>
                               <br />
                             </p>
@@ -215,7 +238,7 @@ export function PageHero({
       {ids.bottomGap && (
         <div
           id={ids.bottomGap}
-          className="gap-element clearfix"
+          className={ids.bottomGapClass ?? 'gap-element clearfix'}
           style={{ display: 'block', height: 'auto' }}
         />
       )}

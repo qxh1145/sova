@@ -36,6 +36,7 @@ export const storageServices: Service[] = [
         { label: 'Giải pháp lưu trữ' },
       ],
     },
+    advantagesDecoId: 'asset-bcb1d8243f',
     benefits: [],
     faqs: [
       { faqId: 'faq-vi-690555841', order: 1 },
@@ -179,6 +180,7 @@ export const storageServices: Service[] = [
         { label: 'Storage solutions' },
       ],
     },
+    advantagesDecoId: 'asset-bcb1d8243f',
     benefits: [],
     faqs: [
       { faqId: 'faq-en-825743395', order: 1 },

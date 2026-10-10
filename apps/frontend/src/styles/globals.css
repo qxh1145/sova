@@ -106,9 +106,197 @@ html.has-custom-cursor .cursor-ring {
   font-family: Poppins, sans-serif !important;
 }
 
+/* About achievements heading (VI + EN): same source inline rule. */
+#text-1037698079 h2,
+#text-714894948 h2 {
+  font-family: Poppins, sans-serif !important;
+}
+
+/* SEO package card titles 1-3 (grid + slider, VI + EN): same source inline rule; card 4 has none. */
+#text-494824446 h2,
+#text-2043975176 h2,
+#text-1523480848 h2,
+#text-1002710887 h2,
+#text-1139255846 h2,
+#text-2735994447 h2,
+#text-841039287 h2,
+#text-347169200 h2,
+#text-1253327573 h2,
+#text-2566137859 h2,
+#text-4120876264 h2,
+#text-3433546042 h2,
+/* Branding package card titles 1-3 (grid + slider, VI + EN): same source inline rule; card 4 has none. */
+#text-416182715 h3,
+#text-3561662835 h3,
+#text-2769390199 h3,
+#text-468364383 h3,
+#text-230387822 h3,
+#text-4183536390 h3,
+#text-1087990166 h3,
+#text-857844955 h3,
+#text-3557948308 h3,
+#text-1459112478 h3,
+#text-4105864399 h3,
+#text-933025357 h3 {
+  font-family: Poppins, sans-serif !important;
+}
+
+/* SEO advantage card titles: in source a per-id <style> follows each h3, so `.last-reset :last-child`
+   never zeroes its 0.5em bottom margin. */
+#section_922596210 .icon-box-text > .text > h3,
+#section_1367982414 .icon-box-text > .text > h3 {
+  margin-bottom: 0.5em;
+}
+
+/* SEO FAQ answers: source per-id rule on every answer `.text` (`font-size: 1.1rem; color: #fff`). */
+#col-161830420 .accordion-inner > .text,
+#col-1084451967 .accordion-inner > .text {
+  font-size: 1.1rem;
+  color: rgb(255, 255, 255);
+}
+
+/* SEO FAQ titles: source `a.accordion-title`; the shared Accordion renders a <button>, which picks up
+   Flatsome button metrics (2.4em line-height, 1em margins, bold, letter-spacing). Reset to the anchor's.
+   ponytail: scoped to the SEO FAQ; drop once Accordion stops inheriting button styles everywhere. */
+#col-161830420 .ac-luutru .accordion-title,
+#col-1084451967 .ac-luutru .accordion-title {
+  margin: 0;
+  min-height: 0;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 1.6;
+  vertical-align: baseline;
+  text-rendering: auto;
+}
+
+/* Its toggle is a <span> here but a Flatsome <button> in source: give it the button box. */
+#col-161830420 .ac-luutru .accordion-title .toggle,
+#col-1084451967 .ac-luutru .accordion-title .toggle {
+  border: 1px solid transparent;
+  padding-right: 0;
+  min-width: 24px;
+  min-height: 2.5em;
+  font-size: 0.97em;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
 [data-media-status='missing'] {
   display: inline-block;
   background-color: rgba(255, 255, 255, 0.05);
   max-width: 100%;
+}
+
+/* Website consultation banner mobile styling (Story 5.8 / A06 decision) */
+@media (max-width: 549px) {
+  #banner-1813159824,
+  #banner-1313966365 {
+    padding-top: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  #banner-1813159824 .banner-inner,
+  #banner-1313966365 .banner-inner {
+    position: relative !important;
+    height: auto !important;
+  }
+  #banner-1813159824 .banner-layers,
+  #banner-1313966365 .banner-layers {
+    position: relative !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 40px 15px !important;
+  }
+  #banner-1813159824 .banner-layer,
+  #banner-1313966365 .banner-layer {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  #text-box-461418576 .text-inner,
+  #text-box-2108502950 .text-inner {
+    padding: 0 0 20px 0 !important;
+  }
+  #text-box-324172340 {
+    margin-bottom: 20px !important;
+  }
+  #text-box-1917404396 .text-inner,
+  #text-box-1136070934 .text-inner {
+    padding: 25px 20px !important;
+  }
+}
+
+/* Timeline continuous linear strip for About pages */
+@keyframes timeline-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.timeline-track-wrap {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+.timeline-track {
+  display: flex;
+  flex-wrap: nowrap;
+  width: max-content;
+  animation: timeline-scroll 35s linear infinite;
+  will-change: transform;
+}
+
+.timeline-item {
+  flex: 0 0 auto;
+  width: 280px;
+}
+
+/* Not in source: let users stop the strip to read a milestone. */
+.timeline-track-wrap:hover .timeline-track,
+.timeline-track-wrap:focus-within .timeline-track {
+  animation-play-state: paused;
+}
+
+@media (max-width: 549px) {
+  .timeline-track {
+    animation: none !important;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .timeline-item {
+    width: 100%;
+  }
+  .timeline-track [aria-hidden="true"] {
+    display: none !important;
+  }
+}
+
+/* Reduced motion: no loop, so drop the duplicate set and let the strip scroll by hand. */
+@media (prefers-reduced-motion: reduce) {
+  .timeline-track-wrap {
+    overflow-x: auto;
+  }
+  .timeline-track {
+    animation: none;
+  }
+  .timeline-track [aria-hidden="true"] {
+    display: none;
+  }
 }
 

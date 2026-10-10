@@ -2,18 +2,18 @@ import type { Locale } from '@/types/content';
 import type { ServiceAssets, ServicePage } from '@/lib/queries/services';
 import { PageHero } from '@/components/hero/PageHero';
 import {
-  SERVICE_HERO_IDS_EN,
-  SERVICE_HERO_IDS_VI,
+  SERVICE_HERO_IDS_MOBILE_EN,
+  SERVICE_HERO_IDS_MOBILE_VI,
 } from './serviceHeroIds';
 import {
   ServiceBenefits,
-  SERVICE_BENEFITS_IDS_EN,
-  SERVICE_BENEFITS_IDS_VI,
+  SERVICE_BENEFITS_IDS_MOBILE_EN,
+  SERVICE_BENEFITS_IDS_MOBILE_VI,
 } from './ServiceBenefits';
 import {
   ServiceDetailCards,
-  SERVICE_DETAIL_CARDS_IDS_EN,
-  SERVICE_DETAIL_CARDS_IDS_VI,
+  SERVICE_DETAIL_CARDS_IDS_MOBILE_EN,
+  SERVICE_DETAIL_CARDS_IDS_MOBILE_VI,
   SERVICE_CAROUSEL_LABELS,
 } from './ServiceDetailCards';
 import {
@@ -23,6 +23,14 @@ import {
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { FAQList } from '@/components/faq/FAQList';
+import { FeaturedProjects, type FeaturedProjectsIds } from '@/components/projects/FeaturedProjects';
+
+const FEATURED_PROJECTS_IDS_MOBILE: FeaturedProjectsIds = {
+  row: 'row-26389138',
+  col: 'col-1861618344',
+  eyebrow: 'text-1571546421',
+  title: 'text-84787226',
+};
 
 export interface MobileServiceViewProps {
   page: ServicePage;
@@ -42,16 +50,16 @@ export function MobileServiceView({ page, assets, locale }: MobileServiceViewPro
         hero={service.hero}
         heroImage={assets.heroImage}
         bgImage={assets.heroBgImage}
-        ids={isEn ? SERVICE_HERO_IDS_EN : SERVICE_HERO_IDS_VI}
+        ids={isEn ? SERVICE_HERO_IDS_MOBILE_EN : SERVICE_HERO_IDS_MOBILE_VI}
       />
 
       {/* 2. Benefits */}
       <ServiceBenefits
         copy={copy.benefits}
         benefits={service.benefits}
-        videoAsset={assets.benefitsVideo}
+        video={assets.benefitsVideo}
         icons={assets.benefitIcons}
-        ids={isEn ? SERVICE_BENEFITS_IDS_EN : SERVICE_BENEFITS_IDS_VI}
+        ids={isEn ? SERVICE_BENEFITS_IDS_MOBILE_EN : SERVICE_BENEFITS_IDS_MOBILE_VI}
       />
 
       {/* 3. Why Choose Us / ServiceDetailCards */}
@@ -59,18 +67,23 @@ export function MobileServiceView({ page, assets, locale }: MobileServiceViewPro
         copy={copy.offerings}
         offerings={service.offerings}
         subtractIcon={assets.subtractIcon}
-        ids={isEn ? SERVICE_DETAIL_CARDS_IDS_EN : SERVICE_DETAIL_CARDS_IDS_VI}
+        ids={isEn ? SERVICE_DETAIL_CARDS_IDS_MOBILE_EN : SERVICE_DETAIL_CARDS_IDS_MOBILE_VI}
         labels={SERVICE_CAROUSEL_LABELS[locale]}
       />
 
-      {/* 4. Story 9 featured projects slot */}
-      <section
-        className="section ss-decor"
-        id={isEn ? 'section_2081583834' : 'section_667104485'}
-      >
+      {/* 4. Story 9: Featured projects */}
+      <section className="section ss-decor" id={isEn ? 'section_2081583834' : 'section_667104485'}>
         <div className="section-bg fill" />
         <div className="section-content relative">
-          {/* Story 9: FeaturedProjects will be placed here */}
+          {copy.projects && (
+            <FeaturedProjects
+              projects={page.projects}
+              copy={copy.projects}
+              assets={assets.projectAssets}
+              categories={assets.projectCategories}
+              ids={FEATURED_PROJECTS_IDS_MOBILE}
+            />
+          )}
         </div>
       </section>
 
@@ -88,10 +101,7 @@ export function MobileServiceView({ page, assets, locale }: MobileServiceViewPro
 
       {/* 6. FAQ */}
       {faqs.length > 0 && copy.faq && (
-        <section
-          className="section"
-          id={isEn ? 'section_703582263' : 'section_2067065940'}
-        >
+        <section className="section" id={isEn ? 'section_703582263' : 'section_2067065940'}>
           <div className="section-bg fill" />
           <div className="section-content relative">
             <div className="row" id={isEn ? 'row-1992151414' : 'row-674151979'}>
@@ -101,10 +111,7 @@ export function MobileServiceView({ page, assets, locale }: MobileServiceViewPro
               >
                 <div className="col-inner">
                   {copy.faq.eyebrow && (
-                    <div
-                      id={isEn ? 'text-2121488980' : 'text-2374356157'}
-                      className="text"
-                    >
+                    <div id={isEn ? 'text-2121488980' : 'text-2374356157'} className="text">
                       <p>
                         <strong>
                           <span style={{ color: '#0065df' }}>{copy.faq.eyebrow}</span>
@@ -112,10 +119,7 @@ export function MobileServiceView({ page, assets, locale }: MobileServiceViewPro
                       </p>
                     </div>
                   )}
-                  <div
-                    id={isEn ? 'text-4015396145' : 'text-1185368481'}
-                    className="text"
-                  >
+                  <div id={isEn ? 'text-4015396145' : 'text-1185368481'} className="text">
                     <h2>{copy.faq.title}</h2>
                   </div>
                 </div>

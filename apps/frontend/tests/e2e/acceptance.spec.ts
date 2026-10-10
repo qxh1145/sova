@@ -7,6 +7,16 @@ import {
   STAGING,
   test,
 } from './fixtures';
+import { aboutPages } from '../../src/data/pages/about';
+import { brandingServices } from '../../src/data/services/branding';
+import { emailServices } from '../../src/data/services/email';
+import { hostingServices } from '../../src/data/services/hosting';
+import { mobileServices } from '../../src/data/services/mobile';
+import { seoServices } from '../../src/data/services/seo';
+import { storageServices } from '../../src/data/services/storage';
+import { vpsServices } from '../../src/data/services/vps';
+import { websiteServices } from '../../src/data/services/website';
+import type { Service } from '@/types/content';
 
 const WIDTHS = [390, 549, 550, 768, 849, 850, 1280, 1440];
 
@@ -529,6 +539,68 @@ test.describe('Acceptance: Collections', () => {
         page.locator(landmark).first(),
         `Landmark ${landmark} visible on ${routePath}`,
       ).toBeVisible();
+    });
+  }
+});
+
+test.describe('Acceptance: Services and About', () => {
+  test.beforeEach(async ({ page }) => {
+    setupConsoleCollector(page);
+  });
+
+  test.afterEach(async ({ page }) => {
+    verifyConsoleCollector(page);
+  });
+
+  const allServices: Service[] = [
+    ...websiteServices,
+    ...mobileServices,
+    ...seoServices,
+    ...brandingServices,
+    ...storageServices,
+    ...emailServices,
+    ...hostingServices,
+    ...vpsServices,
+  ];
+
+  for (const service of allServices) {
+    test(`Service ${service.key} (${service.locale}) on ${service.path} returns 200, key landmarks, and clean console`, async ({
+      page,
+    }) => {
+      const response = await page.goto(service.path);
+      expect(response?.ok(), `Route ${service.path} returned status ${response?.status()}`).toBe(
+        true,
+      );
+      await expect(page.locator('main h1').first()).toBeVisible();
+
+      const expectedFaqCount = service.faqs?.length ?? 0;
+      await expect(page.locator('.accordion-item')).toHaveCount(expectedFaqCount);
+
+      if ((service.testimonialIds?.length ?? 0) > 0) {
+        await expect(page.locator('.slide-kh, .section.ss-kh').first()).toBeVisible();
+      }
+
+      if (service.pricingId) {
+        await expect(
+          page.locator('.eras-table-price, main table, .vps-table-wrapper').first(),
+        ).toBeVisible();
+      }
+    });
+  }
+
+  for (const about of aboutPages) {
+    test(`About (${about.locale}) on ${about.path} returns 200, key landmarks, and clean console`, async ({
+      page,
+    }) => {
+      const response = await page.goto(about.path);
+      expect(response?.ok(), `Route ${about.path} returned status ${response?.status()}`).toBe(
+        true,
+      );
+      await expect(page.locator('main h1, div#content[role="main"] h1').first()).toBeVisible();
+
+      if ((about.testimonialIds?.length ?? 0) > 0) {
+        await expect(page.locator('.slide-kh, .section.ss-kh').first()).toBeVisible();
+      }
     });
   }
 });

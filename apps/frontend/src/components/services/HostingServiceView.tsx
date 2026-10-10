@@ -21,7 +21,7 @@ import {
   TESTIMONIALS_IDS_HOSTING_VI,
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
-import { FAQList } from '@/components/faq/FAQList';
+import { ServiceFAQ } from './ServiceFAQ';
 
 export interface HostingServiceViewProps {
   page: ServicePage;
@@ -98,56 +98,7 @@ export function HostingServiceView({ page, assets, locale }: HostingServiceViewP
       )}
 
       {/* 5. FAQ */}
-      {faqs.length > 0 && copy.faq && (
-        <section className="section" id={faqIds.section}>
-          <div className="section-bg fill" />
-          <div className="section-content relative">
-            <div
-              id={faqIds.gap}
-              className="gap-element clearfix"
-              style={{ display: 'block', height: 'auto' }}
-            />
-            <div className="row" id={faqIds.headingRow}>
-              <div id={faqIds.headingCol} className="col small-12 large-12">
-                <div className="col-inner">
-                  {copy.faq.eyebrow && (
-                    <div id={faqIds.eyebrowText} className="text">
-                      <p>
-                        <strong>
-                          <span style={{ color: '#0065df' }}>{copy.faq.eyebrow}</span>
-                        </strong>
-                        <br />
-                      </p>
-                    </div>
-                  )}
-                  <div id={faqIds.titleText} className="text">
-                    <h2>{copy.faq.title}</h2>
-                  </div>
-                  <div className="text-center">
-                    <div
-                      className="is-divider divider clearfix"
-                      style={{ maxWidth: 133, height: 2, backgroundColor: 'rgb(0, 101, 223)' }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="row" id={faqIds.listRow}>
-              <div id={faqIds.listCol} className="col small-12 large-12">
-                <div className="col-inner">
-                  <FAQList
-                    faqs={faqs}
-                    type="single"
-                    defaultOpen="first"
-                    className="ac-luutru"
-                    labels={{ toggle: isEn ? 'Toggle answer' : 'Mở rộng câu trả lời' }} // business-text-ok: accordion toggle label
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+      <ServiceFAQ faqs={faqs} copy={copy.faq} ids={faqIds} locale={locale} />
     </main>
   );
 }
