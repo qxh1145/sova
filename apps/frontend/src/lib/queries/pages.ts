@@ -178,23 +178,97 @@ export async function getHomeAssets(
   };
 }
 
-/** The about page with its shared stats filled; throws on dangling ids. */
-export async function getAboutPage(locale: Locale): Promise<AboutPageContent | null> {
-  const repository = getRepository();
+/** The about page with its shared stats and entities resolved; throws on dangling ids. */
+export async function getAboutPage(
+  locale: Locale,
+  repository: ContentRepository = getRepository(),
+): Promise<AboutPageContent | null> {
   const record = await repository.getAboutPage(locale);
   if (!record) return null;
-  const { statIds, ...page } = record;
-  const [stats, testimonials, partners] = await Promise.all([
+  const {
+    statIds,
+    marqueeSeparatorId,
+    testimonialArtIds,
+    purposeImageId,
+    timelineDotId,
+    ...page
+  } = record;
+  const [stats, testimonials, partners, assets] = await Promise.all([
     repository.getStats(statIds),
     repository.getTestimonials(record.testimonialIds, locale),
     repository.getPartners(record.partnerIds),
+    repository.getAssets([
+      marqueeSeparatorId,
+      testimonialArtIds.photoId,
+      testimonialArtIds.quoteIconId,
+      testimonialArtIds.lineId,
+      purposeImageId,
+      timelineDotId,
+    ]),
   ]);
+  const marqueeSeparator = assets.find((a) => a.id === marqueeSeparatorId) ?? null;
+  const photo = assets.find((a) => a.id === testimonialArtIds.photoId) ?? null;
+  const quoteIcon = assets.find((a) => a.id === testimonialArtIds.quoteIconId) ?? null;
+  const line = assets.find((a) => a.id === testimonialArtIds.lineId) ?? null;
+  const purposeImage = assets.find((a) => a.id === purposeImageId) ?? null;
+  const timelineDot = assets.find((a) => a.id === timelineDotId) ?? null;
+
   assertResolved(record.id, [
     ...missingIds(statIds, stats),
     ...missingIds(record.testimonialIds, testimonials),
     ...missingIds(record.partnerIds, partners),
+    ...missingIds(
+      [
+        marqueeSeparatorId,
+        testimonialArtIds.photoId,
+        testimonialArtIds.quoteIconId,
+        testimonialArtIds.lineId,
+        purposeImageId,
+        timelineDotId,
+      ],
+      assets,
+    ),
   ]);
-  return { ...page, stats };
+  return {
+    ...page,
+    stats: statIds.map((id) => stats.find((s) => s.id === id)!),
+    testimonials,
+    marqueeSeparator: marqueeSeparator!,
+    testimonialArt: {
+      photo: photo!,
+      quoteIcon: quoteIcon!,
+      line: line!,
+    },
+    purposeImage: purposeImage!,
+    timelineDot: timelineDot!,
+  };
+}
+
+export interface AboutAssets {
+  heroBgImage: AssetRef;
+  subtractIcon: AssetRef;
+  goalIcons: AssetRef[];
+}
+
+const SUBTRACT_ICON_ID = 'asset-d68ffd5723';
+
+/** Hero background, capability bullet icon and goal icons (goal order); throws on dangling ids. */
+export async function getAboutAssets(
+  page: AboutPageContent,
+  repository: ContentRepository = getRepository(),
+): Promise<AboutAssets> {
+  // An unset id is named by its field so the error points at it.
+  const heroId = page.hero.imageId ?? 'hero.imageId';
+  const goalIconIds = page.goals.map((g) => g.iconId ?? `${g.id}.iconId`);
+  const wanted = [heroId, SUBTRACT_ICON_ID, ...goalIconIds];
+  const assets = await repository.getAssets(wanted);
+  assertResolved(page.id, missingIds(wanted, assets));
+  const byId = (id: EntityId) => assets.find((a) => a.id === id)!;
+  return {
+    heroBgImage: byId(heroId),
+    subtractIcon: byId(SUBTRACT_ICON_ID),
+    goalIcons: goalIconIds.map(byId),
+  };
 }
 
 export function getContactPage(locale: Locale): Promise<ContactPageContent | null> {

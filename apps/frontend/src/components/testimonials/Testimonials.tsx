@@ -670,6 +670,74 @@ export const TESTIMONIALS_IDS_WEBSITE_EN: TestimonialsIds = {
   ],
 };
 
+export const TESTIMONIALS_IDS_ABOUT_VI: TestimonialsIds = {
+  section: 'section_1376011757',
+  row: 'row-417662834',
+  leftCol: 'col-1704034059',
+  imageWrapper: 'image_38454166',
+  rightCol: 'col-62393978',
+  eyebrowText: 'text-348727923',
+  titleText: 'text-851296666',
+  sliderWrapper: 'slider-409595782',
+  slides: [
+    {
+      row: 'row-327148031',
+      col: 'col-1677345672',
+      ndKh: 'text-1992447592',
+      line: 'text-595853813',
+      iconBoxText: 'text-1047436997',
+    },
+    {
+      row: 'row-418292890',
+      col: 'col-956621479',
+      ndKh: 'text-4114125688',
+      line: 'text-1342772100',
+      iconBoxText: 'text-2669029505',
+    },
+    {
+      row: 'row-1207997341',
+      col: 'col-312012375',
+      ndKh: 'text-728136302',
+      line: 'text-3178217724',
+      iconBoxText: 'text-312049271',
+    },
+  ],
+};
+
+export const TESTIMONIALS_IDS_ABOUT_EN: TestimonialsIds = {
+  section: 'section_229177142',
+  row: 'row-845168979',
+  leftCol: 'col-778877510',
+  imageWrapper: 'image_2128992176',
+  rightCol: 'col-1874560149',
+  eyebrowText: 'text-3654490439',
+  titleText: 'text-2484896865',
+  sliderWrapper: 'slider-867989172',
+  slides: [
+    {
+      row: 'row-937930353',
+      col: 'col-1248059485',
+      ndKh: 'text-1235286067',
+      line: 'text-3295138119',
+      iconBoxText: 'text-3970224626',
+    },
+    {
+      row: 'row-231975174',
+      col: 'col-142339302',
+      ndKh: 'text-2685319248',
+      line: 'text-4132207334',
+      iconBoxText: 'text-1970074443',
+    },
+    {
+      row: 'row-433011727',
+      col: 'col-1632026117',
+      ndKh: 'text-4198975865',
+      line: 'text-2961021405',
+      iconBoxText: 'text-2482293849',
+    },
+  ],
+};
+
 export const TESTIMONIALS_LABELS: Record<Locale, CarouselLabels> = {
   vi: {
     prev: 'Trước',
