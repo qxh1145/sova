@@ -65,6 +65,8 @@ export interface HeroContent {
   bgImageId?: EntityId;
   videoId?: EntityId;
   cta?: LinkModel;
+  /** Arrow icon after the CTA label (SEO VI `2024/02/Vector-Stroke.svg`). */
+  ctaIconId?: EntityId;
   breadcrumb?: { label: string; href?: string }[];
 }
 
@@ -88,11 +90,41 @@ export interface Service extends LocalizedIdentity {
   pricingId?: EntityId;
   /** Background image of the benefits icon-card section (hosting/VPS `ss-ndv-seo`). */
   benefitsBgImageId?: EntityId;
+  /** Photo in the advantages section (SEO `arthur-osipyan`). */
+  advantagesPhotoId?: EntityId;
+  /** Decorative graphic in the advantages heading row (SEO `Deco-1-6.svg`). */
+  advantagesDecoId?: EntityId;
+  /** Background image of the offerings section (SEO `b64598d7e18308083c456d32c69bae66.webp`). */
+  offeringsBgImageId?: EntityId;
   seo: SEO;
   /** Why-choose-us (website/mobile), packages (SEO/branding), hub summaries (storage); else []. */
   offerings: OfferingPanel[];
   /** Section headings; `contact` is the website form copy. */
   sectionCopy: Partial<Record<ServiceSection, SectionCopy>>;
+  /** Contact form labels and messages for website service consultation banner. */
+  contactForm?: WebsiteContactFormLabels;
+}
+
+export interface WebsiteContactFormLabels {
+  heading: string;
+  nameLabel: string;
+  namePlaceholder: string;
+  nameRequired: string;
+  phoneLabel: string;
+  phonePlaceholder: string;
+  phoneInvalid: string;
+  businessLabel: string;
+  businessPlaceholder: string;
+  businessRequired: string;
+  messageLabel: string;
+  messagePlaceholder: string;
+  submit: string;
+  submitting: string;
+  success: string;
+  error: string;
+  demoBadge: string;
+  hotlineLabel?: string;
+  hotlineHref?: string;
 }
 
 export type ServiceSection =
@@ -102,10 +134,12 @@ export interface OfferingPanel {
   id: EntityId;
   title: string;
   slideTitle?: string;
+  description?: string;
   content: RichContent;
   items?: string[];
   mediaId?: EntityId;
   cta?: { label: string; routeId: EntityId };
+  ctaHref?: { label: string; href: string };
 }
 
 export interface WebsiteContent {
@@ -418,7 +452,10 @@ export interface SectionCopy {
   title: string;
   /** Source `<br>` line breaks of `title`, set only when the heading has more than one line. */
   titleLines?: string[];
+  /** Source `<br>` line breaks of a separate mobile-only (`show-for-small`) heading, when they differ from `titleLines`. */
+  mobileTitleLines?: string[];
   description?: string;
+  descriptionLines?: string[];
 }
 
 export interface HomePageContent extends LocalizedIdentity {
@@ -486,10 +523,42 @@ export interface AboutPageContent extends LocalizedIdentity {
   capabilities: OfferingPanel[];
   partnerIds: EntityId[];
   testimonialIds: EntityId[];
+  testimonials: Testimonial[];
+  sectionCopy: Record<
+    'achievements' | 'goals' | 'purpose' | 'timeline' | 'pillars' | 'testimonials',
+    SectionCopy
+  >;
+  marqueeText: string[];
+  marqueeSeparator: Asset;
+  testimonialArt: {
+    photo: Asset;
+    quoteIcon: Asset;
+    line: Asset;
+  };
+  purposeImage: Asset;
+  timelineDot: Asset;
 }
 
-/** Stored about record; the query fills `stats` from `statIds`. */
-export type AboutPageRecord = Omit<AboutPageContent, 'stats'> & { statIds: EntityId[] };
+/** Stored about record; query fills resolved entities. */
+export type AboutPageRecord = Omit<
+  AboutPageContent,
+  | 'stats'
+  | 'testimonials'
+  | 'marqueeSeparator'
+  | 'testimonialArt'
+  | 'purposeImage'
+  | 'timelineDot'
+> & {
+  statIds: EntityId[];
+  marqueeSeparatorId: EntityId;
+  testimonialArtIds: {
+    photoId: EntityId;
+    quoteIconId: EntityId;
+    lineId: EntityId;
+  };
+  purposeImageId: EntityId;
+  timelineDotId: EntityId;
+};
 
 export interface ContactPageContent extends LocalizedIdentity {
   heading: string;

@@ -25,9 +25,17 @@ export const brandingServices: Service[] = [
         sources: [{ file: 'ui-ux-branding-design/index.html', line: 702 }],
       },
       imageId: 'asset-a6e7f1bdf3',
+      bgImageId: 'asset-e83e570e84',
+      breadcrumb: [
+        { label: 'Trang chủ', href: '/' },
+        { label: 'Dịch vụ' },
+        { label: 'UI/UX, Branding Design' },
+      ],
       videoId: 'asset-ae461bc091',
-      cta: { label: 'Kết nối ngay →', href: '/lien-he/' },
+      cta: { label: 'Kết nối ngay\u00a0 \u00a0→', href: '/lien-he/' },
     },
+    advantagesDecoId: 'asset-bcb1d8243f',
+    offeringsBgImageId: 'asset-e0d6652ff9',
     benefits: [
       {
         id: 'service-branding-vi-benefit-nghien-cuu-van-hoa-doanh-nghiep',
@@ -109,6 +117,18 @@ export const brandingServices: Service[] = [
       {
         id: 'service-branding-vi-offering-thiet-ke-logo-thuong-hieu',
         title: 'THIẾT KẾ LOGO THƯƠNG HIỆU',
+        description:
+          'Logo không chỉ là hình ảnh đại diện cho thương hiệu mà còn là công cụ giúp tạo dấu ấn mạnh mẽ trong tâm trí khách hàng.',
+        items: [
+          'Thiết kế độc quyền',
+          'Không trùng lặp',
+          'Phong cách thiết kế đa dạng',
+          'Định hướng thiết kế rõ ràng',
+          'Bộ nhận diện đầy đủ',
+          'Chỉnh sửa theo yêu cầu',
+          'Hoàn thành nhanh chóng',
+        ],
+        ctaHref: { label: 'Tư vấn miễn phí\u00a0 \u00a0→ ', href: '{{site.zaloHref}}' },
         content: {
           format: 'sanitized-html',
           html: '<p>Logo không chỉ là hình ảnh đại diện cho thương hiệu mà còn là công cụ giúp tạo dấu ấn mạnh mẽ trong tâm trí khách hàng.</p><ul><li>Thiết kế độc quyền</li><li>Không trùng lặp</li><li>Phong cách thiết kế đa dạng</li><li>Định hướng thiết kế rõ ràng</li><li>Bộ nhận diện đầy đủ</li><li>Chỉnh sửa theo yêu cầu</li><li>Hoàn thành nhanh chóng</li></ul><p><a href="{{site.zaloHref}}">Tư vấn miễn phí   → </a></p>',
@@ -119,6 +139,18 @@ export const brandingServices: Service[] = [
       {
         id: 'service-branding-vi-offering-thiet-ke-ui-ux-web-app',
         title: 'THIẾT KẾ UI/UX WEB/APP',
+        description:
+          'Dịch vụ thiết kế UI/UX chuyên nghiệp giúp nâng cao sự tương tác, tăng tỷ lệ chuyển đổi & tạo dấu ấn thương hiệu mạnh mẽ.',
+        items: [
+          'Giao diện hiện đại & Ấn tượng',
+          'Tối ưu trải nghiệm người dùng',
+          'Thiết Kế Responsive đa thiết bị',
+          'Prototype & Demo trực quan',
+          'Bàn giao đầy đủ file thiết kế',
+          'Điều chỉnh theo yêu cầu',
+          'Hoàn thành nhanh chóng',
+        ],
+        ctaHref: { label: 'Tư vấn miễn phí\u00a0 \u00a0→ ', href: '{{site.zaloHref}}' },
         content: {
           format: 'sanitized-html',
           html: '<p>Dịch vụ thiết kế UI/UX chuyên nghiệp giúp nâng cao sự tương tác, tăng tỷ lệ chuyển đổi &amp; tạo dấu ấn thương hiệu mạnh mẽ.</p><ul><li>Giao diện hiện đại &amp; Ấn tượng</li><li>Tối ưu trải nghiệm người dùng</li><li>Thiết Kế Responsive đa thiết bị</li><li>Prototype &amp; Demo trực quan</li><li>Bàn giao đầy đủ file thiết kế</li><li>Điều chỉnh theo yêu cầu</li><li>Hoàn thành nhanh chóng</li></ul><p><a href="{{site.zaloHref}}">Tư vấn miễn phí   → </a></p>',
@@ -129,6 +161,18 @@ export const brandingServices: Service[] = [
       {
         id: 'service-branding-vi-offering-thiet-ke-nhan-dien-thuong-hieu',
         title: 'THIẾT KẾ NHẬN DIỆN THƯƠNG HIỆU',
+        description:
+          'Một bộ nhận diện thương hiệu chuyên nghiệp, đồng nhất giúp tăng độ nhận diện, tạo dấu ấn mạnh mẽ & nâng cao uy tín trong mắt khách hàng.',
+        items: [
+          'Tư vấn miễn phí',
+          'Dễ dàng nhận diện',
+          'Bộ nhận diện hoàn chỉnh',
+          'Sáng tạo & Khác biệt',
+          'Bàn giao file gốc & HDSD',
+          'Hỗ trợ điều chỉnh',
+          'Hoàn thành nhanh chóng',
+        ],
+        ctaHref: { label: 'Tư vấn miễn phí\u00a0 \u00a0→ ', href: '{{site.zaloHref}}' },
         content: {
           format: 'sanitized-html',
           html: '<p>Một bộ nhận diện thương hiệu chuyên nghiệp, đồng nhất giúp tăng độ nhận diện, tạo dấu ấn mạnh mẽ &amp; nâng cao uy tín trong mắt khách hàng.</p><ul><li>Tư vấn miễn phí</li><li>Dễ dàng nhận diện</li><li>Bộ nhận diện hoàn chỉnh</li><li>Sáng tạo &amp; Khác biệt</li><li>Bàn giao file gốc &amp; HDSD</li><li>Hỗ trợ điều chỉnh</li><li>Hoàn thành nhanh chóng</li></ul><p><a href="{{site.zaloHref}}">Tư vấn miễn phí   → </a></p>',
@@ -139,6 +183,16 @@ export const brandingServices: Service[] = [
       {
         id: 'service-branding-vi-offering-thiet-ke-nhan-dien-tai-diem-ban',
         title: 'THIẾT KẾ NHẬN DIỆN TẠI ĐIỂM BÁN',
+        description:
+          'Một hệ thống nhận diện tại điểm bán chuyên nghiệp, thu hút & đồng nhất giúp thương hiệu nổi bật, tạo ấn tượng mạnh mẽ với khách hàng và thúc đẩy doanh số bán hàng.',
+        items: [
+          'Biển hiệu & Trang trí không gian',
+          'POSM – Hỗ trợ bán hàng',
+          'Bao bì & Ấn phẩm đồng bộ',
+          'Đồng phục & Phụ kiện nhận diện',
+          'Hoàn thành nhanh chóng',
+        ],
+        ctaHref: { label: 'Tư vấn miễn phí\u00a0 \u00a0→ ', href: '{{site.zaloHref}}' },
         content: {
           format: 'sanitized-html',
           html: '<p>Một hệ thống nhận diện tại điểm bán chuyên nghiệp, thu hút &amp; đồng nhất giúp thương hiệu nổi bật, tạo ấn tượng mạnh mẽ với khách hàng và thúc đẩy doanh số bán hàng.</p><ul><li>Biển hiệu &amp; Trang trí không gian</li><li>POSM – Hỗ trợ bán hàng</li><li>Bao bì &amp; Ấn phẩm đồng bộ</li><li>Đồng phục &amp; Phụ kiện nhận diện</li><li>Hoàn thành nhanh chóng</li></ul><p><a href="{{site.zaloHref}}">Tư vấn miễn phí   → </a></p>',
@@ -153,7 +207,11 @@ export const brandingServices: Service[] = [
         title: 'Tại Sova',
         description: 'Chúng tôi thiết kế dựa trên cốt lõi văn hóa doanh nghiệp',
       },
-      offerings: { eyebrow: 'Những dịch vụ', title: 'Thiết kế UI/UX' },
+      offerings: {
+        eyebrow: 'Những dịch vụ',
+        title: 'Thiết kế UI/UX tại Sova',
+        titleLines: ['Thiết kế UI/UX', 'tại Sova'],
+      },
       projects: {
         eyebrow: 'Sova',
         title: 'Dự án chứa đựng Tâm huyết Sáng tạo',
@@ -164,7 +222,7 @@ export const brandingServices: Service[] = [
         title: 'Khách hàng nhận xét về chúng tôi',
         titleLines: ['Khách hàng nhận xét', 'về chúng tôi'],
       },
-      faq: { title: 'Những câu hỏi thường gặp' },
+      faq: { eyebrow: 'GIẢI ĐÁP', title: 'Những câu hỏi thường gặp' },
     },
   },
   {
@@ -190,9 +248,17 @@ export const brandingServices: Service[] = [
         sources: [{ file: 'en/ui-ux-branding-design-2/index.html', line: 702 }],
       },
       imageId: 'asset-a6e7f1bdf3',
+      bgImageId: 'asset-e83e570e84',
+      breadcrumb: [
+        { label: 'Home', href: '/en/' },
+        { label: 'Services' },
+        { label: 'UI/UX, Branding Design' },
+      ],
       videoId: 'asset-ae461bc091',
-      cta: { label: 'Connect now →', href: '/en/contact-us/' },
+      cta: { label: 'Connect now\u00a0 \u00a0→ ', href: '/en/contact-us/' },
     },
+    advantagesDecoId: 'asset-bcb1d8243f',
+    offeringsBgImageId: 'asset-e0d6652ff9',
     benefits: [
       {
         id: 'service-branding-en-benefit-corporate-culture-research',
@@ -267,6 +333,18 @@ export const brandingServices: Service[] = [
       {
         id: 'service-branding-en-offering-brand-logo-design',
         title: 'BRAND LOGO DESIGN',
+        description:
+          'A logo is more than just a visual symbol — it’s a powerful tool to establish a lasting impression in the minds of your customers.',
+        items: [
+          'Exclusive Design',
+          'No Duplicates',
+          'Diverse Design Styles',
+          'Clear Design Direction',
+          'Complete Brand Identity Package',
+          'Revision on Request',
+          'Fast Turnaround',
+        ],
+        ctaHref: { label: 'Free Consultation\u00a0 \u00a0→ ', href: '{{site.zaloHref}}' },
         content: {
           format: 'sanitized-html',
           html: '<p>A logo is more than just a visual symbol — it’s a powerful tool to establish a lasting impression in the minds of your customers.</p><ul><li>Exclusive Design</li><li>No Duplicates</li><li>Diverse Design Styles</li><li>Clear Design Direction</li><li>Complete Brand Identity Package</li><li>Revision on Request</li><li>Fast Turnaround</li></ul><p><a href="{{site.zaloHref}}">Free Consultation   → </a></p>',
@@ -277,6 +355,18 @@ export const brandingServices: Service[] = [
       {
         id: 'service-branding-en-offering-ui-ux-design-for-web-app',
         title: 'UI/UX DESIGN FOR WEB & APP',
+        description:
+          'Professional UI/UX design services to enhance user engagement, boost conversion rates, and build a strong brand impression.',
+        items: [
+          'Modern & Striking Interfaces',
+          'Optimized User Experience',
+          'Responsive Design Across All Devices',
+          'Interactive Prototypes & Visual Demos',
+          'Complete Design File Handover',
+          'Custom Revisions Upon Request',
+          'Fast Turnaround',
+        ],
+        ctaHref: { label: 'Free Consultation\u00a0 \u00a0→ ', href: '{{site.zaloHref}}' },
         content: {
           format: 'sanitized-html',
           html: '<p>Professional UI/UX design services to enhance user engagement, boost conversion rates, and build a strong brand impression.</p><ul><li>Modern &amp; Striking Interfaces</li><li><strong>Optimized User Experience</strong></li><li>Responsive Design Across All Devices</li><li>Interactive Prototypes &amp; Visual Demos</li><li><strong>Complete Design File Handover</strong></li><li><strong>Custom Revisions Upon Request</strong></li><li>Fast Turnaround</li></ul><p><a href="{{site.zaloHref}}">Free Consultation   → </a></p>',
@@ -287,6 +377,18 @@ export const brandingServices: Service[] = [
       {
         id: 'service-branding-en-offering-brand-identity-design',
         title: 'BRAND IDENTITY DESIGN',
+        description:
+          'A professional and consistent brand identity helps enhance recognition, build trust, and create a lasting impression with your audience.',
+        items: [
+          'Free Consultation',
+          'Easy-to-Recognize Visuals',
+          'Complete Identity Package',
+          'Creative & Distinctive',
+          'Source Files & User Guide Included',
+          'Flexible Revisions & Support',
+          'Fast Turnaround',
+        ],
+        ctaHref: { label: 'Free Consultation\u00a0 \u00a0→ ', href: '{{site.zaloHref}}' },
         content: {
           format: 'sanitized-html',
           html: '<p>A professional and consistent brand identity helps enhance recognition, build trust, and create a lasting impression with your audience.</p><ul><li>Free Consultation</li><li>Easy-to-Recognize Visuals</li><li>Complete Identity Package</li><li>Creative &amp; Distinctive</li><li>Source Files &amp; User Guide Included</li><li>Flexible Revisions &amp; Support</li><li>Fast Turnaround</li></ul><p><a href="{{site.zaloHref}}">Free Consultation   → </a></p>',
@@ -297,6 +399,16 @@ export const brandingServices: Service[] = [
       {
         id: 'service-branding-en-offering-retail-brand-identity-design',
         title: 'RETAIL BRAND IDENTITY DESIGN',
+        description:
+          'A professional, cohesive, and visually compelling point-of-sale (POS) identity system enhances brand recognition, captivates customers, and drives sales performance.',
+        items: [
+          'Signage & In-Store Visual Merchandising',
+          'POSM (Point-of-Sale Materials)',
+          'Branded Packaging & Collateral',
+          'Uniforms & Branded Accessories',
+          'Fast Turnaround',
+        ],
+        ctaHref: { label: 'Free Consultation\u00a0 \u00a0→ ', href: '{{site.zaloHref}}' },
         content: {
           format: 'sanitized-html',
           html: '<p>A professional, cohesive, and visually compelling point-of-sale (POS) identity system enhances brand recognition, captivates customers, and drives sales performance.</p><ul><li><strong>Signage &amp; In-Store Visual Merchandising</strong></li><li>POSM (Point-of-Sale Materials)</li><li>Branded Packaging &amp; Collateral</li><li><strong>Uniforms &amp; Branded Accessories</strong></li><li>Fast Turnaround</li></ul><p><a href="{{site.zaloHref}}">Free Consultation   → </a></p>',
@@ -311,14 +423,17 @@ export const brandingServices: Service[] = [
         title: 'At Sova',
         description: 'We design with your corporate culture at the core',
       },
-      offerings: { eyebrow: 'Services', title: 'UI/UX Design at Sova' },
+      offerings: {
+        eyebrow: 'Services',
+        title: 'UI/UX Design at Sova',
+      },
       projects: {
         eyebrow: 'Sova',
         title: 'Some Recent Works We’re Really Proud Of.',
         titleLines: ['Some Recent Works', 'We’re Really Proud Of.'],
       },
       testimonials: { eyebrow: 'Sova', title: 'Customer Reviews' },
-      faq: { title: 'Frequently Asked Questions' },
+      faq: { eyebrow: 'FAQs', title: 'Frequently Asked Questions' },
     },
   },
 ];

@@ -1,6 +1,6 @@
 import type { PageHeroIds } from '@/components/hero/PageHero';
 
-export const SERVICE_HERO_IDS_VI: PageHeroIds = {
+export const SERVICE_HERO_IDS_MOBILE_VI: PageHeroIds = {
   banner: 'banner-2067401347',
   textBox: 'text-box-1159832857',
   row: 'row-2031123420',
@@ -16,7 +16,7 @@ export const SERVICE_HERO_IDS_VI: PageHeroIds = {
   bottomGap: 'gap-81419604',
 };
 
-export const SERVICE_HERO_IDS_EN: PageHeroIds = {
+export const SERVICE_HERO_IDS_MOBILE_EN: PageHeroIds = {
   banner: 'banner-476138808',
   textBox: 'text-box-219311901',
   row: 'row-230224213',
@@ -182,4 +182,122 @@ export const SERVICE_HERO_IDS_STORAGE_EN: PageHeroIds = {
   ctaText: 'text-315635000',
   rightCol: 'col-411984466',
   imageWrapper: 'image_1524550594',
+};
+
+export const SERVICE_HERO_IDS_SEO_VI: PageHeroIds = {
+  banner: 'banner-1838497058',
+  textBox: 'text-box-2017708642',
+  textBoxY: 'y10',
+  row: 'row-620429071',
+  leftCol: 'col-362953623',
+  topGap: 'gap-463430753',
+  topGapClass: 'gap-element clearfix show-for-small',
+  breadcrumbText: 'text-639428615',
+  headingText: 'text-3096357586',
+  gap1: 'gap-229851411',
+  descText: 'text-3159619336',
+  gap2: 'gap-1962667582',
+  gap2Class: 'gap-element clearfix hide-for-small',
+  ctaText: 'text-1784037823',
+  rightCol: 'col-1419552812',
+  imageWrapper: 'image_110661338',
+  bottomGap: 'gap-1019205224',
+};
+
+export const SERVICE_HERO_IDS_SEO_EN: PageHeroIds = {
+  banner: 'banner-1245691485',
+  textBox: 'text-box-799730452',
+  textBoxY: 'y10',
+  row: 'row-1781195901',
+  leftCol: 'col-1881840210',
+  topGap: 'gap-716151157',
+  topGapClass: 'gap-element clearfix show-for-small',
+  breadcrumbText: 'text-4167340980',
+  headingText: 'text-620377729',
+  gap1: 'gap-1928757431',
+  descText: 'text-766261375',
+  gap2: 'gap-1561844270',
+  gap2Class: 'gap-element clearfix hide-for-small',
+  ctaText: 'text-2349830623',
+  rightCol: 'col-1507959162',
+  imageWrapper: 'image_580160889',
+  bottomGap: 'gap-832751667',
+};
+
+export const SERVICE_HERO_IDS_BRANDING_VI: PageHeroIds = {
+  banner: 'banner-5834555',
+  textBox: 'text-box-1219285313',
+  textBoxY: 'y10',
+  row: 'row-471901224',
+  leftCol: 'col-1715987027',
+  topGap: 'gap-15194992',
+  breadcrumbText: 'text-427293232',
+  headingText: 'text-2370816109',
+  gap1: 'gap-1443729080',
+  descText: 'text-3758262607',
+  gap2: 'gap-1042273031',
+  gap2Class: 'gap-element clearfix show-for-small',
+  gap2b: 'gap-1457367162',
+  ctaText: 'text-3358106738',
+  rightCol: 'col-1354430383',
+  imageWrapper: 'image_774116603',
+  bottomGap: 'gap-1551652140',
+};
+
+export const SERVICE_HERO_IDS_BRANDING_EN: PageHeroIds = {
+  banner: 'banner-1642333106',
+  textBox: 'text-box-907142283',
+  textBoxY: 'y10',
+  row: 'row-1765927486',
+  leftCol: 'col-212622425',
+  topGap: 'gap-1745052723',
+  breadcrumbText: 'text-931641378',
+  headingText: 'text-2928406345',
+  gap1: 'gap-237769046',
+  descText: 'text-3731462312',
+  gap2: 'gap-1895701864',
+  gap2Class: 'gap-element clearfix show-for-small',
+  gap2b: 'gap-57345781',
+  ctaText: 'text-1083235922',
+  rightCol: 'col-918123307',
+  imageWrapper: 'image_1057710240',
+  bottomGap: 'gap-654644653',
+};
+
+export const SERVICE_HERO_IDS_WEBSITE_VI: PageHeroIds = {
+  banner: 'banner-719407594',
+  textBox: 'text-box-1468346605',
+  textBoxY: 'y50',
+  textBoxMdLgY: 'md-y95 lg-y95',
+  row: 'row-644437839',
+  leftCol: 'col-1147227946',
+  breadcrumbText: 'text-560624937',
+  headingText: 'text-4267142593',
+  gap1: 'gap-179431260',
+  descText: 'text-183363122',
+  gap2: 'gap-1669332271',
+  ctaText: 'text-948406431',
+  rightCol: 'col-953347763',
+  imageWrapper: 'image_182304749',
+  bottomGap: 'gap-696007370',
+  bottomGapClass: 'gap-element clearfix hide-for-small',
+};
+
+export const SERVICE_HERO_IDS_WEBSITE_EN: PageHeroIds = {
+  banner: 'banner-653181182',
+  textBox: 'text-box-1369425759',
+  textBoxY: 'y50',
+  textBoxMdLgY: 'md-y95 lg-y95',
+  row: 'row-2080818048',
+  leftCol: 'col-866807324',
+  breadcrumbText: 'text-2147121753',
+  headingText: 'text-814816517',
+  gap1: 'gap-1393430963',
+  descText: 'text-88941394',
+  gap2: 'gap-1367381275',
+  ctaText: 'text-205044154',
+  rightCol: 'col-608900196',
+  imageWrapper: 'image_1209334204',
+  bottomGap: 'gap-279308045',
+  bottomGapClass: 'gap-element clearfix hide-for-small',
 };

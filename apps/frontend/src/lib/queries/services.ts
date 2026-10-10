@@ -6,6 +6,7 @@ import type {
   Locale,
   Pricing,
   Project,
+  ProjectCategory,
   Service,
   ServiceKey,
   Testimonial,
@@ -33,7 +34,15 @@ export interface ServiceAssets {
   heroImage: AssetRef | null;
   heroBgImage: AssetRef | null;
   /** Hosting/VPS icon-card section background (`service.benefitsBgImageId`). */
-  benefitsBgImage?: AssetRef | null;
+  benefitsBgImage: AssetRef | null;
+  /** SEO advantages photo (`service.advantagesPhotoId`). */
+  advantagesPhoto: AssetRef | null;
+  /** Decorative graphic from `service.advantagesDecoId` (SEO/branding advantages, storage offerings). */
+  advantagesDeco: AssetRef | null;
+  /** SEO offerings section background (`service.offeringsBgImageId`). */
+  offeringsBgImage: AssetRef | null;
+  /** CTA icon (e.g. Vector-Stroke arrow). */
+  ctaIcon: AssetRef | null;
   benefitsVideo: AssetRef | null;
   benefitIcons: AssetRef[];
   offeringMedia: AssetRef[];
@@ -44,27 +53,48 @@ export interface ServiceAssets {
     quoteIcon: AssetRef;
     line: AssetRef;
   };
+  planIcons: AssetRef[];
+  marqueeSeparator: AssetRef | null;
+  projectAssets: AssetRef[];
+  projectCategories: ProjectCategory[];
 }
 
-export const TESTIMONIAL_ART_IDS = {
+export const SUBTRACT_ICON_ID = 'asset-d68ffd5723';
+
+const TESTIMONIAL_ART_IDS = {
   photoId: 'asset-941f38ec1d',
   quoteIconId: 'asset-1d227d7c9b',
   lineId: 'asset-5763f42849',
 };
 
-export const SUBTRACT_ICON_ID = 'asset-d68ffd5723';
+export function resolveTestimonialArt(
+  assets: AssetRef[],
+  ids: { photoId: EntityId; quoteIconId: EntityId; lineId: EntityId } = TESTIMONIAL_ART_IDS,
+) {
+  const photo = assets.find((a) => a.id === ids.photoId);
+  const quoteIcon = assets.find((a) => a.id === ids.quoteIconId);
+  const line = assets.find((a) => a.id === ids.lineId);
+  if (!photo || !quoteIcon || !line) {
+    throw new Error('Testimonial art assets missing from repository');
+  }
+  return { photo, quoteIcon, line };
+}
 
 /**
- * Resolves all assets required for a service page in parallel (hero, benefits, offerings, testimonials).
+ * Resolves all assets required for a service page in parallel (hero, benefits, offerings, testimonials, featured projects).
  */
 export async function getServiceAssets(
   page: ServicePage,
   repository = getRepository(),
 ): Promise<ServiceAssets> {
-  const { service, testimonials } = page;
+  const { service, testimonials, projects } = page;
   const heroImageId = service.hero.imageId;
   const heroBgImageId = service.hero.bgImageId;
+  const heroCtaIconId = service.hero.ctaIconId;
   const benefitsBgImageId = service.benefitsBgImageId;
+  const advantagesPhotoId = service.advantagesPhotoId;
+  const advantagesDecoId = service.advantagesDecoId;
+  const offeringsBgImageId = service.offeringsBgImageId;
   const videoId = service.hero.videoId;
   const benefitIconIds = service.benefits
     .map((b) => b.iconId)
@@ -76,20 +106,35 @@ export async function getServiceAssets(
     .map((t) => t.avatarId)
     .filter((id): id is string => Boolean(id));
 
+  const projectAssetIds = projects
+    .map((p) => p.galleryIds[0])
+    .filter((id): id is string => Boolean(id));
+
   const [
     heroImages,
     heroBgImages,
     benefitsBgImages,
+    advantagesPhotos,
+    advantagesDecos,
+    offeringsBgImages,
+    ctaIcons,
     videoAssets,
     benefitIcons,
     offeringMedia,
     subtractAssets,
     testimonialAvatars,
     artAssets,
+    extraAssets,
+    projectAssets,
+    projectCategories,
   ] = await Promise.all([
     heroImageId ? repository.getAssets([heroImageId]) : Promise.resolve([]),
     heroBgImageId ? repository.getAssets([heroBgImageId]) : Promise.resolve([]),
     benefitsBgImageId ? repository.getAssets([benefitsBgImageId]) : Promise.resolve([]),
+    advantagesPhotoId ? repository.getAssets([advantagesPhotoId]) : Promise.resolve([]),
+    advantagesDecoId ? repository.getAssets([advantagesDecoId]) : Promise.resolve([]),
+    offeringsBgImageId ? repository.getAssets([offeringsBgImageId]) : Promise.resolve([]),
+    heroCtaIconId ? repository.getAssets([heroCtaIconId]) : Promise.resolve([]),
     videoId ? repository.getAssets([videoId]) : Promise.resolve([]),
     benefitIconIds.length ? repository.getAssets(benefitIconIds) : Promise.resolve([]),
     offeringMediaIds.length ? repository.getAssets(offeringMediaIds) : Promise.resolve([]),
@@ -100,25 +145,42 @@ export async function getServiceAssets(
       TESTIMONIAL_ART_IDS.quoteIconId,
       TESTIMONIAL_ART_IDS.lineId,
     ]),
+    service.key === 'website'
+      ? repository.getAssets([
+          'asset-017f167e30',
+          'asset-0284853c00',
+          'asset-4314679580',
+          'asset-400b882328',
+        ])
+      : Promise.resolve([]),
+    projectAssetIds.length ? repository.getAssets(projectAssetIds) : Promise.resolve([]),
+    projects.length ? repository.getProjectCategories() : Promise.resolve([]),
   ]);
 
-  const photo = artAssets.find((a) => a.id === TESTIMONIAL_ART_IDS.photoId);
-  const quoteIcon = artAssets.find((a) => a.id === TESTIMONIAL_ART_IDS.quoteIconId);
-  const line = artAssets.find((a) => a.id === TESTIMONIAL_ART_IDS.lineId);
-  if (!photo || !quoteIcon || !line) {
-    throw new Error('Testimonial art assets missing from repository');
-  }
+  const testimonialArt = resolveTestimonialArt(artAssets);
+
+  const websiteAssets = service.key === 'website' ? extraAssets : [];
+  const planIcons = websiteAssets.filter((a) => a.id !== 'asset-400b882328');
+  const marqueeSeparator = websiteAssets.find((a) => a.id === 'asset-400b882328') ?? null;
 
   return {
     heroImage: heroImages[0] ?? null,
     heroBgImage: heroBgImages[0] ?? null,
     benefitsBgImage: benefitsBgImages[0] ?? null,
+    advantagesPhoto: advantagesPhotos[0] ?? null,
+    advantagesDeco: advantagesDecos[0] ?? null,
+    offeringsBgImage: offeringsBgImages[0] ?? null,
+    ctaIcon: ctaIcons[0] ?? null,
     benefitsVideo: videoAssets[0] ?? null,
     benefitIcons,
     offeringMedia,
     subtractIcon: subtractAssets[0] ?? null,
     testimonialAvatars,
-    testimonialArt: { photo, quoteIcon, line },
+    testimonialArt,
+    planIcons,
+    marqueeSeparator,
+    projectAssets,
+    projectCategories,
   };
 }
 

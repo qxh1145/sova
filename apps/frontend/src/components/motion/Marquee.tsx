@@ -4,7 +4,7 @@ import type { AssetRef } from '@/types/content';
 
 export interface MarqueeProps {
   items: string[];
-  separator?: AssetRef;
+  separator?: AssetRef | null;
   className?: string;
 }
 

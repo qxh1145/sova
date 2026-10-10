@@ -74,6 +74,32 @@ describe('FeaturedProjects and ProjectShowcaseItem edge cases', () => {
     expect(html).toContain('Website');
   });
 
+  it('uses the Home source ids when no ids prop is passed', () => {
+    const html = renderToStaticMarkup(
+      <FeaturedProjects projects={[mockProject]} copy={mockCopy} />,
+    );
+    expect(html).toContain('id="row-2138573453"');
+    expect(html).toContain('id="col-765783521"');
+    expect(html).toContain('id="text-980725794"');
+    expect(html).toContain('id="text-3520817437"');
+  });
+
+  it('overrides the default ids with the ids prop', () => {
+    const html = renderToStaticMarkup(
+      <FeaturedProjects
+        projects={[mockProject]}
+        copy={mockCopy}
+        ids={{ row: 'row-1', col: 'col-1', eyebrow: 'text-1', title: 'text-2' }}
+      />,
+    );
+    expect(html).toContain('id="row-1"');
+    expect(html).toContain('id="col-1"');
+    expect(html).toContain('id="text-1"');
+    expect(html).toContain('id="text-2"');
+    expect(html).not.toContain('row-2138573453');
+    expect(html).not.toContain('text-3520817437');
+  });
+
   it('returns null when projects list is empty', () => {
     const html = renderToStaticMarkup(<FeaturedProjects projects={[]} copy={mockCopy} />);
     expect(html).toBe('');
