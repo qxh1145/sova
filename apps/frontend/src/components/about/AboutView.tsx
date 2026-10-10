@@ -6,7 +6,7 @@ import { PageHero } from '@/components/hero/PageHero';
 import {
   ABOUT_HERO_IDS_EN,
   ABOUT_HERO_IDS_VI,
-} from '@/components/services/serviceHeroIds';
+} from './aboutHeroIds';
 import { StatCounter } from '@/components/home/StatCounter';
 import { Marquee } from '@/components/motion/Marquee';
 import { Carousel } from '@/components/ui/Carousel';
