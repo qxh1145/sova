@@ -18,11 +18,11 @@ import {
   TESTIMONIALS_IDS_BRANDING_VI,
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
-import { FAQList } from '@/components/faq/FAQList';
+import { ServiceFAQ } from './ServiceFAQ';
 import { FeaturedProjects, type FeaturedProjectsIds } from '@/components/projects/FeaturedProjects';
 import { SERVICE_CAROUSEL_LABELS } from './ServiceDetailCards';
 
-export const FEATURED_PROJECTS_IDS_BRANDING_VI: FeaturedProjectsIds = {
+const FEATURED_PROJECTS_IDS_BRANDING: FeaturedProjectsIds = {
   row: 'row-262932845',
   col: 'col-1523603196',
   eyebrow: 'text-1453977587',
@@ -81,7 +81,6 @@ export function BrandingServiceView({ page, assets, locale }: BrandingServiceVie
           deco={assets.advantagesDeco}
           icons={assets.benefitIcons}
           ids={isEn ? SERVICE_ADVANTAGES_IDS_BRANDING_EN : SERVICE_ADVANTAGES_IDS_BRANDING_VI}
-          isEn={isEn}
         />
       )}
 
@@ -108,7 +107,7 @@ export function BrandingServiceView({ page, assets, locale }: BrandingServiceVie
               copy={copy.projects}
               assets={assets.projectAssets}
               categories={assets.projectCategories}
-              ids={FEATURED_PROJECTS_IDS_BRANDING_VI}
+              ids={FEATURED_PROJECTS_IDS_BRANDING}
             />
           )}
         </div>
@@ -127,51 +126,7 @@ export function BrandingServiceView({ page, assets, locale }: BrandingServiceVie
       )}
 
       {/* 6. FAQ (10 items, first open) */}
-      {faqs.length > 0 && copy.faq && (
-        <section className="section" id={faqIds.section}>
-          <div className="section-bg fill" />
-          <div className="section-content relative">
-            <div className="row" id={faqIds.headingRow}>
-              <div id={faqIds.headingCol} className="col small-12 large-12">
-                <div className="col-inner">
-                  {copy.faq.eyebrow && (
-                    <div id={faqIds.eyebrowText} className="text">
-                      <p>
-                        <strong>
-                          <span style={{ color: '#0065df' }}>{copy.faq.eyebrow}</span>
-                        </strong>
-                        <br />
-                      </p>
-                    </div>
-                  )}
-                  <div id={faqIds.titleText} className="text">
-                    <h2>{copy.faq.title}</h2>
-                  </div>
-                  <div className="text-center">
-                    <div
-                      className="is-divider divider clearfix"
-                      style={{ maxWidth: 133, height: 2, backgroundColor: 'rgb(0, 101, 223)' }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="row" id={faqIds.listRow}>
-              <div id={faqIds.listCol} className="col small-12 large-12">
-                <div className="col-inner">
-                  <FAQList
-                    faqs={faqs}
-                    type="single"
-                    defaultOpen="first"
-                    className="ac-luutru"
-                    labels={{ toggle: isEn ? 'Toggle answer' : 'Mở rộng câu trả lời' }} // business-text-ok: accordion toggle label
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+      <ServiceFAQ faqs={faqs} copy={copy.faq} ids={faqIds} locale={locale} />
     </main>
   );
 }

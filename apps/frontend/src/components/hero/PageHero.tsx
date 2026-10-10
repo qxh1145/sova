@@ -43,7 +43,6 @@ export interface PageHeroIds {
   bottomGapClass?: string;
 }
 
-
 export interface PageHeroProps {
   hero: HeroContent;
   heroImage?: AssetRef | null;

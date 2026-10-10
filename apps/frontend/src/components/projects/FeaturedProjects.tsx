@@ -10,7 +10,7 @@ export interface FeaturedProjectsIds {
   title?: string;
 }
 
-export const FEATURED_PROJECTS_DEFAULT_IDS: Required<FeaturedProjectsIds> = {
+const FEATURED_PROJECTS_DEFAULT_IDS: Required<FeaturedProjectsIds> = {
   row: 'row-2138573453',
   col: 'col-765783521',
   eyebrow: 'text-980725794',

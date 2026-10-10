@@ -14,11 +14,11 @@ import {
   TESTIMONIALS_IDS_STORAGE_VI,
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
-import { FAQList } from '@/components/faq/FAQList';
+import { ServiceFAQ } from './ServiceFAQ';
 import { FeaturedProjects, type FeaturedProjectsIds } from '@/components/projects/FeaturedProjects';
 import { SERVICE_CAROUSEL_LABELS } from './ServiceDetailCards';
 
-export const FEATURED_PROJECTS_IDS_STORAGE_VI: FeaturedProjectsIds = {
+const FEATURED_PROJECTS_IDS_STORAGE: FeaturedProjectsIds = {
   row: 'row-1255166091',
   col: 'col-802613459',
   eyebrow: 'text-1101289681',
@@ -28,7 +28,6 @@ export const FEATURED_PROJECTS_IDS_STORAGE_VI: FeaturedProjectsIds = {
 export interface StorageServiceViewProps {
   page: ServicePage;
   assets: ServiceAssets;
-  decoIcon?: ServiceAssets['heroImage'];
   routes: RouteEntry[];
   locale: Locale;
 }
@@ -57,7 +56,6 @@ const FAQ_IDS = {
 export function StorageServiceView({
   page,
   assets,
-  decoIcon,
   routes,
   locale,
 }: StorageServiceViewProps) {
@@ -98,7 +96,7 @@ export function StorageServiceView({
         offerings={service.offerings}
         mediaMap={mediaMap}
         subtractIcon={assets.subtractIcon}
-        decoIcon={decoIcon}
+        decoIcon={assets.advantagesDeco}
         resolvedHrefs={resolvedHrefs}
         ids={isEn ? STORAGE_OFFERINGS_IDS_EN : STORAGE_OFFERINGS_IDS_VI}
         labels={SERVICE_CAROUSEL_LABELS[locale]}
@@ -114,7 +112,7 @@ export function StorageServiceView({
               copy={copy.projects}
               assets={assets.projectAssets}
               categories={assets.projectCategories}
-              ids={FEATURED_PROJECTS_IDS_STORAGE_VI}
+              ids={FEATURED_PROJECTS_IDS_STORAGE}
             />
           )}
         </div>
@@ -133,51 +131,7 @@ export function StorageServiceView({
       )}
 
       {/* 5. FAQ */}
-      {faqs.length > 0 && copy.faq && (
-        <section className="section" id={faqIds.section}>
-          <div className="section-bg fill" />
-          <div className="section-content relative">
-            <div className="row" id={faqIds.headingRow}>
-              <div id={faqIds.headingCol} className="col small-12 large-12">
-                <div className="col-inner">
-                  {copy.faq.eyebrow && (
-                    <div id={faqIds.eyebrowText} className="text">
-                      <p>
-                        <strong>
-                          <span style={{ color: '#0065df' }}>{copy.faq.eyebrow}</span>
-                        </strong>
-                        <br />
-                      </p>
-                    </div>
-                  )}
-                  <div id={faqIds.titleText} className="text">
-                    <h2>{copy.faq.title}</h2>
-                  </div>
-                  <div className="text-center">
-                    <div
-                      className="is-divider divider clearfix"
-                      style={{ maxWidth: 133, height: 2, backgroundColor: 'rgb(0, 101, 223)' }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="row" id={faqIds.listRow}>
-              <div id={faqIds.listCol} className="col small-12 large-12">
-                <div className="col-inner">
-                  <FAQList
-                    faqs={faqs}
-                    type="single"
-                    defaultOpen="first"
-                    className="ac-luutru"
-                    labels={{ toggle: isEn ? 'Toggle answer' : 'Mở rộng câu trả lời' }} // business-text-ok: accordion toggle label
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+      <ServiceFAQ faqs={faqs} copy={copy.faq} ids={faqIds} locale={locale} />
     </main>
   );
 }

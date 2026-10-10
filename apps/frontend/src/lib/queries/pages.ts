@@ -18,6 +18,7 @@ import type {
   ServiceKey,
   UtilityContent,
 } from '@/types/content';
+import { SUBTRACT_ICON_ID, resolveTestimonialArt } from './services';
 
 const SERVICE_KEYS: ServiceKey[] = [
   'website',
@@ -97,10 +98,6 @@ export async function getHomePage(
   const projectItems = projects?.items ?? [];
   const postItems = posts?.items ?? [];
   const marqueeSeparator = artAssets.find((a) => a.id === marqueeSeparatorId);
-  const photo = artAssets.find((a) => a.id === testimonialArtIds.photoId);
-  const quoteIcon = artAssets.find((a) => a.id === testimonialArtIds.quoteIconId);
-  const line = artAssets.find((a) => a.id === testimonialArtIds.lineId);
-
   return {
     ...page,
     stats: statIds.map((id) => stats.find((s) => s.id === id)!),
@@ -110,11 +107,7 @@ export async function getHomePage(
     testimonials: idsOf(testimonialPlacements).map((id) => testimonials.find((t) => t.id === id)!),
     posts: idsOf(postPlacements).map((id) => postItems.find((p) => p.id === id)!),
     marqueeSeparator: marqueeSeparator!,
-    testimonialArt: {
-      photo: photo!,
-      quoteIcon: quoteIcon!,
-      line: line!,
-    },
+    testimonialArt: resolveTestimonialArt(artAssets, testimonialArtIds),
   };
 }
 
@@ -206,13 +199,6 @@ export async function getAboutPage(
       timelineDotId,
     ]),
   ]);
-  const marqueeSeparator = assets.find((a) => a.id === marqueeSeparatorId) ?? null;
-  const photo = assets.find((a) => a.id === testimonialArtIds.photoId) ?? null;
-  const quoteIcon = assets.find((a) => a.id === testimonialArtIds.quoteIconId) ?? null;
-  const line = assets.find((a) => a.id === testimonialArtIds.lineId) ?? null;
-  const purposeImage = assets.find((a) => a.id === purposeImageId) ?? null;
-  const timelineDot = assets.find((a) => a.id === timelineDotId) ?? null;
-
   assertResolved(record.id, [
     ...missingIds(statIds, stats),
     ...missingIds(record.testimonialIds, testimonials),
@@ -229,18 +215,15 @@ export async function getAboutPage(
       assets,
     ),
   ]);
+  const byId = (id: EntityId) => assets.find((a) => a.id === id)!;
   return {
     ...page,
     stats: statIds.map((id) => stats.find((s) => s.id === id)!),
     testimonials,
-    marqueeSeparator: marqueeSeparator!,
-    testimonialArt: {
-      photo: photo!,
-      quoteIcon: quoteIcon!,
-      line: line!,
-    },
-    purposeImage: purposeImage!,
-    timelineDot: timelineDot!,
+    marqueeSeparator: byId(marqueeSeparatorId),
+    testimonialArt: resolveTestimonialArt(assets, testimonialArtIds),
+    purposeImage: byId(purposeImageId),
+    timelineDot: byId(timelineDotId),
   };
 }
 
@@ -249,8 +232,6 @@ export interface AboutAssets {
   subtractIcon: AssetRef;
   goalIcons: AssetRef[];
 }
-
-const SUBTRACT_ICON_ID = 'asset-d68ffd5723';
 
 /** Hero background, capability bullet icon and goal icons (goal order); throws on dangling ids. */
 export async function getAboutAssets(

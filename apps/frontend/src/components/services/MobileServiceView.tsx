@@ -1,16 +1,19 @@
 import type { Locale } from '@/types/content';
 import type { ServiceAssets, ServicePage } from '@/lib/queries/services';
 import { PageHero } from '@/components/hero/PageHero';
-import { SERVICE_HERO_IDS_EN, SERVICE_HERO_IDS_VI } from './serviceHeroIds';
+import {
+  SERVICE_HERO_IDS_MOBILE_EN,
+  SERVICE_HERO_IDS_MOBILE_VI,
+} from './serviceHeroIds';
 import {
   ServiceBenefits,
-  SERVICE_BENEFITS_IDS_EN,
-  SERVICE_BENEFITS_IDS_VI,
+  SERVICE_BENEFITS_IDS_MOBILE_EN,
+  SERVICE_BENEFITS_IDS_MOBILE_VI,
 } from './ServiceBenefits';
 import {
   ServiceDetailCards,
-  SERVICE_DETAIL_CARDS_IDS_EN,
-  SERVICE_DETAIL_CARDS_IDS_VI,
+  SERVICE_DETAIL_CARDS_IDS_MOBILE_EN,
+  SERVICE_DETAIL_CARDS_IDS_MOBILE_VI,
   SERVICE_CAROUSEL_LABELS,
 } from './ServiceDetailCards';
 import {
@@ -22,7 +25,7 @@ import {
 import { FAQList } from '@/components/faq/FAQList';
 import { FeaturedProjects, type FeaturedProjectsIds } from '@/components/projects/FeaturedProjects';
 
-export const FEATURED_PROJECTS_IDS_MOBILE_VI: FeaturedProjectsIds = {
+const FEATURED_PROJECTS_IDS_MOBILE: FeaturedProjectsIds = {
   row: 'row-26389138',
   col: 'col-1861618344',
   eyebrow: 'text-1571546421',
@@ -47,16 +50,16 @@ export function MobileServiceView({ page, assets, locale }: MobileServiceViewPro
         hero={service.hero}
         heroImage={assets.heroImage}
         bgImage={assets.heroBgImage}
-        ids={isEn ? SERVICE_HERO_IDS_EN : SERVICE_HERO_IDS_VI}
+        ids={isEn ? SERVICE_HERO_IDS_MOBILE_EN : SERVICE_HERO_IDS_MOBILE_VI}
       />
 
       {/* 2. Benefits */}
       <ServiceBenefits
         copy={copy.benefits}
         benefits={service.benefits}
-        videoAsset={assets.benefitsVideo}
+        video={assets.benefitsVideo}
         icons={assets.benefitIcons}
-        ids={isEn ? SERVICE_BENEFITS_IDS_EN : SERVICE_BENEFITS_IDS_VI}
+        ids={isEn ? SERVICE_BENEFITS_IDS_MOBILE_EN : SERVICE_BENEFITS_IDS_MOBILE_VI}
       />
 
       {/* 3. Why Choose Us / ServiceDetailCards */}
@@ -64,7 +67,7 @@ export function MobileServiceView({ page, assets, locale }: MobileServiceViewPro
         copy={copy.offerings}
         offerings={service.offerings}
         subtractIcon={assets.subtractIcon}
-        ids={isEn ? SERVICE_DETAIL_CARDS_IDS_EN : SERVICE_DETAIL_CARDS_IDS_VI}
+        ids={isEn ? SERVICE_DETAIL_CARDS_IDS_MOBILE_EN : SERVICE_DETAIL_CARDS_IDS_MOBILE_VI}
         labels={SERVICE_CAROUSEL_LABELS[locale]}
       />
 
@@ -78,7 +81,7 @@ export function MobileServiceView({ page, assets, locale }: MobileServiceViewPro
               copy={copy.projects}
               assets={assets.projectAssets}
               categories={assets.projectCategories}
-              ids={FEATURED_PROJECTS_IDS_MOBILE_VI}
+              ids={FEATURED_PROJECTS_IDS_MOBILE}
             />
           )}
         </div>

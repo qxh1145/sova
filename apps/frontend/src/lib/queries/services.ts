@@ -34,15 +34,15 @@ export interface ServiceAssets {
   heroImage: AssetRef | null;
   heroBgImage: AssetRef | null;
   /** Hosting/VPS icon-card section background (`service.benefitsBgImageId`). */
-  benefitsBgImage?: AssetRef | null;
+  benefitsBgImage: AssetRef | null;
   /** SEO advantages photo (`service.advantagesPhotoId`). */
-  advantagesPhoto?: AssetRef | null;
-  /** SEO advantages decorative graphic (`service.advantagesDecoId`). */
-  advantagesDeco?: AssetRef | null;
+  advantagesPhoto: AssetRef | null;
+  /** Decorative graphic from `service.advantagesDecoId` (SEO/branding advantages, storage offerings). */
+  advantagesDeco: AssetRef | null;
   /** SEO offerings section background (`service.offeringsBgImageId`). */
-  offeringsBgImage?: AssetRef | null;
+  offeringsBgImage: AssetRef | null;
   /** CTA icon (e.g. Vector-Stroke arrow). */
-  ctaIcon?: AssetRef | null;
+  ctaIcon: AssetRef | null;
   benefitsVideo: AssetRef | null;
   benefitIcons: AssetRef[];
   offeringMedia: AssetRef[];
@@ -53,19 +53,32 @@ export interface ServiceAssets {
     quoteIcon: AssetRef;
     line: AssetRef;
   };
-  planIcons?: AssetRef[];
-  marqueeSeparator?: AssetRef | null;
+  planIcons: AssetRef[];
+  marqueeSeparator: AssetRef | null;
   projectAssets: AssetRef[];
   projectCategories: ProjectCategory[];
 }
 
-export const TESTIMONIAL_ART_IDS = {
+export const SUBTRACT_ICON_ID = 'asset-d68ffd5723';
+
+const TESTIMONIAL_ART_IDS = {
   photoId: 'asset-941f38ec1d',
   quoteIconId: 'asset-1d227d7c9b',
   lineId: 'asset-5763f42849',
 };
 
-export const SUBTRACT_ICON_ID = 'asset-d68ffd5723';
+export function resolveTestimonialArt(
+  assets: AssetRef[],
+  ids: { photoId: EntityId; quoteIconId: EntityId; lineId: EntityId } = TESTIMONIAL_ART_IDS,
+) {
+  const photo = assets.find((a) => a.id === ids.photoId);
+  const quoteIcon = assets.find((a) => a.id === ids.quoteIconId);
+  const line = assets.find((a) => a.id === ids.lineId);
+  if (!photo || !quoteIcon || !line) {
+    throw new Error('Testimonial art assets missing from repository');
+  }
+  return { photo, quoteIcon, line };
+}
 
 /**
  * Resolves all assets required for a service page in parallel (hero, benefits, offerings, testimonials, featured projects).
@@ -144,12 +157,7 @@ export async function getServiceAssets(
     projects.length ? repository.getProjectCategories() : Promise.resolve([]),
   ]);
 
-  const photo = artAssets.find((a) => a.id === TESTIMONIAL_ART_IDS.photoId);
-  const quoteIcon = artAssets.find((a) => a.id === TESTIMONIAL_ART_IDS.quoteIconId);
-  const line = artAssets.find((a) => a.id === TESTIMONIAL_ART_IDS.lineId);
-  if (!photo || !quoteIcon || !line) {
-    throw new Error('Testimonial art assets missing from repository');
-  }
+  const testimonialArt = resolveTestimonialArt(artAssets);
 
   const websiteAssets = service.key === 'website' ? extraAssets : [];
   const planIcons = websiteAssets.filter((a) => a.id !== 'asset-400b882328');
@@ -168,7 +176,7 @@ export async function getServiceAssets(
     offeringMedia,
     subtractIcon: subtractAssets[0] ?? null,
     testimonialAvatars,
-    testimonialArt: { photo, quoteIcon, line },
+    testimonialArt,
     planIcons,
     marqueeSeparator,
     projectAssets,
