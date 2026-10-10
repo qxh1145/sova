@@ -372,6 +372,12 @@ export const fixtures: ContentData = {
     },
   ],
   profiles: [{ ...page('profile-1', '/fixture-profile'), pdfAssetId: 'asset-1' }],
+  faqPages: [
+    {
+      ...page('faq-1', '/cau-hoi-thuong-gap/'),
+      breadcrumb: { homeLabel: 'Trang chủ', current: 'Câu hỏi thường gặp' },
+    },
+  ],
   listingSettings: [{ routeId: 'route-1', heading: { title: 'Fixture' } }],
   listingSnapshots: [{ routeId: 'route-1', page: 1, orderedIds: ['post-1'] }],
   utilityContent: [{ id: 'utility-1', body: rich }],
