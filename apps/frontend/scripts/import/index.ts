@@ -124,8 +124,10 @@ export const projectCategories: (ProjectCategory & { sources: SourceRef[] })[] =
   const byKey = <T extends { serviceKey?: string; key?: string }>(list: T[], key: string) =>
     list.filter((r) => (r.key ?? r.serviceKey) === key);
   for (const key of new Set(services.map((s) => s.key))) {
+    const targetFile = path.join(DATA, `services/${key}.ts`);
+    if (existsSync(targetFile) && !process.env.IMPORT_OVERWRITE_SERVICES) continue;
     await writeTs(
-      path.join(DATA, `services/${key}.ts`),
+      targetFile,
       `${HEADER}
 import type { Service } from '@/types/content';
 
@@ -134,8 +136,10 @@ export const ${key}Services: Service[] = ${JSON.stringify(byKey<Service>(service
     );
   }
   for (const key of new Set(pricing.map((p) => p.serviceKey))) {
+    const targetFile = path.join(DATA, `pricing/${key}.ts`);
+    if (existsSync(targetFile) && !process.env.IMPORT_OVERWRITE_SERVICES) continue;
     await writeTs(
-      path.join(DATA, `pricing/${key}.ts`),
+      targetFile,
       `${HEADER}
 import type { Pricing } from '@/types/content';
 
@@ -194,6 +198,7 @@ export const routes: RouteEntry[] = ${JSON.stringify(routes)};
     `pages: ${page.homePages.length} home, ${page.aboutPages.length} about, ` +
       `${page.contactPages.length} contact, ${page.legalPages.length} legal, ` +
       `${page.paymentGuides.length} payment, ${page.profiles.length} profile, ` +
+      `${page.faqPages.length} faq, ` +
       `${page.stats.length} stats, ${page.listingSettings.length} listing settings, ` +
       `${navigation.length} navigation (${dropped.length} links dropped) ` +
       `(${pageStats.scrub} contact scrubs, ${pageStats.brand} brand replacements)`,
@@ -203,10 +208,14 @@ export const routes: RouteEntry[] = ${JSON.stringify(routes)};
     ['pages/about.ts', 'AboutPageRecord', 'aboutPages', page.aboutPages],
     ['pages/contact.ts', 'ContactPageContent', 'contactPages', page.contactPages],
     ['pages/profile.ts', 'CompanyProfileContent', 'profiles', page.profiles],
+    ['pages/faq.ts', 'FAQPageContent', 'faqPages', page.faqPages],
     ['stats.ts', 'Stat', 'stats', page.stats],
     ['navigation.ts', 'Navigation', 'navigation', navigation],
   ];
-  for (const [file, type, name, value] of pageFiles)
+  for (const [file, type, name, value] of pageFiles) {
+    if (file === 'pages/about.ts' && existsSync(path.join(DATA, file)) && !process.env.IMPORT_OVERWRITE_ABOUT) {
+      continue;
+    }
     await writeTs(
       path.join(DATA, file),
       `${HEADER}
@@ -215,6 +224,7 @@ import type { ${type} } from '@/types/content';
 export const ${name}: ${type}[] = ${JSON.stringify(value)};
 `,
     );
+  }
   await writeTs(
     path.join(DATA, 'pages/legal.ts'),
     `${HEADER}
@@ -317,14 +327,16 @@ export const utilityContent: UtilityContent[] = ${JSON.stringify([...project.ter
     `assets: ${assets.length} (${assets.filter((a) => a.status === 'local').length} local) ` +
       `(${assetStats.scrub} contact scrubs, ${assetStats.brand} brand replacements in alt text)`,
   );
-  await writeTs(
-    path.join(DATA, 'assets.ts'),
-    `${HEADER}
+  if (!existsSync(path.join(DATA, 'assets.ts')) || process.env.IMPORT_OVERWRITE_ASSETS) {
+    await writeTs(
+      path.join(DATA, 'assets.ts'),
+      `${HEADER}
 import type { AssetRef } from '@/types/content';
 
 export const assets: AssetRef[] = ${JSON.stringify(assets)};
 `,
-  );
+    );
+  }
 }
 
 main().catch((error: unknown) => {

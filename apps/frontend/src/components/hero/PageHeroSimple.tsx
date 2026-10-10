@@ -4,6 +4,12 @@ export interface PageHeroSimpleIds {
   textBox: string;
 }
 
+export interface PageHeroSimpleBreadcrumb {
+  homeLabel: string;
+  homeHref: string;
+  current: string;
+}
+
 export interface PageHeroSimpleProps {
   title: string;
   ids: PageHeroSimpleIds;
@@ -14,6 +20,7 @@ export interface PageHeroSimpleProps {
     col: string;
   };
   bgImageSrc?: string;
+  breadcrumb?: PageHeroSimpleBreadcrumb;
 }
 
 export function PageHeroSimple({
@@ -23,6 +30,7 @@ export function PageHeroSimple({
   emphasis = 'b',
   headingWrap,
   bgImageSrc = '/wp-content/uploads/2024/03/contact_hero_bg.jpg',
+  breadcrumb,
 }: PageHeroSimpleProps) {
   const headingInner = emphasis === 'strong' ? <strong>{title}</strong> : <b>{title}</b>;
 
@@ -59,6 +67,25 @@ export function PageHeroSimple({
                   </div>
                 ) : (
                   <h2 className={headingClass}>{headingInner}</h2>
+                )}
+                {breadcrumb && (
+                  <p style={{ textAlign: 'center' }}>
+                    <a
+                      style={{ color: '#808080', fontWeight: 400, paddingRight: '5px' }}
+                      href={breadcrumb.homeHref}
+                    >
+                      {breadcrumb.homeLabel}
+                    </a>{' '}
+                    <span
+                      style={{
+                        color: '#ffffff',
+                        borderLeft: '1px solid #fff',
+                        paddingLeft: '10px',
+                      }}
+                    >
+                      {breadcrumb.current}
+                    </span>
+                  </p>
                 )}
               </div>
             </div>

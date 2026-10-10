@@ -25,6 +25,7 @@ import { getFAQs, getFAQTopics } from './faq';
 import {
   getAboutPage,
   getContactPage,
+  getFAQPage,
   getHomePage,
   getLegalPage,
   getListingSettings,
@@ -81,6 +82,7 @@ test.each<Locale>(['vi', 'en'])('no %s query result contains {{site.', async (lo
     getAboutPage(locale),
     getContactPage(locale),
     getProfile(locale),
+    getFAQPage(locale),
     ...legalPages.map((p) => getLegalPage(p.path, locale)),
     getPaymentGuide(locale),
     ...listingSettings.map((l) => getListingSettings(l.routeId)),

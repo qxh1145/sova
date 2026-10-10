@@ -39,6 +39,22 @@ test('ids are unique and every placement resolves to a FAQ of the same locale an
   }
 });
 
+test('every topic placement resolves to a same-locale FAQ placed on a service page unless allowlisted (decision 1)', () => {
+  const allowlist = new Set(['faq-vi-3703276752', 'faq-vi-4220319995', 'faq-en-2947114095']);
+  for (const topic of faqTopics) {
+    for (const { faqId } of topic.items) {
+      const faq = faqs.find((f) => f.id === faqId);
+      expect(faq).toBeDefined();
+      expect(faq?.locale).toBe(topic.locale);
+      if (allowlist.has(faqId)) {
+        expect(faq?.serviceKeys).toHaveLength(0);
+      } else {
+        expect(faq?.serviceKeys.length).toBeGreaterThan(0);
+      }
+    }
+  }
+});
+
 test.each(['vi', 'en'] as const)('%s has service FAQs for all 8 keys', (locale) => {
   for (const key of SERVICE_KEYS)
     expect(faqs.some((f) => f.locale === locale && f.serviceKeys.includes(key))).toBe(true);

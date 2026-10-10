@@ -2,7 +2,8 @@ import { expect, test } from 'vitest';
 import type { RouteEntry } from '../../src/types/content';
 import { lineLookup, parseHtml, processHref } from './html';
 import { readHeader, type NavCtx } from './navigation';
-import { matchServiceByTitle, readStats, resolveServiceCard } from './pages';
+import { faqPage, matchServiceByTitle, readStats, resolveServiceCard } from './pages';
+import type { AssetRegistry } from './assets';
 
 const parsed = (body: string) => {
   const source = `<html><body>${body}</body></html>`;
@@ -150,3 +151,49 @@ test('services: EN card 2 resolves to mobile service while keeping website arrow
   const arrowHref = processHref(arrowEl.getAttribute('href') ?? '', 'en/home/index.html', lineOf(arrowEl.range[0]), stats());
   expect(arrowHref).toBe('/en/website-development/');
 });
+
+test('faqPage imports banner title, breadcrumb home label, current text, and seo', () => {
+  const { root, lineOf } = parsed(
+    `<div id="content">
+       <div class="banner">
+         <div class="text-box">
+           <h2><b>CÂU HỎI THƯỜNG GẶP</b></h2>
+           <p><a href="index.html">Trang chủ</a> <span> Câu hỏi thường gặp</span></p>
+         </div>
+       </div>
+     </div>`,
+  );
+  const route: RouteEntry = {
+    id: 'route-cau-hoi-thuong-gap',
+    locale: 'vi',
+    path: '/cau-hoi-thuong-gap/',
+    kind: 'faq',
+    aliases: [],
+    source: { file: 'cau-hoi-thuong-gap/index.html', line: 1 },
+  };
+  const mockRegistry = {
+    add: () => undefined,
+    image: () => undefined,
+  } as unknown as AssetRegistry;
+  const page = faqPage(
+    {
+      root,
+      lineOf,
+      route,
+      file: 'cau-hoi-thuong-gap/index.html',
+    } as Parameters<typeof faqPage>[0],
+    mockRegistry,
+    stats(),
+  );
+
+  expect(page.id).toBe('faq-vi');
+  expect(page.locale).toBe('vi');
+  expect(page.path).toBe('/cau-hoi-thuong-gap/');
+  expect(page.title).toBe('CÂU HỎI THƯỜNG GẶP');
+  expect(page.translationKey).toBe('faq');
+  expect(page.breadcrumb).toEqual({
+    homeLabel: 'Trang chủ',
+    current: 'Câu hỏi thường gặp',
+  });
+});
+
