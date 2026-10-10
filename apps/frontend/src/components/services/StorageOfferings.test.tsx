@@ -78,6 +78,8 @@ const mockAssets: ServiceAssets = {
     quoteIcon: { id: 'q', src: '/q.svg', alt: '', kind: 'image', status: 'local', sources: [] },
     line: { id: 'l', src: '/l.svg', alt: '', kind: 'image', status: 'local', sources: [] },
   },
+  projectAssets: [],
+  projectCategories: [],
 };
 
 describe('StorageOfferings / StorageServiceView', () => {

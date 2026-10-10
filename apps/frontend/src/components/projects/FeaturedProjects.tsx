@@ -3,11 +3,26 @@ import type { AssetRef, Project, ProjectCategory, SectionCopy } from '@/types/co
 import { HorizontalProjects } from './HorizontalProjects';
 import { ProjectShowcaseItem } from './ProjectShowcaseItem';
 
+export interface FeaturedProjectsIds {
+  row?: string;
+  col?: string;
+  eyebrow?: string;
+  title?: string;
+}
+
+export const FEATURED_PROJECTS_DEFAULT_IDS: Required<FeaturedProjectsIds> = {
+  row: 'row-2138573453',
+  col: 'col-765783521',
+  eyebrow: 'text-980725794',
+  title: 'text-3520817437',
+};
+
 export interface FeaturedProjectsProps {
   projects: Project[];
   copy: SectionCopy;
   assets?: AssetRef[];
   categories?: ProjectCategory[];
+  ids?: FeaturedProjectsIds;
 }
 
 export function FeaturedProjects({
@@ -15,25 +30,27 @@ export function FeaturedProjects({
   copy,
   assets = [],
   categories = [],
+  ids = FEATURED_PROJECTS_DEFAULT_IDS,
 }: FeaturedProjectsProps) {
   if (!projects.length) return null;
 
   const categoryMap = new Map(categories.map((c) => [c.id, c.label]));
   const assetMap = new Map(assets.map((a) => [a.id, a.src]));
+  const resolvedIds = { ...FEATURED_PROJECTS_DEFAULT_IDS, ...ids };
 
   return (
     <section className="horizontal-scroll-section">
-      <div className="row row-collapse tt_home_new" id="row-2138573453">
-        <div id="col-765783521" className="col small-12 large-12">
+      <div className="row row-collapse tt_home_new" id={resolvedIds.row}>
+        <div id={resolvedIds.col} className="col small-12 large-12">
           <div className="col-inner text-center">
             {copy.eyebrow && (
-              <div id="text-980725794" className="text">
+              <div id={resolvedIds.eyebrow} className="text">
                 <h4 style={{ textAlign: 'center' }}>
                   <strong>{copy.eyebrow}</strong>
                 </h4>
               </div>
             )}
-            <div id="text-3520817437" className="text">
+            <div id={resolvedIds.title} className="text">
               <h2 style={{ textAlign: 'center' }}>
                 {copy.titleLines
                   ? copy.titleLines.map((line, i) => (
