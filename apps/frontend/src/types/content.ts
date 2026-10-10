@@ -353,6 +353,8 @@ export interface ListingSnapshot {
 export interface UtilityContent {
   id: EntityId;
   body: RichContent;
+  /** Page metadata; set only on records that back a whole route (thank-you, sample). */
+  seo?: SEO;
 }
 
 export interface ShellContent {
