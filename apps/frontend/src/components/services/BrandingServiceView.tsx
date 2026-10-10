@@ -1,10 +1,7 @@
 import type { Locale } from '@/types/content';
 import type { ServiceAssets, ServicePage } from '@/lib/queries/services';
 import { PageHero } from '@/components/hero/PageHero';
-import {
-  SERVICE_HERO_IDS_BRANDING_EN,
-  SERVICE_HERO_IDS_BRANDING_VI,
-} from './serviceHeroIds';
+import { SERVICE_HERO_IDS_BRANDING_EN, SERVICE_HERO_IDS_BRANDING_VI } from './serviceHeroIds';
 import {
   ServiceAdvantages,
   SERVICE_ADVANTAGES_IDS_BRANDING_EN,
@@ -22,7 +19,15 @@ import {
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { FAQList } from '@/components/faq/FAQList';
+import { FeaturedProjects, type FeaturedProjectsIds } from '@/components/projects/FeaturedProjects';
 import { SERVICE_CAROUSEL_LABELS } from './ServiceDetailCards';
+
+export const FEATURED_PROJECTS_IDS_BRANDING_VI: FeaturedProjectsIds = {
+  row: 'row-262932845',
+  col: 'col-1523603196',
+  eyebrow: 'text-1453977587',
+  title: 'text-642705441',
+};
 
 export interface BrandingServiceViewProps {
   page: ServicePage;
@@ -93,14 +98,19 @@ export function BrandingServiceView({ page, assets, locale }: BrandingServiceVie
         />
       )}
 
-      {/* 4. Story 9 empty projects slot */}
-      <section
-        className="section ss-decor"
-        id={isEn ? 'section_1698149091' : 'section_2117777695'}
-      >
+      {/* 4. Story 9: Featured projects */}
+      <section className="section ss-decor" id={isEn ? 'section_1698149091' : 'section_2117777695'}>
         <div className="section-bg fill" />
         <div className="section-content relative">
-          {/* Story 9: FeaturedProjects will be placed here */}
+          {copy.projects && (
+            <FeaturedProjects
+              projects={page.projects}
+              copy={copy.projects}
+              assets={assets.projectAssets}
+              categories={assets.projectCategories}
+              ids={FEATURED_PROJECTS_IDS_BRANDING_VI}
+            />
+          )}
         </div>
       </section>
 

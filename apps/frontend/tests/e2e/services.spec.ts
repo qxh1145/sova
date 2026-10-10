@@ -786,12 +786,7 @@ const SEO_SERVICES_ROUTES = [
     offeringsEyebrow: 'Những dịch vụ',
     // Source splits the VI title with <br>.
     offeringsTitle: 'SEO top Google tại\nSova',
-    packageTitles: [
-      'SEO ONPAGE',
-      'SEO OFFPAGE',
-      'CHĂM SÓC WEBSITE',
-      'CONTENT WRITER',
-    ],
+    packageTitles: ['SEO ONPAGE', 'SEO OFFPAGE', 'CHĂM SÓC WEBSITE', 'CONTENT WRITER'],
     faqCount: 8,
   },
   {
@@ -826,12 +821,7 @@ const SEO_SERVICES_ROUTES = [
     ],
     offeringsEyebrow: 'Services',
     offeringsTitle: 'SEO top Google at Sova',
-    packageTitles: [
-      'SEO ONPAGE',
-      'SEO OFFPAGE',
-      'WEBSITE MAINTENANCE',
-      'CONTENT WRITER',
-    ],
+    packageTitles: ['SEO ONPAGE', 'SEO OFFPAGE', 'WEBSITE MAINTENANCE', 'CONTENT WRITER'],
     faqCount: 8,
   },
 ];
@@ -874,9 +864,10 @@ test.describe('SEO Service Pages (Story 5.5)', () => {
       // Hero breadcrumb
       const breadcrumb = page.locator(`#${config.breadcrumbId}`);
       await expect(breadcrumb).toContainText(config.breadcrumb);
-      await expect(
-        breadcrumb.getByRole('link', { name: config.homeLabel }),
-      ).toHaveAttribute('href', config.homeHref);
+      await expect(breadcrumb.getByRole('link', { name: config.homeLabel })).toHaveAttribute(
+        'href',
+        config.homeHref,
+      );
 
       // Hero: top gap is mobile-only; VI CTA carries the Vector-Stroke arrow, EN has none
       await expect(page.locator(`#${config.topGapId}`)).toHaveClass(
@@ -1101,9 +1092,10 @@ test.describe('Branding Service Pages (Story 5.6)', () => {
       // Hero breadcrumb
       const breadcrumb = page.locator(`#${config.breadcrumbId}`);
       await expect(breadcrumb).toContainText(config.breadcrumb);
-      await expect(
-        breadcrumb.getByRole('link', { name: config.homeLabel }),
-      ).toHaveAttribute('href', config.homeHref);
+      await expect(breadcrumb.getByRole('link', { name: config.homeLabel })).toHaveAttribute(
+        'href',
+        config.homeHref,
+      );
 
       // Hero CTA (no icon) and background image
       const heroCta = page.locator(`#${config.heroCtaId} a.but-lh`);
@@ -1289,9 +1281,24 @@ const WEBSITE_SERVICES_ROUTES = [
     faqSectionId: 'section_581402483',
     faqCount: 8,
     plans: [
-      { name: 'STANDARD', price: '5.000.000 VNĐ', originalPrice: '7.000.000 VNĐ', recommended: false },
-      { name: 'ADVANCED', price: '8.000.000 VNĐ', originalPrice: '10.000.000 VNĐ', recommended: true },
-      { name: 'PROFESSIONAL', price: '+15.000.000 VNĐ', originalPrice: '18.000.000 VNĐ', recommended: false },
+      {
+        name: 'STANDARD',
+        price: '5.000.000 VNĐ',
+        originalPrice: '7.000.000 VNĐ',
+        recommended: false,
+      },
+      {
+        name: 'ADVANCED',
+        price: '8.000.000 VNĐ',
+        originalPrice: '10.000.000 VNĐ',
+        recommended: true,
+      },
+      {
+        name: 'PROFESSIONAL',
+        price: '+15.000.000 VNĐ',
+        originalPrice: '18.000.000 VNĐ',
+        recommended: false,
+      },
     ],
   },
 ];
@@ -1357,9 +1364,10 @@ test.describe('Website Service Pages (Story 5.7)', () => {
       // Hero breadcrumb
       const breadcrumb = page.locator(`#${config.breadcrumbId}`);
       await expect(breadcrumb).toContainText(config.breadcrumb);
-      await expect(
-        breadcrumb.getByRole('link', { name: config.homeLabel }),
-      ).toHaveAttribute('href', config.homeHref);
+      await expect(breadcrumb.getByRole('link', { name: config.homeLabel })).toHaveAttribute(
+        'href',
+        config.homeHref,
+      );
 
       // Hero CTA
       const heroCta = page.locator('main .banner a.but-lh');
@@ -1639,7 +1647,9 @@ test.describe('Website Contact Form Banner (Story 5.8)', () => {
       await expect(responseOutput).toHaveCount(0);
     });
 
-    test(`No horizontal overflow at 390px and 549px viewports on ${config.path}`, async ({ page }) => {
+    test(`No horizontal overflow at 390px and 549px viewports on ${config.path}`, async ({
+      page,
+    }) => {
       for (const width of [390, 549]) {
         await page.setViewportSize({ width, height: 844 });
         await page.goto(config.path);
@@ -1691,7 +1701,9 @@ test.describe('Website Contact Form Banner (Story 5.8)', () => {
     await expect(page.locator('form')).toHaveClass(/failed/);
     const responseOutput = page.locator('.wpcf7-response-output');
     await expect(responseOutput).toBeVisible();
-    await expect(responseOutput.locator('.wpcf7-demo-badge')).toHaveText('Bản demo — chưa gửi thông tin');
+    await expect(responseOutput.locator('.wpcf7-demo-badge')).toHaveText(
+      'Bản demo — chưa gửi thông tin',
+    );
 
     // Inputs kept
     await expect(nameInput).toHaveValue('Demo User');
@@ -1706,4 +1718,209 @@ test.describe('Website Contact Form Banner (Story 5.8)', () => {
   });
 });
 
+test.describe('Featured Projects on Service Pages (Story 5.9)', () => {
+  const VI_TARGET_SERVICES = [
+    {
+      name: 'website',
+      path: '/thiet-ke-website/',
+      rowId: 'row-134970593',
+      colId: 'col-1655533775',
+      eyebrowId: 'text-2072217073',
+      titleId: 'text-166351269',
+      eyebrowText: 'Sova',
+    },
+    {
+      name: 'mobile',
+      path: '/thiet-ke-app-mobile/',
+      rowId: 'row-26389138',
+      colId: 'col-1861618344',
+      eyebrowId: 'text-1571546421',
+      titleId: 'text-84787226',
+      eyebrowText: 'Sova',
+    },
+    {
+      name: 'seo',
+      path: '/seo-tu-khoa-website/',
+      rowId: 'row-328500521',
+      colId: 'col-1824878441',
+      eyebrowId: 'text-3301960015',
+      titleId: 'text-1254685663',
+      eyebrowText: 'Sova',
+    },
+    {
+      name: 'branding',
+      path: '/ui-ux-branding-design/',
+      rowId: 'row-262932845',
+      colId: 'col-1523603196',
+      eyebrowId: 'text-1453977587',
+      titleId: 'text-642705441',
+      eyebrowText: 'Sova',
+    },
+    {
+      name: 'storage',
+      path: '/giai-phap-luu-tru/',
+      rowId: 'row-1255166091',
+      colId: 'col-802613459',
+      eyebrowId: 'text-1101289681',
+      titleId: 'text-899631907',
+      eyebrowText: 'Sova',
+    },
+  ];
 
+  const EXPECTED_PROJECTS = [
+    {
+      path: '/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/',
+      title: 'Công ty Cổ phần Phát triển Công nghệ THP',
+      category: 'Branding',
+      image: 'blight-02',
+    },
+    {
+      path: '/featured_item/flexius-cong-ty-co-phan-the-gioi-bang/',
+      title: 'FLEXIUS – Công ty Cổ phần Thế Giới Bảng',
+      category: 'Website',
+      image: 'Flexius-01',
+    },
+    {
+      path: '/featured_item/sencom-home-decor-lighting-design/',
+      title: 'SENCOM – Home decor – Lighting – Design',
+      category: 'Website',
+      image: 'sencom-01',
+    },
+    {
+      path: '/featured_item/so-y-te-benh-vien-mat-ha-giang/',
+      title: 'Sở Y Tế Bệnh Viện Mắt Hà Giang',
+      category: 'Website',
+      image: 'benh-vien-mat-ha-giang-01-scaled-1',
+    },
+    {
+      path: '/featured_item/cong-ty-tnhh-konnertec-viet-nam/',
+      title: 'Công ty TNHH Konnertec Việt Nam',
+      category: 'Website',
+      image: 'konnertec-01',
+    },
+    {
+      path: '/featured_item/cong-ty-co-phan-square-orange/',
+      title: 'CÔNG TY CỔ PHẦN SQUARE ORANGE',
+      category: 'Website',
+      image: 'squareorange-01-min',
+    },
+  ];
+
+  const EN_TARGET_PATHS = [
+    '/en/website-development/',
+    '/en/app-mobile-development/',
+    '/en/website-keyword-seo/',
+    '/en/ui-ux-branding-design-2/',
+    '/en/storage-solution/',
+  ];
+
+  const UNTOUCHED_PATHS = [
+    '/hosting-doanh-nghiep/',
+    '/en/business-hosting/',
+    '/vps-doanh-nghiep/',
+    '/en/business-vps/',
+    '/e-mail-doanh-nghiep/',
+    '/en/business-e-mail/',
+  ];
+
+  for (const service of VI_TARGET_SERVICES) {
+    test(`VI ${service.name} renders 6 featured projects in order with source ids and heading`, async ({
+      page,
+    }) => {
+      await page.goto(service.path);
+      const section = page.locator('.horizontal-scroll-section');
+      await expect(section).toBeVisible();
+
+      await expect(section.locator(`#${service.rowId}`)).toBeVisible();
+      await expect(section.locator(`#${service.colId}`)).toBeVisible();
+      await expect(section.locator(`#${service.eyebrowId}`)).toContainText(service.eyebrowText);
+      await expect(section.locator(`#${service.titleId} h2`)).toHaveText(
+        /Dự án chứa đựng\s*Tâm huyết Sáng tạo/,
+      );
+      await expect(section.locator(`#${service.titleId} h2 br`)).toHaveCount(1);
+
+      const items = section.locator('.scroll-item');
+      await expect(items).toHaveCount(6);
+
+      for (const [idx, expected] of EXPECTED_PROJECTS.entries()) {
+        const item = items.nth(idx);
+        const link = item.locator('a.item-link');
+        await expect(link).toHaveAttribute('href', expected.path);
+        await expect(item.locator('.item-title')).toHaveText(expected.title);
+        await expect(item.locator('.item-categories .item-term')).toHaveText(expected.category);
+        const content = item.locator('.item-content');
+        const bgStyle = await content.evaluate((el) => el.style.backgroundImage);
+        expect(bgStyle).toContain(expected.image);
+      }
+    });
+  }
+
+  for (const enPath of EN_TARGET_PATHS) {
+    test(`EN ${enPath} renders no horizontal-scroll-section`, async ({ page }) => {
+      await page.goto(enPath);
+      await expect(page.locator('.horizontal-scroll-section')).toHaveCount(0);
+    });
+  }
+
+  for (const untouchedPath of UNTOUCHED_PATHS) {
+    test(`Untouched ${untouchedPath} renders no horizontal-scroll-section`, async ({ page }) => {
+      await page.goto(untouchedPath);
+      await expect(page.locator('.horizontal-scroll-section')).toHaveCount(0);
+    });
+  }
+
+  for (const service of VI_TARGET_SERVICES) {
+    test(`VI ${service.name} horizontal projects pin and scrub with no horizontal overflow at 390px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(service.path);
+
+      const section = page.locator('.horizontal-scroll-section');
+      await expect(section).toBeVisible();
+      await expect(page.locator('.pin-spacer > .horizontal-scroll-section')).toHaveCount(1);
+
+      const { startY, distance } = await page.evaluate(() => {
+        const sec = document.querySelector('.horizontal-scroll-section') as HTMLElement;
+        const wrapper = sec.querySelector('.scrolling-wrapper') as HTMLElement;
+        const pinSpacer = sec.parentElement as HTMLElement;
+        const rect = pinSpacer.getBoundingClientRect();
+        return {
+          startY: window.scrollY + rect.top,
+          distance: wrapper.scrollWidth - window.innerWidth,
+        };
+      });
+      expect(distance).toBeGreaterThan(0);
+
+      const translateX = () =>
+        page.evaluate(() => {
+          const wrapper = document.querySelector(
+            '.horizontal-scroll-section .scrolling-wrapper',
+          ) as HTMLElement;
+          const transform = window.getComputedStyle(wrapper).transform;
+          return transform && transform !== 'none' ? new DOMMatrixReadOnly(transform).m41 : 0;
+        });
+      const pageOverflow = () =>
+        page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+
+      expect(await pageOverflow(), '390px initial scrollWidth <= innerWidth').toBeLessThanOrEqual(
+        0,
+      );
+
+      // Scroll to 50% of distance
+      await page.evaluate((y) => window.scrollTo(0, y), startY + 0.5 * distance);
+      await expect
+        .poll(async () => Math.abs((await translateX()) - -0.5 * distance))
+        .toBeLessThanOrEqual(25);
+      expect(await pageOverflow(), '390px scrolled scrollWidth <= innerWidth').toBeLessThanOrEqual(
+        0,
+      );
+
+      // Scroll to end of distance
+      await page.evaluate((y) => window.scrollTo(0, y), startY + distance);
+      await expect
+        .poll(async () => Math.abs((await translateX()) - -distance))
+        .toBeLessThanOrEqual(25);
+    });
+  }
+});
