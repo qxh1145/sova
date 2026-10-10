@@ -28,6 +28,7 @@ import { getFAQs } from './faq';
 import {
   getAboutAssets,
   getAboutPage,
+  getContactAssets,
   getContactPage,
   getFAQPage,
   getHomeAssets,
@@ -337,6 +338,24 @@ test('getAboutAssets rejects on a dangling goal icon id', async () => {
   );
 });
 
+test('getContactAssets resolves hero and info icons by id', async () => {
+  repository = repoWith();
+  const result = await getContactAssets(contact);
+  expect(result.heroImage.id).toBe(contact.heroImageId);
+  expect(result.heroImage.src).toBe('/wp-content/uploads/2024/03/contact_hero_bg.jpg');
+  expect(result.infoIcons.address.id).toBe(contact.infoIconIds.address);
+  expect(result.infoIcons.phone.id).toBe(contact.infoIconIds.phone);
+  expect(result.infoIcons.email.id).toBe(contact.infoIconIds.email);
+});
+
+test('getContactAssets rejects on a dangling icon id', async () => {
+  repository = repoWith();
+  const infoIconIds = { ...contact.infoIconIds, phone: 'asset-nope' };
+  await expect(getContactAssets({ ...contact, infoIconIds })).rejects.toThrow(
+    'contact-vi references missing ids: asset-nope',
+  );
+});
+
 test('getAboutPage resolves 3 testimonials in placement order', async () => {
   repository = repoWith();
   const about = await getAboutPage('vi');
@@ -410,4 +429,3 @@ test('getFAQPage returns null when record is missing', async () => {
   expect(await getFAQPage('vi')).toBeNull();
   expect(await getFAQPage('en')).toBeNull();
 });
-
