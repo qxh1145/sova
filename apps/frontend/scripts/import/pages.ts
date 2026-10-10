@@ -431,6 +431,16 @@ function about(page: Page, registry: AssetRegistry, stats: Stats) {
     };
   });
 
+  const timelineDotId = must(
+    registry.image(
+      content.querySelector('section.hinhthanh-phattrien .text-border img'),
+      file,
+      lineOf,
+    ),
+    page,
+    'timeline dot asset',
+  );
+
   const seo = seoOf(page, registry, stats);
   const description = trimBreaks(after.map((t) => sanitize(t, h(heroLine))).join(''));
   const record: AboutPageRecord = {
@@ -514,7 +524,7 @@ function about(page: Page, registry: AssetRegistry, stats: Stats) {
       lineId: 'asset-5763f42849',
     },
     purposeImageId: 'asset-e0d6652ff9',
-    timelineDotId: 'asset-ellipse-2354',
+    timelineDotId,
   };
   return record;
 }

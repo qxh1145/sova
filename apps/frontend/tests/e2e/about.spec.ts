@@ -1,4 +1,6 @@
 import { expect, expectNoDuplicateIds, test } from './fixtures';
+import { aboutPages } from '../../src/data/pages/about';
+import { stats } from '../../src/data/stats';
 
 const ABOUT_ROUTES = [
   {
@@ -57,10 +59,10 @@ const ABOUT_ROUTES = [
   },
 ];
 
-const STAT_VALUES = ['3500', '1500', '40', '09'];
-
 test.describe('About Pages (Story 5.10)', () => {
   for (const config of ABOUT_ROUTES) {
+    const record = aboutPages.find((p) => p.locale === config.locale)!;
+
     test(`Sections render in source order on ${config.path}`, async ({ page }) => {
       await page.goto(config.path);
 
@@ -103,7 +105,11 @@ test.describe('About Pages (Story 5.10)', () => {
       const countUps = page.locator('.col-thanhtuu span.count-up');
       await expect(countUps).toHaveCount(4);
       const values = await countUps.allInnerTexts();
-      expect(values).toEqual(STAT_VALUES);
+      expect(values).toEqual(
+        record.statIds.map((id) =>
+          String(stats.find((s) => s.id === id)!.value).padStart(2, '0'),
+        ),
+      );
 
       await context.close();
     });
@@ -115,6 +121,65 @@ test.describe('About Pages (Story 5.10)', () => {
         `#${config.timelineSectionId} .timeline-track > .timeline-item:not([aria-hidden="true"])`,
       );
       await expect(timelineItems).toHaveCount(9);
+    });
+
+    test(`Timeline stacks without duplicates at 390px on ${config.path}`, async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(config.path);
+
+      const track = page.locator(`#${config.timelineSectionId} .timeline-track`);
+      await expect(track.locator('> .timeline-item[aria-hidden="true"]').first()).toBeHidden();
+      await expect(track.locator('> .timeline-item:visible')).toHaveCount(9);
+    });
+
+    test(`Timeline stops and scrolls under reduced motion on ${config.path}`, async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.goto(config.path);
+
+      const wrap = page.locator(`#${config.timelineSectionId} .timeline-track-wrap`);
+      const track = wrap.locator('.timeline-track');
+      await expect(track).toHaveCSS('animation-name', 'none');
+      await expect(track.locator('> .timeline-item[aria-hidden="true"]').first()).toBeHidden();
+      await expect(wrap).toHaveCSS('overflow-x', 'auto');
+      expect(await wrap.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true);
+    });
+
+    test(`Goals grid and purpose panels follow data on ${config.path}`, async ({ page }) => {
+      await page.goto(config.path);
+
+      const goalTitles = page.locator(`#${config.targetSectionId} .row_muctieu.hide-for-small h3`);
+      await expect(goalTitles).toHaveCount(record.goals.length);
+      await expect(goalTitles).toHaveText(record.goals.map((g) => g.title));
+
+      const panels = page.locator(`#${config.purposeSectionId} .row_cacsp .col-line-top`);
+      await expect(panels).toHaveCount(record.purposePanels.length);
+      await expect(panels.locator('h3')).toHaveText(record.purposePanels.map((p) => p.title));
+    });
+
+    test(`Section headings follow data line breaks on ${config.path}`, async ({ page }) => {
+      await page.goto(config.path);
+
+      const copy = record.sectionCopy;
+      const headings = [
+        [`#${config.targetSectionId} .col-thanhtuu h2`, copy.achievements],
+        [`#${config.targetSectionId} .row_muctieu.hide-for-small h2`, copy.goals],
+        [`#${config.purposeSectionId} h2`, copy.purpose],
+        [`#${config.timelineHeadingSectionId} h2`, copy.timeline],
+        [`#${config.pillarsSectionId} h2`, copy.pillars],
+      ] as const;
+      for (const [selector, section] of headings) {
+        const lines = section.titleLines ?? [section.title];
+        const h2 = page.locator(selector);
+        await expect(h2).toHaveCount(1);
+        // textContent with <br> as newline: innerText would apply CSS text-transform.
+        const text = await h2.evaluate((el) => {
+          const copy = el.cloneNode(true) as HTMLElement;
+          copy.querySelectorAll('br').forEach((br) => br.replaceWith('\n'));
+          return copy.textContent;
+        });
+        expect(text).toBe(lines.join('\n'));
+        await expect(h2.locator('br')).toHaveCount(lines.length - 1);
+      }
     });
 
     test(`Pillars section renders 3 category columns and 27 items on ${config.path}`, async ({
@@ -141,6 +206,9 @@ test.describe('About Pages (Story 5.10)', () => {
         `#${config.pillarsSectionId} .slide_gthieu .icon-box`,
       );
       await expect(sliderItems).toHaveCount(27);
+
+      // Sanitized HTML renders as markup: entities decode, none print literally.
+      await expect(page.locator(`#${config.pillarsSectionId}`)).not.toContainText('&amp;');
     });
 
     test(`Responsive sliders vs grids toggle correctly at viewport breakpoints on ${config.path}`, async ({
