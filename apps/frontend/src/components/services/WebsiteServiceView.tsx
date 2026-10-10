@@ -27,7 +27,15 @@ import {
 } from '@/components/testimonials/Testimonials';
 import { FAQList } from '@/components/faq/FAQList';
 import { WebsiteContactForm } from '@/components/forms/WebsiteContactForm';
+import { FeaturedProjects, type FeaturedProjectsIds } from '@/components/projects/FeaturedProjects';
 import { PromoVoucherSvg } from './PromoVoucherSvg';
+
+export const FEATURED_PROJECTS_IDS_WEBSITE_VI: FeaturedProjectsIds = {
+  row: 'row-134970593',
+  col: 'col-1655533775',
+  eyebrow: 'text-2072217073',
+  title: 'text-166351269',
+};
 
 export interface WebsiteServiceViewProps {
   page: ServicePage;
@@ -273,11 +281,19 @@ export function WebsiteServiceView({ page, assets, locale }: WebsiteServiceViewP
         />
       )}
 
-      {/* 7. Story 9: FeaturedProjects empty placeholder */}
+      {/* 7. Story 9: Featured projects */}
       <section className="section ss-decor" id={isEn ? 'section_1784272447' : 'section_1384595751'}>
         <div className="section-bg fill" />
         <div className="section-content relative">
-          {/* Story 9: FeaturedProjects will be placed here */}
+          {copy.projects && (
+            <FeaturedProjects
+              projects={page.projects}
+              copy={copy.projects}
+              assets={assets.projectAssets}
+              categories={assets.projectCategories}
+              ids={FEATURED_PROJECTS_IDS_WEBSITE_VI}
+            />
+          )}
         </div>
       </section>
 

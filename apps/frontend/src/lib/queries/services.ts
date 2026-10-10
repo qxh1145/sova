@@ -6,6 +6,7 @@ import type {
   Locale,
   Pricing,
   Project,
+  ProjectCategory,
   Service,
   ServiceKey,
   Testimonial,
@@ -54,6 +55,8 @@ export interface ServiceAssets {
   };
   planIcons?: AssetRef[];
   marqueeSeparator?: AssetRef | null;
+  projectAssets: AssetRef[];
+  projectCategories: ProjectCategory[];
 }
 
 export const TESTIMONIAL_ART_IDS = {
@@ -65,13 +68,13 @@ export const TESTIMONIAL_ART_IDS = {
 export const SUBTRACT_ICON_ID = 'asset-d68ffd5723';
 
 /**
- * Resolves all assets required for a service page in parallel (hero, benefits, offerings, testimonials).
+ * Resolves all assets required for a service page in parallel (hero, benefits, offerings, testimonials, featured projects).
  */
 export async function getServiceAssets(
   page: ServicePage,
   repository = getRepository(),
 ): Promise<ServiceAssets> {
-  const { service, testimonials } = page;
+  const { service, testimonials, projects } = page;
   const heroImageId = service.hero.imageId;
   const heroBgImageId = service.hero.bgImageId;
   const heroCtaIconId = service.hero.ctaIconId;
@@ -90,6 +93,10 @@ export async function getServiceAssets(
     .map((t) => t.avatarId)
     .filter((id): id is string => Boolean(id));
 
+  const projectAssetIds = projects
+    .map((p) => p.galleryIds[0])
+    .filter((id): id is string => Boolean(id));
+
   const [
     heroImages,
     heroBgImages,
@@ -105,6 +112,8 @@ export async function getServiceAssets(
     testimonialAvatars,
     artAssets,
     extraAssets,
+    projectAssets,
+    projectCategories,
   ] = await Promise.all([
     heroImageId ? repository.getAssets([heroImageId]) : Promise.resolve([]),
     heroBgImageId ? repository.getAssets([heroBgImageId]) : Promise.resolve([]),
@@ -131,6 +140,8 @@ export async function getServiceAssets(
           'asset-400b882328',
         ])
       : Promise.resolve([]),
+    projectAssetIds.length ? repository.getAssets(projectAssetIds) : Promise.resolve([]),
+    projects.length ? repository.getProjectCategories() : Promise.resolve([]),
   ]);
 
   const photo = artAssets.find((a) => a.id === TESTIMONIAL_ART_IDS.photoId);
@@ -160,6 +171,8 @@ export async function getServiceAssets(
     testimonialArt: { photo, quoteIcon, line },
     planIcons,
     marqueeSeparator,
+    projectAssets,
+    projectCategories,
   };
 }
 
