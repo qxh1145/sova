@@ -276,6 +276,51 @@ export const aboutPages: AboutPageRecord[] = [
       'testimonial-feedback-dong-a',
       'testimonial-feedback-vinatex',
     ],
+    sectionCopy: {
+      achievements: {
+        title: 'Our Achievements',
+        description:
+          'Sova see every project as more than just a task — it’s a chance to co-create value with our clients, delivering meaningful digital experiences that drive impact and foster lasting partnerships.',
+      },
+      goals: {
+        eyebrow: 'Target',
+        title: 'Our Mission',
+        description:
+          'Sova are committed to continuously improving our service quality\nwith the goal of becoming the top choice for our clients.\nEvery project is both a new experience and a meaningful challenge for us.',
+        descriptionLines: [
+          'Sova are committed to continuously improving our service quality',
+          'with the goal of becoming the top choice for our clients.',
+          'Every project is both a new experience and a meaningful challenge for us.',
+        ],
+      },
+      purpose: {
+        title: 'Our Products',
+        description:
+          'All of Sova’s products are precisely aligned with market demands, officially certified by the State for intellectual property rights, and ready to partner with financial institutions of all sizes — enabling comprehensive and sustainable growth.',
+      },
+      timeline: {
+        title: 'Our Journey of Growth',
+      },
+      pillars: {
+        eyebrow: 'Services',
+        title: 'What You Can Find at Sova',
+        description:
+          'As a client of Sova, you can take advantage of the following services provided by our company:',
+      },
+      testimonials: {
+        eyebrow: 'Sova',
+        title: 'Customer Reviews',
+      },
+    },
+    marqueeText: ['Development', 'UI/UX', 'Sova', 'Branding', 'Writer', 'Mobile'],
+    marqueeSeparatorId: 'asset-400b882328',
+    testimonialArtIds: {
+      photoId: 'asset-941f38ec1d',
+      quoteIconId: 'asset-1d227d7c9b',
+      lineId: 'asset-5763f42849',
+    },
+    purposeImageId: 'asset-e0d6652ff9',
+    timelineDotId: 'asset-ellipse-2354',
   },
   {
     id: 'about-vi',
@@ -551,5 +596,53 @@ export const aboutPages: AboutPageRecord[] = [
       'testimonial-feedback-dong-a',
       'testimonial-feedback-vinatex',
     ],
+    sectionCopy: {
+      achievements: {
+        title: 'Thành tựu chúng tôi đạt được',
+        description:
+          'Đối với Sova xem mỗi dự án không chỉ là cơ hội tạo ra giá trị cho doanh nghiệp mà còn là sự đồng hành cùng doanh nghiệp, mang lại giá trị cộng hưởng cho khách hàng thông qua từng sản phẩm trải nghiệm số.',
+      },
+      goals: {
+        eyebrow: 'Target',
+        title: 'Mục tiêu của chúng tôi',
+        description:
+          'Sova luôn nỗ lực không ngừng để nâng cao chất lượng dịch vụ,\nvới mục tiêu trở thành sự lựa chọn hàng đầu của khách hàng.\nMỗi dự án là một trải nghiệm và thử thách đối với chúng tôi.',
+        descriptionLines: [
+          'Sova luôn nỗ lực không ngừng để nâng cao chất lượng dịch vụ,',
+          'với mục tiêu trở thành sự lựa chọn hàng đầu của khách hàng.',
+          'Mỗi dự án là một trải nghiệm và thử thách đối với chúng tôi.',
+        ],
+      },
+      purpose: {
+        title: 'Các sản phẩm của Sova',
+        titleLines: ['Các sản phẩm của', 'Sova'],
+        description:
+          'Tất cả đều đang đáp ứng chính xác nhu cầu của thị trường, đã được cấp chứng chỉ sở hữu trí tuệ từ Nhà nước, và sẵn sàng đồng hành cùng các tổ chức doanh nghiệp lớn, vừa và nhỏ để phát triển một cách toàn diện và bền vững.',
+      },
+      timeline: {
+        title: 'Hình thành và phát triển',
+      },
+      pillars: {
+        eyebrow: 'Những dịch vụ',
+        title: 'Có thể tìm thấy tại Sova',
+        titleLines: ['Có thể tìm thấy tại', 'Sova'],
+        description:
+          'Khi trở thành khách hàng của Sova, bạn có thể sử dụng những dịch vụ do công ty cung cấp như sau',
+      },
+      testimonials: {
+        eyebrow: 'Sova',
+        title: 'Khách hàng nhận xét về chúng tôi',
+        titleLines: ['Khách hàng nhận xét', 'về chúng tôi'],
+      },
+    },
+    marqueeText: ['Development', 'UI/UX', 'Sova', 'Branding', 'Writer', 'Mobile'],
+    marqueeSeparatorId: 'asset-400b882328',
+    testimonialArtIds: {
+      photoId: 'asset-941f38ec1d',
+      quoteIconId: 'asset-1d227d7c9b',
+      lineId: 'asset-5763f42849',
+    },
+    purposeImageId: 'asset-e0d6652ff9',
+    timelineDotId: 'asset-ellipse-2354',
   },
 ];

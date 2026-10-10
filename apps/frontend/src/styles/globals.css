@@ -230,3 +230,54 @@ html.has-custom-cursor .cursor-ring {
     padding: 25px 20px !important;
   }
 }
+
+/* Timeline continuous linear strip for About pages */
+@keyframes timeline-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.timeline-track-wrap {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+.timeline-track {
+  display: flex;
+  flex-wrap: nowrap;
+  width: max-content;
+  animation: timeline-scroll 35s linear infinite;
+  will-change: transform;
+}
+
+.timeline-item {
+  flex: 0 0 auto;
+  width: 280px;
+}
+
+@media (max-width: 550px) {
+  .timeline-track {
+    animation: none !important;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .timeline-item {
+    width: 100%;
+  }
+  .timeline-track [aria-hidden="true"] {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeline-track {
+    animation-play-state: paused !important;
+  }
+}
+

@@ -523,10 +523,42 @@ export interface AboutPageContent extends LocalizedIdentity {
   capabilities: OfferingPanel[];
   partnerIds: EntityId[];
   testimonialIds: EntityId[];
+  testimonials: Testimonial[];
+  sectionCopy: Record<
+    'achievements' | 'goals' | 'purpose' | 'timeline' | 'pillars' | 'testimonials',
+    SectionCopy
+  >;
+  marqueeText: string[];
+  marqueeSeparator: Asset;
+  testimonialArt: {
+    photo: Asset;
+    quoteIcon: Asset;
+    line: Asset;
+  };
+  purposeImage: Asset;
+  timelineDot: Asset;
 }
 
-/** Stored about record; the query fills `stats` from `statIds`. */
-export type AboutPageRecord = Omit<AboutPageContent, 'stats'> & { statIds: EntityId[] };
+/** Stored about record; query fills resolved entities. */
+export type AboutPageRecord = Omit<
+  AboutPageContent,
+  | 'stats'
+  | 'testimonials'
+  | 'marqueeSeparator'
+  | 'testimonialArt'
+  | 'purposeImage'
+  | 'timelineDot'
+> & {
+  statIds: EntityId[];
+  marqueeSeparatorId: EntityId;
+  testimonialArtIds: {
+    photoId: EntityId;
+    quoteIconId: EntityId;
+    lineId: EntityId;
+  };
+  purposeImageId: EntityId;
+  timelineDotId: EntityId;
+};
 
 export interface ContactPageContent extends LocalizedIdentity {
   heading: string;
