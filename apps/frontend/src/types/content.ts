@@ -591,6 +591,14 @@ export interface CompanyProfileContent extends LocalizedIdentity {
   seo: SEO;
 }
 
+export interface FAQPageContent extends LocalizedIdentity {
+  breadcrumb: {
+    homeLabel: string;
+    current: string;
+  };
+  seo: SEO;
+}
+
 export interface ListingSettings {
   routeId: EntityId;
   heading: SectionCopy;

@@ -155,11 +155,13 @@ html.has-custom-cursor .cursor-ring {
   color: rgb(255, 255, 255);
 }
 
-/* SEO FAQ titles: source `a.accordion-title`; the shared Accordion renders a <button>, which picks up
+/* SEO and FAQ titles: source `a.accordion-title`; the shared Accordion renders a <button>, which picks up
    Flatsome button metrics (2.4em line-height, 1em margins, bold, letter-spacing). Reset to the anchor's.
-   ponytail: scoped to the SEO FAQ; drop once Accordion stops inheriting button styles everywhere. */
+   ponytail: scoped to SEO and FAQ; drop once Accordion stops inheriting button styles everywhere. */
 #col-161830420 .ac-luutru .accordion-title,
-#col-1084451967 .ac-luutru .accordion-title {
+#col-1084451967 .ac-luutru .accordion-title,
+#col-564510526 .ac-luutru .accordion-title,
+#col-751981030 .ac-luutru .accordion-title {
   margin: 0;
   min-height: 0;
   font-weight: 400;
@@ -171,7 +173,9 @@ html.has-custom-cursor .cursor-ring {
 
 /* Its toggle is a <span> here but a Flatsome <button> in source: give it the button box. */
 #col-161830420 .ac-luutru .accordion-title .toggle,
-#col-1084451967 .ac-luutru .accordion-title .toggle {
+#col-1084451967 .ac-luutru .accordion-title .toggle,
+#col-564510526 .ac-luutru .accordion-title .toggle,
+#col-751981030 .ac-luutru .accordion-title .toggle {
   border: 1px solid transparent;
   padding-right: 0;
   min-width: 24px;
@@ -183,6 +187,18 @@ html.has-custom-cursor .cursor-ring {
   text-align: center;
   text-transform: uppercase;
   vertical-align: middle;
+}
+
+/* FAQ answer text metrics: restore 1.1rem size and white colour missing from scoped route CSS (A40) */
+#col-564510526 .accordion-inner .text,
+#col-751981030 .accordion-inner .text {
+  font-size: 1.1rem;
+  color: rgb(255, 255, 255);
+}
+
+#col-564510526 .accordion-inner .text > *,
+#col-751981030 .accordion-inner .text > * {
+  color: rgb(255, 255, 255);
 }
 
 [data-media-status='missing'] {

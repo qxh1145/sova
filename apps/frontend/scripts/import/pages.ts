@@ -6,6 +6,7 @@ import type {
   CompanyProfileContent,
   ContactPageContent,
   EntityId,
+  FAQPageContent,
   Feature,
   HeroContent,
   HomePageRecord,
@@ -657,6 +658,31 @@ function profile(page: Page, registry: AssetRegistry, stats: Stats): CompanyProf
   };
 }
 
+export function faqPage(page: Page, registry: AssetRegistry, stats: Stats): FAQPageContent {
+  const { root, lineOf, route } = page;
+  const banner = must(root.querySelector('#content > .banner'), page, 'banner');
+  const breadcrumb = must(banner.querySelector('p'), page, 'breadcrumb');
+  const homeLink = must(breadcrumb.querySelector('a'), page, 'breadcrumb home link');
+  const currentSpan = must(breadcrumb.querySelector('span'), page, 'breadcrumb current span');
+  const seo = seoOf(page, registry, stats);
+
+  return {
+    ...identity(
+      page,
+      `faq-${route.locale}`,
+      seo,
+      lineOf(banner.range[0]),
+      bannerTitle(page, stats),
+    ),
+    translationKey: 'faq',
+    breadcrumb: {
+      homeLabel: plain(homeLink, stats),
+      current: plain(currentSpan, stats),
+    },
+    seo,
+  };
+}
+
 function listing(page: Page, registry: AssetRegistry, stats: Stats): ListingSettings {
   const headingLines = must(
     page.root
@@ -829,6 +855,7 @@ export function importPages(
     legalPages,
     paymentGuides,
     profiles: pages('profile').map((p) => profile(p, registry, stats)),
+    faqPages: pages('faq').map((p) => faqPage(p, registry, stats)),
     stats: statRecords,
     listingSettings: [...pages('post-list'), ...pages('project-list')].map((p) =>
       listing(p, registry, stats),

@@ -8,6 +8,7 @@ import { aboutPages } from '@/data/pages/about';
 import { contactPages } from '@/data/pages/contact';
 import { homePages } from '@/data/pages/home';
 import { legalPages, paymentGuides } from '@/data/pages/legal';
+import { faqPages } from '@/data/pages/faq';
 import { partners } from '@/data/partners';
 import { posts } from '@/data/posts';
 import { projectCategories } from '@/data/project-categories';
@@ -28,6 +29,7 @@ import {
   getAboutAssets,
   getAboutPage,
   getContactPage,
+  getFAQPage,
   getHomeAssets,
   getHomePage,
   getLegalPage,
@@ -79,6 +81,7 @@ const repoWith = (data: Partial<ContentData> = {}) =>
     contactPages: [contactWithPhone],
     legalPages,
     paymentGuides,
+    faqPages,
     ...data,
   } as unknown as ContentData);
 
@@ -380,3 +383,31 @@ test('getAboutPage resolves the EN page with its stats in record order', async (
   expect(about!.testimonials.map((t) => t.id)).toEqual(record.testimonialIds);
   expect(about!.timelineDot.id).toBe(record.timelineDotId);
 });
+
+test('getFAQPage resolves the FAQ page record for vi and en', async () => {
+  repository = repoWith();
+  const viPage = await getFAQPage('vi');
+  expect(viPage?.id).toBe('faq-vi');
+  expect(viPage?.path).toBe('/cau-hoi-thuong-gap/');
+  expect(viPage?.title).toBe('CÂU HỎI THƯỜNG GẶP');
+  expect(viPage?.breadcrumb).toEqual({
+    homeLabel: 'Trang chủ',
+    current: 'Câu hỏi thường gặp',
+  });
+
+  const enPage = await getFAQPage('en');
+  expect(enPage?.id).toBe('faq-en');
+  expect(enPage?.path).toBe('/en/faq/');
+  expect(enPage?.title).toBe('FAQ');
+  expect(enPage?.breadcrumb).toEqual({
+    homeLabel: 'Home',
+    current: 'FAQ',
+  });
+});
+
+test('getFAQPage returns null when record is missing', async () => {
+  repository = repoWith({ faqPages: [] });
+  expect(await getFAQPage('vi')).toBeNull();
+  expect(await getFAQPage('en')).toBeNull();
+});
+
