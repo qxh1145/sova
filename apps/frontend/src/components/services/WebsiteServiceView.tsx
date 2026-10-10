@@ -25,12 +25,12 @@ import {
   TESTIMONIALS_IDS_WEBSITE_VI,
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
-import { FAQList } from '@/components/faq/FAQList';
+import { ServiceFAQ } from './ServiceFAQ';
 import { WebsiteContactForm } from '@/components/forms/WebsiteContactForm';
 import { FeaturedProjects, type FeaturedProjectsIds } from '@/components/projects/FeaturedProjects';
 import { PromoVoucherSvg } from './PromoVoucherSvg';
 
-export const FEATURED_PROJECTS_IDS_WEBSITE_VI: FeaturedProjectsIds = {
+const FEATURED_PROJECTS_IDS_WEBSITE: FeaturedProjectsIds = {
   row: 'row-134970593',
   col: 'col-1655533775',
   eyebrow: 'text-2072217073',
@@ -96,7 +96,6 @@ export function WebsiteServiceView({ page, assets, locale }: WebsiteServiceViewP
           deco={assets.advantagesDeco}
           icons={assets.benefitIcons}
           ids={isEn ? SERVICE_ADVANTAGES_IDS_WEBSITE_EN : SERVICE_ADVANTAGES_IDS_WEBSITE_VI}
-          isEn={isEn}
         />
       )}
 
@@ -142,7 +141,6 @@ export function WebsiteServiceView({ page, assets, locale }: WebsiteServiceViewP
                           : '/wp-content/uploads/2025/04/anh-nen-doc-111.webp'
                       }
                     />
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       decoding="async"
                       width={1920}
@@ -266,7 +264,7 @@ export function WebsiteServiceView({ page, assets, locale }: WebsiteServiceViewP
         className="gap-element clearfix"
         style={{ display: 'block', height: 'auto' }}
       />
-      <Marquee items={MARQUEE_ITEMS} separator={assets.marqueeSeparator ?? undefined} />
+      <Marquee items={MARQUEE_ITEMS} separator={assets.marqueeSeparator} />
 
       {/* 6. Why choose us: 3 columns desktop + mobile slide_tsao slider */}
       {copy.offerings && (
@@ -291,7 +289,7 @@ export function WebsiteServiceView({ page, assets, locale }: WebsiteServiceViewP
               copy={copy.projects}
               assets={assets.projectAssets}
               categories={assets.projectCategories}
-              ids={FEATURED_PROJECTS_IDS_WEBSITE_VI}
+              ids={FEATURED_PROJECTS_IDS_WEBSITE}
             />
           )}
         </div>
@@ -310,51 +308,7 @@ export function WebsiteServiceView({ page, assets, locale }: WebsiteServiceViewP
       )}
 
       {/* 9. FAQ (8 items, first open) */}
-      {faqs.length > 0 && copy.faq && (
-        <section className="section" id={faqIds.section}>
-          <div className="section-bg fill" />
-          <div className="section-content relative">
-            <div className="row" id={faqIds.headingRow}>
-              <div id={faqIds.headingCol} className="col small-12 large-12">
-                <div className="col-inner">
-                  {copy.faq.eyebrow && (
-                    <div id={faqIds.eyebrowText} className="text">
-                      <p>
-                        <strong>
-                          <span style={{ color: '#0065df' }}>{copy.faq.eyebrow}</span>
-                        </strong>
-                        <br />
-                      </p>
-                    </div>
-                  )}
-                  <div id={faqIds.titleText} className="text">
-                    <h2>{copy.faq.title}</h2>
-                  </div>
-                  <div className="text-center">
-                    <div
-                      className="is-divider divider clearfix"
-                      style={{ maxWidth: 133, height: 2, backgroundColor: 'rgb(0, 101, 223)' }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="row" id={faqIds.listRow}>
-              <div id={faqIds.listCol} className="col small-12 large-12">
-                <div className="col-inner">
-                  <FAQList
-                    faqs={faqs}
-                    type="single"
-                    defaultOpen="first"
-                    className="ac-luutru"
-                    labels={{ toggle: isEn ? 'Toggle answer' : 'Mở rộng câu trả lời' }}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+      <ServiceFAQ faqs={faqs} copy={copy.faq} ids={faqIds} locale={locale} />
     </main>
   );
 }
