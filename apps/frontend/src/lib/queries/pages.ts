@@ -231,7 +231,7 @@ export async function getAboutPage(
   ]);
   return {
     ...page,
-    stats,
+    stats: statIds.map((id) => stats.find((s) => s.id === id)!),
     testimonials,
     marqueeSeparator: marqueeSeparator!,
     testimonialArt: {
@@ -245,38 +245,31 @@ export async function getAboutPage(
 }
 
 export interface AboutAssets {
-  heroBgImage: AssetRef | null;
-  subtractIcon: AssetRef | null;
-  goalIcons: (AssetRef | null)[];
+  heroBgImage: AssetRef;
+  subtractIcon: AssetRef;
+  goalIcons: AssetRef[];
 }
 
 const SUBTRACT_ICON_ID = 'asset-d68ffd5723';
 
+/** Hero background, capability bullet icon and goal icons (goal order); throws on dangling ids. */
 export async function getAboutAssets(
   page: AboutPageContent,
   repository: ContentRepository = getRepository(),
 ): Promise<AboutAssets> {
-  const goalIconIds = page.goals.map((g) => g.iconId).filter((id): id is string => Boolean(id));
-  const assetIdsToFetch = [
-    ...(page.hero.imageId ? [page.hero.imageId] : []),
-    SUBTRACT_ICON_ID,
-    ...goalIconIds,
-  ];
-  const assets = await repository.getAssets(assetIdsToFetch);
-  const heroBgImage = page.hero.imageId
-    ? assets.find((a) => a.id === page.hero.imageId) ?? null
-    : null;
-  const subtractIcon = assets.find((a) => a.id === SUBTRACT_ICON_ID) ?? null;
-  const goalIcons = page.goals.map(
-    (g) => (g.iconId ? assets.find((a) => a.id === g.iconId) ?? null : null),
-  );
+  // An unset id is named by its field so the error points at it.
+  const heroId = page.hero.imageId ?? 'hero.imageId';
+  const goalIconIds = page.goals.map((g) => g.iconId ?? `${g.id}.iconId`);
+  const wanted = [heroId, SUBTRACT_ICON_ID, ...goalIconIds];
+  const assets = await repository.getAssets(wanted);
+  assertResolved(page.id, missingIds(wanted, assets));
+  const byId = (id: EntityId) => assets.find((a) => a.id === id)!;
   return {
-    heroBgImage,
-    subtractIcon,
-    goalIcons,
+    heroBgImage: byId(heroId),
+    subtractIcon: byId(SUBTRACT_ICON_ID),
+    goalIcons: goalIconIds.map(byId),
   };
 }
-
 
 export function getContactPage(locale: Locale): Promise<ContactPageContent | null> {
   return getRepository().getContactPage(locale);

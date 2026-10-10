@@ -6715,14 +6715,14 @@ export const assets: AssetRef[] = [
     height: 800,
   },
   {
-    id: 'asset-ellipse-2354',
+    id: 'asset-c78e42b8a9',
     src: '/wp-content/uploads/2024/02/Ellipse-2354.svg',
     alt: '',
     kind: 'image',
     status: 'local',
     sources: [
+      { file: 'en/about-us/index.html', line: 2506 },
       { file: 'gioi-thieu/index.html', line: 2507 },
-      { file: 'en/about-us/index.html', line: 2507 },
     ],
     width: 25,
     height: 24,

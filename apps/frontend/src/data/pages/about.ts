@@ -320,7 +320,7 @@ export const aboutPages: AboutPageRecord[] = [
       lineId: 'asset-5763f42849',
     },
     purposeImageId: 'asset-e0d6652ff9',
-    timelineDotId: 'asset-ellipse-2354',
+    timelineDotId: 'asset-c78e42b8a9',
   },
   {
     id: 'about-vi',
@@ -643,6 +643,6 @@ export const aboutPages: AboutPageRecord[] = [
       lineId: 'asset-5763f42849',
     },
     purposeImageId: 'asset-e0d6652ff9',
-    timelineDotId: 'asset-ellipse-2354',
+    timelineDotId: 'asset-c78e42b8a9',
   },
 ];

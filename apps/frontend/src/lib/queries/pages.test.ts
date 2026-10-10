@@ -25,6 +25,7 @@ import { testimonials } from '@/data/testimonials';
 import type { ContactPageContent, SiteSettings } from '@/types/content';
 import { getFAQs } from './faq';
 import {
+  getAboutAssets,
   getAboutPage,
   getContactPage,
   getHomeAssets,
@@ -315,6 +316,24 @@ test('getHomeAssets reads assets from the repository it is given', async () => {
   expect(getCategoriesSpy).toHaveBeenCalledOnce();
 });
 
+test('getAboutAssets resolves hero background, subtract icon and goal icons in goal order', async () => {
+  repository = repoWith();
+  const about = await getAboutPage('vi');
+  const result = await getAboutAssets(about!);
+  expect(result.heroBgImage.id).toBe(about!.hero.imageId);
+  expect(result.subtractIcon.src).toBe('/wp-content/uploads/2024/02/Subtract.svg');
+  expect(result.goalIcons.map((a) => a.id)).toEqual(about!.goals.map((g) => g.iconId));
+});
+
+test('getAboutAssets rejects on a dangling goal icon id', async () => {
+  repository = repoWith();
+  const about = await getAboutPage('vi');
+  const goals = about!.goals.map((g, i) => (i === 2 ? { ...g, iconId: 'asset-nope' } : g));
+  await expect(getAboutAssets({ ...about!, goals })).rejects.toThrow(
+    'about-vi references missing ids: asset-nope',
+  );
+});
+
 test('getAboutPage resolves 3 testimonials in placement order', async () => {
   repository = repoWith();
   const about = await getAboutPage('vi');
@@ -328,7 +347,7 @@ test('getAboutPage resolves 3 testimonials in placement order', async () => {
   expect(about!.stats).toHaveLength(4);
   expect(about!.marqueeSeparator.id).toBe('asset-400b882328');
   expect(about!.purposeImage.id).toBe('asset-e0d6652ff9');
-  expect(about!.timelineDot.id).toBe('asset-ellipse-2354');
+  expect(about!.timelineDot.id).toBe('asset-c78e42b8a9');
 });
 
 test('getAboutPage rejects when testimonial id is missing', async () => {
@@ -344,4 +363,20 @@ test('getAboutPage rejects when testimonial id is missing', async () => {
   await expect(getAboutPage('vi')).rejects.toThrow(
     'about-vi references missing ids: testimonial-nonexistent',
   );
+});
+
+test('getAboutPage rejects when an asset id is missing', async () => {
+  const aboutRecord = aboutPages.find((p) => p.locale === 'vi')!;
+  repository = repoWith({ aboutPages: [{ ...aboutRecord, timelineDotId: 'asset-nope' }] });
+  await expect(getAboutPage('vi')).rejects.toThrow('about-vi references missing ids: asset-nope');
+});
+
+test('getAboutPage resolves the EN page with its stats in record order', async () => {
+  repository = repoWith();
+  const about = await getAboutPage('en');
+  const record = aboutPages.find((p) => p.locale === 'en')!;
+  expect(about!.id).toBe('about-en');
+  expect(about!.stats.map((s) => s.id)).toEqual(record.statIds);
+  expect(about!.testimonials.map((t) => t.id)).toEqual(record.testimonialIds);
+  expect(about!.timelineDot.id).toBe(record.timelineDotId);
 });

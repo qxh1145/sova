@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { Fragment } from 'react';
-import type { AboutPageContent, AssetRef, Locale } from '@/types/content';
+import type { AboutPageContent, Locale, RichContent } from '@/types/content';
+import type { AboutAssets } from '@/lib/queries/pages';
 import { PageHero } from '@/components/hero/PageHero';
 import {
   ABOUT_HERO_IDS_EN,
@@ -16,11 +17,16 @@ import {
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 
-export interface AboutAssets {
-  heroBgImage: AssetRef | null;
-  subtractIcon: AssetRef | null;
-  goalIcons: (AssetRef | null)[];
-}
+/** Inner HTML of a single-paragraph block, for rendering inside the source's own `<p>`. */
+const paragraphHtml = (content: RichContent) => ({ __html: content.html.replace(/<\/?p>/g, '') });
+
+/** `<li>` inner HTML of a sanitized `<ul>` list. */
+const listItemsHtml = (content: RichContent) =>
+  content.html
+    .replace(/<\/?ul>/g, '')
+    .split('</li>')
+    .map((s) => s.replace(/<li>/, '').trim())
+    .filter(Boolean);
 
 export interface AboutViewProps {
   page: AboutPageContent;
@@ -33,15 +39,6 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
   const heroIds = isVi ? ABOUT_HERO_IDS_VI : ABOUT_HERO_IDS_EN;
   const testimonialIds = isVi ? TESTIMONIALS_IDS_ABOUT_VI : TESTIMONIALS_IDS_ABOUT_EN;
   const labels = TESTIMONIALS_LABELS[locale];
-
-  // Stats constants
-  const statValues = [3500, 1500, 40, 9];
-  const statLabels = page.stats.map((s) => s.label);
-
-
-
-  // Pillar capability list items
-  const pillarCategories = page.capabilities;
 
   return (
     <div id="content" role="main">
@@ -85,12 +82,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                         id={isVi ? 'text-1037698079' : 'text-714894948'}
                         className="text"
                       >
-                        <h2
-                          style={{
-                            fontFamily: 'Poppins, sans-serif !important',
-                            fontWeight: 500,
-                          }}
-                        >
+                        <h2 style={{ fontWeight: 500 }}>
                           <strong>{page.sectionCopy.achievements.title}</strong>
                         </h2>
                       </div>
@@ -113,9 +105,9 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                         id={isVi ? 'row-1192570169' : 'row-1084136091'}
                       >
                         {/* 4 stats */}
-                        {statValues.map((val, idx) => (
+                        {page.stats.map((stat) => (
                           <div
-                            key={idx}
+                            key={stat.id}
                             className="col medium-6 small-12 large-6"
                           >
                             <div className="col-inner">
@@ -125,10 +117,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                                     <div className="text count-num">
                                       <p className="mb-0">
                                         <strong>
-                                          <StatCounter
-                                            value={val}
-                                            minDigits={idx === 3 ? 2 : 1}
-                                          />
+                                          <StatCounter value={stat.value} minDigits={2} />
                                         </strong>
                                       </p>
                                     </div>
@@ -150,12 +139,12 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                                               fontSize: '45px',
                                             }}
                                           >
-                                            +
+                                            {stat.suffix ?? '+'}
                                           </span>
                                         </strong>
                                       </p>
                                       <p style={{ marginBottom: 0 }}>
-                                        {statLabels[idx]}
+                                        {stat.label}
                                       </p>
                                     </div>
                                   </div>
@@ -261,17 +250,15 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                       >
                         <div className="icon">
                           <div className="icon-inner">
-                            {icon && (
-                              <img
-                                decoding="async"
-                                width={icon.width ?? 150}
-                                height={icon.height ?? 150}
-                                src={icon.src}
-                                className="attachment-medium size-medium"
-                                alt=""
-                                loading="lazy"
-                              />
-                            )}
+                            <img
+                              decoding="async"
+                              width={icon.width ?? 150}
+                              height={icon.height ?? 150}
+                              src={icon.src}
+                              className="attachment-medium size-medium"
+                              alt=""
+                              loading="lazy"
+                            />
                           </div>
                         </div>
                       </div>
@@ -311,9 +298,10 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                       </div>
                     </div>
                     <div className="text mota_mt">
-                      <p style={{ textAlign: 'center' }}>
-                        {goal.body.html.replace(/<\/?p>/g, '')}
-                      </p>
+                      <p
+                        style={{ textAlign: 'center' }}
+                        dangerouslySetInnerHTML={paragraphHtml(goal.body)}
+                      />
                     </div>
                   </div>
                 </div>
@@ -361,17 +349,15 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                           >
                             <div className="icon">
                               <div className="icon-inner">
-                                {icon && (
-                                  <img
-                                    decoding="async"
-                                    width={icon.width ?? 150}
-                                    height={icon.height ?? 150}
-                                    src={icon.src}
-                                    className="attachment-medium size-medium"
-                                    alt=""
-                                    loading="lazy"
-                                  />
-                                )}
+                                <img
+                                  decoding="async"
+                                  width={icon.width ?? 150}
+                                  height={icon.height ?? 150}
+                                  src={icon.src}
+                                  className="attachment-medium size-medium"
+                                  alt=""
+                                  loading="lazy"
+                                />
                               </div>
                             </div>
                           </div>
@@ -403,9 +389,10 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                           </div>
                         </div>
                         <div className="text mota_mt">
-                          <p style={{ textAlign: 'center' }}>
-                            {goal.body.html.replace(/<\/?p>/g, '')}
-                          </p>
+                          <p
+                            style={{ textAlign: 'center' }}
+                            dangerouslySetInnerHTML={paragraphHtml(goal.body)}
+                          />
                         </div>
                       </div>
                     </div>
@@ -462,15 +449,14 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                   className="text"
                 >
                   <h2>
-                    {page.sectionCopy.purpose.titleLines ? (
-                      <>
-                        {page.sectionCopy.purpose.titleLines[0]}
-                        <br />
-                        {page.sectionCopy.purpose.titleLines[1]}
-                      </>
-                    ) : (
-                      page.sectionCopy.purpose.title
-                    )}
+                    {page.sectionCopy.purpose.titleLines
+                      ? page.sectionCopy.purpose.titleLines.map((line, i) => (
+                          <Fragment key={i}>
+                            {i > 0 && <br />}
+                            {line}
+                          </Fragment>
+                        ))
+                      : page.sectionCopy.purpose.title}
                   </h2>
                 </div>
                 <div
@@ -518,7 +504,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                           <h3>
                             <span style={{ fontSize: '120%' }}>{panel.title}</span>
                           </h3>
-                          <p>{panel.content.html.replace(/<\/?p>/g, '')}</p>
+                          <p dangerouslySetInnerHTML={paragraphHtml(panel.content)} />
                         </div>
                       </div>
                     </div>
@@ -606,7 +592,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                       <h3>
                         <span style={{ fontSize: '110%' }}>{item.title}</span>
                       </h3>
-                      <p>{item.body.html.replace(/<\/?p>/g, '')}</p>
+                      <p dangerouslySetInnerHTML={paragraphHtml(item.body)} />
                     </div>
                   </div>
                 </div>
@@ -643,7 +629,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                       <h3>
                         <span style={{ fontSize: '110%' }}>{item.title}</span>
                       </h3>
-                      <p>{item.body.html.replace(/<\/?p>/g, '')}</p>
+                      <p dangerouslySetInnerHTML={paragraphHtml(item.body)} />
                     </div>
                   </div>
                 </div>
@@ -681,15 +667,14 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                   className="text"
                 >
                   <h2>
-                    {page.sectionCopy.pillars.titleLines ? (
-                      <>
-                        {page.sectionCopy.pillars.titleLines[0]}
-                        <br />
-                        {page.sectionCopy.pillars.titleLines[1]}
-                      </>
-                    ) : (
-                      page.sectionCopy.pillars.title
-                    )}
+                    {page.sectionCopy.pillars.titleLines
+                      ? page.sectionCopy.pillars.titleLines.map((line, i) => (
+                          <Fragment key={i}>
+                            {i > 0 && <br />}
+                            {line}
+                          </Fragment>
+                        ))
+                      : page.sectionCopy.pillars.title}
                   </h2>
                 </div>
                 <div
@@ -728,12 +713,8 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
               containScroll="keepSnaps"
               labels={labels}
             >
-              {pillarCategories.map((cap) => {
-                const items = cap.content.html
-                  .replace(/<\/?ul>/g, '')
-                  .split('</li>')
-                  .map((s) => s.replace(/<li>/, '').trim())
-                  .filter(Boolean);
+              {page.capabilities.map((cap) => {
+                const items = listItemsHtml(cap.content);
 
                 return (
                   <div key={cap.id} className="row hover_gra">
@@ -763,23 +744,21 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                               >
                                 <div className="icon">
                                   <div className="icon-inner">
-                                    {assets.subtractIcon && (
-                                      <img
-                                        decoding="async"
-                                        width={1}
-                                        height={1}
-                                        src={assets.subtractIcon.src}
-                                        className="attachment-medium size-medium"
-                                        alt=""
-                                        loading="lazy"
-                                      />
-                                    )}
+                                    <img
+                                      decoding="async"
+                                      width={1}
+                                      height={1}
+                                      src={assets.subtractIcon.src}
+                                      className="attachment-medium size-medium"
+                                      alt=""
+                                      loading="lazy"
+                                    />
                                   </div>
                                 </div>
                               </div>
                               <div className="icon-box-text last-reset">
                                 <div className="text">
-                                  <p>{itemText}</p>
+                                  <p dangerouslySetInnerHTML={{ __html: itemText }} />
                                 </div>
                               </div>
                             </div>
@@ -806,12 +785,8 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
             className="row hover_gra hide-for-small"
             id={isVi ? 'row-1937338944' : 'row-1643800002'}
           >
-            {pillarCategories.map((cap) => {
-              const items = cap.content.html
-                .replace(/<\/?ul>/g, '')
-                .split('</li>')
-                .map((s) => s.replace(/<li>/, '').trim())
-                .filter(Boolean);
+            {page.capabilities.map((cap) => {
+              const items = listItemsHtml(cap.content);
 
               return (
                 <div
@@ -843,23 +818,21 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                           >
                             <div className="icon">
                               <div className="icon-inner">
-                                {assets.subtractIcon && (
-                                  <img
-                                    decoding="async"
-                                    width={1}
-                                    height={1}
-                                    src={assets.subtractIcon.src}
-                                    className="attachment-medium size-medium"
-                                    alt=""
-                                    loading="lazy"
-                                  />
-                                )}
+                                <img
+                                  decoding="async"
+                                  width={1}
+                                  height={1}
+                                  src={assets.subtractIcon.src}
+                                  className="attachment-medium size-medium"
+                                  alt=""
+                                  loading="lazy"
+                                />
                               </div>
                             </div>
                           </div>
                           <div className="icon-box-text last-reset">
                             <div className="text">
-                              <p>{itemText}</p>
+                              <p dangerouslySetInnerHTML={{ __html: itemText }} />
                             </div>
                           </div>
                         </div>
