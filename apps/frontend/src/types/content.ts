@@ -561,7 +561,18 @@ export type AboutPageRecord = Omit<
 };
 
 export interface ContactPageContent extends LocalizedIdentity {
+  heroImageId: EntityId;
+  sectionHeading: string;
   heading: string;
+  breadcrumb: {
+    homeLabel: string;
+    current: string;
+  };
+  infoIconIds: {
+    address: EntityId;
+    phone: EntityId;
+    email: EntityId;
+  };
   introduction: RichContent;
   seo: SEO;
 }

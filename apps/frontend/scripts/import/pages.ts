@@ -533,7 +533,17 @@ function about(page: Page, registry: AssetRegistry, stats: Stats) {
 function contact(page: Page, registry: AssetRegistry, stats: Stats): ContactPageContent {
   const { root, file, lineOf, route } = page;
   const h1 = must(root.querySelector('#content h1'), page, 'h1');
-  const company = must(root.querySelectorAll('#content h2')[1], page, 'company h2');
+  const heroImg = must(root.querySelector('#content section .section-bg img'), page, 'hero image');
+  const heroImageId = must(registry.image(heroImg, file, lineOf), page, 'hero image asset');
+
+  const heroSection = must(root.querySelector('#content > section'), page, 'hero section');
+  const breadcrumb = must(heroSection.querySelector('p'), page, 'breadcrumb');
+  const homeLink = must(breadcrumb.querySelector('a'), page, 'breadcrumb home link');
+  const currentSpan = must(breadcrumb.querySelector('span'), page, 'breadcrumb current span');
+
+  const h2s = root.querySelectorAll('#content h2');
+  const sectionHeading = plain(must(h2s[0], page, 'section heading h2'), stats);
+  const company = must(h2s[1], page, 'company h2');
   const intro = must(
     root
       .querySelectorAll('#content p')
@@ -543,10 +553,28 @@ function contact(page: Page, registry: AssetRegistry, stats: Stats): ContactPage
   );
   const line = lineOf(intro.range[0]);
   const seo = seoOf(page, registry, stats);
+
+  const icons = root.querySelectorAll('#content .icon-box .icon-inner img');
+  if (icons.length !== 3) throw new Error(`Source drift: ${file} expected exactly 3 icon-box images`);
+  const addressIconId = must(registry.image(icons[0], file, lineOf), page, 'address icon');
+  const phoneIconId = must(registry.image(icons[1], file, lineOf), page, 'phone icon');
+  const emailIconId = must(registry.image(icons[2], file, lineOf), page, 'email icon');
+
   return {
     ...identity(page, `contact-${route.locale}`, seo, lineOf(h1.range[0]), plain(h1, stats)),
     translationKey: 'contact',
+    heroImageId,
+    sectionHeading,
     heading: plain(company, stats),
+    breadcrumb: {
+      homeLabel: plain(homeLink, stats),
+      current: plain(currentSpan, stats),
+    },
+    infoIconIds: {
+      address: addressIconId,
+      phone: phoneIconId,
+      email: emailIconId,
+    },
     introduction: rich(`<p>${sanitize(intro, hooks(page, line, stats))}</p>`, [{ file, line }]),
     seo,
   };
