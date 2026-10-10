@@ -22,7 +22,7 @@ export interface ServiceBenefitsIds {
   cards: ServiceBenefitCardIds[];
 }
 
-export const SERVICE_BENEFITS_IDS_VI: ServiceBenefitsIds = {
+export const SERVICE_BENEFITS_IDS_MOBILE_VI: ServiceBenefitsIds = {
   section: 'section_734451128',
   headingRow: 'row-1905776699',
   headingCol: 'col-1013246810',
@@ -61,7 +61,7 @@ export const SERVICE_BENEFITS_IDS_VI: ServiceBenefitsIds = {
   ],
 };
 
-export const SERVICE_BENEFITS_IDS_EN: ServiceBenefitsIds = {
+export const SERVICE_BENEFITS_IDS_MOBILE_EN: ServiceBenefitsIds = {
   section: 'section_1647811100',
   headingRow: 'row-956911836',
   headingCol: 'col-1590075551',
@@ -103,7 +103,7 @@ export const SERVICE_BENEFITS_IDS_EN: ServiceBenefitsIds = {
 export interface ServiceBenefitsProps {
   copy?: SectionCopy;
   benefits: Feature[];
-  videoAsset?: AssetRef | null;
+  video?: AssetRef | null;
   icons?: AssetRef[];
   ids: ServiceBenefitsIds;
 }
@@ -111,11 +111,11 @@ export interface ServiceBenefitsProps {
 export function ServiceBenefits({
   copy,
   benefits,
-  videoAsset,
+  video,
   icons = [],
   ids,
 }: ServiceBenefitsProps) {
-  if (!benefits.length && !videoAsset) return null;
+  if (!benefits.length && !video) return null;
 
   return (
     <section className="section" id={ids.section}>
@@ -155,7 +155,7 @@ export function ServiceBenefits({
                 <div className="banner-inner fill">
                   <div className="banner-bg fill">
                     <div className="video-overlay no-click fill visible" />
-                    {videoAsset && (
+                    {video && (
                       <video
                         className="video-bg fill visible"
                         preload="auto"
@@ -164,7 +164,7 @@ export function ServiceBenefits({
                         muted
                         loop
                       >
-                        <source src={videoAsset.src} type="video/mp4" />
+                        <source src={video.src} type="video/mp4" />
                       </video>
                     )}
                   </div>

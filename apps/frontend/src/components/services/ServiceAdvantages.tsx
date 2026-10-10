@@ -97,6 +97,7 @@ export const SERVICE_ADVANTAGES_IDS_SEO_EN: ServiceAdvantagesIds = {
   headingRow: 'row-1716765680',
   headingCol: 'col-206688807',
   headingText: 'text-2321965541',
+  headingTag: 'h3',
   emptyCol: 'col-1610683665',
   decoCol: 'col-840967355',
   decoImg: 'image_2057552245',
@@ -341,7 +342,6 @@ export interface ServiceAdvantagesProps {
   deco?: AssetRef | null;
   icons?: AssetRef[];
   ids: ServiceAdvantagesIds;
-  isEn?: boolean;
 }
 
 export function ServiceAdvantages({
@@ -352,7 +352,6 @@ export function ServiceAdvantages({
   deco,
   icons = [],
   ids,
-  isEn = false,
 }: ServiceAdvantagesProps) {
   const iconMap = new Map(icons.map((icon) => [icon.id, icon]));
 
@@ -409,13 +408,7 @@ export function ServiceAdvantages({
                 </>
               ) : (
                 <div id={ids.headingText} className="text">
-                  {ids.headingTag === 'h2' ? (
-                    <h2>{copy.title}</h2>
-                  ) : ids.headingTag === 'h3' ? (
-                    <h3>
-                      <strong>{copy.title}</strong>
-                    </h3>
-                  ) : isEn ? (
+                  {ids.headingTag === 'h3' ? (
                     <h3>
                       <strong>{copy.title}</strong>
                     </h3>

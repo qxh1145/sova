@@ -26,7 +26,7 @@ export interface ServiceDetailCardsIds {
 }
 
 
-export const SERVICE_DETAIL_CARDS_IDS_VI: ServiceDetailCardsIds = {
+export const SERVICE_DETAIL_CARDS_IDS_MOBILE_VI: ServiceDetailCardsIds = {
   section: 'section_1129413203',
   headingRow: 'row-507392413',
   headingCol: 'col-1698140986',
@@ -127,7 +127,7 @@ export const SERVICE_DETAIL_CARDS_IDS_VI: ServiceDetailCardsIds = {
   ],
 };
 
-export const SERVICE_DETAIL_CARDS_IDS_EN: ServiceDetailCardsIds = {
+export const SERVICE_DETAIL_CARDS_IDS_MOBILE_EN: ServiceDetailCardsIds = {
   section: 'section_1411013231',
   headingRow: 'row-965232782',
   headingCol: 'col-1329677472',

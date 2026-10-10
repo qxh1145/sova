@@ -464,7 +464,7 @@ function renderCardName(plan: PricingPlan, isSlider: boolean) {
   return isSlider ? <h3>{plan.name}</h3> : <h3 style={{ fontSize: 24 }}>{plan.name}</h3>;
 }
 
-export function PricingCardInner({
+function PricingCardInner({
   plan,
   features,
   cardIds,

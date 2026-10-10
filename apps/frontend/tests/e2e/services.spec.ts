@@ -389,6 +389,9 @@ test.describe('Hosting, VPS, and Email service pages', () => {
       const faqItems = page.locator(`#${faqId} .accordion.ac-luutru .accordion-item`);
       await expect(faqItems).toHaveCount(config.faqCount);
       await expect(faqItems.first().locator('.accordion-title')).toHaveClass(/active/);
+      await expect(page.locator(`#${faqId} > .section-content > .gap-element`)).toHaveCount(
+        config.key === 'hosting' ? 1 : 0,
+      );
     });
 
     test(`Hero assets and breadcrumb on ${config.path}`, async ({ page }) => {
