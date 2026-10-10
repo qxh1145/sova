@@ -4,6 +4,7 @@ import { createMockRepository } from '@/lib/repositories/mock';
 import { assets } from '@/data/assets';
 import { faqs } from '@/data/faq';
 import { navigation } from '@/data/navigation';
+import { aboutPages } from '@/data/pages/about';
 import { contactPages } from '@/data/pages/contact';
 import { homePages } from '@/data/pages/home';
 import { legalPages, paymentGuides } from '@/data/pages/legal';
@@ -23,7 +24,14 @@ import { stats } from '@/data/stats';
 import { testimonials } from '@/data/testimonials';
 import type { ContactPageContent, SiteSettings } from '@/types/content';
 import { getFAQs } from './faq';
-import { getContactPage, getHomeAssets, getHomePage, getLegalPage, getPaymentGuide } from './pages';
+import {
+  getAboutPage,
+  getContactPage,
+  getHomeAssets,
+  getHomePage,
+  getLegalPage,
+  getPaymentGuide,
+} from './pages';
 import { getPricing, getService, getServicePage } from './services';
 import { getNavigation } from './site';
 
@@ -66,6 +74,7 @@ const repoWith = (data: Partial<ContentData> = {}) =>
     pricing: websitePricing,
     assets,
     homePages,
+    aboutPages,
     contactPages: [contactWithPhone],
     legalPages,
     paymentGuides,
@@ -304,4 +313,35 @@ test('getHomeAssets reads assets from the repository it is given', async () => {
     home!.projects.map((p) => p.galleryIds[0]).filter(Boolean),
   );
   expect(getCategoriesSpy).toHaveBeenCalledOnce();
+});
+
+test('getAboutPage resolves 3 testimonials in placement order', async () => {
+  repository = repoWith();
+  const about = await getAboutPage('vi');
+  expect(about).not.toBeNull();
+  expect(about!.testimonials).toHaveLength(3);
+  expect(about!.testimonials.map((t) => t.id)).toEqual([
+    'testimonial-feedback-ten',
+    'testimonial-feedback-dong-a',
+    'testimonial-feedback-vinatex',
+  ]);
+  expect(about!.stats).toHaveLength(4);
+  expect(about!.marqueeSeparator.id).toBe('asset-400b882328');
+  expect(about!.purposeImage.id).toBe('asset-e0d6652ff9');
+  expect(about!.timelineDot.id).toBe('asset-ellipse-2354');
+});
+
+test('getAboutPage rejects when testimonial id is missing', async () => {
+  const aboutRecord = aboutPages.find((p) => p.locale === 'vi')!;
+  repository = repoWith({
+    aboutPages: [
+      {
+        ...aboutRecord,
+        testimonialIds: [...aboutRecord.testimonialIds, 'testimonial-nonexistent'],
+      },
+    ],
+  });
+  await expect(getAboutPage('vi')).rejects.toThrow(
+    'about-vi references missing ids: testimonial-nonexistent',
+  );
 });
