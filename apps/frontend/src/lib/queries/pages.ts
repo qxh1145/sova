@@ -221,11 +221,7 @@ export async function getAboutPage(
     stats: statIds.map((id) => stats.find((s) => s.id === id)!),
     testimonials,
     marqueeSeparator: byId(marqueeSeparatorId),
-    testimonialArt: {
-      photo: byId(testimonialArtIds.photoId),
-      quoteIcon: byId(testimonialArtIds.quoteIconId),
-      line: byId(testimonialArtIds.lineId),
-    },
+    testimonialArt: resolveTestimonialArt(assets, testimonialArtIds),
     purposeImage: byId(purposeImageId),
     timelineDot: byId(timelineDotId),
   };

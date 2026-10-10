@@ -301,5 +301,3 @@ export const SERVICE_HERO_IDS_WEBSITE_EN: PageHeroIds = {
   bottomGap: 'gap-279308045',
   bottomGapClass: 'gap-element clearfix hide-for-small',
 };
-
-

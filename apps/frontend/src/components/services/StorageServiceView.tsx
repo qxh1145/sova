@@ -1,4 +1,4 @@
-import type { AssetRef, Locale, RouteEntry } from '@/types/content';
+import type { Locale, RouteEntry } from '@/types/content';
 import type { ServiceAssets, ServicePage } from '@/lib/queries/services';
 import { pathForRouteId } from '@/lib/routes';
 import { PageHero } from '@/components/hero/PageHero';
@@ -28,7 +28,6 @@ const FEATURED_PROJECTS_IDS_STORAGE: FeaturedProjectsIds = {
 export interface StorageServiceViewProps {
   page: ServicePage;
   assets: ServiceAssets;
-  decoIcon?: AssetRef | null;
   routes: RouteEntry[];
   locale: Locale;
 }
@@ -57,7 +56,6 @@ const FAQ_IDS = {
 export function StorageServiceView({
   page,
   assets,
-  decoIcon,
   routes,
   locale,
 }: StorageServiceViewProps) {
@@ -98,7 +96,7 @@ export function StorageServiceView({
         offerings={service.offerings}
         mediaMap={mediaMap}
         subtractIcon={assets.subtractIcon}
-        decoIcon={decoIcon ?? assets.advantagesDeco}
+        decoIcon={assets.advantagesDeco}
         resolvedHrefs={resolvedHrefs}
         ids={isEn ? STORAGE_OFFERINGS_IDS_EN : STORAGE_OFFERINGS_IDS_VI}
         labels={SERVICE_CAROUSEL_LABELS[locale]}

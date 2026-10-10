@@ -37,7 +37,7 @@ export interface ServiceAssets {
   benefitsBgImage: AssetRef | null;
   /** SEO advantages photo (`service.advantagesPhotoId`). */
   advantagesPhoto: AssetRef | null;
-  /** SEO advantages decorative graphic (`service.advantagesDecoId`). */
+  /** Decorative graphic from `service.advantagesDecoId` (SEO/branding advantages, storage offerings). */
   advantagesDeco: AssetRef | null;
   /** SEO offerings section background (`service.offeringsBgImageId`). */
   offeringsBgImage: AssetRef | null;
