@@ -106,6 +106,12 @@ html.has-custom-cursor .cursor-ring {
   font-family: Poppins, sans-serif !important;
 }
 
+/* About achievements heading (VI + EN): same source inline rule. */
+#text-1037698079 h2,
+#text-714894948 h2 {
+  font-family: Poppins, sans-serif !important;
+}
+
 /* SEO package card titles 1-3 (grid + slider, VI + EN): same source inline rule; card 4 has none. */
 #text-494824446 h2,
 #text-2043975176 h2,
@@ -230,3 +236,67 @@ html.has-custom-cursor .cursor-ring {
     padding: 25px 20px !important;
   }
 }
+
+/* Timeline continuous linear strip for About pages */
+@keyframes timeline-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.timeline-track-wrap {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+.timeline-track {
+  display: flex;
+  flex-wrap: nowrap;
+  width: max-content;
+  animation: timeline-scroll 35s linear infinite;
+  will-change: transform;
+}
+
+.timeline-item {
+  flex: 0 0 auto;
+  width: 280px;
+}
+
+/* Not in source: let users stop the strip to read a milestone. */
+.timeline-track-wrap:hover .timeline-track,
+.timeline-track-wrap:focus-within .timeline-track {
+  animation-play-state: paused;
+}
+
+@media (max-width: 549px) {
+  .timeline-track {
+    animation: none !important;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .timeline-item {
+    width: 100%;
+  }
+  .timeline-track [aria-hidden="true"] {
+    display: none !important;
+  }
+}
+
+/* Reduced motion: no loop, so drop the duplicate set and let the strip scroll by hand. */
+@media (prefers-reduced-motion: reduce) {
+  .timeline-track-wrap {
+    overflow-x: auto;
+  }
+  .timeline-track {
+    animation: none;
+  }
+  .timeline-track [aria-hidden="true"] {
+    display: none;
+  }
+}
+

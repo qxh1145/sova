@@ -431,6 +431,16 @@ function about(page: Page, registry: AssetRegistry, stats: Stats) {
     };
   });
 
+  const timelineDotId = must(
+    registry.image(
+      content.querySelector('section.hinhthanh-phattrien .text-border img'),
+      file,
+      lineOf,
+    ),
+    page,
+    'timeline dot asset',
+  );
+
   const seo = seoOf(page, registry, stats);
   const description = trimBreaks(after.map((t) => sanitize(t, h(heroLine))).join(''));
   const record: AboutPageRecord = {
@@ -452,6 +462,69 @@ function about(page: Page, registry: AssetRegistry, stats: Stats) {
     capabilities,
     partnerIds: [],
     testimonialIds: readSlides(root, file).map((s) => s.id),
+    sectionCopy: {
+      achievements: {
+        title: locale === 'vi' ? 'Thành tựu chúng tôi đạt được' : 'Our Achievements',
+        description:
+          locale === 'vi'
+            ? 'Đối với Sova xem mỗi dự án không chỉ là cơ hội tạo ra giá trị cho doanh nghiệp mà còn là sự đồng hành cùng doanh nghiệp, mang lại giá trị cộng hưởng cho khách hàng thông qua từng sản phẩm trải nghiệm số.'
+            : 'Sova see every project as more than just a task — it’s a chance to co-create value with our clients, delivering meaningful digital experiences that drive impact and foster lasting partnerships.',
+      },
+      goals: {
+        eyebrow: 'Target',
+        title: locale === 'vi' ? 'Mục tiêu của chúng tôi' : 'Our Mission',
+        description:
+          locale === 'vi'
+            ? 'Sova luôn nỗ lực không ngừng để nâng cao chất lượng dịch vụ,\nvới mục tiêu trở thành sự lựa chọn hàng đầu của khách hàng.\nMỗi dự án là một trải nghiệm và thử thách đối với chúng tôi.'
+            : 'Sova are committed to continuously improving our service quality\nwith the goal of becoming the top choice for our clients.\nEvery project is both a new experience and a meaningful challenge for us.',
+        descriptionLines:
+          locale === 'vi'
+            ? [
+                'Sova luôn nỗ lực không ngừng để nâng cao chất lượng dịch vụ,',
+                'với mục tiêu trở thành sự lựa chọn hàng đầu của khách hàng.',
+                'Mỗi dự án là một trải nghiệm và thử thách đối với chúng tôi.',
+              ]
+            : [
+                'Sova are committed to continuously improving our service quality',
+                'with the goal of becoming the top choice for our clients.',
+                'Every project is both a new experience and a meaningful challenge for us.',
+              ],
+      },
+      purpose: {
+        title: locale === 'vi' ? 'Các sản phẩm của Sova' : 'Our Products',
+        ...(locale === 'vi' ? { titleLines: ['Các sản phẩm của', 'Sova'] } : {}),
+        description:
+          locale === 'vi'
+            ? 'Tất cả đều đang đáp ứng chính xác nhu cầu của thị trường, đã được cấp chứng chỉ sở hữu trí tuệ từ Nhà nước, và sẵn sàng đồng hành cùng các tổ chức doanh nghiệp lớn, vừa và nhỏ để phát triển một cách toàn diện và bền vững.'
+            : 'All of Sova’s products are precisely aligned with market demands, officially certified by the State for intellectual property rights, and ready to partner with financial institutions of all sizes — enabling comprehensive and sustainable growth.',
+      },
+      timeline: {
+        title: locale === 'vi' ? 'Hình thành và phát triển' : 'Our Journey of Growth',
+      },
+      pillars: {
+        eyebrow: locale === 'vi' ? 'Những dịch vụ' : 'Services',
+        title: locale === 'vi' ? 'Có thể tìm thấy tại Sova' : 'What You Can Find at Sova',
+        ...(locale === 'vi' ? { titleLines: ['Có thể tìm thấy tại', 'Sova'] } : {}),
+        description:
+          locale === 'vi'
+            ? 'Khi trở thành khách hàng của Sova, bạn có thể sử dụng những dịch vụ do công ty cung cấp như sau'
+            : 'As a client of Sova, you can take advantage of the following services provided by our company:',
+      },
+      testimonials: {
+        eyebrow: 'Sova',
+        title: locale === 'vi' ? 'Khách hàng nhận xét về chúng tôi' : 'Customer Reviews',
+        ...(locale === 'vi' ? { titleLines: ['Khách hàng nhận xét', 'về chúng tôi'] } : {}),
+      },
+    },
+    marqueeText: ['Development', 'UI/UX', 'Sova', 'Branding', 'Writer', 'Mobile'],
+    marqueeSeparatorId: 'asset-400b882328',
+    testimonialArtIds: {
+      photoId: 'asset-941f38ec1d',
+      quoteIconId: 'asset-1d227d7c9b',
+      lineId: 'asset-5763f42849',
+    },
+    purposeImageId: 'asset-e0d6652ff9',
+    timelineDotId,
   };
   return record;
 }
