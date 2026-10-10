@@ -9,6 +9,7 @@ import { contactPages } from '@/data/pages/contact';
 import { homePages } from '@/data/pages/home';
 import { legalPages, paymentGuides } from '@/data/pages/legal';
 import { profiles } from '@/data/pages/profile';
+import { faqPages } from '@/data/pages/faq';
 import { partners } from '@/data/partners';
 import { postCategories } from '@/data/post-categories';
 import { posts } from '@/data/posts';
@@ -231,6 +232,9 @@ function createRawRepository(data: ContentData): ContentRepository {
     async getProfile(locale) {
       return data.profiles.find((p) => p.locale === locale) ?? null;
     },
+    async getFAQPage(locale) {
+      return data.faqPages.find((p) => p.locale === locale) ?? null;
+    },
     async getLegalPage(path, locale) {
       return data.legalPages.find((p) => p.path === path && p.locale === locale) ?? null;
     },
@@ -281,6 +285,7 @@ export const defaultContentData: ContentData = {
   legalPages,
   paymentGuides,
   profiles,
+  faqPages,
   listingSettings,
   listingSnapshots,
   utilityContent,

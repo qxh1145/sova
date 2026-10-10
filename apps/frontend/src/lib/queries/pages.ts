@@ -7,6 +7,7 @@ import type {
   CompanyProfileContent,
   ContactPageContent,
   EntityId,
+  FAQPageContent,
   HomePageContent,
   LegalPage,
   ListingSettings,
@@ -258,6 +259,13 @@ export function getContactPage(locale: Locale): Promise<ContactPageContent | nul
 
 export function getProfile(locale: Locale): Promise<CompanyProfileContent | null> {
   return getRepository().getProfile(locale);
+}
+
+export function getFAQPage(
+  locale: Locale,
+  repository: ContentRepository = getRepository(),
+): Promise<FAQPageContent | null> {
+  return repository.getFAQPage(locale);
 }
 
 export function getLegalPage(path: string, locale: Locale): Promise<LegalPage | null> {

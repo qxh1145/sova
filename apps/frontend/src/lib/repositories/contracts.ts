@@ -5,6 +5,7 @@ import type {
   ContactPageContent,
   EntityId,
   FAQ,
+  FAQPageContent,
   FAQTopic,
   HomePageRecord,
   LegalPage,
@@ -90,6 +91,7 @@ export interface ContentRepository {
   getAboutPage(locale: Locale): Promise<AboutPageRecord | null>;
   getContactPage(locale: Locale): Promise<ContactPageContent | null>;
   getProfile(locale: Locale): Promise<CompanyProfileContent | null>;
+  getFAQPage(locale: Locale): Promise<FAQPageContent | null>;
   getLegalPage(path: string, locale: Locale): Promise<LegalPage | null>;
   getPaymentGuide(locale: Locale): Promise<PaymentGuideContent | null>;
   getListingSettings(routeId: EntityId): Promise<ListingSettings | null>;
@@ -123,6 +125,7 @@ export interface ContentData {
   legalPages: LegalPage[];
   paymentGuides: PaymentGuideContent[];
   profiles: CompanyProfileContent[];
+  faqPages: FAQPageContent[];
   listingSettings: ListingSettings[];
   listingSnapshots: ListingSnapshot[];
   utilityContent: UtilityContent[];
