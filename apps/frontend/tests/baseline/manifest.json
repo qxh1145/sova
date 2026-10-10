@@ -284,6 +284,20 @@
       "reason": "family"
     },
     {
+      "key": "content-terms-vi",
+      "url": "/dieu-khoan-su-dung/",
+      "family": "content",
+      "locale": "vi",
+      "reason": "exception: terms heading wrap row/col with strong"
+    },
+    {
+      "key": "content-terms-en",
+      "url": "/en/terms-of-use/",
+      "family": "content",
+      "locale": "en",
+      "reason": "exception: terms heading wrap row/col with strong"
+    },
+    {
       "key": "project-detail-thp",
       "url": "/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/",
       "family": "project-detail",
