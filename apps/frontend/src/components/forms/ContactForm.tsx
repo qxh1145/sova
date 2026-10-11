@@ -10,6 +10,7 @@ import {
   zodResolver,
   type ContactFormValues,
 } from '@/lib/forms/schemas';
+import { useHydrated } from '@/lib/forms/useHydrated';
 import { useSubmitStatus } from '@/lib/forms/useSubmitStatus';
 import type { ContactFormContent, Locale, ShellContent } from '@/types/content';
 import { CONTACT_FORM_PRESETS } from '@/components/contact/contactIds';
@@ -26,6 +27,8 @@ export function ContactForm({ form, consult, locale }: ContactFormProps) {
   const router = useRouter();
   const adapter = useSubmitAdapter<ContactFormValues>();
   const { status, isSubmitting, submit, reset } = useSubmitStatus(adapter);
+  // Submit stays disabled until hydration: a native GET would put the fields in the URL.
+  const hydrated = useHydrated();
 
   const {
     register,
@@ -212,7 +215,7 @@ export function ContactForm({ form, consult, locale }: ContactFormProps) {
             <p>
               <input
                 type="submit"
-                disabled={isSubmitting}
+                disabled={!hydrated || isSubmitting}
                 aria-busy={isSubmitting}
                 value={isSubmitting ? consult.submitting : form.submit}
                 className="wpcf7-form-control wpcf7-submit has-spinner"
