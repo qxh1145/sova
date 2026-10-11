@@ -5,8 +5,20 @@ test.describe('Contact Form (Story Contact form with demo submit)', () => {
   const viShell = shellContent.find((s) => s.locale === 'vi')!;
 
   const emptySubmitCases = [
-    { locale: 'VI', path: '/lien-he/', selectName: 'dynamic_select-682' },
-    { locale: 'EN', path: '/en/contact-us/', selectName: 'dynamic_select-6827' },
+    {
+      locale: 'VI',
+      path: '/lien-he/',
+      selectName: 'dynamic_select-682',
+      wpcf7Id: 'wpcf7-f6819-p7223-o1',
+      unitTag: '6819',
+    },
+    {
+      locale: 'EN',
+      path: '/en/contact-us/',
+      selectName: 'dynamic_select-6827',
+      wpcf7Id: 'wpcf7-f6824-p7363-o1',
+      unitTag: '6824',
+    },
   ] as const;
 
   for (const c of emptySubmitCases) {
@@ -14,6 +26,10 @@ test.describe('Contact Form (Story Contact form with demo submit)', () => {
       page,
     }) => {
       await page.goto(c.path);
+      await expect(page.locator(`div.wpcf7#${c.wpcf7Id}`)).toHaveAttribute(
+        'data-wpcf7-id',
+        c.unitTag,
+      );
       const form = page.locator('form.wpcf7-form');
       await expect(form).toBeVisible();
 

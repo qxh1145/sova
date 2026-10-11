@@ -35,7 +35,7 @@ export function getFAQPreset(locale: Locale): FAQPreset {
   return FAQ_PRESETS[locale];
 }
 
-export const FAQ_TOGGLE_LABELS: Record<Locale, string> = {
+const FAQ_TOGGLE_LABELS: Record<Locale, string> = {
   vi: 'Mở rộng câu trả lời', // business-text-ok: accordion toggle label
   en: 'Toggle answer', // business-text-ok: accordion toggle label
 };
