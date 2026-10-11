@@ -41,6 +41,10 @@ const DEMO_ACCOUNT: Record<Locale, { bank: string; holder: string; accountNumber
   vi: { bank: 'Ngân hàng Demo', holder: 'SOVA DEMO', accountNumber: '0000000000' },
   en: { bank: 'Demo Bank', holder: 'SOVA DEMO', accountNumber: '0000000000' },
 };
+const PAYMENT_LABELS: Record<Locale, { accountNumber: string; holder: string }> = {
+  vi: { accountNumber: 'Số tài khoản:', holder: 'Chủ tài khoản:' },
+  en: { accountNumber: 'Account Number:', holder: 'Account Holder:' },
+};
 /** The account holder named in the e-wallet steps: replaced by the demo holder (Q1). */
 const HOLDER_NAME = /V[ŨU] H[ỒO]NG D[ŨU]NG/gi;
 /** Bare uppercase ERAS naming the company in legal copy (the shared brand map keeps it for asset names). */
@@ -709,6 +713,7 @@ function payment(
   return {
     ...identity(page, id, seo, introLine, bannerTitle(page, stats)),
     translationKey,
+    labels: PAYMENT_LABELS[route.locale],
     introduction: rich(html(children.slice(0, split), introLine), [{ file, line: introLine }]),
     seo,
     accounts: accountRows.map((_, i) => ({

@@ -387,6 +387,7 @@ export const fixtures: ContentData = {
   paymentGuides: [
     {
       ...page('payment-1', '/fixture-payment'),
+      labels: { accountNumber: 'Số tài khoản:', holder: 'Chủ tài khoản:' },
       introduction: rich,
       accounts: [{ id: 'account-1', bank: 'Fixture', holder: 'Fixture', accountNumber: '000' }],
       instructions: rich,
