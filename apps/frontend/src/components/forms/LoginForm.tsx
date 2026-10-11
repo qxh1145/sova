@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useSyncExternalStore } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   loginSchema,
   zodResolver,
   type LoginFormValues,
 } from '@/lib/forms/schemas';
+import { useHydrated } from '@/lib/forms/useHydrated';
 import type { LoginFormContent } from '@/types/content';
 
 function EyeIcon() {
@@ -54,8 +55,6 @@ function FieldError({ message }: { message?: string }) {
   );
 }
 
-const noopSubscribe = () => () => {};
-
 export interface LoginFormProps {
   form: LoginFormContent;
   demoNotice: string;
@@ -66,11 +65,7 @@ export function LoginForm({ form, demoNotice }: LoginFormProps) {
   const [showNotice, setShowNotice] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   // Submit stays disabled until hydration: a native POST would send the credentials.
-  const hydrated = useSyncExternalStore(
-    noopSubscribe,
-    () => true,
-    () => false,
-  );
+  const hydrated = useHydrated();
 
   const {
     register,
