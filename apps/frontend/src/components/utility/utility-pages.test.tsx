@@ -11,6 +11,9 @@ import ThankYouPage from '@/app/(site)/(vi)/eras-xin-chan-thanh-cam-on-quy-khach
 import HoSoNangLucPage from '@/app/(site)/(vi)/ho-so-nang-luc-eras-vietnam/page'; // business-text-ok: route import
 import EnPortfolioPage from '@/app/(site)/en/porfolio-eras-vietnam/page'; // business-text-ok: route import
 import SamplePage from '@/app/(site)/(vi)/sample-page/page';
+import LoginPage, {
+  generateMetadata as generateLoginMetadata,
+} from '@/app/(utility)/login-eras/page'; // business-text-ok: route import
 
 const notFoundMock = vi.fn(() => {
   throw new Error('NEXT_NOT_FOUND');
@@ -157,6 +160,21 @@ describe('ThankYouView component', () => {
 
     await expect(SamplePage()).rejects.toThrow('NEXT_NOT_FOUND');
     expect(notFoundMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('invokes notFound() when login record is missing', async () => {
+    repository = repoWith({ utilityContent: [] });
+
+    await expect(LoginPage()).rejects.toThrow('NEXT_NOT_FOUND');
+    expect(notFoundMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('login metadata title has source entities decoded', async () => {
+    repository = repoWith();
+
+    const { title } = await generateLoginMetadata();
+    expect(title).toContain('‹');
+    expect(String(title)).not.toMatch(/&\w+;/);
   });
 });
 
