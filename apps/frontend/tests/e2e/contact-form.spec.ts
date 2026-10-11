@@ -1,64 +1,59 @@
-import { expect, test } from './fixtures';
+import { expect, expectNoClientStorage, test } from './fixtures';
 import { shellContent } from '../../src/data/shell';
 
 test.describe('Contact Form (Story Contact form with demo submit)', () => {
   const viShell = shellContent.find((s) => s.locale === 'vi')!;
-  const enShell = shellContent.find((s) => s.locale === 'en')!;
 
-  test('Empty submit on VI renders 5 validation tips and sets invalid form class', async ({
-    page,
-  }) => {
-    await page.goto('/lien-he/');
-    const form = page.locator('form.wpcf7-form');
-    await expect(form).toBeVisible();
+  const emptySubmitCases = [
+    {
+      locale: 'VI',
+      path: '/lien-he/',
+      selectName: 'dynamic_select-682',
+      wpcf7Id: 'wpcf7-f6819-p7223-o1',
+      unitTag: '6819',
+    },
+    {
+      locale: 'EN',
+      path: '/en/contact-us/',
+      selectName: 'dynamic_select-6827',
+      wpcf7Id: 'wpcf7-f6824-p7363-o1',
+      unitTag: '6824',
+    },
+  ] as const;
 
-    const submitBtn = form.locator('input.wpcf7-submit');
-    await submitBtn.click();
+  for (const c of emptySubmitCases) {
+    test(`Empty submit on ${c.locale} renders 5 validation tips and sets invalid form class`, async ({
+      page,
+    }) => {
+      await page.goto(c.path);
+      await expect(page.locator(`div.wpcf7#${c.wpcf7Id}`)).toHaveAttribute(
+        'data-wpcf7-id',
+        c.unitTag,
+      );
+      const form = page.locator('form.wpcf7-form');
+      await expect(form).toBeVisible();
 
-    await expect(form).toHaveClass(/invalid/);
-    const tips = form.locator('.wpcf7-not-valid-tip');
-    await expect(tips).toHaveCount(5);
+      const submitBtn = form.locator('input.wpcf7-submit');
+      await submitBtn.click();
 
-    // Verify all 5 controls have aria-invalid="true"
-    await expect(form.locator('input[name="your-name"]')).toHaveAttribute('aria-invalid', 'true');
-    await expect(form.locator('input[name="your-email"]')).toHaveAttribute('aria-invalid', 'true');
-    await expect(form.locator('select[name="dynamic_select-682"]')).toHaveAttribute(
-      'aria-invalid',
-      'true',
-    );
-    await expect(form.locator('input[name="tel-584"]')).toHaveAttribute('aria-invalid', 'true');
-    await expect(form.locator('textarea[name="your-message"]')).toHaveAttribute(
-      'aria-invalid',
-      'true',
-    );
-  });
+      await expect(form).toHaveClass(/invalid/);
+      const tips = form.locator('.wpcf7-not-valid-tip');
+      await expect(tips).toHaveCount(5);
 
-  test('Empty submit on EN renders 5 validation tips and sets invalid form class', async ({
-    page,
-  }) => {
-    await page.goto('/en/contact-us/');
-    const form = page.locator('form.wpcf7-form');
-    await expect(form).toBeVisible();
-
-    const submitBtn = form.locator('input.wpcf7-submit');
-    await submitBtn.click();
-
-    await expect(form).toHaveClass(/invalid/);
-    const tips = form.locator('.wpcf7-not-valid-tip');
-    await expect(tips).toHaveCount(5);
-
-    await expect(form.locator('input[name="your-name"]')).toHaveAttribute('aria-invalid', 'true');
-    await expect(form.locator('input[name="your-email"]')).toHaveAttribute('aria-invalid', 'true');
-    await expect(form.locator('select[name="dynamic_select-6827"]')).toHaveAttribute(
-      'aria-invalid',
-      'true',
-    );
-    await expect(form.locator('input[name="tel-584"]')).toHaveAttribute('aria-invalid', 'true');
-    await expect(form.locator('textarea[name="your-message"]')).toHaveAttribute(
-      'aria-invalid',
-      'true',
-    );
-  });
+      // Verify all 5 controls have aria-invalid="true"
+      await expect(form.locator('input[name="your-name"]')).toHaveAttribute('aria-invalid', 'true');
+      await expect(form.locator('input[name="your-email"]')).toHaveAttribute('aria-invalid', 'true');
+      await expect(form.locator(`select[name="${c.selectName}"]`)).toHaveAttribute(
+        'aria-invalid',
+        'true',
+      );
+      await expect(form.locator('input[name="tel-584"]')).toHaveAttribute('aria-invalid', 'true');
+      await expect(form.locator('textarea[name="your-message"]')).toHaveAttribute(
+        'aria-invalid',
+        'true',
+      );
+    });
+  }
 
   test('Bad email retains other field values and shows email tip only', async ({
     page,
@@ -165,55 +160,53 @@ test.describe('Contact Form (Story Contact form with demo submit)', () => {
     expect(page.url()).toContain('/dev-fixtures/contact-form/error');
   });
 
-  test('Real VI contact page navigates to thank-you demo page on valid submit', async ({
-    page,
-  }) => {
-    await page.goto('/lien-he/');
-    const form = page.locator('form.wpcf7-form');
-    await expect(form).toBeVisible();
+  const validSubmitCases = [
+    {
+      locale: 'VI',
+      path: '/lien-he/',
+      name: 'Nguyễn Văn B',
+      email: 'vanb@example.com',
+      selectName: 'dynamic_select-682',
+      service: 'Dịch Vụ Thiết Kế App Mobile',
+      message: 'Mô tả dự án VI',
+    },
+    {
+      locale: 'EN',
+      path: '/en/contact-us/',
+      name: 'John Doe',
+      email: 'john@example.com',
+      selectName: 'dynamic_select-6827',
+      service: 'Website Development',
+      message: 'Project description EN',
+    },
+  ] as const;
 
-    await form.locator('input[name="your-name"]').fill('Nguyễn Văn B');
-    await form.locator('input[name="your-email"]').fill('vanb@example.com');
-    await form.locator('select[name="dynamic_select-682"]').selectOption('Dịch Vụ Thiết Kế App Mobile');
-    await form.locator('input[name="tel-584"]').fill('0988606539');
-    await form.locator('textarea[name="your-message"]').fill('Mô tả dự án VI');
+  for (const c of validSubmitCases) {
+    test(`Real ${c.locale} contact page navigates to thank-you demo page on valid submit`, async ({
+      page,
+    }) => {
+      await page.goto(c.path);
+      const form = page.locator('form.wpcf7-form');
+      await expect(form).toBeVisible();
 
-    const submitBtn = form.locator('input.wpcf7-submit');
-    await submitBtn.click();
+      await form.locator('input[name="your-name"]').fill(c.name);
+      await form.locator('input[name="your-email"]').fill(c.email);
+      await form.locator(`select[name="${c.selectName}"]`).selectOption(c.service);
+      await form.locator('input[name="tel-584"]').fill('0988606539');
+      await form.locator('textarea[name="your-message"]').fill(c.message);
 
-    await page.waitForURL('**/eras-xin-chan-thanh-cam-on-quy-khach/?demo=1');
-    expect(page.url()).toContain('/eras-xin-chan-thanh-cam-on-quy-khach/?demo=1');
+      const submitBtn = form.locator('input.wpcf7-submit');
+      await submitBtn.click();
 
-    // Demo badge visible on thank-you page
-    const badge = page.locator('.wpcf7-demo-badge');
-    await expect(badge).toBeVisible();
-    await expect(badge).toContainText(viShell.consult.demoBadge);
-  });
+      await page.waitForURL('**/eras-xin-chan-thanh-cam-on-quy-khach/?demo=1');
+      expect(page.url()).toContain('/eras-xin-chan-thanh-cam-on-quy-khach/?demo=1');
 
-  test('Real EN contact page navigates to thank-you demo page on valid submit', async ({
-    page,
-  }) => {
-    await page.goto('/en/contact-us/');
-    const form = page.locator('form.wpcf7-form');
-    await expect(form).toBeVisible();
-
-    await form.locator('input[name="your-name"]').fill('John Doe');
-    await form.locator('input[name="your-email"]').fill('john@example.com');
-    await form.locator('select[name="dynamic_select-6827"]').selectOption('Website Development');
-    await form.locator('input[name="tel-584"]').fill('0988606539');
-    await form.locator('textarea[name="your-message"]').fill('Project description EN');
-
-    const submitBtn = form.locator('input.wpcf7-submit');
-    await submitBtn.click();
-
-    await page.waitForURL('**/eras-xin-chan-thanh-cam-on-quy-khach/?demo=1');
-    expect(page.url()).toContain('/eras-xin-chan-thanh-cam-on-quy-khach/?demo=1');
-
-    // Demo badge visible on thank-you page (thank-you page is VI-only)
-    const badge = page.locator('.wpcf7-demo-badge');
-    await expect(badge).toBeVisible();
-    await expect(badge).toContainText(viShell.consult.demoBadge);
-  });
+      // Demo badge visible on thank-you page (thank-you page is VI-only)
+      const badge = page.locator('.wpcf7-demo-badge');
+      await expect(badge).toBeVisible();
+      await expect(badge).toContainText(viShell.consult.demoBadge);
+    });
+  }
 
   test('Privacy: no form values written to localStorage, sessionStorage or cookies', async ({
     page,
@@ -231,15 +224,7 @@ test.describe('Contact Form (Story Contact form with demo submit)', () => {
     await page.locator('[data-testid="fixture-release"]').click();
     await expect(form).toHaveClass(/failed/);
 
-    const storage = await page.evaluate(() => ({
-      local: localStorage.length,
-      session: sessionStorage.length,
-    }));
-    expect(storage.local).toBe(0);
-    expect(storage.session).toBe(0);
-
-    const cookies = await page.context().cookies();
-    expect(cookies).toEqual([]);
+    await expectNoClientStorage(page);
   });
 
   test('Unknown fixture variant returns 404', async ({ page }) => {

@@ -14,6 +14,7 @@ import type {
   LegalPage,
   ListingSettings,
   Locale,
+  LoginFormContent,
   OfferingPanel,
   PaymentGuideContent,
   PublicPath,
@@ -40,6 +41,10 @@ const RICH_ALLOWED: ReadonlySet<string> = new Set([...ALLOWED, 'h2', 'h3', 'h4',
 const DEMO_ACCOUNT: Record<Locale, { bank: string; holder: string; accountNumber: string }> = {
   vi: { bank: 'Ngân hàng Demo', holder: 'SOVA DEMO', accountNumber: '0000000000' },
   en: { bank: 'Demo Bank', holder: 'SOVA DEMO', accountNumber: '0000000000' },
+};
+const PAYMENT_LABELS: Record<Locale, { accountNumber: string; holder: string }> = {
+  vi: { accountNumber: 'Số tài khoản:', holder: 'Chủ tài khoản:' },
+  en: { accountNumber: 'Account Number:', holder: 'Account Holder:' },
 };
 /** The account holder named in the e-wallet steps: replaced by the demo holder (Q1). */
 const HOLDER_NAME = /V[ŨU] H[ỒO]NG D[ŨU]NG/gi;
@@ -75,6 +80,7 @@ interface Page {
   root: HTMLElement;
   lineOf: (offset: number) => number;
   wpId?: string;
+  source?: string;
 }
 
 const placements = (ids: EntityId[]): CollectionPlacement[] =>
@@ -698,10 +704,25 @@ function payment(
   const split = children.findIndex(
     (n) => n instanceof HTMLElement && n.querySelector('.row-collapse.align-middle'),
   );
+  const walletIndex = children.findIndex(
+    (n, i) => i > split && n instanceof HTMLElement && n.classList.contains('row'),
+  );
+  const walletRow = must(children[walletIndex] as HTMLElement | undefined, page, 'e-wallet row');
+  // Heading col, QR image col, steps col; the MoMo QR image is not imported (Q1).
+  const [walletIntro, walletQr, walletSteps] = count(
+    walletRow.childNodes.filter(
+      (n): n is HTMLElement => n instanceof HTMLElement && n.classList.contains('col'),
+    ),
+    3,
+    page,
+    'e-wallet cols',
+  );
+  must(walletQr.querySelector('img'), page, 'e-wallet QR image');
   // Real accounts and QR images are not imported (Q1): drop each account card.
   for (const row of accountRows) row.parentNode?.closest('.col')?.remove();
   const introLine = lineOf(inner.range[0]);
   const restLine = lineOf((children[split] as HTMLElement).range[0]);
+  const walletLine = lineOf(walletRow.range[0]);
   const html = (nodes: Node[], line: number) =>
     trimBreaks(sanitize(nodes, hooks(page, line, stats), RICH_ALLOWED));
   const seo = seoOf(page, registry, stats);
@@ -709,13 +730,20 @@ function payment(
   return {
     ...identity(page, id, seo, introLine, bannerTitle(page, stats)),
     translationKey,
+    labels: PAYMENT_LABELS[route.locale],
     introduction: rich(html(children.slice(0, split), introLine), [{ file, line: introLine }]),
     seo,
     accounts: accountRows.map((_, i) => ({
       id: `${id}-account-${i + 1}`,
       ...DEMO_ACCOUNT[route.locale],
     })),
-    instructions: rich(html(children.slice(split), restLine), [{ file, line: restLine }]),
+    instructions: rich(html(children.slice(split, walletIndex), restLine), [
+      { file, line: restLine },
+    ]),
+    wallet: {
+      intro: rich(html([walletIntro], walletLine), [{ file, line: walletLine }]),
+      steps: rich(html([walletSteps], walletLine), [{ file, line: walletLine }]),
+    },
   };
 }
 
@@ -886,6 +914,161 @@ function sample(page: Page, registry: AssetRegistry, stats: Stats) {
   };
 }
 
+const LOGIN_MESSAGES: Record<Locale, { usernameRequired: string; passwordRequired: string }> = {
+  vi: {
+    usernameRequired: 'Lỗi: Trường tên người dùng đang trống.',
+    passwordRequired: 'Lỗi: Mục mật khẩu đang trống.',
+  },
+  en: {
+    usernameRequired: 'Error: The username field is empty.',
+    passwordRequired: 'Error: The password field is empty.',
+  },
+};
+
+function login(page: Page, registry: AssetRegistry, stats: Stats): {
+  id: string;
+  seo: SEO;
+  body: RichContent;
+  login: LoginFormContent;
+} {
+  const inner = must(
+    page.root.querySelector('.short-info .col-inner'),
+    page,
+    '.short-info .col-inner',
+  );
+  const line = page.lineOf(inner.range[0]);
+
+  const logo = inner.querySelector('#logo');
+  if (logo) logo.remove();
+
+  const body = rich(
+    trimBreaks(
+      sanitize(
+        inner,
+        { ...hooks(page, line, stats), keepClass: true },
+        new Set([...RICH_ALLOWED, 'i', 'div']),
+      ),
+    ),
+    [{ file: page.file, line }],
+  );
+
+  const formEl = must(page.root.querySelector('#loginform'), page, '#loginform');
+  const heading = processText(
+    must(formEl.querySelector('h1'), page, 'login heading').text.trim(),
+    stats,
+  );
+
+  const registerA = must(
+    formEl.querySelector('a[href*="action=register"]'),
+    page,
+    'register link',
+  );
+  const registerText = processText(registerA.text.trim(), stats);
+  const registerHref = must(
+    processHref(registerA.getAttribute('href') ?? '', page.file, line, stats),
+    page,
+    'register href',
+  );
+  const registerParent = must(registerA.parentNode, page, 'register link parent');
+  const noAccountText = processText(
+    registerParent.childNodes
+      .filter((n) => n !== registerA)
+      .map((n) => n.text)
+      .join('')
+      .trim(),
+    stats,
+  );
+
+  const loginInput = must(formEl.querySelector('#user_login'), page, '#user_login');
+  const usernamePlaceholder = processText(
+    must(loginInput.getAttribute('placeholder'), page, 'user_login placeholder'),
+    stats,
+  ).trim();
+
+  const passInput = must(formEl.querySelector('#user_pass'), page, '#user_pass');
+  const passwordPlaceholder = processText(
+    must(passInput.getAttribute('placeholder'), page, 'user_pass placeholder'),
+    stats,
+  ).trim();
+
+  const sourceText = must(page.source, page, 'page.source');
+  const hideMatch = must(
+    /"Hide password":\s*\["([^"]+)"\]/.exec(sourceText),
+    page,
+    'hide password l10n',
+  );
+  const showMatch = must(
+    /"Show password":\s*\["([^"]+)"\]/.exec(sourceText),
+    page,
+    'show password l10n',
+  );
+  const hidePasswordLabel = JSON.parse(`"${hideMatch[1]}"`) as string;
+  const showPasswordLabel = JSON.parse(`"${showMatch[1]}"`) as string;
+
+  const rememberLabelEl = must(
+    formEl.querySelector('label[for="rememberme"]'),
+    page,
+    'rememberme label',
+  );
+  const rememberLabel = processText(rememberLabelEl.text.trim(), stats);
+
+  const lostA = must(
+    formEl.querySelector('a.wp-login-lost-password'),
+    page,
+    'lost password link',
+  );
+  const lostPasswordText = processText(lostA.text.trim(), stats);
+  const lostPasswordHref = must(
+    processHref(lostA.getAttribute('href') ?? '', page.file, line, stats),
+    page,
+    'lost password href',
+  );
+
+  const submitInput = must(formEl.querySelector('#wp-submit'), page, '#wp-submit');
+  const submitLabel = processText(
+    must(submitInput.getAttribute('value'), page, 'wp-submit value'),
+    stats,
+  ).trim();
+
+  const privacyA = must(
+    page.root.querySelector('a.privacy-policy-link'),
+    page,
+    'privacy link',
+  );
+  const privacyText = processText(privacyA.text.trim(), stats);
+  const privacyHref = must(
+    processHref(privacyA.getAttribute('href') ?? '', page.file, line, stats),
+    page,
+    'privacy href',
+  );
+
+  const messages = LOGIN_MESSAGES[page.route.locale];
+
+  return {
+    id: `login-${page.route.locale}`,
+    seo: seoOf(page, registry, stats),
+    body,
+    login: {
+      heading,
+      noAccountText,
+      registerText,
+      registerHref,
+      usernamePlaceholder,
+      passwordPlaceholder,
+      showPasswordLabel,
+      hidePasswordLabel,
+      rememberLabel,
+      lostPasswordText,
+      lostPasswordHref,
+      submitLabel,
+      privacyText,
+      privacyHref,
+      usernameRequired: messages.usernameRequired,
+      passwordRequired: messages.passwordRequired,
+    },
+  };
+}
+
 export function importPages(
   erasDir: string,
   registry: AssetRegistry,
@@ -971,6 +1154,7 @@ export function importPages(
     ),
     thankYou: pages('thank-you').map((p) => thankYou(p, registry, stats)),
     sample: pages('sample').map((p) => sample(p, registry, stats)),
+    login: pages('login').map((p) => login(p, registry, stats)),
     wordmark,
   };
 }

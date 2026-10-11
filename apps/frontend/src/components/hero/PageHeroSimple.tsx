@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
-export interface PageHeroSimpleIds {
+interface PageHeroSimpleIds {
   banner: string;
   textBox: string;
 }
 
-export interface PageHeroSimpleBreadcrumb {
+interface PageHeroSimpleBreadcrumb {
   homeLabel: string;
   homeHref: string;
   current: string;
@@ -19,7 +19,6 @@ export interface PageHeroSimpleProps {
     row: string;
     col: string;
   };
-  bgImageSrc?: string;
   breadcrumb?: PageHeroSimpleBreadcrumb;
 }
 
@@ -29,7 +28,6 @@ export function PageHeroSimple({
   headingClass = 'uppercase',
   emphasis = 'b',
   headingWrap,
-  bgImageSrc = '/wp-content/uploads/2024/03/contact_hero_bg.jpg',
   breadcrumb,
 }: PageHeroSimpleProps) {
   const headingInner = emphasis === 'strong' ? <strong>{title}</strong> : <b>{title}</b>;
@@ -42,7 +40,7 @@ export function PageHeroSimple({
             decoding="async"
             width={1020}
             height={344}
-            src={bgImageSrc}
+            src="/wp-content/uploads/2024/03/contact_hero_bg.jpg"
             className="bg attachment-large size-large"
             alt=""
             loading="lazy"

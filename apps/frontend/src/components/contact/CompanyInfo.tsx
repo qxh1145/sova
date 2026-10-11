@@ -13,7 +13,7 @@ export interface CompanyInfoProps {
 
 export function CompanyInfo({ settings, icons, preset }: CompanyInfoProps) {
   const hasAddress = Boolean(settings.address);
-  const hasPhones = Boolean(settings.phones && settings.phones.length > 0);
+  const hasPhones = settings.phones.length > 0;
   const hasEmail = Boolean(settings.email);
 
   const phoneLabel = hasPhones ? settings.phones.map((p) => p.label).join(' - ') : '';

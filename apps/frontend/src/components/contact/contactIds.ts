@@ -29,7 +29,7 @@ export interface ContactPreset {
   };
 }
 
-export const CONTACT_PRESETS: Record<Locale, ContactPreset> = {
+const CONTACT_PRESETS: Record<Locale, ContactPreset> = {
   vi: {
     hero: {
       sectionId: 'section_1877783735',
@@ -91,3 +91,22 @@ export const CONTACT_PRESETS: Record<Locale, ContactPreset> = {
 export function getContactPreset(locale: Locale): ContactPreset {
   return CONTACT_PRESETS[locale];
 }
+
+export interface ContactFormPreset {
+  wpcf7Id: string;
+  unitTag: string;
+  selectFieldName: string;
+}
+
+export const CONTACT_FORM_PRESETS: Record<Locale, ContactFormPreset> = {
+  vi: {
+    wpcf7Id: 'wpcf7-f6819-p7223-o1',
+    unitTag: '6819',
+    selectFieldName: 'dynamic_select-682',
+  },
+  en: {
+    wpcf7Id: 'wpcf7-f6824-p7363-o1',
+    unitTag: '6824',
+    selectFieldName: 'dynamic_select-6827',
+  },
+};
