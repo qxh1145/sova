@@ -1,0 +1,2449 @@
+[
+  {
+    "route": "/5-yeu-to-cai-thien-trai-nghiem-nguoi-dung-ux/",
+    "source": "5-yeu-to-cai-thien-trai-nghiem-nguoi-dung-ux/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/ban-hang-online-gi-hieu-qua-chi-voi-10-trieu/",
+    "source": "ban-hang-online-gi-hieu-qua-chi-voi-10-trieu/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/cach-ban-hang-da-kenh-hieu-qua/",
+    "source": "cach-ban-hang-da-kenh-hieu-qua/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/cai-thien-trai-nghiem-cua-khach-hang-qua-nhung-diem-cham-tinh-te/",
+    "source": "cai-thien-trai-nghiem-cua-khach-hang-qua-nhung-diem-cham-tinh-te/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/cau-hoi-thuong-gap/",
+    "source": "cau-hoi-thuong-gap/index.html",
+    "composition": "faq",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "faq",
+      "faqTopics"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/chinh-sach-bao-hanh/",
+    "source": "chinh-sach-bao-hanh/index.html",
+    "composition": "content",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "legalPages"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/chinh-sach-bao-mat/",
+    "source": "chinh-sach-bao-mat/index.html",
+    "composition": "content",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "legalPages"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/chinh-sach-hoan-tien/",
+    "source": "chinh-sach-hoan-tien/index.html",
+    "composition": "content",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "legalPages"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/creative-branding/",
+    "source": "creative-branding/index.html",
+    "composition": "blog",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/dieu-khoan-su-dung/",
+    "source": "dieu-khoan-su-dung/index.html",
+    "composition": "content",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "legalPages"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/du-an/",
+    "source": "du-an/index.html",
+    "composition": "projects",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/e-mail-doanh-nghiep/",
+    "source": "e-mail-doanh-nghiep/index.html",
+    "composition": "email",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "services",
+      "pricing",
+      "faq",
+      "projects",
+      "testimonials",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/about-us/",
+    "source": "en/about-us/index.html",
+    "composition": "about",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "pages.about",
+      "stats",
+      "partners",
+      "testimonials"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/app-mobile-development/",
+    "source": "en/app-mobile-development/index.html",
+    "composition": "mobile",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "services",
+      "pricing",
+      "faq",
+      "projects",
+      "testimonials",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/business-e-mail/",
+    "source": "en/business-e-mail/index.html",
+    "composition": "email",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "services",
+      "pricing",
+      "faq",
+      "projects",
+      "testimonials",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/business-hosting/",
+    "source": "en/business-hosting/index.html",
+    "composition": "hosting",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "services",
+      "pricing",
+      "faq",
+      "projects",
+      "testimonials",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/business-vps/",
+    "source": "en/business-vps/index.html",
+    "composition": "vps",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "services",
+      "pricing",
+      "faq",
+      "projects",
+      "testimonials",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/contact-us/",
+    "source": "en/contact-us/index.html",
+    "composition": "contact",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "siteSettings",
+      "pages.contact",
+      "services"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/digital-communications-solutions/",
+    "source": "en/digital-communications-solutions/index.html",
+    "composition": "EXCLUDED",
+    "cmsKind": "excluded",
+    "adminModules": [],
+    "uiDataSource": "none",
+    "routePolicy": "excluded",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/faq/",
+    "source": "en/faq/index.html",
+    "composition": "faq",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "faq",
+      "faqTopics"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/home/",
+    "source": "en/home/index.html",
+    "composition": "home",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "pages.home",
+      "collections",
+      "stats",
+      "services",
+      "projects",
+      "partners",
+      "testimonials",
+      "posts"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/insight/",
+    "source": "en/insight/index.html",
+    "composition": "blog",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/our-project/",
+    "source": "en/our-project/index.html",
+    "composition": "projects",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/payment-guide/",
+    "source": "en/payment-guide/index.html",
+    "composition": "content",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "legalPages"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/porfolio-eras-vietnam/",
+    "source": "en/porfolio-eras-vietnam/index.html",
+    "composition": "profile",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "companyProfiles",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/privacy-policy/",
+    "source": "en/privacy-policy/index.html",
+    "composition": "content",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "legalPages"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/refund-policy/",
+    "source": "en/refund-policy/index.html",
+    "composition": "content",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "legalPages"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/storage-solution/",
+    "source": "en/storage-solution/index.html",
+    "composition": "storage",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "services",
+      "pricing",
+      "faq",
+      "projects",
+      "testimonials",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/terms-of-use/",
+    "source": "en/terms-of-use/index.html",
+    "composition": "content",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "legalPages"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/tuyen-dung/content-marketing-intern/",
+    "source": "en/tuyen-dung/content-marketing-intern/index.html",
+    "composition": "EXCLUDED",
+    "cmsKind": "excluded",
+    "adminModules": [],
+    "uiDataSource": "none",
+    "routePolicy": "excluded",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/tuyen-dung/",
+    "source": "en/tuyen-dung/index.html",
+    "composition": "EXCLUDED",
+    "cmsKind": "excluded",
+    "adminModules": [],
+    "uiDataSource": "none",
+    "routePolicy": "excluded",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/tuyen-dung/marketing-advertising-specialist/",
+    "source": "en/tuyen-dung/marketing-advertising-specialist/index.html",
+    "composition": "EXCLUDED",
+    "cmsKind": "excluded",
+    "adminModules": [],
+    "uiDataSource": "none",
+    "routePolicy": "excluded",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/tuyen-dung/php-developer-intern/",
+    "source": "en/tuyen-dung/php-developer-intern/index.html",
+    "composition": "EXCLUDED",
+    "cmsKind": "excluded",
+    "adminModules": [],
+    "uiDataSource": "none",
+    "routePolicy": "excluded",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/tuyen-dung/php-software-engineer/",
+    "source": "en/tuyen-dung/php-software-engineer/index.html",
+    "composition": "EXCLUDED",
+    "cmsKind": "excluded",
+    "adminModules": [],
+    "uiDataSource": "none",
+    "routePolicy": "excluded",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/tuyen-dung/sales-executive/",
+    "source": "en/tuyen-dung/sales-executive/index.html",
+    "composition": "EXCLUDED",
+    "cmsKind": "excluded",
+    "adminModules": [],
+    "uiDataSource": "none",
+    "routePolicy": "excluded",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/tuyen-dung/videographer-video-editor/",
+    "source": "en/tuyen-dung/videographer-video-editor/index.html",
+    "composition": "EXCLUDED",
+    "cmsKind": "excluded",
+    "adminModules": [],
+    "uiDataSource": "none",
+    "routePolicy": "excluded",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/ui-ux-branding-design-2/",
+    "source": "en/ui-ux-branding-design-2/index.html",
+    "composition": "branding",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "services",
+      "pricing",
+      "faq",
+      "projects",
+      "testimonials",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/warranty-policy/",
+    "source": "en/warranty-policy/index.html",
+    "composition": "content",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "legalPages"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/website-development/",
+    "source": "en/website-development/index.html",
+    "composition": "website",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "services",
+      "pricing",
+      "faq",
+      "projects",
+      "testimonials",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/en/website-keyword-seo/",
+    "source": "en/website-keyword-seo/index.html",
+    "composition": "seo",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "services",
+      "pricing",
+      "faq",
+      "projects",
+      "testimonials",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/eras-xin-chan-thanh-cam-on-quy-khach/",
+    "source": "eras-xin-chan-thanh-cam-on-quy-khach/index.html",
+    "composition": "thank-you",
+    "cmsKind": "utility",
+    "adminModules": [],
+    "uiDataSource": "local UI copy",
+    "routePolicy": "utility",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/an-phat-cong-ty-co-phan-cong-nghe-thuong-mai-an-phat/",
+    "source": "featured_item/an-phat-cong-ty-co-phan-cong-nghe-thuong-mai-an-phat/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/an-phu-decor-kien-tao-giac-mo/",
+    "source": "featured_item/an-phu-decor-kien-tao-giac-mo/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/applesmile-cua-hang-san-pham-apple-chinh-hang/",
+    "source": "featured_item/applesmile-cua-hang-san-pham-apple-chinh-hang/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/aya-spa-beauty-cong-ty-co-phan-go-do/",
+    "source": "featured_item/aya-spa-beauty-cong-ty-co-phan-go-do/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/banh-nuong-an-vat-co-ti/",
+    "source": "featured_item/banh-nuong-an-vat-co-ti/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/beework-cong-ty-tnhh-beework-viet-nam/",
+    "source": "featured_item/beework-cong-ty-tnhh-beework-viet-nam/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/binh-phat-cong-ty-tnhh-may-xay-dung-binh-phat/",
+    "source": "featured_item/binh-phat-cong-ty-tnhh-may-xay-dung-binh-phat/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/bossman-cong-ty-co-phan-bossman-viet-nam/",
+    "source": "featured_item/bossman-cong-ty-co-phan-bossman-viet-nam/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/centro-noi-that-cao-cap-centro-chau-au/",
+    "source": "featured_item/centro-noi-that-cao-cap-centro-chau-au/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/cinvico-lean-pro-cong-ty-co-phan-hop-tac-dau-tu-cong-nghe-cinvico/",
+    "source": "featured_item/cinvico-lean-pro-cong-ty-co-phan-hop-tac-dau-tu-cong-nghe-cinvico/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/cong-ty-co-phan-kien-truc-va-xay-dung-gt-house/",
+    "source": "featured_item/cong-ty-co-phan-kien-truc-va-xay-dung-gt-house/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/",
+    "source": "featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/cong-ty-co-phan-square-orange/",
+    "source": "featured_item/cong-ty-co-phan-square-orange/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/cong-ty-cp-cong-nghe-an-ninh-mang-quoc-gia-viet-nam/",
+    "source": "featured_item/cong-ty-cp-cong-nghe-an-ninh-mang-quoc-gia-viet-nam/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/cong-ty-cp-dau-tu-xay-dung-vina2/",
+    "source": "featured_item/cong-ty-cp-dau-tu-xay-dung-vina2/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/cong-ty-cp-du-lich-thuong-mai-khung-troi-viet/",
+    "source": "featured_item/cong-ty-cp-du-lich-thuong-mai-khung-troi-viet/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/cong-ty-luat-legal-art/",
+    "source": "featured_item/cong-ty-luat-legal-art/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/cong-ty-tnhh-konnertec-viet-nam/",
+    "source": "featured_item/cong-ty-tnhh-konnertec-viet-nam/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/cong-ty-tnhh-nha-khoa-viva-dental/",
+    "source": "featured_item/cong-ty-tnhh-nha-khoa-viva-dental/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/cong-ty-tnhh-son-nero-thuong-hieu-modena/",
+    "source": "featured_item/cong-ty-tnhh-son-nero-thuong-hieu-modena/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/drnhanh-cong-ty-tnhh-tu-van-giao-duc-dr-nhanh/",
+    "source": "featured_item/drnhanh-cong-ty-tnhh-tu-van-giao-duc-dr-nhanh/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/dwatch-luxury-dong-ho-thuy-sy/",
+    "source": "featured_item/dwatch-luxury-dong-ho-thuy-sy/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/evc-athena-cong-ty-tnhh-evc-athena/",
+    "source": "featured_item/evc-athena-cong-ty-tnhh-evc-athena/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/flexius-cong-ty-co-phan-the-gioi-bang/",
+    "source": "featured_item/flexius-cong-ty-co-phan-the-gioi-bang/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/forex-robot-automated-trading-robots/",
+    "source": "featured_item/forex-robot-automated-trading-robots/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/giang-lam-dung-cu-co-khi/",
+    "source": "featured_item/giang-lam-dung-cu-co-khi/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/giao-dien-dsmart-giai-phap-dieu-khien-xe-hoi-tren-smartphone/",
+    "source": "featured_item/giao-dien-dsmart-giai-phap-dieu-khien-xe-hoi-tren-smartphone/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/hoang-gia-cong-ty-cp-xay-dung-va-noi-that-hoang-gia/",
+    "source": "featured_item/hoang-gia-cong-ty-cp-xay-dung-va-noi-that-hoang-gia/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/hoanglan-logistics-don-vi-van-chuyen-hang-trung-viet-hang-dau-viet-nam/",
+    "source": "featured_item/hoanglan-logistics-don-vi-van-chuyen-hang-trung-viet-hang-dau-viet-nam/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/hop-hao-huc-cong-ty-tnhh-mam-nho/",
+    "source": "featured_item/hop-hao-huc-cong-ty-tnhh-mam-nho/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/hrzone-kien-tao-cong-dong-nhan-su-quoc-te/",
+    "source": "featured_item/hrzone-kien-tao-cong-dong-nhan-su-quoc-te/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/hung-an-group-dich-vu-cung-ung-nhan-luc-uy-tin-nhat/",
+    "source": "featured_item/hung-an-group-dich-vu-cung-ung-nhan-luc-uy-tin-nhat/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/ichi-japan-xuat-khau-lao-dong-nhat-ban-luong-cao-chi-phi-thap/",
+    "source": "featured_item/ichi-japan-xuat-khau-lao-dong-nhat-ban-luong-cao-chi-phi-thap/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/",
+    "source": "featured_item/index.html",
+    "composition": "projects",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/iphone-hd-iphone-trong-tam-tay/",
+    "source": "featured_item/iphone-hd-iphone-trong-tam-tay/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/lien-doan-thuong-mai-va-cong-nghiep-viet-nam-tai-da-nang-vcci-da-nang/",
+    "source": "featured_item/lien-doan-thuong-mai-va-cong-nghiep-viet-nam-tai-da-nang-vcci-da-nang/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/moonstore-thoi-trang-cong-so-moonstore/",
+    "source": "featured_item/moonstore-thoi-trang-cong-so-moonstore/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/muagiday-san-thuong-mai-dien-tu-xuyen-bien-gioi-hang-dau-viet-nam/",
+    "source": "featured_item/muagiday-san-thuong-mai-dien-tu-xuyen-bien-gioi-hang-dau-viet-nam/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/nha-khoa-tham-my-quoc-te-viet-phap/",
+    "source": "featured_item/nha-khoa-tham-my-quoc-te-viet-phap/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/nha-khoa-viet-phap-he-thong-chuoi-nha-khoa-tieu-chuan-phap-dau-tien-tai-viet-nam/",
+    "source": "featured_item/nha-khoa-viet-phap-he-thong-chuoi-nha-khoa-tieu-chuan-phap-dau-tien-tai-viet-nam/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/nha-khoa-viva-dental-he-thong-chuoi-nha-khoa-tieu-chuan-my-dau-tien-tai-viet-nam/",
+    "source": "featured_item/nha-khoa-viva-dental-he-thong-chuoi-nha-khoa-tieu-chuan-my-dau-tien-tai-viet-nam/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/nhamoi-architechture-kien-truc-dep-cho-moi-nha/",
+    "source": "featured_item/nhamoi-architechture-kien-truc-dep-cho-moi-nha/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/nikico-cong-ty-tnhh-nihon-kizai/",
+    "source": "featured_item/nikico-cong-ty-tnhh-nihon-kizai/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/novopharm-tan-tam-cho-su-sang-tao-chat-luong/",
+    "source": "featured_item/novopharm-tan-tam-cho-su-sang-tao-chat-luong/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/nutrition-fitness-cong-ty-co-phan-nutrition-fitness/",
+    "source": "featured_item/nutrition-fitness-cong-ty-co-phan-nutrition-fitness/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/pa-marketing-don-vi-dao-tao-hang-dau-ve-marketing/",
+    "source": "featured_item/pa-marketing-don-vi-dao-tao-hang-dau-ve-marketing/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/pa-store-cong-ty-tnhh-pa-marketing/",
+    "source": "featured_item/pa-store-cong-ty-tnhh-pa-marketing/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/pink-nail-spa-beauty/",
+    "source": "featured_item/pink-nail-spa-beauty/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/ppmvn-cong-ty-tnhh-quan-ly-tai-san-premier-viet-nam/",
+    "source": "featured_item/ppmvn-cong-ty-tnhh-quan-ly-tai-san-premier-viet-nam/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/pro-car-parts-viet-nam-phan-phoi-phu-tung-bao-duong-gam-o-to/",
+    "source": "featured_item/pro-car-parts-viet-nam-phan-phoi-phu-tung-bao-duong-gam-o-to/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/sencom-home-decor-lighting-design/",
+    "source": "featured_item/sencom-home-decor-lighting-design/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/so-y-te-benh-vien-mat-ha-giang/",
+    "source": "featured_item/so-y-te-benh-vien-mat-ha-giang/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/stormick-cong-ty-tnhh-storm-entertaiment/",
+    "source": "featured_item/stormick-cong-ty-tnhh-storm-entertaiment/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/sua-tivi-chuyen-nghiep-dich-vu-sua-chua-tivi-thiet-bi-am-thanh-chinh-hang/",
+    "source": "featured_item/sua-tivi-chuyen-nghiep-dich-vu-sua-chua-tivi-thiet-bi-am-thanh-chinh-hang/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/tengroup-all-for-the-best/",
+    "source": "featured_item/tengroup-all-for-the-best/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/tintuc365-cong-ty-co-phan-truyen-thong-thuong-mai-viet/",
+    "source": "featured_item/tintuc365-cong-ty-co-phan-truyen-thong-thuong-mai-viet/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/trangmoon-shop-cay-canh-de-ban-hop-phong-thuy/",
+    "source": "featured_item/trangmoon-shop-cay-canh-de-ban-hop-phong-thuy/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/truong-trung-hoc-pho-thong-huynh-thuc-khang/",
+    "source": "featured_item/truong-trung-hoc-pho-thong-huynh-thuc-khang/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/viet-tht-production-cong-ty-co-phan-viet-tht/",
+    "source": "featured_item/viet-tht-production-cong-ty-co-phan-viet-tht/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/weha-dua-cong-nghe-gan-gui-hon-voi-doi-song/",
+    "source": "featured_item/weha-dua-cong-nghe-gan-gui-hon-voi-doi-song/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/wewell-cong-ty-co-phan-duoc-lieu-va-thuc-pham-viet-nam/",
+    "source": "featured_item/wewell-cong-ty-co-phan-duoc-lieu-va-thuc-pham-viet-nam/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/wisdomland-international-preschool/",
+    "source": "featured_item/wisdomland-international-preschool/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item/xanhthienthanh-cong-ty-co-phan-dau-tu-va-phat-trien-xanh-thien-thanh/",
+    "source": "featured_item/xanhthienthanh-cong-ty-co-phan-dau-tu-va-phat-trien-xanh-thien-thanh/index.html",
+    "composition": "project-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item_category/branding/",
+    "source": "featured_item_category/branding/index.html",
+    "composition": "projects",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item_category/mobile-app/",
+    "source": "featured_item_category/mobile-app/index.html",
+    "composition": "projects",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/featured_item_category/website/",
+    "source": "featured_item_category/website/index.html",
+    "composition": "projects",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "projects",
+      "projectCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/giai-phap-ban-hang-online-tong-the-2021/",
+    "source": "giai-phap-ban-hang-online-tong-the-2021/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/giai-phap-luu-tru/",
+    "source": "giai-phap-luu-tru/index.html",
+    "composition": "storage",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "services",
+      "pricing",
+      "faq",
+      "projects",
+      "testimonials",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/giai-phap-truyen-thong-so/",
+    "source": "giai-phap-truyen-thong-so/index.html",
+    "composition": "EXCLUDED",
+    "cmsKind": "excluded",
+    "adminModules": [],
+    "uiDataSource": "none",
+    "routePolicy": "excluded",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/gioi-thieu/",
+    "source": "gioi-thieu/index.html",
+    "composition": "about",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "pages.about",
+      "stats",
+      "partners",
+      "testimonials"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/goc-nhin/",
+    "source": "goc-nhin/index.html",
+    "composition": "blog",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/goc-nhin/page/2/",
+    "source": "goc-nhin/page/2/index.html",
+    "composition": "blog",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/goc-nhin/page/3/",
+    "source": "goc-nhin/page/3/index.html",
+    "composition": "blog",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/goc-nhin/page/4/",
+    "source": "goc-nhin/page/4/index.html",
+    "composition": "blog",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/goc-nhin/page/5/",
+    "source": "goc-nhin/page/5/index.html",
+    "composition": "blog",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/goc-nhin-website/",
+    "source": "goc-nhin-website/index.html",
+    "composition": "blog",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/hieu-dung-insights-khach-hang-trong-hanh-trinh-mua-hang-tren-social-media/",
+    "source": "hieu-dung-insights-khach-hang-trong-hanh-trinh-mua-hang-tren-social-media/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/hieu-tu-a-z-ve-thiet-ke-website-responsive/",
+    "source": "hieu-tu-a-z-ve-thiet-ke-website-responsive/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/ho-so-nang-luc-eras-vietnam/",
+    "source": "ho-so-nang-luc-eras-vietnam/index.html",
+    "composition": "profile",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "companyProfiles",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/hosting-doanh-nghiep/",
+    "source": "hosting-doanh-nghiep/index.html",
+    "composition": "hosting",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "services",
+      "pricing",
+      "faq",
+      "projects",
+      "testimonials",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/huong-dan-cach-backup-website-wordpress-chi-tiet-nhat/",
+    "source": "huong-dan-cach-backup-website-wordpress-chi-tiet-nhat/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/huong-dan-cach-tao-bai-viet-trong-wordpress-don-gian-nhat/",
+    "source": "huong-dan-cach-tao-bai-viet-trong-wordpress-don-gian-nhat/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/huong-dan-thanh-toan/",
+    "source": "huong-dan-thanh-toan/index.html",
+    "composition": "content",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "legalPages"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/huong-dan-viet-bai-chuan-seo-2021/",
+    "source": "huong-dan-viet-bai-chuan-seo-2021/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/huong-dan-xoa-cache-trinh-duyet-va-may-tinh/",
+    "source": "huong-dan-xoa-cache-trinh-duyet-va-may-tinh/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/",
+    "source": "index.html",
+    "composition": "home",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "pages.home",
+      "collections",
+      "stats",
+      "services",
+      "projects",
+      "partners",
+      "testimonials",
+      "posts"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/kich-thuoc-anh-chuan-tren-website-giup-nang-cao-hieu-qua-seo/",
+    "source": "kich-thuoc-anh-chuan-tren-website-giup-nang-cao-hieu-qua-seo/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/kinh-doanh-nho-le-co-nen-xay-dung-website-ban-hang/",
+    "source": "kinh-doanh-nho-le-co-nen-xay-dung-website-ban-hang/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/kinh-doanh-thoi-trang-online-nen-co-website-hay-khong/",
+    "source": "kinh-doanh-thoi-trang-online-nen-co-website-hay-khong/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/kinh-nghiem-tao-website-de-ban-hang-online/",
+    "source": "kinh-nghiem-tao-website-de-ban-hang-online/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/lien-he/",
+    "source": "lien-he/index.html",
+    "composition": "contact",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "siteSettings",
+      "pages.contact",
+      "services"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/phat-trien-ung-dung-di-dong-cho-doanh-nghiep-huong-dan-chi-tiet/",
+    "source": "phat-trien-ung-dung-di-dong-cho-doanh-nghiep-huong-dan-chi-tiet/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/phuong-phap-dinh-vi-thuong-hieu-co-ban-mo-rong/",
+    "source": "phuong-phap-dinh-vi-thuong-hieu-co-ban-mo-rong/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/sample-page/",
+    "source": "sample-page/index.html",
+    "composition": "sample",
+    "cmsKind": "utility",
+    "adminModules": [],
+    "uiDataSource": "local UI copy",
+    "routePolicy": "utility",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/seo-tu-khoa-website/",
+    "source": "seo-tu-khoa-website/index.html",
+    "composition": "seo",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "services",
+      "pricing",
+      "faq",
+      "projects",
+      "testimonials",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/social-marketing/",
+    "source": "social-marketing/index.html",
+    "composition": "blog",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/social-marketing/page/2/",
+    "source": "social-marketing/page/2/index.html",
+    "composition": "blog",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/su-thuan-tien-chi-phoi-quyet-dinh-mua-hang-cua-nguoi-tieu-dung/",
+    "source": "su-thuan-tien-chi-phoi-quyet-dinh-mua-hang-cua-nguoi-tieu-dung/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/thay-doi-duong-dan-wp-admin-trong-wordpress/",
+    "source": "thay-doi-duong-dan-wp-admin-trong-wordpress/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/thiet-ke-app-mobile/",
+    "source": "thiet-ke-app-mobile/index.html",
+    "composition": "mobile",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "services",
+      "pricing",
+      "faq",
+      "projects",
+      "testimonials",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/thiet-ke-website/",
+    "source": "thiet-ke-website/index.html",
+    "composition": "website",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "services",
+      "pricing",
+      "faq",
+      "projects",
+      "testimonials",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/thiet-ke-website-ban-hang-nhung-mai-ma-khong-co-don-hang-nao/",
+    "source": "thiet-ke-website-ban-hang-nhung-mai-ma-khong-co-don-hang-nao/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/thoi-dai-website-gia-re-lieu-da-het/",
+    "source": "thoi-dai-website-gia-re-lieu-da-het/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/thong-tin-smtp-gmail-cach-cau-hinh-smtp-gmail-free-vao-wordpress/",
+    "source": "thong-tin-smtp-gmail-cach-cau-hinh-smtp-gmail-free-vao-wordpress/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/thu-thuat/",
+    "source": "thu-thuat/index.html",
+    "composition": "blog",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/thu-thuat/page/2/",
+    "source": "thu-thuat/page/2/index.html",
+    "composition": "blog",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/thue-thiet-ke-website-can-luu-y-gi-9-yeu-to-quan-trong-can-nho/",
+    "source": "thue-thiet-ke-website-can-luu-y-gi-9-yeu-to-quan-trong-can-nho/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/tich-hop-zalo-chat-cho-website-wordpress-don-gian-nhat/",
+    "source": "tich-hop-zalo-chat-cho-website-wordpress-don-gian-nhat/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/tin-tuc/",
+    "source": "tin-tuc/index.html",
+    "composition": "blog",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/tong-hop-cac-loi-thuong-gap-khi-thiet-ke-web-co-ban/",
+    "source": "tong-hop-cac-loi-thuong-gap-khi-thiet-ke-web-co-ban/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/tuyen-dung/chuyen-vien-kinh-doanh/",
+    "source": "tuyen-dung/chuyen-vien-kinh-doanh/index.html",
+    "composition": "EXCLUDED",
+    "cmsKind": "excluded",
+    "adminModules": [],
+    "uiDataSource": "none",
+    "routePolicy": "excluded",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/tuyen-dung/chuyen-vien-lap-trinh-php/",
+    "source": "tuyen-dung/chuyen-vien-lap-trinh-php/index.html",
+    "composition": "EXCLUDED",
+    "cmsKind": "excluded",
+    "adminModules": [],
+    "uiDataSource": "none",
+    "routePolicy": "excluded",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/tuyen-dung/chuyen-vien-quang-cao-marketing/",
+    "source": "tuyen-dung/chuyen-vien-quang-cao-marketing/index.html",
+    "composition": "EXCLUDED",
+    "cmsKind": "excluded",
+    "adminModules": [],
+    "uiDataSource": "none",
+    "routePolicy": "excluded",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/tuyen-dung/",
+    "source": "tuyen-dung/index.html",
+    "composition": "EXCLUDED",
+    "cmsKind": "excluded",
+    "adminModules": [],
+    "uiDataSource": "none",
+    "routePolicy": "excluded",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/tuyen-dung/nhan-vien-quay-dung-video-editor/",
+    "source": "tuyen-dung/nhan-vien-quay-dung-video-editor/index.html",
+    "composition": "EXCLUDED",
+    "cmsKind": "excluded",
+    "adminModules": [],
+    "uiDataSource": "none",
+    "routePolicy": "excluded",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/tuyen-dung/thuc-tap-sinh-content-marketing/",
+    "source": "tuyen-dung/thuc-tap-sinh-content-marketing/index.html",
+    "composition": "EXCLUDED",
+    "cmsKind": "excluded",
+    "adminModules": [],
+    "uiDataSource": "none",
+    "routePolicy": "excluded",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/tuyen-dung/thuc-tap-sinh-lap-trinh-php/",
+    "source": "tuyen-dung/thuc-tap-sinh-lap-trinh-php/index.html",
+    "composition": "EXCLUDED",
+    "cmsKind": "excluded",
+    "adminModules": [],
+    "uiDataSource": "none",
+    "routePolicy": "excluded",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/ui-ux-branding-design/",
+    "source": "ui-ux-branding-design/index.html",
+    "composition": "branding",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "services",
+      "pricing",
+      "faq",
+      "projects",
+      "testimonials",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/ux-ui/",
+    "source": "ux-ui/index.html",
+    "composition": "blog",
+    "cmsKind": "derived-listing",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "listingSettings"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "existing listing/category/page URLs",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/vps-doanh-nghiep/",
+    "source": "vps-doanh-nghiep/index.html",
+    "composition": "vps",
+    "cmsKind": "structured-page",
+    "adminModules": [
+      "services",
+      "pricing",
+      "faq",
+      "projects",
+      "testimonials",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "stable predefined URL",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/website-dong-va-tinh-la-gi-phan-biet-su-khac-nhau-giua-2-khai-niem/",
+    "source": "website-dong-va-tinh-la-gi-phan-biet-su-khac-nhau-giua-2-khai-niem/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/yoast-seo-la-gi-huong-dan-thiet-lap-va-su-dung-yoast-seo/",
+    "source": "yoast-seo-la-gi-huong-dan-thiet-lap-va-su-dung-yoast-seo/index.html",
+    "composition": "post-detail",
+    "cmsKind": "collection",
+    "adminModules": [
+      "posts",
+      "postCategories",
+      "authors",
+      "media"
+    ],
+    "uiDataSource": "typed local mock via async queries",
+    "routePolicy": "entity slug with reserved-path validation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  },
+  {
+    "route": "/login-eras/",
+    "source": "login-eras/index__q_6b334f548d36.html",
+    "composition": "login",
+    "cmsKind": "utility",
+    "adminModules": [],
+    "uiDataSource": "local UI state only",
+    "routePolicy": "legacy utility URL; not an admin authentication implementation",
+    "layoutOwner": "frontend code",
+    "backendRequiredForMock": false
+  }
+]
