@@ -75,9 +75,10 @@ test.describe('Contact Pages (Story Contact Page Layout and Map)', () => {
       const emailLink = infoCol.locator(`a[href="mailto:${settings.email}"]`);
       await expect(emailLink).toBeVisible();
 
-      // Empty form column
+      // Contact form in form column
       const formCol = page.locator(`#${preset.main.formColId}`);
       await expect(formCol).toBeVisible();
+      await expect(formCol.locator('form.wpcf7-form')).toBeVisible();
 
       // Exactly one map iframe with src = mapEmbedUrl and loading="lazy"
       const iframes = page.locator('iframe');

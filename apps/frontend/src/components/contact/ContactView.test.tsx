@@ -23,6 +23,14 @@ const notFoundMock = vi.fn(() => {
 
 vi.mock('next/navigation', () => ({
   notFound: () => notFoundMock(),
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    prefetch: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    refresh: vi.fn(),
+  }),
 }));
 
 const repoWith = (data: Partial<ContentData> = {}) =>
@@ -58,6 +66,7 @@ describe('ContactView and contact routes', () => {
   // Resolved from the committed import data so a broken asset mapping fails here too.
   let mockAssets: ContactAssets;
   const cardLabels = shellContent[0].floatingContacts;
+  const consultLabels = shellContent[0].consult;
   beforeAll(async () => {
     mockAssets = await getContactAssets(contactPages[0], repoWith());
   });
@@ -73,7 +82,13 @@ describe('ContactView and contact routes', () => {
       const settings = siteSettings.find((s) => s.locale === page.locale)!;
       const preset = getContactPreset(page.locale);
       const html = renderToStaticMarkup(
-        <ContactView page={page} settings={settings} assets={mockAssets} cardLabels={cardLabels} />,
+        <ContactView
+          page={page}
+          settings={settings}
+          assets={mockAssets}
+          cardLabels={cardLabels}
+          consultLabels={consultLabels}
+        />,
       );
       const root = parse(html);
 
@@ -100,10 +115,25 @@ describe('ContactView and contact routes', () => {
       // Info row
       expect(root.querySelector(`div#${preset.main.infoColId} h2 span`)?.text).toBe(page.heading);
 
-      // Empty form column
+      // Form column with 5 labelled fields and 7 options + prompt
       const formCol = root.querySelector(`div#${preset.main.formColId}`);
       expect(formCol).not.toBeNull();
-      expect(formCol?.querySelector('.col-inner')?.childNodes.length).toBe(0);
+      const formEl = formCol?.querySelector('form.wpcf7-form');
+      expect(formEl).not.toBeNull();
+      expect(formEl?.getAttribute('aria-label')).toBe('Form liên hệ');
+
+      const labels = formEl?.querySelectorAll('label');
+      expect(labels).toHaveLength(5);
+      expect(labels?.[0]?.text).toContain(page.form.nameLabel);
+      expect(labels?.[1]?.text).toContain(page.form.emailLabel);
+      expect(labels?.[2]?.text).toContain(page.form.serviceLabel);
+      expect(labels?.[3]?.text).toContain(page.form.phoneLabel);
+      expect(labels?.[4]?.text).toContain(page.form.messageLabel);
+
+      const options = formEl?.querySelectorAll('select option');
+      expect(options).toHaveLength(8);
+      expect(options?.[0]?.text).toBe(page.form.servicePrompt);
+      expect(options?.slice(1).map((o) => o.text)).toEqual(page.form.serviceOptions);
 
       // 3 info cards
       expect(root.text).toContain(settings.address);
@@ -136,6 +166,7 @@ describe('ContactView and contact routes', () => {
         settings={editedSettings}
         assets={mockAssets}
         cardLabels={cardLabels}
+        consultLabels={consultLabels}
       />,
     );
     const root = parse(html);
@@ -165,6 +196,7 @@ describe('ContactView and contact routes', () => {
           settings={twoPhones}
           assets={mockAssets}
           cardLabels={cardLabels}
+          consultLabels={consultLabels}
         />,
       ),
     );
@@ -188,6 +220,7 @@ describe('ContactView and contact routes', () => {
         settings={noPhonesSettings}
         assets={mockAssets}
         cardLabels={cardLabels}
+        consultLabels={consultLabels}
       />,
     );
     const root = parse(html);
@@ -210,6 +243,7 @@ describe('ContactView and contact routes', () => {
         settings={noMapSettings}
         assets={mockAssets}
         cardLabels={cardLabels}
+        consultLabels={consultLabels}
       />,
     );
     const root = parse(html);
