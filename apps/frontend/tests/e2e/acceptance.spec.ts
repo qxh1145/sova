@@ -683,7 +683,7 @@ test.describe('Acceptance: Utility', () => {
       const preset = getContactPreset(contact.locale);
       await expect(page.locator(`section#${preset.hero.sectionId} h1`)).toBeVisible();
       await expect(page.locator('form.wpcf7-form')).toBeVisible();
-      await expect(page.locator('iframe')).toBeVisible();
+      await expect(page.locator('div.if-black iframe')).toBeVisible();
     });
   }
 
@@ -756,7 +756,10 @@ test.describe('Acceptance: Utility', () => {
     await expect(page.locator('body')).toHaveClass(/\blogin\b/);
     await expect(page.locator('body')).toHaveClass(/\bwp-core-ui\b/);
     await expect(page.locator('#login')).toBeVisible();
-    await expect(page.locator('h1')).toHaveText('Đăng nhập');
+    await expect(page.locator('#loginform h1')).toHaveText('Đăng nhập');
+    await expect(page.locator('#user_login')).toBeVisible();
+    await expect(page.locator('#user_pass')).toBeVisible();
+    await expect(page.locator('#wp-submit')).toBeVisible();
   });
 
   test('Alias /porfolio-eras-vietnam/ redirects to EN profile and keeps clean console', async ({
