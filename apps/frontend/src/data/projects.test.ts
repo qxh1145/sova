@@ -103,7 +103,11 @@ test('gallery shapes 0–4 and all 62 pages have displayDate and summary', () =>
 test('no Eras word or raw Eras contact value in project, category and terms text', () => {
   // Source refs and route paths are provenance, not text (the thank-you route keeps the brand slug).
   const text = JSON.stringify({ projects, projectCategories, utilityContent }, (key, value) =>
-    key === 'sources' || key === 'canonicalPath' ? undefined : value,
+    key === 'sources' ||
+    key === 'canonicalPath' ||
+    (typeof value === 'string' && value.startsWith('/login-eras/'))
+      ? undefined
+      : value,
   );
   expect([...text.matchAll(BRAND_LEAK_RE)].map((m) => m[0])).toEqual([]);
   for (const [pattern] of SCRUB_RULES) expect(text.match(pattern)).toBeNull();

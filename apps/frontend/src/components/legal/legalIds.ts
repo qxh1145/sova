@@ -15,7 +15,17 @@ export interface LegalPreset {
   };
 }
 
-export const LEGAL_PRESETS: Record<string, LegalPreset> = {
+export type LegalPath =
+  | '/chinh-sach-bao-hanh/'
+  | '/chinh-sach-bao-mat/'
+  | '/chinh-sach-hoan-tien/'
+  | '/dieu-khoan-su-dung/'
+  | '/en/warranty-policy/'
+  | '/en/privacy-policy/'
+  | '/en/refund-policy/'
+  | '/en/terms-of-use/';
+
+const LEGAL_PRESETS: Record<LegalPath, LegalPreset> = {
   '/chinh-sach-bao-hanh/': {
     heroIds: { banner: 'banner-464754388', textBox: 'text-box-1484316664' },
     bodyIds: { row: 'row-1154179891', col: 'col-142673246' },
@@ -69,8 +79,7 @@ export const LEGAL_PRESETS: Record<string, LegalPreset> = {
 };
 
 export function getLegalPreset(path: string): LegalPreset {
-  const normalized = path.endsWith('/') ? path : `${path}/`;
-  const preset = LEGAL_PRESETS[normalized];
+  const preset = LEGAL_PRESETS[path as LegalPath];
   if (!preset) {
     throw new Error(`Missing legal preset for path: ${path}`);
   }

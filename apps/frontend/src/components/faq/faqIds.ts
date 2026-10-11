@@ -10,7 +10,7 @@ export interface FAQPreset {
   colId: string;
 }
 
-export const FAQ_PRESETS: Record<Locale, FAQPreset> = {
+const FAQ_PRESETS: Record<Locale, FAQPreset> = {
   vi: {
     heroIds: {
       banner: 'banner-698016762',
@@ -33,6 +33,15 @@ export const FAQ_PRESETS: Record<Locale, FAQPreset> = {
 
 export function getFAQPreset(locale: Locale): FAQPreset {
   return FAQ_PRESETS[locale];
+}
+
+const FAQ_TOGGLE_LABELS: Record<Locale, string> = {
+  vi: 'Mở rộng câu trả lời', // business-text-ok: accordion toggle label
+  en: 'Toggle answer', // business-text-ok: accordion toggle label
+};
+
+export function faqToggleLabel(locale: Locale): string {
+  return FAQ_TOGGLE_LABELS[locale];
 }
 
 /**

@@ -12,6 +12,7 @@ import {
 } from '@/lib/forms/schemas';
 import { useSubmitStatus } from '@/lib/forms/useSubmitStatus';
 import type { ContactFormContent, Locale, ShellContent } from '@/types/content';
+import { CONTACT_FORM_PRESETS } from '@/components/contact/contactIds';
 
 const THANK_YOU_PATH = '/eras-xin-chan-thanh-cam-on-quy-khach/?demo=1'; // business-text-ok: legacy thank-you route path
 
@@ -57,9 +58,7 @@ export function ContactForm({ form, consult, locale }: ContactFormProps) {
 
   const hasErrors = Object.keys(errors).length > 0;
   const statusClass = formStatusClass(status, hasErrors);
-  const wpcf7Id = locale === 'en' ? 'wpcf7-f6824-p7363-o1' : 'wpcf7-f6819-p7223-o1';
-  const unitTag = locale === 'en' ? '6824' : '6819';
-  const selectFieldName = locale === 'en' ? 'dynamic_select-6827' : 'dynamic_select-682';
+  const { wpcf7Id, unitTag, selectFieldName } = CONTACT_FORM_PRESETS[locale];
 
   return (
     <div className="wpcf7 no-js" id={wpcf7Id} lang={locale} dir="ltr" data-wpcf7-id={unitTag}>

@@ -62,6 +62,18 @@ export async function expectNoDuplicateIds(page: Page) {
   ).toBe(unique.size);
 }
 
+export async function expectNoClientStorage(page: Page) {
+  const storage = await page.evaluate(() => ({
+    local: localStorage.length,
+    session: sessionStorage.length,
+  }));
+  expect(storage.local).toBe(0);
+  expect(storage.session).toBe(0);
+
+  const cookies = await page.context().cookies();
+  expect(cookies).toEqual([]);
+}
+
 export const getBodyOverflow = (page: Page) =>
   page.evaluate(() => window.getComputedStyle(document.body).overflow);
 
