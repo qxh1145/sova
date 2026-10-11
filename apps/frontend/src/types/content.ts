@@ -615,6 +615,11 @@ export interface PaymentGuideContent extends LocalizedIdentity {
     qrAssetId?: EntityId;
   }[];
   instructions: RichContent;
+  /** E-wallet section: heading copy and steps around the (missing) wallet QR slot. */
+  wallet: {
+    intro: RichContent;
+    steps: RichContent;
+  };
 }
 
 export interface CompanyProfileContent extends LocalizedIdentity {
