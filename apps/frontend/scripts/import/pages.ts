@@ -4,6 +4,7 @@ import type {
   AssetRef,
   CollectionPlacement,
   CompanyProfileContent,
+  ContactFormContent,
   ContactPageContent,
   EntityId,
   FAQPageContent,
@@ -530,6 +531,22 @@ function about(page: Page, registry: AssetRegistry, stats: Stats) {
   return record;
 }
 
+const CONTACT_FORM_MESSAGES: Record<
+  Locale,
+  { required: string; emailInvalid: string; phoneInvalid: string }
+> = {
+  vi: {
+    required: 'Vui lòng điền vào trường này.',
+    emailInvalid: 'Địa chỉ email không hợp lệ.',
+    phoneInvalid: 'Số điện thoại không hợp lệ',
+  },
+  en: {
+    required: 'Please fill out this field.',
+    emailInvalid: 'Please enter an email address.',
+    phoneInvalid: 'Invalid phone number',
+  },
+};
+
 function contact(page: Page, registry: AssetRegistry, stats: Stats): ContactPageContent {
   const { root, file, lineOf, route } = page;
   const h1 = must(root.querySelector('#content h1'), page, 'h1');
@@ -560,6 +577,53 @@ function contact(page: Page, registry: AssetRegistry, stats: Stats): ContactPage
   const phoneIconId = must(registry.image(icons[1], file, lineOf), page, 'phone icon');
   const emailIconId = must(registry.image(icons[2], file, lineOf), page, 'email icon');
 
+  const formEl = must(root.querySelector('.wpcf7 form'), page, 'contact form');
+  const labelEls = formEl.querySelectorAll('label');
+  if (labelEls.length !== 5) {
+    throw new Error(`Source drift: ${file} expected exactly 5 form labels, found ${labelEls.length}`);
+  }
+
+  const labelTexts = labelEls.map((l) => {
+    const firstText = l.childNodes.find((n) => n instanceof TextNode && n.rawText.trim());
+    if (!firstText) throw new Error(`Source drift: ${file} label missing text node`);
+    return processText(firstText.rawText.trim(), stats);
+  });
+
+  const optionEls = formEl.querySelectorAll('select option');
+  if (optionEls.length !== 8) {
+    throw new Error(`Source drift: ${file} expected exactly 8 select options, found ${optionEls.length}`);
+  }
+
+  const servicePrompt = plain(optionEls[0], stats);
+  const serviceOptions = optionEls.slice(1).map((opt) => plain(opt, stats));
+
+  const submitInput = must(
+    formEl.querySelector('input.wpcf7-submit'),
+    page,
+    'submit input',
+  );
+  const submitValue = submitInput.getAttribute('value');
+  if (!submitValue) {
+    throw new Error(`Source drift: ${file} missing submit input value`);
+  }
+  const submit = processText(submitValue, stats);
+
+  const messages = CONTACT_FORM_MESSAGES[route.locale];
+
+  const formContent: ContactFormContent = {
+    nameLabel: labelTexts[0],
+    emailLabel: labelTexts[1],
+    serviceLabel: labelTexts[2],
+    servicePrompt,
+    serviceOptions,
+    phoneLabel: labelTexts[3],
+    messageLabel: labelTexts[4],
+    submit,
+    required: messages.required,
+    emailInvalid: messages.emailInvalid,
+    phoneInvalid: messages.phoneInvalid,
+  };
+
   return {
     ...identity(page, `contact-${route.locale}`, seo, lineOf(h1.range[0]), plain(h1, stats)),
     translationKey: 'contact',
@@ -576,6 +640,7 @@ function contact(page: Page, registry: AssetRegistry, stats: Stats): ContactPage
       email: emailIconId,
     },
     introduction: rich(`<p>${sanitize(intro, hooks(page, line, stats))}</p>`, [{ file, line }]),
+    form: formContent,
     seo,
   };
 }

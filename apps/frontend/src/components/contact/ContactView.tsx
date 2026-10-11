@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { ContactPageContent, ShellContent, SiteSettings } from '@/types/content';
 import type { ContactAssets } from '@/lib/queries/pages';
 import { RichText } from '@/components/ui/RichText';
+import { ContactForm } from '@/components/forms/ContactForm';
 import { CompanyInfo } from './CompanyInfo';
 import { ContactMap } from './ContactMap';
 import { getContactPreset } from './contactIds';
@@ -12,9 +13,16 @@ export interface ContactViewProps {
   assets: ContactAssets;
   /** Accessible names for the image-card links, shared with the floating contact menu. */
   cardLabels: ShellContent['floatingContacts'];
+  consultLabels: ShellContent['consult'];
 }
 
-export function ContactView({ page, settings, assets, cardLabels }: ContactViewProps) {
+export function ContactView({
+  page,
+  settings,
+  assets,
+  cardLabels,
+  consultLabels,
+}: ContactViewProps) {
   const preset = getContactPreset(page.locale);
   const homeHref = page.locale === 'en' ? '/en/' : '/';
 
@@ -199,9 +207,15 @@ export function ContactView({ page, settings, assets, cardLabels }: ContactViewP
               </div>
             </div>
 
-            {/* Empty Form Column (story 5) */}
+            {/* Form Column */}
             <div id={preset.main.formColId} className="col medium-6 small-12 large-6">
-              <div className="col-inner" />
+              <div className="col-inner">
+                <ContactForm
+                  form={page.form}
+                  consult={consultLabels}
+                  locale={page.locale}
+                />
+              </div>
             </div>
           </div>
 
