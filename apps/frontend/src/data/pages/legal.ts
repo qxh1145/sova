@@ -172,6 +172,7 @@ export const paymentGuides: PaymentGuideContent[] = [
     title: 'Payment Guide',
     sources: [{ file: 'en/payment-guide/index.html', line: 660, sourceId: '7361' }],
     translationKey: 'legal-huong-dan-thanh-toan',
+    labels: { accountNumber: 'Account Number:', holder: 'Account Holder:' },
     introduction: {
       format: 'sanitized-html',
       html: '<h2>I. BANK TRANSFER PAYMENT</h2><p><strong>Step 1: </strong>Please make a bank transfer to <strong>one of the accounts</strong> listed in the Bank Account List below.</p>',
@@ -212,6 +213,7 @@ export const paymentGuides: PaymentGuideContent[] = [
     title: 'HƯỚNG DẪN THANH TOÁN',
     sources: [{ file: 'huong-dan-thanh-toan/index.html', line: 660, sourceId: '7221' }],
     translationKey: 'legal-huong-dan-thanh-toan',
+    labels: { accountNumber: 'Số tài khoản:', holder: 'Chủ tài khoản:' },
     introduction: {
       format: 'sanitized-html',
       html: '<h2>I. THANH TOÁN CHUYỂN KHOẢN NGÂN HÀNG</h2><p><strong>Bước 1:</strong> Chuyển khoản vào một trong những tài khoản được liệt kê tại <strong>Danh sách ngân hàng</strong> phía dưới.</p>',

@@ -603,6 +603,10 @@ export interface LegalPage extends LocalizedIdentity {
 export interface PaymentGuideContent extends LocalizedIdentity {
   introduction: RichContent;
   seo: SEO;
+  labels: {
+    accountNumber: string;
+    holder: string;
+  };
   accounts: {
     id: EntityId;
     bank: string;
