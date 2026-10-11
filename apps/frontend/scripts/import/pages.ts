@@ -793,13 +793,29 @@ function listing(page: Page, registry: AssetRegistry, stats: Stats): ListingSett
   };
 }
 
-function thankYou(page: Page, stats: Stats) {
+function thankYou(page: Page, registry: AssetRegistry, stats: Stats) {
   const inner = must(page.root.querySelector('#content .form_tke .col-inner'), page, 'message');
   const line = page.lineOf(inner.range[0]);
   return {
     id: `thank-you-${page.route.locale}`,
+    seo: seoOf(page, registry, stats),
     body: rich(
       trimBreaks(sanitize(inner, hooks(page, line, stats), new Set([...RICH_ALLOWED, 'h1']))),
+      [{ file: page.file, line }],
+    ),
+  };
+}
+
+function sample(page: Page, registry: AssetRegistry, stats: Stats) {
+  const content = must(page.root.querySelector('#content'), page, '#content');
+  const line = page.lineOf(content.range[0]);
+  return {
+    id: `sample-${page.route.locale}`,
+    seo: seoOf(page, registry, stats),
+    body: rich(
+      trimBreaks(
+        sanitize(content, hooks(page, line, stats), new Set([...RICH_ALLOWED, 'blockquote'])),
+      ),
       [{ file: page.file, line }],
     ),
   };
@@ -888,7 +904,8 @@ export function importPages(
     listingSettings: [...pages('post-list'), ...pages('project-list')].map((p) =>
       listing(p, registry, stats),
     ),
-    thankYou: pages('thank-you').map((p) => thankYou(p, stats)),
+    thankYou: pages('thank-you').map((p) => thankYou(p, registry, stats)),
+    sample: pages('sample').map((p) => sample(p, registry, stats)),
     wordmark,
   };
 }
