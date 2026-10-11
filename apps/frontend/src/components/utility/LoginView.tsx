@@ -15,7 +15,7 @@ export function LoginView({ content, wordmark, demoNotice }: LoginViewProps) {
     <div id="login" className="row justify-content-center align-items-center">
       <div className="col lg-6 short-info py-4">
         <div className="col-inner">
-          <div id="logo" className="d-none d-sm-block">
+          <div id="logo" className="d-none d-sm-block text-white">
             {wordmark}
           </div>
           <RichText content={content.body} />
@@ -29,7 +29,7 @@ export function LoginView({ content, wordmark, demoNotice }: LoginViewProps) {
       </div>
 
       <div className="logo d-block d-md-none mb-4">
-        <div className="d-flex justify-content-center">
+        <div className="d-flex justify-content-center text-white">
           {wordmark}
         </div>
       </div>

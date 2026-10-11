@@ -10,9 +10,9 @@
 
 /* source: wp-content/mu-plugins/include/css/login-eras.css:1 (head, login-eras/index__q_6b334f548d36.html:25) */
 :root {
-    --eras-login-primary-color: #061a5c;
-    --eras-login-linear-color: #5CB7FE;
-    --eras-login-text-italic-color: #b3e6f3;
+    --sova-login-primary-color: #061a5c;
+    --sova-login-linear-color: #5CB7FE;
+    --sova-login-text-italic-color: #b3e6f3;
 }
 
 body {
@@ -69,7 +69,7 @@ body {
 }
 
 .short-info {
-    background-image: linear-gradient(135deg, var(--eras-login-primary-color), var(--eras-login-linear-color));
+    background-image: linear-gradient(135deg, var(--sova-login-primary-color), var(--sova-login-linear-color));
 }
 
 #login>.col {
@@ -87,7 +87,7 @@ body {
 
 .short-info i {
     font-size: 14px;
-    color: var(--eras-login-text-italic-color);
+    color: var(--sova-login-text-italic-color);
 }
 
 .login form {
@@ -122,7 +122,7 @@ body {
 .button.button-primary.button-large {
     border-radius: 158px;
     padding: 0px 30px;
-    background-image: linear-gradient(0deg, var(--eras-login-primary-color), var(--eras-login-linear-color));
+    background-image: linear-gradient(0deg, var(--sova-login-primary-color), var(--sova-login-linear-color));
     background-color: rgba(0, 0, 0, 0.8);
 }
 
@@ -132,7 +132,7 @@ body {
 }
 
 .short-info a:hover {
-    color: var(--eras-login-text-italic-color);
+    color: var(--sova-login-text-italic-color);
     text-decoration: underline;
 }
 

@@ -205,12 +205,12 @@ export const utilityContent: UtilityContent[] = [
   {
     id: 'login-vi',
     seo: {
-      title: 'Đăng nhập &lsaquo; Công ty thiết kế website chuyên nghiệp | Sova — WordPress',
+      title: 'Đăng nhập ‹ Công ty thiết kế website chuyên nghiệp | Sova — WordPress',
       canonicalPath: '/login-eras/',
     },
     body: {
       format: 'sanitized-html',
-      html: '<p>Hỗ trợ kỹ thuật &amp; Phát triến web: <br> <a href="{{site.phoneHref}}">{{site.phone}}</a></p><p>Website: <a href="/">{{site.domain}}</a></p><p>Email: <a href="mailto:{{site.email}}">{{site.email}}</a></p><p>Hỗ trợ khách hàng các ngày từ Thứ Hai đến Chủ Nhật <br>(từ 8h00 - 22h00 hàng ngày)</p><i> Lưu ý: Quý khách hàng không nên tải những plugin <br>hoặc giao diện không rõ nguồn gốc lên website <br>nhằm tránh trường hợp nhiễm mã độc ngoài ý muốn</i>',
+      html: '<div class="text-white mt-2"><p>Hỗ trợ kỹ thuật &amp; Phát triến web: <br class="d-block d-sm-none"> <a href="{{site.phoneHref}}">{{site.phone}}</a></p><p>Website: <a href="/">{{site.domain}}</a></p><p>Email: <a href="mailto:{{site.email}}">{{site.email}}</a></p></div> <div class="text-white mt-2"><p>Hỗ trợ khách hàng các ngày từ Thứ Hai đến Chủ Nhật <br class="d-block d-md-none">(từ 8h00 - 22h00 hàng ngày)</p></div> <div class="mt-2"> <i> Lưu ý: Quý khách hàng không nên tải những plugin <br>hoặc giao diện không rõ nguồn gốc lên website <br>nhằm tránh trường hợp nhiễm mã độc ngoài ý muốn</i> </div>',
       assetIds: [],
       sources: [{ file: 'login-eras/index__q_6b334f548d36.html', line: 37 }],
     },

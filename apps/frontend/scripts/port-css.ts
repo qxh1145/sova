@@ -317,7 +317,13 @@ async function main() {
       own.push({ file, kind: 'route-head', ...buttonsEntry, htmlLine: buttonsBlock.line, route: route.id });
 
       // 3. wp-content/mu-plugins/include/css/login-eras.css
-      const { css: loginCss, ...loginEntry } = portBlock(loginBlock, source);
+      const { css: loginRaw, ...loginEntry } = portBlock(loginBlock, source);
+      // Source custom properties carry the brand; rename them so no brand exception is needed.
+      const loginCss = loginRaw.replace(/--eras-login-/g, () => {
+        loginEntry.transforms['brand-var-renamed'] =
+          (loginEntry.transforms['brand-var-renamed'] ?? 0) + 1;
+        return '--sova-login-';
+      });
       text += `\n/* source: ${loginEntry.source}:${loginEntry.line} (head, ${source}:${loginBlock.line}) */\n${loginCss.trim()}\n`;
       own.push({ file, kind: 'route-head', ...loginEntry, htmlLine: loginBlock.line, route: route.id });
     } else {
