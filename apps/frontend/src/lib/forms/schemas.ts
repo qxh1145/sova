@@ -54,3 +54,30 @@ export function websiteContactSchema(messages: WebsiteContactValidationMessages)
 }
 
 export type WebsiteContactFormValues = z.infer<ReturnType<typeof websiteContactSchema>>;
+
+export interface ContactValidationMessages {
+  required: string;
+  emailInvalid: string;
+  phoneInvalid: string;
+}
+
+export function contactSchema(messages: ContactValidationMessages) {
+  return z.object({
+    'your-name': z.string().trim().min(1, { message: messages.required }).max(400),
+    'your-email': z
+      .string()
+      .trim()
+      .min(1, { message: messages.required })
+      .max(400)
+      .pipe(z.string().email({ message: messages.emailInvalid })),
+    service: z.string().trim().min(1, { message: messages.required }),
+    'tel-584': phoneSchema({
+      required: messages.required,
+      invalid: messages.phoneInvalid,
+    }),
+    'your-message': z.string().trim().min(1, { message: messages.required }).max(2000),
+  });
+}
+
+export type ContactFormValues = z.infer<ReturnType<typeof contactSchema>>;
+

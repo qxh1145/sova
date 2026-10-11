@@ -4,8 +4,10 @@ import type {
   AssetRef,
   CollectionPlacement,
   CompanyProfileContent,
+  ContactFormContent,
   ContactPageContent,
   EntityId,
+  FAQPageContent,
   Feature,
   HeroContent,
   HomePageRecord,
@@ -38,6 +40,10 @@ const RICH_ALLOWED: ReadonlySet<string> = new Set([...ALLOWED, 'h2', 'h3', 'h4',
 const DEMO_ACCOUNT: Record<Locale, { bank: string; holder: string; accountNumber: string }> = {
   vi: { bank: 'Ngân hàng Demo', holder: 'SOVA DEMO', accountNumber: '0000000000' },
   en: { bank: 'Demo Bank', holder: 'SOVA DEMO', accountNumber: '0000000000' },
+};
+const PAYMENT_LABELS: Record<Locale, { accountNumber: string; holder: string }> = {
+  vi: { accountNumber: 'Số tài khoản:', holder: 'Chủ tài khoản:' },
+  en: { accountNumber: 'Account Number:', holder: 'Account Holder:' },
 };
 /** The account holder named in the e-wallet steps: replaced by the demo holder (Q1). */
 const HOLDER_NAME = /V[ŨU] H[ỒO]NG D[ŨU]NG/gi;
@@ -529,10 +535,36 @@ function about(page: Page, registry: AssetRegistry, stats: Stats) {
   return record;
 }
 
+const CONTACT_FORM_MESSAGES: Record<
+  Locale,
+  { required: string; emailInvalid: string; phoneInvalid: string }
+> = {
+  vi: {
+    required: 'Vui lòng điền vào trường này.',
+    emailInvalid: 'Địa chỉ email không hợp lệ.',
+    phoneInvalid: 'Số điện thoại không hợp lệ',
+  },
+  en: {
+    required: 'Please fill out this field.',
+    emailInvalid: 'Please enter an email address.',
+    phoneInvalid: 'Invalid phone number',
+  },
+};
+
 function contact(page: Page, registry: AssetRegistry, stats: Stats): ContactPageContent {
   const { root, file, lineOf, route } = page;
   const h1 = must(root.querySelector('#content h1'), page, 'h1');
-  const company = must(root.querySelectorAll('#content h2')[1], page, 'company h2');
+  const heroImg = must(root.querySelector('#content section .section-bg img'), page, 'hero image');
+  const heroImageId = must(registry.image(heroImg, file, lineOf), page, 'hero image asset');
+
+  const heroSection = must(root.querySelector('#content > section'), page, 'hero section');
+  const breadcrumb = must(heroSection.querySelector('p'), page, 'breadcrumb');
+  const homeLink = must(breadcrumb.querySelector('a'), page, 'breadcrumb home link');
+  const currentSpan = must(breadcrumb.querySelector('span'), page, 'breadcrumb current span');
+
+  const h2s = root.querySelectorAll('#content h2');
+  const sectionHeading = plain(must(h2s[0], page, 'section heading h2'), stats);
+  const company = must(h2s[1], page, 'company h2');
   const intro = must(
     root
       .querySelectorAll('#content p')
@@ -542,11 +574,77 @@ function contact(page: Page, registry: AssetRegistry, stats: Stats): ContactPage
   );
   const line = lineOf(intro.range[0]);
   const seo = seoOf(page, registry, stats);
+
+  const icons = root.querySelectorAll('#content .icon-box .icon-inner img');
+  if (icons.length !== 3) throw new Error(`Source drift: ${file} expected exactly 3 icon-box images`);
+  const addressIconId = must(registry.image(icons[0], file, lineOf), page, 'address icon');
+  const phoneIconId = must(registry.image(icons[1], file, lineOf), page, 'phone icon');
+  const emailIconId = must(registry.image(icons[2], file, lineOf), page, 'email icon');
+
+  const formEl = must(root.querySelector('.wpcf7 form'), page, 'contact form');
+  const labelEls = formEl.querySelectorAll('label');
+  if (labelEls.length !== 5) {
+    throw new Error(`Source drift: ${file} expected exactly 5 form labels, found ${labelEls.length}`);
+  }
+
+  const labelTexts = labelEls.map((l) => {
+    const firstText = l.childNodes.find((n) => n instanceof TextNode && n.rawText.trim());
+    if (!firstText) throw new Error(`Source drift: ${file} label missing text node`);
+    return processText(firstText.rawText.trim(), stats);
+  });
+
+  const optionEls = formEl.querySelectorAll('select option');
+  if (optionEls.length !== 8) {
+    throw new Error(`Source drift: ${file} expected exactly 8 select options, found ${optionEls.length}`);
+  }
+
+  const servicePrompt = plain(optionEls[0], stats);
+  const serviceOptions = optionEls.slice(1).map((opt) => plain(opt, stats));
+
+  const submitInput = must(
+    formEl.querySelector('input.wpcf7-submit'),
+    page,
+    'submit input',
+  );
+  const submitValue = submitInput.getAttribute('value');
+  if (!submitValue) {
+    throw new Error(`Source drift: ${file} missing submit input value`);
+  }
+  const submit = processText(submitValue, stats);
+
+  const messages = CONTACT_FORM_MESSAGES[route.locale];
+
+  const formContent: ContactFormContent = {
+    nameLabel: labelTexts[0],
+    emailLabel: labelTexts[1],
+    serviceLabel: labelTexts[2],
+    servicePrompt,
+    serviceOptions,
+    phoneLabel: labelTexts[3],
+    messageLabel: labelTexts[4],
+    submit,
+    required: messages.required,
+    emailInvalid: messages.emailInvalid,
+    phoneInvalid: messages.phoneInvalid,
+  };
+
   return {
     ...identity(page, `contact-${route.locale}`, seo, lineOf(h1.range[0]), plain(h1, stats)),
     translationKey: 'contact',
+    heroImageId,
+    sectionHeading,
     heading: plain(company, stats),
+    breadcrumb: {
+      homeLabel: plain(homeLink, stats),
+      current: plain(currentSpan, stats),
+    },
+    infoIconIds: {
+      address: addressIconId,
+      phone: phoneIconId,
+      email: emailIconId,
+    },
     introduction: rich(`<p>${sanitize(intro, hooks(page, line, stats))}</p>`, [{ file, line }]),
+    form: formContent,
     seo,
   };
 }
@@ -604,10 +702,25 @@ function payment(
   const split = children.findIndex(
     (n) => n instanceof HTMLElement && n.querySelector('.row-collapse.align-middle'),
   );
+  const walletIndex = children.findIndex(
+    (n, i) => i > split && n instanceof HTMLElement && n.classList.contains('row'),
+  );
+  const walletRow = must(children[walletIndex] as HTMLElement | undefined, page, 'e-wallet row');
+  // Heading col, QR image col, steps col; the MoMo QR image is not imported (Q1).
+  const [walletIntro, walletQr, walletSteps] = count(
+    walletRow.childNodes.filter(
+      (n): n is HTMLElement => n instanceof HTMLElement && n.classList.contains('col'),
+    ),
+    3,
+    page,
+    'e-wallet cols',
+  );
+  must(walletQr.querySelector('img'), page, 'e-wallet QR image');
   // Real accounts and QR images are not imported (Q1): drop each account card.
   for (const row of accountRows) row.parentNode?.closest('.col')?.remove();
   const introLine = lineOf(inner.range[0]);
   const restLine = lineOf((children[split] as HTMLElement).range[0]);
+  const walletLine = lineOf(walletRow.range[0]);
   const html = (nodes: Node[], line: number) =>
     trimBreaks(sanitize(nodes, hooks(page, line, stats), RICH_ALLOWED));
   const seo = seoOf(page, registry, stats);
@@ -615,13 +728,20 @@ function payment(
   return {
     ...identity(page, id, seo, introLine, bannerTitle(page, stats)),
     translationKey,
+    labels: PAYMENT_LABELS[route.locale],
     introduction: rich(html(children.slice(0, split), introLine), [{ file, line: introLine }]),
     seo,
     accounts: accountRows.map((_, i) => ({
       id: `${id}-account-${i + 1}`,
       ...DEMO_ACCOUNT[route.locale],
     })),
-    instructions: rich(html(children.slice(split), restLine), [{ file, line: restLine }]),
+    instructions: rich(html(children.slice(split, walletIndex), restLine), [
+      { file, line: restLine },
+    ]),
+    wallet: {
+      intro: rich(html([walletIntro], walletLine), [{ file, line: walletLine }]),
+      steps: rich(html([walletSteps], walletLine), [{ file, line: walletLine }]),
+    },
   };
 }
 
@@ -653,6 +773,31 @@ function profile(page: Page, registry: AssetRegistry, stats: Stats): CompanyProf
     translationKey: 'profile',
     coverId: registry.image(banner.querySelector('.banner-bg img'), file, lineOf),
     pdfAssetId,
+    seo,
+  };
+}
+
+export function faqPage(page: Page, registry: AssetRegistry, stats: Stats): FAQPageContent {
+  const { root, lineOf, route } = page;
+  const banner = must(root.querySelector('#content > .banner'), page, 'banner');
+  const breadcrumb = must(banner.querySelector('p'), page, 'breadcrumb');
+  const homeLink = must(breadcrumb.querySelector('a'), page, 'breadcrumb home link');
+  const currentSpan = must(breadcrumb.querySelector('span'), page, 'breadcrumb current span');
+  const seo = seoOf(page, registry, stats);
+
+  return {
+    ...identity(
+      page,
+      `faq-${route.locale}`,
+      seo,
+      lineOf(banner.range[0]),
+      bannerTitle(page, stats),
+    ),
+    translationKey: 'faq',
+    breadcrumb: {
+      homeLabel: plain(homeLink, stats),
+      current: plain(currentSpan, stats),
+    },
     seo,
   };
 }
@@ -739,13 +884,29 @@ function listing(page: Page, registry: AssetRegistry, stats: Stats): ListingSett
   };
 }
 
-function thankYou(page: Page, stats: Stats) {
+function thankYou(page: Page, registry: AssetRegistry, stats: Stats) {
   const inner = must(page.root.querySelector('#content .form_tke .col-inner'), page, 'message');
   const line = page.lineOf(inner.range[0]);
   return {
     id: `thank-you-${page.route.locale}`,
+    seo: seoOf(page, registry, stats),
     body: rich(
       trimBreaks(sanitize(inner, hooks(page, line, stats), new Set([...RICH_ALLOWED, 'h1']))),
+      [{ file: page.file, line }],
+    ),
+  };
+}
+
+function sample(page: Page, registry: AssetRegistry, stats: Stats) {
+  const content = must(page.root.querySelector('#content'), page, '#content');
+  const line = page.lineOf(content.range[0]);
+  return {
+    id: `sample-${page.route.locale}`,
+    seo: seoOf(page, registry, stats),
+    body: rich(
+      trimBreaks(
+        sanitize(content, hooks(page, line, stats), new Set([...RICH_ALLOWED, 'blockquote'])),
+      ),
       [{ file: page.file, line }],
     ),
   };
@@ -829,11 +990,13 @@ export function importPages(
     legalPages,
     paymentGuides,
     profiles: pages('profile').map((p) => profile(p, registry, stats)),
+    faqPages: pages('faq').map((p) => faqPage(p, registry, stats)),
     stats: statRecords,
     listingSettings: [...pages('post-list'), ...pages('project-list')].map((p) =>
       listing(p, registry, stats),
     ),
-    thankYou: pages('thank-you').map((p) => thankYou(p, stats)),
+    thankYou: pages('thank-you').map((p) => thankYou(p, registry, stats)),
+    sample: pages('sample').map((p) => sample(p, registry, stats)),
     wordmark,
   };
 }

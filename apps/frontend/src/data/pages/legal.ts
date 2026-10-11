@@ -172,6 +172,7 @@ export const paymentGuides: PaymentGuideContent[] = [
     title: 'Payment Guide',
     sources: [{ file: 'en/payment-guide/index.html', line: 660, sourceId: '7361' }],
     translationKey: 'legal-huong-dan-thanh-toan',
+    labels: { accountNumber: 'Account Number:', holder: 'Account Holder:' },
     introduction: {
       format: 'sanitized-html',
       html: '<h2>I. BANK TRANSFER PAYMENT</h2><p><strong>Step 1: </strong>Please make a bank transfer to <strong>one of the accounts</strong> listed in the Bank Account List below.</p>',
@@ -200,9 +201,23 @@ export const paymentGuides: PaymentGuideContent[] = [
     ],
     instructions: {
       format: 'sanitized-html',
-      html: '<p><strong>Step 2:</strong> After successfully completing the bank transfer, please contact our Sales Department through one of the following methods:</p><p><strong>Hotline:</strong> <a href="{{site.phoneHref}}"><strong>{{site.phone}}</strong> </a>(sms, zalo, call)<br> <strong>LiveChat with Sales</strong> on website <a href="/">{{site.domain}}</a><br> <strong>Inbox Fanpage</strong> of Sova here.<br> <strong>Send email</strong> to<a href="mailto:{{site.email}}"> {{site.email}}</a></p><p><em>After confirming successful payment, we will proceed with processing your order as soon as possible.</em></p><p><strong><em>Note:</em></strong></p><ul><li>In the transfer content field, please include your website name. For example: “Payment abc123 or domainname.com”.</li><li>We are not responsible <strong>if you transfer to an incorrect account or one that is not listed on the website</strong> <a href="/en/home/">{{site.domain}}</a>.</li><li>If we have not received your payment due to a delay in the bank transaction, please scan and send the payment order so we can assist in activating it quickly.</li></ul><h2>II. PAYMENT VIA E-WALLET</h2><p>To shorten the service activation time and provide quicker payment options for our customers, Sova has introduced an additional payment method via MOMO e-wallet.</p><ul><li><strong>Step 1</strong>: Log in to the MoMo app.</li><li><strong>Step 2</strong>: Tap on the <strong>Scan QR code</strong> icon at the top right corner and proceed to scan the QR code.</li><li><strong>Step 3</strong>: Check the beneficiary name, which should be <strong>SOVA DEMO – {{site.phone}}</strong>.</li><li><strong>Step 4</strong>: Enter the amount to transfer. Include a message with your website name or contract number.</li><li><strong>Step 5</strong>: Tap on “Transfer Money” in the e-wallet and complete the payment.</li></ul>',
+      html: '<p><strong>Step 2:</strong> After successfully completing the bank transfer, please contact our Sales Department through one of the following methods:</p><p><strong>Hotline:</strong> <a href="{{site.phoneHref}}"><strong>{{site.phone}}</strong> </a>(sms, zalo, call)<br> <strong>LiveChat with Sales</strong> on website <a href="/">{{site.domain}}</a><br> <strong>Inbox Fanpage</strong> of Sova here.<br> <strong>Send email</strong> to<a href="mailto:{{site.email}}"> {{site.email}}</a></p><p><em>After confirming successful payment, we will proceed with processing your order as soon as possible.</em></p><p><strong><em>Note:</em></strong></p><ul><li>In the transfer content field, please include your website name. For example: “Payment abc123 or domainname.com”.</li><li>We are not responsible <strong>if you transfer to an incorrect account or one that is not listed on the website</strong> <a href="/en/home/">{{site.domain}}</a>.</li><li>If we have not received your payment due to a delay in the bank transaction, please scan and send the payment order so we can assist in activating it quickly.</li></ul>',
       assetIds: [],
       sources: [{ file: 'en/payment-guide/index.html', line: 665 }],
+    },
+    wallet: {
+      intro: {
+        format: 'sanitized-html',
+        html: '<h2>II. PAYMENT VIA E-WALLET</h2><p>To shorten the service activation time and provide quicker payment options for our customers, Sova has introduced an additional payment method via MOMO e-wallet.</p>',
+        assetIds: [],
+        sources: [{ file: 'en/payment-guide/index.html', line: 818 }],
+      },
+      steps: {
+        format: 'sanitized-html',
+        html: '<ul><li><strong>Step 1</strong>: Log in to the MoMo app.</li><li><strong>Step 2</strong>: Tap on the <strong>Scan QR code</strong> icon at the top right corner and proceed to scan the QR code.</li><li><strong>Step 3</strong>: Check the beneficiary name, which should be <strong>SOVA DEMO – {{site.phone}}</strong>.</li><li><strong>Step 4</strong>: Enter the amount to transfer. Include a message with your website name or contract number.</li><li><strong>Step 5</strong>: Tap on “Transfer Money” in the e-wallet and complete the payment.</li></ul>',
+        assetIds: [],
+        sources: [{ file: 'en/payment-guide/index.html', line: 818 }],
+      },
     },
   },
   {
@@ -212,6 +227,7 @@ export const paymentGuides: PaymentGuideContent[] = [
     title: 'HƯỚNG DẪN THANH TOÁN',
     sources: [{ file: 'huong-dan-thanh-toan/index.html', line: 660, sourceId: '7221' }],
     translationKey: 'legal-huong-dan-thanh-toan',
+    labels: { accountNumber: 'Số tài khoản:', holder: 'Chủ tài khoản:' },
     introduction: {
       format: 'sanitized-html',
       html: '<h2>I. THANH TOÁN CHUYỂN KHOẢN NGÂN HÀNG</h2><p><strong>Bước 1:</strong> Chuyển khoản vào một trong những tài khoản được liệt kê tại <strong>Danh sách ngân hàng</strong> phía dưới.</p>',
@@ -240,9 +256,23 @@ export const paymentGuides: PaymentGuideContent[] = [
     ],
     instructions: {
       format: 'sanitized-html',
-      html: '<p><strong>Bước 2:</strong> Sau khi thực hiện chuyển khoản thành công, bạn vui lòng liên hệ với Bộ phận Kinh doanh của chúng tôi bằng một trong các hình thức sau:</p><p><strong>Hotline:</strong> <a href="{{site.phoneHref}}"><strong>{{site.phone}}</strong> </a>(sms, zalo, call)<br> <strong>LiveChat với Kinh Doanh</strong> trên website <a href="/">{{site.domain}}</a><br> <strong>Inbox Fanpage</strong> của Sova<strong> tại đây</strong><br> <strong>Gửi email</strong> tới<a href="mailto:{{site.email}}"> {{site.email}}</a></p><p><em>Sau khi xác nhận việc thanh toán thành công, chúng tôi sẽ tiến hành thực hiện đơn hàng của bạn trong thời gian sớm nhất.</em></p><p><strong><em>Lưu ý:</em></strong></p><ul><li>Tại mục nội dung chuyển khoản, bạn vui lòng ghi trên website của bạn. Ví dụ: “Thanh toán abc123 hoặc tenmien.com” .</li><li>Chúng tôi sẽ không chịu trách nhiệm khi bạn <b>chuyển khoản nhầm hoặc không phải tài khoản ghi trên website</b> của {{site.domain}}.</li><li>Trường hợp chúng tôi chưa nhận được khoản thanh toán do giao dịch trễ từ phía ngân hàng, bạn vui lòng scan Uỷ nhiệm chi để chúng tôi hỗ trợ kích hoạt nhanh chóng.</li></ul><h2>II. THANH TOÁN QUA VÍ ĐIỆN TỬ</h2><p>Nhằm rút ngắn thời gian kích hoạt dịch vụ cũng như hỗ trợ khách hàng thanh toán dịch vụ được nhanh chóng, Sova Việt nam đã mở thêm hình thức thanh toán qua ví điện tử MOMO.</p><ul><li><strong>Bước 1:</strong> Đăng nhập App MoMo.</li><li><strong>Bước 2:</strong> Bấm chọn Icon <strong>Quét Mã</strong> bên góc phải trên cùng và tiến hành quét QRcode.</li><li><strong>Bước 3:</strong> Kiểm tra tên người thụ hưởng là <strong>SOVA DEMO</strong>  – <strong>{{site.phone}}</strong>.</li><li><strong>Bước 4:</strong> Nhập số tiền cần chuyển. Nhập lời nhắn là tên website hoặc mã số hợp đồng.</li><li><strong>Bước 5:</strong> Bấm chọn Chuyển Tiền trên Ví và hoàn tất.</li></ul>',
+      html: '<p><strong>Bước 2:</strong> Sau khi thực hiện chuyển khoản thành công, bạn vui lòng liên hệ với Bộ phận Kinh doanh của chúng tôi bằng một trong các hình thức sau:</p><p><strong>Hotline:</strong> <a href="{{site.phoneHref}}"><strong>{{site.phone}}</strong> </a>(sms, zalo, call)<br> <strong>LiveChat với Kinh Doanh</strong> trên website <a href="/">{{site.domain}}</a><br> <strong>Inbox Fanpage</strong> của Sova<strong> tại đây</strong><br> <strong>Gửi email</strong> tới<a href="mailto:{{site.email}}"> {{site.email}}</a></p><p><em>Sau khi xác nhận việc thanh toán thành công, chúng tôi sẽ tiến hành thực hiện đơn hàng của bạn trong thời gian sớm nhất.</em></p><p><strong><em>Lưu ý:</em></strong></p><ul><li>Tại mục nội dung chuyển khoản, bạn vui lòng ghi trên website của bạn. Ví dụ: “Thanh toán abc123 hoặc tenmien.com” .</li><li>Chúng tôi sẽ không chịu trách nhiệm khi bạn <b>chuyển khoản nhầm hoặc không phải tài khoản ghi trên website</b> của {{site.domain}}.</li><li>Trường hợp chúng tôi chưa nhận được khoản thanh toán do giao dịch trễ từ phía ngân hàng, bạn vui lòng scan Uỷ nhiệm chi để chúng tôi hỗ trợ kích hoạt nhanh chóng.</li></ul>',
       assetIds: [],
       sources: [{ file: 'huong-dan-thanh-toan/index.html', line: 665 }],
+    },
+    wallet: {
+      intro: {
+        format: 'sanitized-html',
+        html: '<h2>II. THANH TOÁN QUA VÍ ĐIỆN TỬ</h2><p>Nhằm rút ngắn thời gian kích hoạt dịch vụ cũng như hỗ trợ khách hàng thanh toán dịch vụ được nhanh chóng, Sova Việt nam đã mở thêm hình thức thanh toán qua ví điện tử MOMO.</p>',
+        assetIds: [],
+        sources: [{ file: 'huong-dan-thanh-toan/index.html', line: 818 }],
+      },
+      steps: {
+        format: 'sanitized-html',
+        html: '<ul><li><strong>Bước 1:</strong> Đăng nhập App MoMo.</li><li><strong>Bước 2:</strong> Bấm chọn Icon <strong>Quét Mã</strong> bên góc phải trên cùng và tiến hành quét QRcode.</li><li><strong>Bước 3:</strong> Kiểm tra tên người thụ hưởng là <strong>SOVA DEMO</strong>  – <strong>{{site.phone}}</strong>.</li><li><strong>Bước 4:</strong> Nhập số tiền cần chuyển. Nhập lời nhắn là tên website hoặc mã số hợp đồng.</li><li><strong>Bước 5:</strong> Bấm chọn Chuyển Tiền trên Ví và hoàn tất.</li></ul>',
+        assetIds: [],
+        sources: [{ file: 'huong-dan-thanh-toan/index.html', line: 818 }],
+      },
     },
   },
 ];

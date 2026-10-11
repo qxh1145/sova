@@ -353,6 +353,8 @@ export interface ListingSnapshot {
 export interface UtilityContent {
   id: EntityId;
   body: RichContent;
+  /** Page metadata; set only on records that back a whole route (thank-you, sample). */
+  seo?: SEO;
 }
 
 export interface ShellContent {
@@ -560,9 +562,35 @@ export type AboutPageRecord = Omit<
   timelineDotId: EntityId;
 };
 
+export interface ContactFormContent {
+  nameLabel: string;
+  emailLabel: string;
+  serviceLabel: string;
+  servicePrompt: string;
+  serviceOptions: string[];
+  phoneLabel: string;
+  messageLabel: string;
+  submit: string;
+  required: string;
+  emailInvalid: string;
+  phoneInvalid: string;
+}
+
 export interface ContactPageContent extends LocalizedIdentity {
+  heroImageId: EntityId;
+  sectionHeading: string;
   heading: string;
+  breadcrumb: {
+    homeLabel: string;
+    current: string;
+  };
+  infoIconIds: {
+    address: EntityId;
+    phone: EntityId;
+    email: EntityId;
+  };
   introduction: RichContent;
+  form: ContactFormContent;
   seo: SEO;
 }
 
@@ -575,6 +603,10 @@ export interface LegalPage extends LocalizedIdentity {
 export interface PaymentGuideContent extends LocalizedIdentity {
   introduction: RichContent;
   seo: SEO;
+  labels: {
+    accountNumber: string;
+    holder: string;
+  };
   accounts: {
     id: EntityId;
     bank: string;
@@ -583,11 +615,24 @@ export interface PaymentGuideContent extends LocalizedIdentity {
     qrAssetId?: EntityId;
   }[];
   instructions: RichContent;
+  /** E-wallet section: heading copy and steps around the (missing) wallet QR slot. */
+  wallet: {
+    intro: RichContent;
+    steps: RichContent;
+  };
 }
 
 export interface CompanyProfileContent extends LocalizedIdentity {
   coverId?: EntityId;
   pdfAssetId: EntityId;
+  seo: SEO;
+}
+
+export interface FAQPageContent extends LocalizedIdentity {
+  breadcrumb: {
+    homeLabel: string;
+    current: string;
+  };
   seo: SEO;
 }
 
