@@ -5,7 +5,8 @@ import { paymentGuides } from '@/data/pages/legal';
 import { siteSettings } from '@/data/site';
 import { createMockRepository } from '@/lib/repositories/mock';
 import type { ContentData, ContentRepository } from '@/lib/repositories/contracts';
-import { getPaymentPreset, PaymentGuideView } from './PaymentGuideView';
+import { PaymentGuideView } from './PaymentGuideView';
+import { getPaymentPreset } from './paymentIds';
 import HuongDanThanhToanPage from '@/app/(site)/(vi)/huong-dan-thanh-toan/page';
 import PaymentGuidePage from '@/app/(site)/en/payment-guide/page';
 
@@ -157,7 +158,7 @@ describe('PaymentGuideView component and routes', () => {
     expect(root.querySelectorAll(`#${cardsRowId} > .col`)).toHaveLength(1);
   });
 
-  it('renders added account beyond source count with fallback unique IDs', () => {
+  it('throws error when account count exceeds card presets', () => {
     const enGuide = paymentGuides.find((g) => g.locale === 'en')!;
     const expandedGuide = {
       ...enGuide,
@@ -172,32 +173,9 @@ describe('PaymentGuideView component and routes', () => {
       ],
     };
 
-    const html = renderToStaticMarkup(<PaymentGuideView guide={expandedGuide} />);
-    const root = parse(html);
-
-    const cardsRowId = getPaymentPreset(enGuide.path).guideIds.cardsRow;
-    const cards = root.querySelectorAll(`#${cardsRowId} > .col`);
-    expect(cards).toHaveLength(3);
-
-    const thirdCard = cards[2];
-    expect(thirdCard.text).toContain('Third Test Bank');
-    expect(thirdCard.text).toContain('THIRD HOLDER');
-    expect(thirdCard.text).toContain('111222333');
-
-    // ID should use fallback format
-    const fallbackColId = `${getPaymentPreset(enGuide.path).guideIds.cardsRow}-col-3`;
-    expect(thirdCard.getAttribute('id')).toBe(fallbackColId);
-
-    // QR slot has missing marker and no <img>
-    const missingSlot = thirdCard.querySelector('.img-inner [data-media-status="missing"]');
-    expect(missingSlot).not.toBeNull();
-    expect(thirdCard.querySelectorAll('img')).toHaveLength(0);
-
-    // Verify all IDs in the tree are unique
-    const allElementsWithId = root.querySelectorAll('[id]');
-    const ids = allElementsWithId.map((el) => el.getAttribute('id'));
-    const uniqueIds = new Set(ids);
-    expect(uniqueIds.size).toBe(ids.length);
+    expect(() => renderToStaticMarkup(<PaymentGuideView guide={expandedGuide} />)).toThrow(
+      'Missing payment card preset for account index: 2',
+    );
   });
 
   it('invokes notFound() when payment guide record is missing in route', async () => {

@@ -1,16 +1,14 @@
-import type { UtilityContent } from '@/types/content';
+import type { LoginFormContent, UtilityContent } from '@/types/content';
 import { RichText } from '@/components/ui/RichText';
 import { LoginForm } from '@/components/forms/LoginForm';
 
 export interface LoginViewProps {
-  content: UtilityContent;
+  content: UtilityContent & { login: LoginFormContent };
   wordmark: string;
   demoNotice: string;
 }
 
 export function LoginView({ content, wordmark, demoNotice }: LoginViewProps) {
-  if (!content.login) return null;
-
   return (
     <div id="login" className="row justify-content-center align-items-center">
       <div className="col lg-6 short-info py-4">

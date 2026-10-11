@@ -291,11 +291,8 @@ export function getProfile(locale: Locale): Promise<CompanyProfileContent | null
   return getRepository().getProfile(locale);
 }
 
-export function getFAQPage(
-  locale: Locale,
-  repository: ContentRepository = getRepository(),
-): Promise<FAQPageContent | null> {
-  return repository.getFAQPage(locale);
+export function getFAQPage(locale: Locale): Promise<FAQPageContent | null> {
+  return getRepository().getFAQPage(locale);
 }
 
 export function getLegalPage(path: string, locale: Locale): Promise<LegalPage | null> {

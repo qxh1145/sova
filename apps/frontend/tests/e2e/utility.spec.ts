@@ -77,82 +77,63 @@ test.describe('Utility Pages (Story 6.4)', () => {
     await expectNoDuplicateIds(page);
   });
 
-  test('Profile VI: GET /ho-so-nang-luc-eras-vietnam/ renders banner heading with no flipbook or PDF request', async ({
-    page,
-  }) => {
-    const profile = await getProfile('vi');
-    expect(profile).not.toBeNull();
+  const profileCases = [
+    {
+      locale: 'vi' as const,
+      name: 'VI',
+      path: '/ho-so-nang-luc-eras-vietnam/',
+      bannerId: '#banner-1559052784',
+    },
+    {
+      locale: 'en' as const,
+      name: 'EN',
+      path: '/en/porfolio-eras-vietnam/',
+      bannerId: '#banner-151127649',
+    },
+  ];
 
-    const requestedUrls: string[] = [];
-    page.on('request', (req) => requestedUrls.push(req.url()));
+  for (const c of profileCases) {
+    test(`Profile ${c.name}: GET ${c.path} renders banner heading with no flipbook or PDF request`, async ({
+      page,
+    }) => {
+      const profile = await getProfile(c.locale);
+      expect(profile).not.toBeNull();
 
-    const response = await page.goto('/ho-so-nang-luc-eras-vietnam/');
-    expect(response?.status()).toBe(200);
+      const requestedUrls: string[] = [];
+      page.on('request', (req) => requestedUrls.push(req.url()));
 
-    // Metadata title
-    expect(await page.title()).toBe(profile!.seo.title);
-    await expect(page.locator('meta[name="description"]')).toHaveAttribute(
-      'content',
-      profile!.seo.description!,
-    );
+      const response = await page.goto(c.path);
+      expect(response?.status()).toBe(200);
 
-    // Shell header and footer
-    await expect(page.locator('header#header')).toBeVisible();
-    await expect(page.locator('footer#footer')).toBeVisible();
+      // Metadata title
+      expect(await page.title()).toBe(profile!.seo.title);
+      await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+        'content',
+        profile!.seo.description!,
+      );
 
-    // Banner and heading
-    const banner = page.locator('#banner-1559052784');
-    await expect(banner).toBeVisible();
+      // Shell header and footer
+      await expect(page.locator('header#header')).toBeVisible();
+      await expect(page.locator('footer#footer')).toBeVisible();
 
-    const heading = banner.locator('h2');
-    await expect(heading).toHaveCount(1);
-    await expect(heading).toHaveText(profile!.title);
+      // Banner and heading
+      const banner = page.locator(c.bannerId);
+      await expect(banner).toBeVisible();
 
-    // No flipbook containers or dflip markup
-    await expect(page.locator('.df-container, ._df_book, #df_7213')).toHaveCount(0);
+      const heading = banner.locator('h2');
+      await expect(heading).toHaveCount(1);
+      await expect(heading).toHaveText(profile!.title);
 
-    // No PDF requests or remote brand host
-    expect(requestedUrls.some((u) => u.includes('.pdf'))).toBe(false);
-    expect(requestedUrls.some((u) => u.includes('erasvietnam.vn'))).toBe(false);
+      // No flipbook containers or dflip markup
+      await expect(page.locator('.df-container, ._df_book, #df_7213')).toHaveCount(0);
 
-    await expectNoDuplicateIds(page);
-  });
+      // No PDF requests or remote brand host
+      expect(requestedUrls.some((u) => u.includes('.pdf'))).toBe(false);
+      expect(requestedUrls.some((u) => u.includes('erasvietnam.vn'))).toBe(false);
 
-  test('Profile EN: GET /en/porfolio-eras-vietnam/ renders banner heading with no flipbook or PDF request', async ({
-    page,
-  }) => {
-    const profile = await getProfile('en');
-    expect(profile).not.toBeNull();
-
-    const requestedUrls: string[] = [];
-    page.on('request', (req) => requestedUrls.push(req.url()));
-
-    const response = await page.goto('/en/porfolio-eras-vietnam/');
-    expect(response?.status()).toBe(200);
-
-    // Metadata title
-    expect(await page.title()).toBe(profile!.seo.title);
-    await expect(page.locator('meta[name="description"]')).toHaveAttribute(
-      'content',
-      profile!.seo.description!,
-    );
-
-    // Banner and heading
-    const banner = page.locator('#banner-151127649');
-    await expect(banner).toBeVisible();
-
-    const heading = banner.locator('h2');
-    await expect(heading).toHaveCount(1);
-    await expect(heading).toHaveText(profile!.title);
-
-    // No flipbook
-    await expect(page.locator('.df-container, ._df_book, #df_7213')).toHaveCount(0);
-
-    expect(requestedUrls.some((u) => u.includes('.pdf'))).toBe(false);
-    expect(requestedUrls.some((u) => u.includes('erasvietnam.vn'))).toBe(false);
-
-    await expectNoDuplicateIds(page);
-  });
+      await expectNoDuplicateIds(page);
+    });
+  }
 
   test('Alias: GET /porfolio-eras-vietnam/ redirects to /en/porfolio-eras-vietnam/', async ({
     page,
