@@ -9,7 +9,7 @@ test.skip(process.env.BASELINE_SOVA !== '1', 'Sova compare runs only via npm run
 const LOG_PATH = path.join(__dirname, 'CONTENT_ACCEPTANCE.md');
 // | key | width | local | staging | class | max ratio | reason |
 const ROW =
-  /^\|\s*(content-(?:terms-)?(?:vi|en))\s*\|\s*(\d+)\s*\|[^|]*\|[^|]*\|\s*(accepted|source-missing|regression)\s*\|\s*([\d.]+)\s*\|/gm;
+  /^\|\s*(content-(?:terms-|warranty-|refund-)?(?:vi|en))\s*\|\s*(\d+)\s*\|[^|]*\|[^|]*\|\s*(accepted|source-missing|regression)\s*\|\s*([\d.]+)\s*\|/gm;
 
 /** Logged diffs as `key@width` → accepted max diff pixel ratio. */
 function loadLoggedDiffs(): Map<string, number> {
@@ -23,7 +23,7 @@ function loadLoggedDiffs(): Map<string, number> {
 
 const loggedDiffs = loadLoggedDiffs();
 const contentRows = manifest.rows.filter((r) =>
-  /^content-(?:terms-)?(?:vi|en)$/.test(r.key),
+  /^content-(?:terms-|warranty-|refund-)?(?:vi|en)$/.test(r.key),
 );
 
 for (const row of contentRows) {
