@@ -562,6 +562,20 @@ export type AboutPageRecord = Omit<
   timelineDotId: EntityId;
 };
 
+export interface ContactFormContent {
+  nameLabel: string;
+  emailLabel: string;
+  serviceLabel: string;
+  servicePrompt: string;
+  serviceOptions: string[];
+  phoneLabel: string;
+  messageLabel: string;
+  submit: string;
+  required: string;
+  emailInvalid: string;
+  phoneInvalid: string;
+}
+
 export interface ContactPageContent extends LocalizedIdentity {
   heroImageId: EntityId;
   sectionHeading: string;
@@ -576,6 +590,7 @@ export interface ContactPageContent extends LocalizedIdentity {
     email: EntityId;
   };
   introduction: RichContent;
+  form: ContactFormContent;
   seo: SEO;
 }
 

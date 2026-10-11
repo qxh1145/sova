@@ -32,6 +32,7 @@ export default async function ContactUsPage() {
       settings={settings}
       assets={assets}
       cardLabels={shell.floatingContacts}
+      consultLabels={shell.consult}
     />
   );
 }
