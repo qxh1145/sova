@@ -3,7 +3,14 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { parse } from 'node-html-parser';
 import type { FAQ, FAQPageContent, FAQTopic } from '@/types/content';
 import { FAQTopicsView } from './FAQTopicsView';
-import { getFAQPreset, topicSlug } from './faqIds';
+import { faqToggleLabel, getFAQPreset, topicSlug } from './faqIds';
+
+describe('faqToggleLabel', () => {
+  it('returns exact aria-label text per locale', () => {
+    expect(faqToggleLabel('vi')).toBe('Mở rộng câu trả lời');
+    expect(faqToggleLabel('en')).toBe('Toggle answer');
+  });
+});
 
 describe('topicSlug', () => {
   it('converts label to lowercase and spaces to hyphens matching source slugs', () => {
