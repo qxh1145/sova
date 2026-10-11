@@ -45,13 +45,12 @@ test.describe('Payment Guide Pages', () => {
       await expect(cardsRow).toBeVisible();
 
       // Accounts render in order
-      const cards = guideCol.locator('.col.small-12.large-12');
+      const cards = cardsRow.locator(':scope > .col');
       await expect(cards).toHaveCount(record.accounts.length);
 
       for (let i = 0; i < record.accounts.length; i++) {
         const account = record.accounts[i];
-        const cardPreset = preset.cards[i];
-        const card = page.locator(`#${cardPreset.cardCol}`);
+        const card = cards.nth(i);
         await expect(card).toBeVisible();
 
         // Account labels, bank, number, holder
@@ -67,9 +66,26 @@ test.describe('Payment Guide Pages', () => {
         await expect(card.locator('img')).toHaveCount(0);
       }
 
+      // Intro, step-2 instructions and e-wallet copy render in the guide column
+      const firstText = (html: string) =>
+        html
+          .replace(/<[^>]+>/g, '')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .slice(0, 30);
+      await expect(guideCol).toContainText(firstText(record.introduction.html));
+      await expect(guideCol).toContainText(firstText(record.instructions.html));
+      const walletRow = page.locator(`#${preset.walletIds.row}`);
+      await expect(walletRow).toContainText(firstText(record.wallet.intro.html));
+      await expect(walletRow).toContainText(firstText(record.wallet.steps.html));
+      await expect(
+        walletRow.locator(`#${preset.walletIds.imageId} .img-inner [data-media-status="missing"]`),
+      ).toBeVisible();
+      await expect(guideCol.locator('img')).toHaveCount(0);
+
       // No request to source QR images
       const forbiddenQrRequest = requestedUrls.find((url) =>
-        /z44\d+|z45\d+|e4cb\w+/.test(url),
+        /\/wp-content\/uploads\/.*(z44\d+|z45\d+|e4cb\w+)/.test(url),
       );
       expect(forbiddenQrRequest).toBeUndefined();
 

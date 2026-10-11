@@ -386,11 +386,12 @@ export const fixtures: ContentData = {
   legalPages: [{ ...page('legal-1', '/fixture-legal'), body: rich }],
   paymentGuides: [
     {
-      ...page('payment-1', '/fixture-payment'),
+      ...page('payment-1', '/huong-dan-thanh-toan/'),
       labels: { accountNumber: 'Số tài khoản:', holder: 'Chủ tài khoản:' },
       introduction: rich,
       accounts: [{ id: 'account-1', bank: 'Fixture', holder: 'Fixture', accountNumber: '000' }],
       instructions: rich,
+      wallet: { intro: rich, steps: rich },
     },
   ],
   profiles: [{ ...page('profile-1', '/fixture-profile'), pdfAssetId: 'asset-1' }],

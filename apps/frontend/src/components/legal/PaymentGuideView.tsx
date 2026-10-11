@@ -21,6 +21,13 @@ export interface PaymentPreset {
     cardsRow: string;
   };
   cards: PaymentCardPreset[];
+  walletIds: {
+    row: string;
+    introCol: string;
+    qrCol: string;
+    imageId: string;
+    stepsCol: string;
+  };
 }
 
 export const PAYMENT_PRESETS: Record<string, PaymentPreset> = {
@@ -50,6 +57,13 @@ export const PAYMENT_PRESETS: Record<string, PaymentPreset> = {
         imageId: 'image_96051783',
       },
     ],
+    walletIds: {
+      row: 'row-1060875105',
+      introCol: 'col-1331101806',
+      qrCol: 'col-656832615',
+      imageId: 'image_482825465',
+      stepsCol: 'col-605154894',
+    },
   },
   '/en/payment-guide/': {
     heroIds: {
@@ -77,6 +91,13 @@ export const PAYMENT_PRESETS: Record<string, PaymentPreset> = {
         imageId: 'image_945316809',
       },
     ],
+    walletIds: {
+      row: 'row-1538564195',
+      introCol: 'col-332006230',
+      qrCol: 'col-1292489598',
+      imageId: 'image_1227812246',
+      stepsCol: 'col-553119844',
+    },
   },
 };
 
@@ -138,17 +159,18 @@ export function PaymentGuideView({ guide }: PaymentGuideViewProps) {
                               </span>
                             </p>
                             <p>
-                              {guide.labels.accountNumber}{' '}
-                              <strong>{account.accountNumber}</strong>
+                              {guide.labels.accountNumber} <strong>{account.accountNumber}</strong>
                               <br />
-                              {guide.labels.holder}{' '}
-                              <strong>{account.holder}</strong>
+                              {guide.labels.holder} <strong>{account.holder}</strong>
                             </p>
                           </div>
                         </div>
                         <div id={card.qrCol} className="col medium-2 small-12 large-2">
                           <div className="col-inner">
-                            <div className="img has-hover x md-x lg-x y md-y lg-y" id={card.imageId}>
+                            <div
+                              className="img has-hover x md-x lg-x y md-y lg-y"
+                              id={card.imageId}
+                            >
                               <div className="img-inner dark">
                                 <div
                                   data-media-status="missing"
@@ -165,6 +187,36 @@ export function PaymentGuideView({ guide }: PaymentGuideViewProps) {
               })}
             </div>
             <RichText content={guide.instructions} />
+            <div className="row row-large align-middle" id={preset.walletIds.row}>
+              <div id={preset.walletIds.introCol} className="col small-12 large-12 small-col-first">
+                <div className="col-inner">
+                  <RichText content={guide.wallet.intro} />
+                </div>
+              </div>
+              <div id={preset.walletIds.qrCol} className="col medium-4 small-12 large-4">
+                <div className="col-inner">
+                  <div
+                    className="img has-hover x md-x lg-x y md-y lg-y"
+                    id={preset.walletIds.imageId}
+                  >
+                    <div className="img-inner dark">
+                      <div
+                        data-media-status="missing"
+                        style={{ width: '100%', aspectRatio: '344/349' }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                id={preset.walletIds.stepsCol}
+                className="col medium-6 small-12 large-6 small-col-first"
+              >
+                <div className="col-inner">
+                  <RichText content={guide.wallet.steps} />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

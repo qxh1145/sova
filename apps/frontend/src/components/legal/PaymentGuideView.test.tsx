@@ -77,8 +77,42 @@ describe('PaymentGuideView component and routes', () => {
       expect(cardsRow).not.toBeNull();
 
       // Card count and accounts order
-      const cards = guideCol?.querySelectorAll('.col.small-12.large-12') ?? [];
+      const cards = cardsRow?.querySelectorAll(':scope > .col') ?? [];
       expect(cards.length).toBe(guide.accounts.length);
+
+      // Literal per-locale labels from the source copy
+      expect(guide.labels).toEqual(
+        guide.locale === 'vi'
+          ? { accountNumber: 'Số tài khoản:', holder: 'Chủ tài khoản:' }
+          : { accountNumber: 'Account Number:', holder: 'Account Holder:' },
+      );
+
+      // Intro before the cards row; step 2 after it; e-wallet row last
+      const text = (html: string) => parse(html).text.trim().slice(0, 40);
+      const guideText = guideCol?.text ?? '';
+      const introAt = guideText.indexOf(text(guide.introduction.html));
+      const cardsAt = guideText.indexOf(cardsRow?.text ?? '');
+      const instructionsAt = guideText.indexOf(text(guide.instructions.html));
+      const walletAt = guideText.indexOf(text(guide.wallet.intro.html));
+      expect(introAt).toBeGreaterThanOrEqual(0);
+      expect(cardsAt).toBeGreaterThan(introAt);
+      expect(instructionsAt).toBeGreaterThan(cardsAt);
+      expect(walletAt).toBeGreaterThan(instructionsAt);
+
+      // E-wallet row: intro, missing MoMo QR slot, steps
+      const walletRow = guideCol?.querySelector(`#${preset.walletIds.row}`);
+      expect(walletRow?.querySelector(`#${preset.walletIds.introCol}`)?.text).toContain(
+        text(guide.wallet.intro.html),
+      );
+      expect(
+        walletRow?.querySelector(
+          `#${preset.walletIds.qrCol} #${preset.walletIds.imageId} .img-inner [data-media-status="missing"]`,
+        ),
+      ).not.toBeNull();
+      expect(walletRow?.querySelector(`#${preset.walletIds.stepsCol}`)?.text).toContain(
+        text(guide.wallet.steps.html),
+      );
+      expect(guideCol?.querySelectorAll('img')).toHaveLength(0);
 
       guide.accounts.forEach((account, idx) => {
         const cardCol = root.querySelector(`#${preset.cards[idx].cardCol}`);
@@ -119,7 +153,8 @@ describe('PaymentGuideView component and routes', () => {
     expect(root.text).toContain('Custom Vietcombank');
     expect(root.text).toContain('CONG TY SOVA VIETNAM');
     expect(root.text).toContain('999888777666');
-    expect(root.querySelectorAll('.col.small-12.large-12')).toHaveLength(1);
+    const cardsRowId = getPaymentPreset(viGuide.path).guideIds.cardsRow;
+    expect(root.querySelectorAll(`#${cardsRowId} > .col`)).toHaveLength(1);
   });
 
   it('renders added account beyond source count with fallback unique IDs', () => {
@@ -140,7 +175,8 @@ describe('PaymentGuideView component and routes', () => {
     const html = renderToStaticMarkup(<PaymentGuideView guide={expandedGuide} />);
     const root = parse(html);
 
-    const cards = root.querySelectorAll('.col.small-12.large-12');
+    const cardsRowId = getPaymentPreset(enGuide.path).guideIds.cardsRow;
+    const cards = root.querySelectorAll(`#${cardsRowId} > .col`);
     expect(cards).toHaveLength(3);
 
     const thirdCard = cards[2];

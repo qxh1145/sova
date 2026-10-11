@@ -41,13 +41,13 @@ Max diff ratio = tỉ lệ pixel lệch (`baselineDiffRatio`, hai ảnh pad về
 
 ## One-off payment guide comparison
 
-So sánh độc lập (one-off comparison) giữa trang Sova và source clone trước khi story 9 thêm vào baseline manifest.
+So sánh độc lập (one-off comparison) giữa trang Sova và source clone trước khi story 9 thêm vào baseline manifest. Đo lại ngày 2026-10-11 sau khi thêm hàng ví điện tử (MoMo QR slot).
 
 | Key | Viewport (px) | Kết quả Local | Phân loại diff | Ghi chú & Lý do phân loại |
 | --- | --- | --- | --- | --- |
-| payment-vi | 390 | PASS (diff 0.248) | accepted | Mock account và QR slot missing-media (A47); step-2 đặt sau account row (A47); font fallback; rebrand Sova |
-| payment-vi | 1280 | PASS (diff 0.149) | accepted | Mock account và QR slot missing-media (A47); step-2 đặt sau account row (A47); font fallback; rebrand Sova |
-| payment-vi | 1440 | PASS (diff 0.151) | accepted | Mock account và QR slot missing-media (A47); step-2 đặt sau account row (A47); font fallback; rebrand Sova |
-| payment-en | 390 | PASS (diff 0.239) | accepted | Mock account và QR slot missing-media (A47); step-2 đặt sau account row (A47); font fallback; rebrand Sova |
-| payment-en | 1280 | PASS (diff 0.149) | accepted | Mock account và QR slot missing-media (A47); step-2 đặt sau account row (A47); font fallback; rebrand Sova |
-| payment-en | 1440 | PASS (diff 0.136) | accepted | Mock account và QR slot missing-media (A47); step-2 đặt sau account row (A47); font fallback; rebrand Sova |
+| payment-vi | 390 | PASS (diff 0.168) | accepted | Mock account; QR slot ngân hàng và MoMo missing-media (A47); step-2 đặt sau account row (A47); font fallback; rebrand Sova |
+| payment-vi | 1280 | PASS (diff 0.101) | accepted | Mock account; QR slot ngân hàng và MoMo missing-media (A47); step-2 đặt sau account row (A47); font fallback; rebrand Sova |
+| payment-vi | 1440 | PASS (diff 0.093) | accepted | Mock account; QR slot ngân hàng và MoMo missing-media (A47); step-2 đặt sau account row (A47); font fallback; rebrand Sova |
+| payment-en | 390 | PASS (diff 0.159) | accepted | Mock account; QR slot ngân hàng và MoMo missing-media (A47); step-2 đặt sau account row (A47); font fallback; rebrand Sova |
+| payment-en | 1280 | PASS (diff 0.103) | accepted | Mock account; QR slot ngân hàng và MoMo missing-media (A47); step-2 đặt sau account row (A47); font fallback; rebrand Sova |
+| payment-en | 1440 | PASS (diff 0.085) | accepted | Mock account; QR slot ngân hàng và MoMo missing-media (A47); step-2 đặt sau account row (A47); font fallback; rebrand Sova |

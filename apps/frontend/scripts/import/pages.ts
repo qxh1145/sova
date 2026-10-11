@@ -702,10 +702,25 @@ function payment(
   const split = children.findIndex(
     (n) => n instanceof HTMLElement && n.querySelector('.row-collapse.align-middle'),
   );
+  const walletIndex = children.findIndex(
+    (n, i) => i > split && n instanceof HTMLElement && n.classList.contains('row'),
+  );
+  const walletRow = must(children[walletIndex] as HTMLElement | undefined, page, 'e-wallet row');
+  // Heading col, QR image col, steps col; the MoMo QR image is not imported (Q1).
+  const [walletIntro, walletQr, walletSteps] = count(
+    walletRow.childNodes.filter(
+      (n): n is HTMLElement => n instanceof HTMLElement && n.classList.contains('col'),
+    ),
+    3,
+    page,
+    'e-wallet cols',
+  );
+  must(walletQr.querySelector('img'), page, 'e-wallet QR image');
   // Real accounts and QR images are not imported (Q1): drop each account card.
   for (const row of accountRows) row.parentNode?.closest('.col')?.remove();
   const introLine = lineOf(inner.range[0]);
   const restLine = lineOf((children[split] as HTMLElement).range[0]);
+  const walletLine = lineOf(walletRow.range[0]);
   const html = (nodes: Node[], line: number) =>
     trimBreaks(sanitize(nodes, hooks(page, line, stats), RICH_ALLOWED));
   const seo = seoOf(page, registry, stats);
@@ -720,7 +735,13 @@ function payment(
       id: `${id}-account-${i + 1}`,
       ...DEMO_ACCOUNT[route.locale],
     })),
-    instructions: rich(html(children.slice(split), restLine), [{ file, line: restLine }]),
+    instructions: rich(html(children.slice(split, walletIndex), restLine), [
+      { file, line: restLine },
+    ]),
+    wallet: {
+      intro: rich(html([walletIntro], walletLine), [{ file, line: walletLine }]),
+      steps: rich(html([walletSteps], walletLine), [{ file, line: walletLine }]),
+    },
   };
 }
 
