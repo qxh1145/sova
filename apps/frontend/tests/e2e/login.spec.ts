@@ -1,4 +1,4 @@
-import { expect, expectNoDuplicateIds, test } from './fixtures';
+import { expect, expectNoClientStorage, expectNoDuplicateIds, test } from './fixtures';
 import { getUtilityContent } from '../../src/lib/queries/pages';
 import { getSiteSettings, getShellContent } from '../../src/lib/queries/site';
 
@@ -8,6 +8,10 @@ test.describe('Legacy Login UI (/login-eras/)', () => {
   }) => {
     const response = await page.goto('/login-eras/');
     expect(response?.status()).toBe(200);
+
+    // Body classes required for styling (DW:311)
+    await expect(page.locator('body')).toHaveClass(/\blogin\b/);
+    await expect(page.locator('body')).toHaveClass(/\bwp-core-ui\b/);
 
     // No shell header or footer
     await expect(page.locator('header#header')).toHaveCount(0);
@@ -169,15 +173,7 @@ test.describe('Legacy Login UI (/login-eras/)', () => {
     expect(submittedUrls).toHaveLength(0);
 
     // Local/session storage and cookies unchanged / empty
-    const storage = await page.evaluate(() => ({
-      local: localStorage.length,
-      session: sessionStorage.length,
-    }));
-    expect(storage.local).toBe(0);
-    expect(storage.session).toBe(0);
-
-    const cookies = await page.context().cookies();
-    expect(cookies).toEqual([]);
+    await expectNoClientStorage(page);
 
     // An invalid resubmit hides the notice again
     await userInput.fill('');

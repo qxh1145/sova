@@ -2,7 +2,7 @@ import type { FAQ, FAQPageContent, FAQTopic } from '@/types/content';
 import { PageHeroSimple } from '@/components/hero/PageHeroSimple';
 import { FAQList } from '@/components/faq/FAQList';
 import { Tabs, type TabItem } from '@/components/ui/Tabs';
-import { getFAQPreset, topicSlug } from './faqIds';
+import { getFAQPreset, faqToggleLabel, topicSlug } from './faqIds';
 
 export interface FAQTopicGroup {
   topic: FAQTopic;
@@ -26,7 +26,7 @@ export function FAQTopicsView({ page, topics }: FAQTopicsViewProps) {
         type="single"
         defaultOpen="first"
         className="ac-luutru"
-        labels={{ toggle: page.locale === 'en' ? 'Toggle answer' : 'Mở rộng câu trả lời' }} // business-text-ok: accordion toggle label
+        labels={{ toggle: faqToggleLabel(page.locale) }}
       />
     ),
   }));

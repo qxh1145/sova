@@ -45,6 +45,15 @@ function EyeSlashIcon() {
   );
 }
 
+function FieldError({ message }: { message?: string }) {
+  if (!message) return null;
+  return (
+    <span className="login-error text-danger d-block mt-1" role="alert">
+      {message}
+    </span>
+  );
+}
+
 const noopSubscribe = () => () => {};
 
 export interface LoginFormProps {
@@ -126,11 +135,7 @@ export function LoginForm({ form, demoNotice }: LoginFormProps) {
             aria-invalid={errors.log ? 'true' : 'false'}
             {...register('log')}
           />
-          {errors.log && (
-            <span className="login-error text-danger d-block mt-1" role="alert">
-              {errors.log.message}
-            </span>
-          )}
+          <FieldError message={errors.log?.message} />
         </p>
 
         <div style={{ padding: '0 12px' }} className="user-pass-wrap">
@@ -166,11 +171,7 @@ export function LoginForm({ form, demoNotice }: LoginFormProps) {
               </span>
             </button>
           </div>
-          {errors.pwd && (
-            <span className="login-error text-danger d-block mt-1" role="alert">
-              {errors.pwd.message}
-            </span>
-          )}
+          <FieldError message={errors.pwd?.message} />
         </div>
 
         <div className="row mx-0 justify-content-around align-items-center">

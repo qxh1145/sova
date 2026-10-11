@@ -1,5 +1,6 @@
 import type { Locale, FAQ, SectionCopy } from '@/types/content';
 import { FAQList } from '@/components/faq/FAQList';
+import { faqToggleLabel } from '@/components/faq/faqIds';
 
 export interface ServiceFAQIds {
   section: string;
@@ -66,7 +67,7 @@ export function ServiceFAQ({ faqs, copy, ids, locale }: ServiceFAQProps) {
                 type="single"
                 defaultOpen="first"
                 className="ac-luutru"
-                labels={{ toggle: locale === 'en' ? 'Toggle answer' : 'Mở rộng câu trả lời' }} // business-text-ok: accordion toggle label
+                labels={{ toggle: faqToggleLabel(locale) }}
               />
             </div>
           </div>

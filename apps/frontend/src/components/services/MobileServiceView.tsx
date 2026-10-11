@@ -23,6 +23,7 @@ import {
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { FAQList } from '@/components/faq/FAQList';
+import { faqToggleLabel } from '@/components/faq/faqIds';
 import { FeaturedProjects, type FeaturedProjectsIds } from '@/components/projects/FeaturedProjects';
 
 const FEATURED_PROJECTS_IDS_MOBILE: FeaturedProjectsIds = {
@@ -146,7 +147,7 @@ export function MobileServiceView({ page, assets, locale }: MobileServiceViewPro
                     faqs={faqs}
                     type="single"
                     defaultOpen="first"
-                    labels={{ toggle: isEn ? 'Toggle answer' : 'Mở rộng câu trả lời' }} // business-text-ok: accordion toggle label
+                    labels={{ toggle: faqToggleLabel(locale) }}
                   />
                 </div>
               </div>

@@ -29,7 +29,7 @@ export default async function LoginPage() {
 
   return (
     <LoginView
-      content={record}
+      content={{ ...record, login: record.login }}
       wordmark={settings.wordmark}
       demoNotice={shell.consult.demoBadge}
     />

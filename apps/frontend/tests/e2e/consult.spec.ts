@@ -1,6 +1,12 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { expect, expectNoDuplicateIds, getBodyOverflow, test } from './fixtures';
+import {
+  expect,
+  expectNoClientStorage,
+  expectNoDuplicateIds,
+  getBodyOverflow,
+  test,
+} from './fixtures';
 
 const COPIES = {
   vi: {
@@ -155,15 +161,7 @@ test.describe('ConsultForm and drawer demo flow contract', () => {
         expect(await getBodyOverflow(page)).not.toBe('hidden');
 
         // 5. Storage and privacy checks
-        const storage = await page.evaluate(() => ({
-          local: localStorage.length,
-          session: sessionStorage.length,
-        }));
-        expect(storage.local).toBe(0);
-        expect(storage.session).toBe(0);
-
-        const cookies = await page.context().cookies();
-        expect(cookies).toEqual([]);
+        await expectNoClientStorage(page);
       });
     }
   }
