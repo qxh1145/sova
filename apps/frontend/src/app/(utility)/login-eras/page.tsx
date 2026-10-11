@@ -1,5 +1,6 @@
-import '@/styles/legacy/sections/route-login-eras.css'; // business-text-ok: route CSS import
+// Source order: Bootstrap first, then the ported route stylesheet.
 import './bootstrap-subset.css';
+import '@/styles/legacy/sections/route-login-eras.css'; // business-text-ok: route CSS import
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getUtilityContent } from '@/lib/queries/pages';

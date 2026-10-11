@@ -9,6 +9,8 @@ const NAMED_ENTITIES: Record<string, string> = {
   nbsp: ' ',
   laquo: '«',
   raquo: '»',
+  lsaquo: '‹',
+  rsaquo: '›',
   copy: '©',
   hellip: '…',
   ndash: '–',

@@ -93,11 +93,14 @@ export interface SanitizeHooks {
   href(raw: string): string | null;
   /** img / video source -> its AssetRef src and id, or null to drop the element. */
   asset?(el: HTMLElement): { src: string; id: string } | null;
+  /** Keep the source `class` attribute on br and on allowed elements (layout-bearing wrappers). */
+  keepClass?: boolean;
 }
 
 /**
  * Allowlist (default): p br ul ol li a[href] strong b em. Other elements are unwrapped (span, div,
- * ...), style/script & co. dropped with their content, and every attribute but a[href] removed.
+ * ...), style/script & co. dropped with their content, and every attribute but a[href] removed
+ * (`hooks.keepClass` also keeps `class`).
  * A wider `allowed` set may add img[src alt width height], video[controls width height] (its
  * fallback content dropped) and source[src type]; img/source src comes from `hooks.asset`.
  */
@@ -112,7 +115,8 @@ export function sanitize(
     if (!(node instanceof HTMLElement)) return '';
     const tag = node.rawTagName?.toLowerCase() ?? '';
     if (DROPPED.has(tag)) return '';
-    if (tag === 'br') return '<br>';
+    const cls = hooks.keepClass ? attr('class', node.getAttribute('class')?.trim() || undefined) : '';
+    if (tag === 'br') return `<br${cls}>`;
     if (tag === 'hr' && allowed.has(tag)) return '<hr>';
     if (allowed.has(tag) && (tag === 'img' || tag === 'source')) {
       const asset = hooks.asset?.(node);
@@ -135,7 +139,7 @@ export function sanitize(
       const href = raw === undefined ? null : hooks.href(raw);
       return href && SAFE_HREF.test(href) ? `<a${attr('href', href)}>${inner}</a>` : inner;
     }
-    return allowed.has(tag) ? `<${tag}>${inner}</${tag}>` : inner;
+    return allowed.has(tag) ? `<${tag}${cls}>${inner}</${tag}>` : inner;
   };
   return (Array.isArray(root) ? root : root.childNodes)
     .map(render)

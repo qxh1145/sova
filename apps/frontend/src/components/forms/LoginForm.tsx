@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   loginSchema,
@@ -45,6 +45,8 @@ function EyeSlashIcon() {
   );
 }
 
+const noopSubscribe = () => () => {};
+
 export interface LoginFormProps {
   form: LoginFormContent;
   demoNotice: string;
@@ -54,6 +56,12 @@ export function LoginForm({ form, demoNotice }: LoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showNotice, setShowNotice] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  // Submit stays disabled until hydration: a native POST would send the credentials.
+  const hydrated = useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false,
+  );
 
   const {
     register,
@@ -197,6 +205,7 @@ export function LoginForm({ form, demoNotice }: LoginFormProps) {
             id="wp-submit"
             className="button button-primary button-large"
             value={form.submitLabel}
+            disabled={!hydrated}
           />
         </p>
       </form>

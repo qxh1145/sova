@@ -43,10 +43,5 @@
     "match": "eras",
     "within": "login-eras",
     "reason": "Source slug kept in the mock route registry and SourceRef files (/login-eras/, id route-login-eras; MIGRATION_PLAN: rename to a Sova slug before release)"
-  },
-  {
-    "match": "eras-",
-    "within": "--eras-login-",
-    "reason": "Source CSS variables kept verbatim in the ported login-eras stylesheet"
   }
 ]

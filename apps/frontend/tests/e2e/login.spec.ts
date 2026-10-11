@@ -29,6 +29,12 @@ test.describe('Legacy Login UI (/login-eras/)', () => {
     await expect(shortInfo).toBeVisible();
     await expect(shortInfo).toContainText(settings.phones[0]!.label);
     await expect(shortInfo).toContainText(settings.email);
+    await expect(shortInfo).toContainText(settings.email.split('@')[1]!);
+    // Source wrappers survive import, so the ported `.text-white a` rule applies
+    await expect(shortInfo.locator('.text-white a').first()).toHaveCSS(
+      'color',
+      'rgb(255, 255, 255)',
+    );
 
     // Both logo slots render SiteSettings.wordmark
     const desktopLogo = page.locator('#logo');
@@ -172,6 +178,12 @@ test.describe('Legacy Login UI (/login-eras/)', () => {
 
     const cookies = await page.context().cookies();
     expect(cookies).toEqual([]);
+
+    // An invalid resubmit hides the notice again
+    await userInput.fill('');
+    await submitBtn.click();
+    await expect(notice).toHaveCount(0);
+    await expect(userInput).toHaveAttribute('aria-invalid', 'true');
   });
 
   test('Alias: GET /dang-ky-nghi-phep/ permanently redirects to /login-eras/', async ({

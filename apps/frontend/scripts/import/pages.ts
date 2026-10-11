@@ -945,8 +945,8 @@ function login(page: Page, registry: AssetRegistry, stats: Stats): {
     trimBreaks(
       sanitize(
         inner,
-        hooks(page, line, stats),
-        new Set([...RICH_ALLOWED, 'i']),
+        { ...hooks(page, line, stats), keepClass: true },
+        new Set([...RICH_ALLOWED, 'i', 'div']),
       ),
     ),
     [{ file: page.file, line }],
@@ -1042,7 +1042,7 @@ function login(page: Page, registry: AssetRegistry, stats: Stats): {
     'privacy href',
   );
 
-  const messages = LOGIN_MESSAGES[page.route.locale] ?? LOGIN_MESSAGES.vi;
+  const messages = LOGIN_MESSAGES[page.route.locale];
 
   return {
     id: `login-${page.route.locale}`,
