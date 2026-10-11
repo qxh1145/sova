@@ -9,6 +9,7 @@ import {
   zodResolver,
   type WebsiteContactFormValues,
 } from '@/lib/forms/schemas';
+import { useHydrated } from '@/lib/forms/useHydrated';
 import { useSubmitStatus } from '@/lib/forms/useSubmitStatus';
 import type { Locale, WebsiteContactFormLabels } from '@/types/content';
 
@@ -20,6 +21,8 @@ export interface WebsiteContactFormProps {
 export function WebsiteContactForm({ labels, locale }: WebsiteContactFormProps) {
   const adapter = useSubmitAdapter<WebsiteContactFormValues>();
   const { status, isSubmitting, submit, reset } = useSubmitStatus(adapter);
+  // Submit stays disabled until hydration: a native GET would put the fields in the URL.
+  const hydrated = useHydrated();
 
   const {
     register,
@@ -150,7 +153,7 @@ export function WebsiteContactForm({ labels, locale }: WebsiteContactFormProps) 
             <br />
             <input
               type="submit"
-              disabled={isSubmitting}
+              disabled={!hydrated || isSubmitting}
               aria-busy={isSubmitting}
               value={isSubmitting ? labels.submitting : labels.submit}
               className="wpcf7-form-control wpcf7-submit has-spinner lienhe"
