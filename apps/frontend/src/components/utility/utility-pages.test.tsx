@@ -169,6 +169,15 @@ describe('ThankYouView component', () => {
     expect(notFoundMock).toHaveBeenCalledTimes(1);
   });
 
+  it('invokes notFound() when record.login property is missing', async () => {
+    const loginRecord = utilityContent.find((c) => c.id === 'login-vi')!;
+    const recordWithoutLogin = { ...loginRecord, login: undefined };
+    repository = repoWith({ utilityContent: [recordWithoutLogin as any] });
+
+    await expect(LoginPage()).rejects.toThrow('NEXT_NOT_FOUND');
+    expect(notFoundMock).toHaveBeenCalledTimes(1);
+  });
+
   it('login metadata title has source entities decoded', async () => {
     repository = repoWith();
 
