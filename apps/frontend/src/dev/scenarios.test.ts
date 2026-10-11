@@ -7,6 +7,7 @@ import { getFAQs, getFAQTopics } from '@/lib/queries/faq';
 import {
   getAboutPage,
   getContactPage,
+  getFAQPage,
   getHomePage,
   getLegalPage,
   getListingSettings,
@@ -61,6 +62,7 @@ const queries: [
   ['getAboutPage', 'single', 'about-1', () => getAboutPage('vi')],
   ['getContactPage', 'single', 'contact-1', () => getContactPage('vi')],
   ['getProfile', 'single', 'profile-1', () => getProfile('vi')],
+  ['getFAQPage', 'single', 'faq-1', () => getFAQPage('vi')],
   ['getLegalPage', 'single', 'legal-1', () => getLegalPage('/fixture-legal', 'vi')],
   ['getPaymentGuide', 'single', 'payment-1', () => getPaymentGuide('vi')],
   ['getListingSettings', 'single', 'route-1', () => getListingSettings('route-1')],
