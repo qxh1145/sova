@@ -81,3 +81,18 @@ export function contactSchema(messages: ContactValidationMessages) {
 
 export type ContactFormValues = z.infer<ReturnType<typeof contactSchema>>;
 
+export interface LoginValidationMessages {
+  usernameRequired: string;
+  passwordRequired: string;
+}
+
+export function loginSchema(messages: LoginValidationMessages) {
+  return z.object({
+    log: z.string().trim().min(1, { message: messages.usernameRequired }),
+    pwd: z.string().min(1, { message: messages.passwordRequired }),
+    rememberme: z.boolean().optional(),
+  });
+}
+
+export type LoginFormValues = z.infer<ReturnType<typeof loginSchema>>;
+

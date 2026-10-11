@@ -1,6 +1,6 @@
 # Utility Pages Acceptance & Baseline Comparison Matrix
 
-Bảng nghiệm thu các trang Tiện ích (`eras-xin-chan-thanh-cam-on-quy-khach`, `ho-so-nang-luc-eras-vietnam`, `en/porfolio-eras-vietnam`, `sample-page`, story 6.4) so sánh với baseline clone trên 8 kích thước viewport chuẩn và 2 ngôn ngữ (`vi`, `en`).
+Bảng nghiệm thu các trang Tiện ích (`eras-xin-chan-thanh-cam-on-quy-khach`, `ho-so-nang-luc-eras-vietnam`, `en/porfolio-eras-vietnam`, `sample-page`, `login-eras`, story 6.4 & 6.7) so sánh với baseline clone trên 8 kích thước viewport chuẩn và 2 ngôn ngữ (`vi`, `en`).
 
 | Key | Viewport (px) | Kết quả Local | Kết quả Staging | Phân loại diff | Max diff ratio | Ghi chú & Lý do phân loại |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -36,6 +36,14 @@ Bảng nghiệm thu các trang Tiện ích (`eras-xin-chan-thanh-cam-on-quy-khac
 | sample-vi | 850 | PASS (diff 0.182) | PENDING | accepted | 0.187 | Link dashboard trỏ /wp-admin/; font fallback; rebrand Sova |
 | sample-vi | 1280 | PASS (diff 0.090) | PENDING | accepted | 0.095 | Link dashboard trỏ /wp-admin/; font fallback; rebrand Sova |
 | sample-vi | 1440 | PASS (diff 0.082) | PENDING | accepted | 0.087 | Link dashboard trỏ /wp-admin/; font fallback; rebrand Sova |
+| login-vi | 390 | PASS (diff 0.737) | PENDING | accepted | 0.742 | Bootstrap subset thay CDN (A48); source clone thiếu wp-admin CSS/JS (A49, known baseline); SVG icon thay dashicons (A50); wordmark thay logo Eras (A51); lược bỏ redirect_to/testcookie (A52); validation tiếng Việt (A53); link nội bộ (A54); font fallback; rebrand Sova |
+| login-vi | 549 | PASS (diff 0.735) | PENDING | accepted | 0.740 | Bootstrap subset thay CDN (A48); source clone thiếu wp-admin CSS/JS (A49, known baseline); SVG icon thay dashicons (A50); wordmark thay logo Eras (A51); lược bỏ redirect_to/testcookie (A52); validation tiếng Việt (A53); link nội bộ (A54); font fallback; rebrand Sova |
+| login-vi | 550 | PASS (diff 0.735) | PENDING | accepted | 0.740 | Bootstrap subset thay CDN (A48); source clone thiếu wp-admin CSS/JS (A49, known baseline); SVG icon thay dashicons (A50); wordmark thay logo Eras (A51); lược bỏ redirect_to/testcookie (A52); validation tiếng Việt (A53); link nội bộ (A54); font fallback; rebrand Sova |
+| login-vi | 768 | PASS (diff 0.741) | PENDING | accepted | 0.746 | Bootstrap subset thay CDN (A48); source clone thiếu wp-admin CSS/JS (A49, known baseline); SVG icon thay dashicons (A50); wordmark thay logo Eras (A51); lược bỏ redirect_to/testcookie (A52); validation tiếng Việt (A53); link nội bộ (A54); font fallback; rebrand Sova |
+| login-vi | 849 | PASS (diff 0.940) | PENDING | accepted | 0.945 | Bootstrap subset thay CDN (A48); source clone thiếu wp-admin CSS/JS (A49, known baseline); SVG icon thay dashicons (A50); wordmark thay logo Eras (A51); lược bỏ redirect_to/testcookie (A52); validation tiếng Việt (A53); link nội bộ (A54); font fallback; rebrand Sova |
+| login-vi | 850 | PASS (diff 0.941) | PENDING | accepted | 0.946 | Bootstrap subset thay CDN (A48); source clone thiếu wp-admin CSS/JS (A49, known baseline); SVG icon thay dashicons (A50); wordmark thay logo Eras (A51); lược bỏ redirect_to/testcookie (A52); validation tiếng Việt (A53); link nội bộ (A54); font fallback; rebrand Sova |
+| login-vi | 1280 | PASS (diff 0.864) | PENDING | accepted | 0.869 | Bootstrap subset thay CDN (A48); source clone thiếu wp-admin CSS/JS (A49, known baseline); SVG icon thay dashicons (A50); wordmark thay logo Eras (A51); lược bỏ redirect_to/testcookie (A52); validation tiếng Việt (A53); link nội bộ (A54); font fallback; rebrand Sova |
+| login-vi | 1440 | PASS (diff 0.835) | PENDING | accepted | 0.840 | Bootstrap subset thay CDN (A48); source clone thiếu wp-admin CSS/JS (A49, known baseline); SVG icon thay dashicons (A50); wordmark thay logo Eras (A51); lược bỏ redirect_to/testcookie (A52); validation tiếng Việt (A53); link nội bộ (A54); font fallback; rebrand Sova |
 
 Max diff ratio = tỉ lệ pixel lệch (`baselineDiffRatio`, hai ảnh pad về cùng kích thước) đo bằng `npm run baseline:sova` ngày 2026-10-11, cộng 0.005 rồi làm tròn lên 3 chữ số. Spec fail khi ảnh khớp baseline (hàng cũ, cần xoá) hoặc khi diff vượt max ratio (regression mới trong ô đã log). Sửa một diff thì chạy lại và cập nhật ratio.
 

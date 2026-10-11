@@ -272,13 +272,62 @@ async function main() {
     let text = `${HEADER}\n/* route: ${route.path} */\n`;
     const own: Entry[] = [];
 
-    // Route-only head styles; the /login-eras/ wp-admin cascade belongs to the utility epic.
-    for (const block of route.kind === 'login' ? [] : headOf(html)) {
-      const id = attr(block.tag, 'id');
-      if (!id || indexHeadIds.has(id) || isExternal(block.tag)) continue;
-      const { css, ...entry } = portBlock(block, source);
-      text += `\n/* source: ${entry.source}:${entry.line} (head, ${source}:${block.line}) */\n${css.trim()}\n`;
-      own.push({ file, kind: 'route-head', ...entry, htmlLine: block.line, route: route.id });
+    if (route.kind === 'login') {
+      const headBlocks = headOf(html);
+      const dashiconsBlock = headBlocks.find((b) => attr(b.tag, 'id') === 'dashicons-css');
+      const buttonsBlock = headBlocks.find((b) => attr(b.tag, 'id') === 'buttons-css');
+      const loginBlock = headBlocks.find((b) => attr(b.tag, 'href')?.includes('login-eras.css'));
+      if (!buttonsBlock || !dashiconsBlock || !loginBlock) {
+        throw new Error(`${source}: missing buttons, dashicons, or login-eras stylesheet block`);
+      }
+
+      // 1. dashicons base rules only (no @font-face)
+      const dashiconsHref = attr(dashiconsBlock.tag, 'href')!;
+      const dashiconsSource = path.posix.join(
+        path.posix.dirname(source),
+        decodeURI(dashiconsHref.split(/[?#]/)[0]),
+      );
+      const dashiconsRaw = readFileSync(path.join(ERAS_CLONE_DIR, dashiconsSource), 'utf8').replace(
+        /\r\n/g,
+        '\n',
+      );
+      const dashiconsMatch = /\.dashicons,\.dashicons-before:before\{[^}]+\}/.exec(dashiconsRaw);
+      if (!dashiconsMatch) throw new Error(`${dashiconsSource}: dashicons base rules not found`);
+      const dashiconsSnippet = dashiconsMatch[0];
+      const dashiconsSha = sha256(dashiconsRaw);
+      const { css: dashiconsCss, transforms: dashiconsTransforms } = transformCss(
+        dashiconsSnippet,
+        `/${dashiconsSource}`,
+      );
+      text += `\n/* source: ${dashiconsSource}:1 (head, ${source}:${dashiconsBlock.line}) */\n${dashiconsCss.trim()}\n`;
+      own.push({
+        file,
+        kind: 'route-head',
+        source: dashiconsSource,
+        line: 1,
+        sha256: dashiconsSha,
+        transforms: dashiconsTransforms,
+        htmlLine: dashiconsBlock.line,
+        route: route.id,
+      });
+
+      // 2. wp-includes/css/buttons.min__q_e3dfde8c2bed.css
+      const { css: buttonsCss, ...buttonsEntry } = portBlock(buttonsBlock, source);
+      text += `\n/* source: ${buttonsEntry.source}:${buttonsEntry.line} (head, ${source}:${buttonsBlock.line}) */\n${buttonsCss.trim()}\n`;
+      own.push({ file, kind: 'route-head', ...buttonsEntry, htmlLine: buttonsBlock.line, route: route.id });
+
+      // 3. wp-content/mu-plugins/include/css/login-eras.css
+      const { css: loginCss, ...loginEntry } = portBlock(loginBlock, source);
+      text += `\n/* source: ${loginEntry.source}:${loginEntry.line} (head, ${source}:${loginBlock.line}) */\n${loginCss.trim()}\n`;
+      own.push({ file, kind: 'route-head', ...loginEntry, htmlLine: loginBlock.line, route: route.id });
+    } else {
+      for (const block of headOf(html)) {
+        const id = attr(block.tag, 'id');
+        if (!id || indexHeadIds.has(id) || isExternal(block.tag)) continue;
+        const { css, ...entry } = portBlock(block, source);
+        text += `\n/* source: ${entry.source}:${entry.line} (head, ${source}:${block.line}) */\n${css.trim()}\n`;
+        own.push({ file, kind: 'route-head', ...entry, htmlLine: block.line, route: route.id });
+      }
     }
     for (const block of styleTags(html, html.search(/<body\b/i))) {
       if (block.body === undefined) {

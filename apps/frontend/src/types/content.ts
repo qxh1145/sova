@@ -349,12 +349,32 @@ export interface ListingSnapshot {
   nextPath?: PublicPath;
 }
 
+export interface LoginFormContent {
+  heading: string;
+  noAccountText: string;
+  registerText: string;
+  registerHref: string;
+  usernamePlaceholder: string;
+  passwordPlaceholder: string;
+  showPasswordLabel: string;
+  hidePasswordLabel: string;
+  rememberLabel: string;
+  lostPasswordText: string;
+  lostPasswordHref: string;
+  submitLabel: string;
+  privacyText: string;
+  privacyHref: string;
+  usernameRequired: string;
+  passwordRequired: string;
+}
+
 /** Utility copy (thank-you page) and project delivery terms. */
 export interface UtilityContent {
   id: EntityId;
   body: RichContent;
-  /** Page metadata; set only on records that back a whole route (thank-you, sample). */
+  /** Page metadata; set only on records that back a whole route (thank-you, sample, login). */
   seo?: SEO;
+  login?: LoginFormContent;
 }
 
 export interface ShellContent {

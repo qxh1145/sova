@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   contactSchema,
   consultSchema,
+  loginSchema,
   optionalPhoneSchema,
   phoneSchema,
   websiteContactSchema,
@@ -302,6 +303,70 @@ describe('form schemas', () => {
           'your-email': `${'a'.repeat(395)}@b.com`, // 401 chars
         }).success,
       ).toBe(false);
+    });
+  });
+
+  describe('loginSchema', () => {
+    const loginMessages = {
+      usernameRequired: 'Lỗi: Trường tên người dùng đang trống.',
+      passwordRequired: 'Lỗi: Mục mật khẩu đang trống.',
+    };
+    const schema = loginSchema(loginMessages);
+
+    it('rejects when both fields are blank with two error messages', () => {
+      const result = schema.safeParse({ log: '', pwd: '' });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues).toHaveLength(2);
+        expect(result.error.issues[0]?.message).toBe(loginMessages.usernameRequired);
+        expect(result.error.issues[1]?.message).toBe(loginMessages.passwordRequired);
+      }
+    });
+
+    it('rejects whitespace-only username', () => {
+      const result = schema.safeParse({ log: '   ', pwd: 'mypassword' });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues).toHaveLength(1);
+        expect(result.error.issues[0]?.message).toBe(loginMessages.usernameRequired);
+      }
+    });
+
+    it('does not trim password, keeping leading and trailing whitespace', () => {
+      const resultSpace = schema.safeParse({ log: 'myuser', pwd: ' ' });
+      expect(resultSpace.success).toBe(true);
+      if (resultSpace.success) {
+        expect(resultSpace.data.pwd).toBe(' ');
+      }
+
+      const result = schema.safeParse({ log: 'myuser', pwd: ' password with spaces ' });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.pwd).toBe(' password with spaces ');
+      }
+    });
+
+    it('accepts valid credentials with and without rememberme', () => {
+      const resultWithRemember = schema.safeParse({
+        log: '  myuser  ',
+        pwd: 'mypassword',
+        rememberme: true,
+      });
+      expect(resultWithRemember.success).toBe(true);
+      if (resultWithRemember.success) {
+        expect(resultWithRemember.data.log).toBe('myuser');
+        expect(resultWithRemember.data.pwd).toBe('mypassword');
+        expect(resultWithRemember.data.rememberme).toBe(true);
+      }
+
+      const resultDefault = schema.safeParse({
+        log: 'myuser',
+        pwd: 'mypassword',
+      });
+      expect(resultDefault.success).toBe(true);
+      if (resultDefault.success) {
+        expect(resultDefault.data.rememberme).toBeUndefined();
+      }
     });
   });
 });
