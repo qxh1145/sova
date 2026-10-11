@@ -9,11 +9,11 @@ test.skip(process.env.BASELINE_SOVA !== '1', 'Sova compare runs only via npm run
 const LOG_PATH = path.join(__dirname, 'UTILITY_ACCEPTANCE.md');
 // | key | width | local | staging | class | max ratio | reason |
 const ROW =
-  /^\|\s*(thank-you-vi|profile-(?:vi|en)|sample-vi|login-vi)\s*\|\s*(\d+)\s*\|[^|]*\|[^|]*\|\s*(accepted|source-missing|regression)\s*\|\s*([\d.]+)\s*\|/gm;
+  /^\|\s*(thank-you-vi|profile-(?:vi|en)|sample-vi|login-vi|payment-(?:vi|en))\s*\|\s*(\d+)\s*\|[^|]*\|[^|]*\|\s*(accepted|source-missing|regression)\s*\|\s*([\d.]+)\s*\|/gm;
 
 /** Logged diffs as `key@width` → accepted max diff pixel ratio. */
 function loadLoggedDiffs(): Map<string, number> {
-  if (!fs.existsSync(LOG_PATH)) return new Map();
+  if (!fs.existsSync(LOG_PATH)) throw new Error(`Missing diff log ${LOG_PATH}`);
   const logged = new Map<string, number>();
   for (const [, key, width, , ratio] of fs.readFileSync(LOG_PATH, 'utf-8').matchAll(ROW)) {
     logged.set(`${key}@${width}`, Number(ratio));
@@ -23,7 +23,7 @@ function loadLoggedDiffs(): Map<string, number> {
 
 const loggedDiffs = loadLoggedDiffs();
 const utilityRows = manifest.rows.filter((r) =>
-  /^(?:thank-you-vi|profile-(?:vi|en)|sample-vi|login-vi)$/.test(r.key),
+  /^(?:thank-you-vi|profile-(?:vi|en)|sample-vi|login-vi|payment-(?:vi|en))$/.test(r.key),
 );
 
 for (const row of utilityRows) {

@@ -298,6 +298,48 @@
       "reason": "exception: terms heading wrap row/col with strong"
     },
     {
+      "key": "content-warranty-vi",
+      "url": "/chinh-sach-bao-hanh/",
+      "family": "content",
+      "locale": "vi",
+      "reason": "family; legal warranty policy"
+    },
+    {
+      "key": "content-warranty-en",
+      "url": "/en/warranty-policy/",
+      "family": "content",
+      "locale": "en",
+      "reason": "family; legal warranty policy"
+    },
+    {
+      "key": "content-refund-vi",
+      "url": "/chinh-sach-hoan-tien/",
+      "family": "content",
+      "locale": "vi",
+      "reason": "family; legal refund policy"
+    },
+    {
+      "key": "content-refund-en",
+      "url": "/en/refund-policy/",
+      "family": "content",
+      "locale": "en",
+      "reason": "family; legal refund policy"
+    },
+    {
+      "key": "payment-vi",
+      "url": "/huong-dan-thanh-toan/",
+      "family": "payment",
+      "locale": "vi",
+      "reason": "family; payment guide utility"
+    },
+    {
+      "key": "payment-en",
+      "url": "/en/payment-guide/",
+      "family": "payment",
+      "locale": "en",
+      "reason": "family; payment guide utility"
+    },
+    {
       "key": "project-detail-thp",
       "url": "/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/",
       "family": "project-detail",

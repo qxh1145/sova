@@ -16,6 +16,14 @@ import { seoServices } from '../../src/data/services/seo';
 import { storageServices } from '../../src/data/services/storage';
 import { vpsServices } from '../../src/data/services/vps';
 import { websiteServices } from '../../src/data/services/website';
+import { contactPages } from '../../src/data/pages/contact';
+import { faqPages } from '../../src/data/pages/faq';
+import { legalPages, paymentGuides } from '../../src/data/pages/legal';
+import { profiles } from '../../src/data/pages/profile';
+import { getContactPreset } from '../../src/components/contact/contactIds';
+import { getFAQPreset } from '../../src/components/faq/faqIds';
+import { getLegalPreset } from '../../src/components/legal/legalIds';
+import { getPaymentPreset } from '../../src/components/legal/paymentIds';
 import type { Service } from '@/types/content';
 
 const WIDTHS = [390, 549, 550, 768, 849, 850, 1280, 1440];
@@ -604,3 +612,181 @@ test.describe('Acceptance: Services and About', () => {
     });
   }
 });
+
+test.describe('Acceptance: Utility', () => {
+  test.beforeEach(async ({ page }) => {
+    setupConsoleCollector(page);
+  });
+
+  test.afterEach(async ({ page }) => {
+    verifyConsoleCollector(page);
+  });
+
+  for (const pageRecord of legalPages) {
+    test(`Legal (${pageRecord.locale}) on ${pageRecord.path} returns 200, banner heading, and clean console`, async ({
+      page,
+    }) => {
+      const response = await page.goto(pageRecord.path);
+      expect(response?.ok(), `Route ${pageRecord.path} returned status ${response?.status()}`).toBe(
+        true,
+      );
+      await expect(page.locator('header#header')).toBeVisible();
+      await expect(page.locator('footer#footer')).toBeVisible();
+      const preset = getLegalPreset(pageRecord.path);
+      await expect(page.locator(`#${preset.heroIds.banner} h2`)).toBeVisible();
+      await expect(page.locator(`#${preset.bodyIds.row} #${preset.bodyIds.col}`)).toBeVisible();
+    });
+  }
+
+  for (const guide of paymentGuides) {
+    test(`Payment guide (${guide.locale}) on ${guide.path} returns 200, banner heading, and clean console`, async ({
+      page,
+    }) => {
+      const response = await page.goto(guide.path);
+      expect(response?.ok(), `Route ${guide.path} returned status ${response?.status()}`).toBe(
+        true,
+      );
+      await expect(page.locator('header#header')).toBeVisible();
+      await expect(page.locator('footer#footer')).toBeVisible();
+      const preset = getPaymentPreset(guide.path);
+      await expect(page.locator(`#${preset.heroIds.banner} h2`)).toBeVisible();
+      await expect(page.locator(`#${preset.guideIds.row}`)).toBeVisible();
+    });
+  }
+
+  for (const faq of faqPages) {
+    test(`FAQ (${faq.locale}) on ${faq.path} returns 200, banner heading, tabs, and clean console`, async ({
+      page,
+    }) => {
+      const response = await page.goto(faq.path);
+      expect(response?.ok(), `Route ${faq.path} returned status ${response?.status()}`).toBe(
+        true,
+      );
+      await expect(page.locator('header#header')).toBeVisible();
+      await expect(page.locator('footer#footer')).toBeVisible();
+      const preset = getFAQPreset(faq.locale);
+      await expect(page.locator(`#${preset.heroIds.banner} h2`)).toBeVisible();
+      await expect(page.locator('.tabbed-content.tab_cus_new')).toBeVisible();
+    });
+  }
+
+  for (const contact of contactPages) {
+    test(`Contact (${contact.locale}) on ${contact.path} returns 200, hero, form, map, and clean console`, async ({
+      page,
+    }) => {
+      const response = await page.goto(contact.path);
+      expect(response?.ok(), `Route ${contact.path} returned status ${response?.status()}`).toBe(
+        true,
+      );
+      await expect(page.locator('header#header')).toBeVisible();
+      await expect(page.locator('footer#footer')).toBeVisible();
+      const preset = getContactPreset(contact.locale);
+      await expect(page.locator(`section#${preset.hero.sectionId} h1`)).toBeVisible();
+      await expect(page.locator('form.wpcf7-form')).toBeVisible();
+      await expect(page.locator('iframe')).toBeVisible();
+    });
+  }
+
+  for (const profile of profiles) {
+    test(`Profile (${profile.locale}) on ${profile.path} returns 200, banner heading, and clean console`, async ({
+      page,
+    }) => {
+      const response = await page.goto(profile.path);
+      expect(response?.ok(), `Route ${profile.path} returned status ${response?.status()}`).toBe(
+        true,
+      );
+      await expect(page.locator('header#header')).toBeVisible();
+      await expect(page.locator('footer#footer')).toBeVisible();
+      const bannerSelector =
+        profile.locale === 'vi' ? '#banner-1559052784 h2' : '#banner-151127649 h2';
+      await expect(page.locator(bannerSelector)).toBeVisible();
+    });
+  }
+
+  test('Thank-you (plain) on /eras-xin-chan-thanh-cam-on-quy-khach/ returns 200, heading, no demo badge, and clean console', async ({
+    page,
+  }) => {
+    const response = await page.goto('/eras-xin-chan-thanh-cam-on-quy-khach/');
+    expect(
+      response?.ok(),
+      `Route /eras-xin-chan-thanh-cam-on-quy-khach/ returned status ${response?.status()}`,
+    ).toBe(true);
+    await expect(page.locator('header#header')).toBeVisible();
+    await expect(page.locator('footer#footer')).toBeVisible();
+    await expect(page.locator('#section_430522107 h1')).toHaveText('Gửi thông tin thành công!');
+    await expect(page.locator('.wpcf7-demo-badge'), 'Expected no demo badge on plain route').toHaveCount(0);
+  });
+
+  test('Thank-you (demo=1) on /eras-xin-chan-thanh-cam-on-quy-khach/?demo=1 returns 200, heading, demo badge, and clean console', async ({
+    page,
+  }) => {
+    const response = await page.goto('/eras-xin-chan-thanh-cam-on-quy-khach/?demo=1');
+    expect(
+      response?.ok(),
+      `Route /eras-xin-chan-thanh-cam-on-quy-khach/?demo=1 returned status ${response?.status()}`,
+    ).toBe(true);
+    await expect(page.locator('header#header')).toBeVisible();
+    await expect(page.locator('footer#footer')).toBeVisible();
+    await expect(page.locator('#section_430522107 h1')).toHaveText('Gửi thông tin thành công!');
+    await expect(page.locator('.wpcf7-demo-badge'), 'Expected demo badge on ?demo=1').toHaveText(
+      'Bản demo — chưa gửi thông tin',
+    );
+  });
+
+  test('Sample on /sample-page/ returns 200, content, blockquotes, and clean console', async ({
+    page,
+  }) => {
+    const response = await page.goto('/sample-page/');
+    expect(response?.ok(), `Route /sample-page/ returned status ${response?.status()}`).toBe(
+      true,
+    );
+    await expect(page.locator('header#header')).toBeVisible();
+    await expect(page.locator('footer#footer')).toBeVisible();
+    await expect(page.locator('#content')).toBeVisible();
+    await expect(page.locator('#content blockquote')).toHaveCount(2);
+  });
+
+  test('Login on /login-eras/ returns 200, #login container, form elements, and clean console', async ({
+    page,
+  }) => {
+    const response = await page.goto('/login-eras/');
+    expect(response?.ok(), `Route /login-eras/ returned status ${response?.status()}`).toBe(
+      true,
+    );
+    await expect(page.locator('body')).toHaveClass(/\blogin\b/);
+    await expect(page.locator('body')).toHaveClass(/\bwp-core-ui\b/);
+    await expect(page.locator('#login')).toBeVisible();
+    await expect(page.locator('h1')).toHaveText('Đăng nhập');
+  });
+
+  test('Alias /porfolio-eras-vietnam/ redirects to EN profile and keeps clean console', async ({
+    page,
+  }) => {
+    const response = await page.goto('/porfolio-eras-vietnam/');
+    expect(
+      response?.ok(),
+      `Route /porfolio-eras-vietnam/ returned status ${response?.status()}`,
+    ).toBe(true);
+    expect(
+      page.url(),
+      `Expected landed URL to match /en/porfolio-eras-vietnam/, got ${page.url()}`,
+    ).toMatch(/\/en\/porfolio-eras-vietnam\/$/);
+    await expect(page.locator('#banner-151127649 h2')).toBeVisible();
+  });
+
+  test('Alias /dang-ky-nghi-phep/ redirects to /login-eras/ and keeps clean console', async ({
+    page,
+  }) => {
+    const response = await page.goto('/dang-ky-nghi-phep/');
+    expect(
+      response?.ok(),
+      `Route /dang-ky-nghi-phep/ returned status ${response?.status()}`,
+    ).toBe(true);
+    expect(
+      page.url(),
+      `Expected landed URL to match /login-eras/, got ${page.url()}`,
+    ).toMatch(/\/login-eras\/$/);
+    await expect(page.locator('#login')).toBeVisible();
+  });
+});
+
