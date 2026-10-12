@@ -9,13 +9,14 @@ import {
   hasSource,
   missingSourceMessage,
   openSource,
+  rowViewports,
   stableScreenshot,
 } from './source';
 
 test.skip(!hasSource, missingSourceMessage);
 
 for (const row of manifest.rows) {
-  for (const width of manifest.viewports) {
+  for (const width of rowViewports(row)) {
     test(`${row.key} @${width}`, async ({ page }) => {
       await page.setViewportSize({ width, height: manifest.viewportHeight });
       const evidence = await openSource(page, row);

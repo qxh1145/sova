@@ -36,6 +36,7 @@ temp/
 .omc/
 baseline/
 !apps/frontend/tests/baseline/
+apps/frontend/baseline-sova/
 
 # Testing and Coverage
 coverage/

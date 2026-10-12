@@ -3,6 +3,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import type { BrowserContext, Page } from '@playwright/test';
 import { isAllowedUrl, MAPS_EMBED_ALLOWLIST } from '../e2e/fixtures';
+import manifest from './manifest.json';
 
 export const ERAS_CLONE_DIR = path.resolve(
   process.env.ERAS_CLONE_DIR ?? path.join(__dirname, '../../../../../eras-clone'),
@@ -41,7 +42,13 @@ export type ManifestRow = {
   family: string;
   locale: string;
   reason: string;
+  marquee?: boolean;
 };
+
+/** Viewports a row is captured and compared at: all rows, plus marquee widths for marquee rows. */
+export function rowViewports(row: ManifestRow) {
+  return row.marquee ? [...manifest.viewports, ...manifest.marqueeViewports] : manifest.viewports;
+}
 
 // The mirror stores `name.ext?query` as `name__q_<sha256(query)[:12]>.ext`.
 function sourceFile(pathname: string, search: string): string | undefined {
