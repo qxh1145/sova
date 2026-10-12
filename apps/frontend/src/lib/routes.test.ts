@@ -6,7 +6,7 @@ import type { RouteEntry } from '@/types/content';
 import { normalizePath, pathForRouteId, reservedRootSlugs, resolvePath, validateRoutes } from './routes';
 
 const slugs = { postSlugs: posts.map((p) => p.slug), projectSlugs: projects.map((p) => p.slug) };
-// The 16 `excluded` rows of docs/evidence/routes.json (docs/ is not committed).
+// The 16 `excluded` rows of docs/evidence/routes.json.
 const EXCLUDED = [
   '/en/digital-communications-solutions/',
   '/giai-phap-truyen-thong-so/',
