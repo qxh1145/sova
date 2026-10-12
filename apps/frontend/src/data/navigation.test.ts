@@ -13,7 +13,7 @@ import { profiles } from './pages/profile';
 import { routes } from './routes';
 import { stats } from './stats';
 
-// ROUTE_MAP excluded families (docs/ is gitignored, so not read from routes.json).
+// ROUTE_MAP excluded families (see docs/evidence/routes.json).
 const EXCLUDED =
   /^\/(?:en\/)?(?:tuyen-dung|giai-phap-truyen-thong-so|digital-communications-solutions)\//;
 const flatten = (items: NavigationItem[]): NavigationItem[] =>
