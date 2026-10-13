@@ -64,6 +64,10 @@ Baseline evidence: `apps/frontend/baseline/<route-key>/<viewport>.png|json` (`np
 
 
 
+| A55 | Destination-free desktop nav parent becomes keyboard focusable; submenu opens by focus/Enter/Space and closes with Escape. | `eras-clone/index.html` menu-item-7258; `Header.tsx`, `NavDropdown.tsx` | epic-fidelity-and-handoff | accepted (story 7.6) |
+| A56 | Autoplay carousels expose focus-only pause/play control and pause while keyboard focus remains inside; source lacks keyboard motion controls. | `eras-clone/index.html` slider; `Carousel.tsx` | epic-fidelity-and-handoff | accepted (story 7.6) |
+| A57 | Dialog retains overlays for a timed `mfp-removing` close transition; reduced motion skips delay. | Flatsome `.mfp-removing` styles; `Dialog.tsx` | epic-fidelity-and-handoff | accepted (story 7.6) |
+
 ## Known baseline capture differences
 
 The harness never touches the network, so the baseline differs from the live site in known ways. These are not Sova defects.

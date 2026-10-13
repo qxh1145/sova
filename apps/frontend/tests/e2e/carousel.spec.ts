@@ -54,6 +54,31 @@ async function expectAutoplayEvery(page: Page, slides: Locator, delay: number) {
   }
 }
 
+test.describe('Real route autoplay controls', () => {
+  for (const [name, url, width, selector] of [
+    ['home testimonials', '/', 1280, '.slide-kh .flickity-enabled'],
+    ['about goals', '/gioi-thieu/', 390, '#slider-512312949'],
+    ['pricing cards', '/thiet-ke-website/', 390, '.slide_tke1 .flickity-enabled'],
+    ['service cards', '/thiet-ke-app-mobile/', 390, '.slide_tkap .flickity-enabled'],
+    ['project gallery', '/featured_item/xanhthienthanh-cong-ty-co-phan-dau-tu-va-phat-trien-xanh-thien-thanh/', 1280, '#slider-duan .flickity-enabled'],
+  ] as const) {
+    test(`${name}: keyboard pauses real autoplay`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 800 });
+      await page.goto(url);
+      const slider = page.locator(selector).first();
+      await expect(slider).toBeVisible();
+      const pause = slider.getByRole('button', { name: 'Tạm dừng trình chiếu' });
+      await pause.focus();
+      await expect(pause).toBeFocused();
+      await page.keyboard.press('Enter');
+      const play = slider.getByRole('button', { name: 'Tiếp tục trình chiếu' });
+      await expect(play).toBeFocused();
+      await page.keyboard.press('Enter');
+      await expect(pause).toBeFocused();
+    });
+  }
+});
+
 test.describe('Carousel contract checks', () => {
   test('Testimonials autoplay: advances every 6000ms and wraps last to first', async ({ page }) => {
     await openPaused(page, '/dev-fixtures/carousel/testimonials');
@@ -147,6 +172,31 @@ test.describe('Carousel contract checks', () => {
     expect(await tick(page, slides, 500)).toBe(1);
   });
 
+  test('Keyboard pause control toggles, focus pauses, and blur resumes only after play', async ({ page }) => {
+    await openPaused(page, '/dev-fixtures/carousel/testimonials');
+    const slides = page.locator(`${TESTIMONIALS} .flickity-slider > *`);
+    const region = page.getByRole('region', { name: 'Carousel' });
+    const pause = region.getByRole('button', { name: 'Pause slideshow' });
+    await pause.focus();
+    await expect(pause).toBeFocused();
+    expect(await tick(page, slides, 12000)).toBe(0);
+
+    await page.keyboard.press('Enter');
+    const play = region.getByRole('button', { name: 'Play slideshow' });
+    await expect(play).toBeFocused();
+    await leaveSlider(page);
+    expect(await tick(page, slides, 12000)).toBe(0);
+
+    await play.evaluate((element: HTMLElement) => element.blur());
+    expect(await tick(page, slides, 6000)).toBe(0);
+    await play.focus();
+    await page.keyboard.press('Enter');
+    await expect(pause).toBeFocused();
+    expect(await tick(page, slides, 12000)).toBe(0);
+    await pause.evaluate((element: HTMLElement) => element.blur());
+    expect(await tick(page, slides, 6000)).toBe(1);
+  });
+
   test('Controls: labelled buttons work by click and keyboard, then autoplay stops', async ({
     page,
   }) => {
@@ -216,6 +266,7 @@ test.describe('Carousel contract checks', () => {
     await expect(slides.nth(0)).toHaveClass(/is-selected/);
     await expect(page.locator(`${TESTIMONIALS} .flickity-prev-next-button`)).toHaveCount(0);
     await expect(page.locator(`${TESTIMONIALS} .flickity-page-dots`)).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Pause slideshow' })).toHaveCount(0);
     expect(await tick(page, slides, 12000)).toBe(0);
   });
 

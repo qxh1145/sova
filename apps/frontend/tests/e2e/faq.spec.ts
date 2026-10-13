@@ -22,6 +22,16 @@ test.describe('Accordion primitive and shared FAQ list', () => {
     expect(errors, `Unexpected console/page errors:\n${errors.join('\n')}`).toEqual([]);
   });
 
+  test('site FAQ toggles carry localized labels', async ({ page }) => {
+    for (const [url, label] of [
+      ['/cau-hoi-thuong-gap/', 'Mở rộng câu trả lời'],
+      ['/en/faq/', 'Toggle answer'],
+    ]) {
+      await page.goto(url);
+      await expect(page.locator('span.toggle[aria-label]').first()).toHaveAttribute('aria-label', label);
+    }
+  });
+
   const locales = [
     { name: 'VI', url: '/dev-fixtures/faq/default' },
     { name: 'EN', url: '/dev-fixtures/faq/default?locale=en' },

@@ -9,6 +9,8 @@ const GALLERY_CAROUSEL_LABELS: CarouselLabels = {
   prev: 'Trước',
   next: 'Tiếp theo',
   goTo: 'Chuyển tới slide {index}',
+  pause: 'Tạm dừng trình chiếu',
+  play: 'Tiếp tục trình chiếu',
   region: 'Thư viện ảnh dự án',
 };
 

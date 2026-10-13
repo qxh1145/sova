@@ -108,6 +108,25 @@ test.describe('Mobile menu drawer and accordion navigation', () => {
     expect(await getBodyOverflow(page)).not.toBe('hidden');
   });
 
+  test('Controlled mobile menu link close keeps mfp-removing phase before unmount', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+
+    const trigger = page.locator('.flex-col.show-for-medium a[aria-controls="main-menu"]');
+    await trigger.click();
+    await expect(page.locator('.mfp-wrap')).toHaveClass(/mfp-ready/);
+    await page.evaluate(() => {
+      const state = window as typeof window & { menuClosePhase?: boolean };
+      const wrap = document.querySelector('.mfp-wrap');
+      new MutationObserver(() => {
+        if (wrap?.classList.contains('mfp-removing')) state.menuClosePhase = true;
+      }).observe(wrap!, { attributes: true, attributeFilter: ['class'] });
+    });
+    await page.locator('#main-menu .sidebar-menu a[href]').filter({ hasText: 'Trang chủ' }).first().click();
+    await expect.poll(() => page.evaluate(() => !!(window as typeof window & { menuClosePhase?: boolean }).menuClosePhase)).toBe(true);
+    await expect(page.locator('#main-menu')).toHaveCount(0);
+  });
+
   test('Matrix 4: Close button — clicking .mfp-close closes drawer and returns focus', async ({
     page,
   }) => {

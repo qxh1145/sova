@@ -15,6 +15,8 @@ const labels = {
   prev: 'Trước',
   next: 'Tiếp theo',
   goTo: 'Chuyển tới slide {index}',
+  pause: 'Tạm dừng trình chiếu',
+  play: 'Tiếp tục trình chiếu',
   carousel: 'Bảng giá',
   slide: 'Slide {index}',
 };
