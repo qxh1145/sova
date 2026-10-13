@@ -14,8 +14,7 @@ import {
 } from './ServicePackageCards';
 import {
   Testimonials,
-  TESTIMONIALS_IDS_BRANDING_EN,
-  TESTIMONIALS_IDS_BRANDING_VI,
+  TESTIMONIALS_IDS,
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
@@ -120,7 +119,7 @@ export function BrandingServiceView({ page, assets, locale }: BrandingServiceVie
           avatars={assets.testimonialAvatars}
           copy={copy.testimonials}
           art={assets.testimonialArt}
-          ids={isEn ? TESTIMONIALS_IDS_BRANDING_EN : TESTIMONIALS_IDS_BRANDING_VI}
+          ids={TESTIMONIALS_IDS.branding[locale]}
           labels={TESTIMONIALS_LABELS[locale]}
         />
       )}

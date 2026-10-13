@@ -52,7 +52,7 @@ test('getShellProps composes locale shell props', async () => {
   const en = await getShellProps('en');
   expect(en.shellContent.locale).toBe('en');
   expect(en.headerCtas).toEqual({
-    vi: { label: 'Liên hệ', href: '/lien-he/' },
+    vi: { label: 'Liên hệ', href: '/en/contact-us/' },
     en: { label: 'Contact Us', href: '/en/contact-us/' },
   });
   expect(en.counterparts['/en/home/']).toBe('/');

@@ -122,3 +122,19 @@ export function homeHref(routes: RouteEntry[], locale: Locale): string {
   const id = locale === 'en' ? 'route-en--home' : 'route-root';
   return pathForRouteId(routes, id) ?? (locale === 'en' ? '/en/home/' : '/');
 }
+
+/** Builds a pathname -> counterpart pathname map for a given locale from a routes list. */
+export function buildCounterpartMap(routes: RouteEntry[], locale: Locale): Record<string, string> {
+  const map: Record<string, string> = {};
+  const byId = new Map(routes.map((r) => [r.id, r]));
+  for (const r of routes) {
+    if (r.locale === locale && r.counterpartId) {
+      const counterpart = byId.get(r.counterpartId);
+      if (counterpart) {
+        map[r.path] = counterpart.path;
+      }
+    }
+  }
+  return map;
+}
+

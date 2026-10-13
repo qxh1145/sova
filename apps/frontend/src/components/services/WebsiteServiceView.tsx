@@ -21,8 +21,7 @@ import {
 } from './ServiceDetailCards';
 import {
   Testimonials,
-  TESTIMONIALS_IDS_WEBSITE_EN,
-  TESTIMONIALS_IDS_WEBSITE_VI,
+  TESTIMONIALS_IDS,
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
@@ -302,7 +301,7 @@ export function WebsiteServiceView({ page, assets, locale }: WebsiteServiceViewP
           avatars={assets.testimonialAvatars}
           copy={copy.testimonials}
           art={assets.testimonialArt}
-          ids={isEn ? TESTIMONIALS_IDS_WEBSITE_EN : TESTIMONIALS_IDS_WEBSITE_VI}
+          ids={TESTIMONIALS_IDS.website[locale]}
           labels={TESTIMONIALS_LABELS[locale]}
         />
       )}

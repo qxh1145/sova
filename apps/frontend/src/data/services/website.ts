@@ -249,12 +249,12 @@ export const websiteServices: Service[] = [
       imageId: 'asset-29a02b2e8f',
       bgImageId: 'asset-3a2f0e6140',
       breadcrumb: [
-        { label: 'Home', href: '/en/' },
+        { label: 'Home', href: '/en/home/' },
         { label: 'Services' },
         { label: 'Website Development' },
       ],
       videoId: 'asset-a4fba457f5',
-      cta: { label: 'Connect now →', href: '/lien-he/' },
+      cta: { label: 'Connect now →', href: '/en/contact-us/' },
     },
     benefits: [
       {

@@ -14,8 +14,7 @@ import {
 } from './ServicePackageCards';
 import {
   Testimonials,
-  TESTIMONIALS_IDS_SEO_EN,
-  TESTIMONIALS_IDS_SEO_VI,
+  TESTIMONIALS_IDS,
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
@@ -120,7 +119,7 @@ export function SeoServiceView({ page, assets, locale }: SeoServiceViewProps) {
           avatars={assets.testimonialAvatars}
           copy={copy.testimonials}
           art={assets.testimonialArt}
-          ids={isEn ? TESTIMONIALS_IDS_SEO_EN : TESTIMONIALS_IDS_SEO_VI}
+          ids={TESTIMONIALS_IDS.seo[locale]}
           labels={TESTIMONIALS_LABELS[locale]}
         />
       )}

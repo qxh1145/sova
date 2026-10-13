@@ -137,7 +137,7 @@ describe('FAQTopicsView component', () => {
 
     const homeLink = banner?.querySelector('p a');
     expect(homeLink?.text.trim()).toBe('Home');
-    expect(homeLink?.getAttribute('href')).toBe('/en/');
+    expect(homeLink?.getAttribute('href')).toBe('/en/home/');
 
     const section = root.querySelector(`#${preset.sectionId}`);
     expect(section).not.toBeNull();

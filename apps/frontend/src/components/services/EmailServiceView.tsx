@@ -14,8 +14,7 @@ import {
 } from '@/components/pricing/PricingTable';
 import {
   Testimonials,
-  TESTIMONIALS_IDS_EMAIL_EN,
-  TESTIMONIALS_IDS_EMAIL_VI,
+  TESTIMONIALS_IDS,
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
@@ -87,7 +86,7 @@ export function EmailServiceView({ page, assets, locale }: EmailServiceViewProps
           avatars={assets.testimonialAvatars}
           copy={copy.testimonials}
           art={assets.testimonialArt}
-          ids={isEn ? TESTIMONIALS_IDS_EMAIL_EN : TESTIMONIALS_IDS_EMAIL_VI}
+          ids={TESTIMONIALS_IDS.email[locale]}
           labels={TESTIMONIALS_LABELS[locale]}
         />
       )}

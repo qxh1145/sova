@@ -43,7 +43,7 @@ test.describe('FAQ Pages (Story FAQ Topics Page)', () => {
       await expect(breadcrumb).toBeVisible();
       const homeLink = breadcrumb.locator('a');
       await expect(homeLink).toHaveText(record.breadcrumb.homeLabel);
-      await expect(homeLink).toHaveAttribute('href', locale === 'en' ? '/en/' : '/');
+      await expect(homeLink).toHaveAttribute('href', locale === 'en' ? '/en/home/' : '/');
       const currentSpan = breadcrumb.locator('span');
       await expect(currentSpan).toHaveText(record.breadcrumb.current);
 

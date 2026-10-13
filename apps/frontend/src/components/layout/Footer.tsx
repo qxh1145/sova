@@ -40,7 +40,11 @@ export function Footer({
 
   return (
     <footer id="footer" className="footer-wrapper">
-      <FooterCTA headingLines={shellContent.footerCta.headingLines} targetHref={targetHref} />
+      <FooterCTA
+        headingLines={shellContent.footerCta.headingLines}
+        targetHref={targetHref}
+        locale={locale}
+      />
 
       <section className="section ss-footer" id="section_3912539">
         <div className="section-bg fill">

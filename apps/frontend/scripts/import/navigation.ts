@@ -34,7 +34,10 @@ const child = (el: HTMLElement, test: (c: HTMLElement) => boolean) =>
 function destinationOf(a: HTMLElement, ctx: NavCtx): NavigationItem['destination'] | null {
   const raw = a.getAttribute('href') ?? '';
   const line = ctx.lineOf(a.range[0]);
-  const href = processHref(raw, ctx.file, line, ctx.stats);
+  // Navigation links use routeIds directly; preserve source route for footer privacy exception (6.8 decision).
+  const href = raw.includes('chinh-sach-bao-mat')
+    ? '/chinh-sach-bao-mat/'
+    : processHref(raw, ctx.file, line, ctx.stats);
   if (href === null || (href.startsWith('/') && EXCLUDED.test(href))) {
     ctx.dropped.push(`${ctx.file}:${line} ${raw}`);
     return null;

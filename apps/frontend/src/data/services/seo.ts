@@ -246,7 +246,7 @@ export const seoServices: Service[] = [
       imageId: 'asset-617f9283d2',
       bgImageId: 'asset-358b4a1d92',
       breadcrumb: [
-        { label: 'Home', href: '/en/' },
+        { label: 'Home', href: '/en/home/' },
         { label: 'Services' },
         { label: 'Website keyword SEO' },
       ],

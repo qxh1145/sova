@@ -18,8 +18,7 @@ import {
 } from './ServiceDetailCards';
 import {
   Testimonials,
-  TESTIMONIALS_IDS_MOBILE_EN,
-  TESTIMONIALS_IDS_MOBILE_VI,
+  TESTIMONIALS_IDS,
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { FAQList } from '@/components/faq/FAQList';
@@ -95,7 +94,7 @@ export function MobileServiceView({ page, assets, locale }: MobileServiceViewPro
           avatars={assets.testimonialAvatars}
           copy={copy.testimonials}
           art={assets.testimonialArt}
-          ids={isEn ? TESTIMONIALS_IDS_MOBILE_EN : TESTIMONIALS_IDS_MOBILE_VI}
+          ids={TESTIMONIALS_IDS.mobile[locale]}
           labels={TESTIMONIALS_LABELS[locale]}
         />
       )}

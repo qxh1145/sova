@@ -10,8 +10,7 @@ import {
 } from './StorageOfferings';
 import {
   Testimonials,
-  TESTIMONIALS_IDS_STORAGE_EN,
-  TESTIMONIALS_IDS_STORAGE_VI,
+  TESTIMONIALS_IDS,
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
@@ -125,7 +124,7 @@ export function StorageServiceView({
           avatars={assets.testimonialAvatars}
           copy={copy.testimonials}
           art={assets.testimonialArt}
-          ids={isEn ? TESTIMONIALS_IDS_STORAGE_EN : TESTIMONIALS_IDS_STORAGE_VI}
+          ids={TESTIMONIALS_IDS.storage[locale]}
           labels={TESTIMONIALS_LABELS[locale]}
         />
       )}

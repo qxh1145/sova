@@ -17,8 +17,7 @@ import {
 } from '@/components/pricing/PricingTable';
 import {
   Testimonials,
-  TESTIMONIALS_IDS_HOSTING_EN,
-  TESTIMONIALS_IDS_HOSTING_VI,
+  TESTIMONIALS_IDS,
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
@@ -92,7 +91,7 @@ export function HostingServiceView({ page, assets, locale }: HostingServiceViewP
           avatars={assets.testimonialAvatars}
           copy={copy.testimonials}
           art={assets.testimonialArt}
-          ids={isEn ? TESTIMONIALS_IDS_HOSTING_EN : TESTIMONIALS_IDS_HOSTING_VI}
+          ids={TESTIMONIALS_IDS.hosting[locale]}
           labels={TESTIMONIALS_LABELS[locale]}
         />
       )}
