@@ -29,7 +29,7 @@ export function HorizontalProjects({ children }: HorizontalProjectsProps) {
       const section = wrapper.closest<HTMLElement>('.horizontal-scroll-section');
       if (!section) return;
 
-      const getDistance = () => wrapper.scrollWidth - window.innerWidth;
+      const getDistance = () => Math.max(0, wrapper.scrollWidth - window.innerWidth);
 
       gsap.to(wrapper, {
         x: () => -getDistance(),
@@ -68,12 +68,20 @@ export function HorizontalProjects({ children }: HorizontalProjectsProps) {
         }
       });
 
-      if (typeof document !== 'undefined' && 'fonts' in document) {
-        document.fonts.ready.then(() => {
+      // Fonts, card images and the body observer share one refresh per frame.
+      let refreshRafId: number | null = null;
+      const scheduleRefresh = () => {
+        if (!isMounted || refreshRafId !== null) return;
+        refreshRafId = requestAnimationFrame(() => {
+          refreshRafId = null;
           if (isMounted) {
             ScrollTrigger.refresh();
           }
         });
+      };
+
+      if (typeof document !== 'undefined' && 'fonts' in document) {
+        document.fonts.ready.then(scheduleRefresh);
       }
 
       const cardContents = wrapper.querySelectorAll<HTMLElement>('.item-content');
@@ -85,9 +93,7 @@ export function HorizontalProjects({ children }: HorizontalProjectsProps) {
           const onDone = () => {
             img.onload = null;
             img.onerror = null;
-            if (isMounted) {
-              ScrollTrigger.refresh();
-            }
+            scheduleRefresh();
           };
           img.onload = onDone;
           img.onerror = onDone;
@@ -100,8 +106,20 @@ export function HorizontalProjects({ children }: HorizontalProjectsProps) {
         }
       });
 
+      let observer: ResizeObserver | null = null;
+      if (typeof ResizeObserver !== 'undefined' && typeof document !== 'undefined' && document.body) {
+        observer = new ResizeObserver(scheduleRefresh);
+        observer.observe(document.body);
+      }
+
       return () => {
         isMounted = false;
+        if (observer) {
+          observer.disconnect();
+        }
+        if (refreshRafId !== null) {
+          cancelAnimationFrame(refreshRafId);
+        }
         cleanups.forEach((fn) => fn());
       };
     },

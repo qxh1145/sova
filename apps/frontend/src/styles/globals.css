@@ -92,10 +92,21 @@ html.has-custom-cursor .cursor-ring {
   }
 }
 
-/* Not in source: stop the home marquee for users who ask for reduced motion. */
+/* Not in source: stop the home marquee and the contact widget pulse for users who ask for reduced motion. */
 @media (prefers-reduced-motion: reduce) {
-  .cs-moving_text {
+  .cs-moving_text,
+  .arcu-widget .arcu-message-button .pulsation {
     animation-play-state: paused;
+  }
+  /* Thank-you check mark: skip the looping draw and show it fully drawn. */
+  .success-animate svg,
+  .success-animate .circle,
+  .success-animate .check {
+    animation: none;
+  }
+  .success-animate .circle,
+  .success-animate .check {
+    stroke-dashoffset: 0;
   }
 }
 

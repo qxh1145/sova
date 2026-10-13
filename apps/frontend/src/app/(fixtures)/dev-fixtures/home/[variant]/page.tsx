@@ -7,10 +7,11 @@ import { getHomeAssets, getHomePage } from '@/lib/queries/pages';
 import { createScenarioRepository } from '@/dev/scenarios';
 import type { Locale } from '@/types/content';
 import { UnmountToggle } from './UnmountToggle';
+import '@/styles/legacy/sections/route-root.css';
 
 export const dynamic = 'force-dynamic';
 
-const VALID_VARIANTS = new Set(['empty', 'error', 'missing-media', 'unmount']);
+const VALID_VARIANTS = new Set(['empty', 'error', 'missing-media', 'unmount', 'one-card']);
 
 export default async function DevFixtureHomePage({
   params,
@@ -45,6 +46,24 @@ export default async function DevFixtureHomePage({
           categories={projectCategories}
         />
       </UnmountToggle>
+    );
+  }
+
+  if (variant === 'one-card') {
+    const home = await getHomePage('vi');
+    if (!home) notFound();
+    const { projectAssets, projectCategories } = await getHomeAssets(home);
+    // Tall filler below the section so the pin range can actually be scrolled through.
+    return (
+      <>
+        <FeaturedProjects
+          projects={home.projects.slice(0, 1)}
+          copy={home.sectionCopy.projects}
+          assets={projectAssets}
+          categories={projectCategories}
+        />
+        <div style={{ height: '200vh' }} />
+      </>
     );
   }
 
