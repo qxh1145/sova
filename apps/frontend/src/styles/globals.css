@@ -334,3 +334,8 @@ html.has-custom-cursor .cursor-ring {
   opacity: 1;
   visibility: visible;
 }
+
+/* Source opens nested columns (Hosting/VPS) on hover only; mirror it for keyboard focus. */
+#masthead .nav-dropdown .menu-item-has-children:focus-within .nav-dropdown-simple {
+  display: block !important;
+}
