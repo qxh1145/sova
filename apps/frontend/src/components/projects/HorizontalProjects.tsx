@@ -8,7 +8,9 @@ import { useGSAP } from '@gsap/react';
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
   if (process.env.NODE_ENV !== 'production' || process.env.NEXT_PUBLIC_E2E === '1') {
-    (window as unknown as { ScrollTrigger?: typeof ScrollTrigger }).ScrollTrigger = ScrollTrigger;
+    const win = window as unknown as { ScrollTrigger?: typeof ScrollTrigger; gsap?: typeof gsap };
+    win.ScrollTrigger = ScrollTrigger;
+    win.gsap = gsap;
   }
 }
 
