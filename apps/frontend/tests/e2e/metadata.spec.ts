@@ -105,26 +105,40 @@ test.describe('Metadata & Indexing Acceptance', () => {
     expect(title.endsWith(BRAND_TITLE_SUFFIX)).toBe(true);
   });
 
-  test('Utility error boundary catches error and renders .page-error-main with retry', async ({
-    page,
-  }) => {
-    await page.goto('/dev-fixtures/utility-error/');
+  test.describe('Utility error fixture', () => {
+    test.use({
+      allowConsole: [
+        /Failed to load resource: the server responded with a status of 500|react\.dev\/errors\/441/,
+      ],
+    });
 
-    const errorMain = page.locator('.page-error-main');
-    await expect(errorMain).toBeVisible();
-    await expect(errorMain.locator('h2')).toHaveText('Đã có lỗi xảy ra');
-    await expect(errorMain.locator('button')).toHaveText('Thử lại');
+    test('Utility error boundary catches error and renders .page-error-main with retry', async ({
+      page,
+    }) => {
+      await page.goto('/dev-fixtures/utility-error/');
+
+      const errorMain = page.locator('.page-error-main');
+      await expect(errorMain).toBeVisible();
+      await expect(errorMain.locator('h2')).toHaveText('Đã có lỗi xảy ra');
+      await expect(errorMain.locator('button')).toHaveText('Thử lại');
+    });
   });
 
-  test('Unknown project route /featured_item/khong-ton-tai-xyz/ returns 404', async ({ page }) => {
-    const response = await page.goto('/featured_item/khong-ton-tai-xyz/');
-    expect(response?.status()).toBe(404);
-  });
+  test.describe('Unknown routes 404', () => {
+    test.use({
+      allowConsole: [/Failed to load resource: the server responded with a status of 404/],
+    });
 
-  test('Unknown project listing /featured_item_category/khong-ton-tai/ returns 404', async ({
-    page,
-  }) => {
-    const response = await page.goto('/featured_item_category/khong-ton-tai/');
-    expect(response?.status()).toBe(404);
+    test('Unknown project route /featured_item/khong-ton-tai-xyz/ returns 404', async ({ page }) => {
+      const response = await page.goto('/featured_item/khong-ton-tai-xyz/');
+      expect(response?.status()).toBe(404);
+    });
+
+    test('Unknown project listing /featured_item_category/khong-ton-tai/ returns 404', async ({
+      page,
+    }) => {
+      const response = await page.goto('/featured_item_category/khong-ton-tai/');
+      expect(response?.status()).toBe(404);
+    });
   });
 });

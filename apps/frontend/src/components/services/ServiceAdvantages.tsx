@@ -603,18 +603,9 @@ export function ServiceAdvantages({
                             style={{ display: 'block', height: 'auto' }}
                           />
                           <div id={cardIds?.bodyText} className="text">
-                            {/* Source wraps the copy as <p 16px><span 100%>; a block RichText inside a <p> is invalid HTML and breaks hydration, so the wrapper goes inside the HTML. */}
-                            <RichText
-                              content={{
-                                ...benefit.body,
-                                html: benefit.body.html
-                                  .replace(
-                                    /^<p>/,
-                                    '<p style="font-size: 16px;"><span style="font-size: 100%;">',
-                                  )
-                                  .replace(/<\/p>$/, '</span></p>'),
-                              }}
-                            />
+                            <div style={{ fontSize: '16px' }}>
+                              <RichText content={benefit.body} />
+                            </div>
                           </div>
                         </div>
                       </div>

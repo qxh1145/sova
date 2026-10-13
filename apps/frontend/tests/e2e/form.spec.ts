@@ -149,8 +149,14 @@ test.describe('FormField and deterministic SubmitAdapter fixture contract', () =
     expect(cookies).toEqual([]);
   });
 
-  test('Unknown variant returns 404', async ({ page }) => {
-    const response = await page.goto('/dev-fixtures/form/unknown-variant');
-    expect(response?.status()).toBe(404);
+  test.describe('Unknown variant 404', () => {
+    test.use({
+      allowConsole: [/Failed to load resource: the server responded with a status of 404/],
+    });
+
+    test('Unknown variant returns 404', async ({ page }) => {
+      const response = await page.goto('/dev-fixtures/form/unknown-variant');
+      expect(response?.status()).toBe(404);
+    });
   });
 });

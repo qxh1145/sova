@@ -91,9 +91,15 @@ test.describe('Blog listing and post detail', () => {
     await expect(singleContent).toBeVisible();
   });
 
-  test('Unknown slug /khong-ton-tai/ returns 404', async ({ page }) => {
-    const res = await page.goto('/khong-ton-tai/');
-    expect(res?.status()).toBe(404);
+  test.describe('Unknown slug 404', () => {
+    test.use({
+      allowConsole: [/Failed to load resource: the server responded with a status of 404/],
+    });
+
+    test('Unknown slug /khong-ton-tai/ returns 404', async ({ page }) => {
+      const res = await page.goto('/khong-ton-tai/');
+      expect(res?.status()).toBe(404);
+    });
   });
 
   test('All 27 post paths render title, hero image, meta, rich media, and related posts', async ({ page }) => {
@@ -359,22 +365,28 @@ test.describe('Blog listing and post detail', () => {
     await expect(page.locator('.pagination .next.page-numbers')).toHaveCount(0);
   });
 
-  test('Unsourced pages and invalid category/page routes return 404', async ({ page }) => {
-    const notFoundUrls = [
-      '/tin-tuc/page/2/',
-      '/goc-nhin/page/1/',
-      '/goc-nhin/page/6/',
-      '/gioi-thieu/page/2/',
-      '/thu-thuat/page/1/',
-      '/thu-thuat/page/3/',
-      '/thu-thuat/page/abc/',
-      '/thu-thuat/page/02/',
-      '/goc-nhin/page/03/',
-    ];
-    for (const url of notFoundUrls) {
-      const res = await page.goto(url);
-      expect(res?.status(), `Status 404 for ${url}`).toBe(404);
-    }
+  test.describe('Invalid routes 404', () => {
+    test.use({
+      allowConsole: [/Failed to load resource: the server responded with a status of 404/],
+    });
+
+    test('Unsourced pages and invalid category/page routes return 404', async ({ page }) => {
+      const notFoundUrls = [
+        '/tin-tuc/page/2/',
+        '/goc-nhin/page/1/',
+        '/goc-nhin/page/6/',
+        '/gioi-thieu/page/2/',
+        '/thu-thuat/page/1/',
+        '/thu-thuat/page/3/',
+        '/thu-thuat/page/abc/',
+        '/thu-thuat/page/02/',
+        '/goc-nhin/page/03/',
+      ];
+      for (const url of notFoundUrls) {
+        const res = await page.goto(url);
+        expect(res?.status(), `Status 404 for ${url}`).toBe(404);
+      }
+    });
   });
 
   test('Sidebar renders search form and categories with exact counts and links', async ({
@@ -514,19 +526,32 @@ test.describe('Blog listing and post detail', () => {
     expect(requestedUrls.some((u) => u.includes('fixture-video.mp4'))).toBe(false);
   });
 
-  test('Dev-fixture error renders the page error state in VI and EN', async ({ page }) => {
-    test.skip(STAGING, 'Dev fixtures are not deployed to staging');
+  test.describe('Dev-fixture error', () => {
+    test.use({
+      allowConsole: [
+        /Failed to load resource: the server responded with a status of 500|react\.dev\/errors\/441/,
+      ],
+    });
 
-    await page.goto('/dev-fixtures/blog/error');
-    await expect(page.locator('.page-error-main')).toBeVisible();
+    test('Dev-fixture error renders the page error state in VI and EN', async ({ page }) => {
+      test.skip(STAGING, 'Dev fixtures are not deployed to staging');
 
-    await page.goto('/dev-fixtures/blog/error?locale=en');
-    await expect(page.locator('.page-error-main')).toBeVisible();
+      await page.goto('/dev-fixtures/blog/error');
+      await expect(page.locator('.page-error-main')).toBeVisible();
+
+      await page.goto('/dev-fixtures/blog/error?locale=en');
+      await expect(page.locator('.page-error-main')).toBeVisible();
+    });
   });
 
-  test('Search results matrix: title-only, excerpt-only, body-only, pagination, no-results, blank, 404s, sidebar, and form submit', async ({
-    page,
-  }) => {
+  test.describe('Search results matrix', () => {
+    test.use({
+      allowConsole: [/Failed to load resource: the server responded with a status of 404/],
+    });
+
+    test('Search results matrix: title-only, excerpt-only, body-only, pagination, no-results, blank, 404s, sidebar, and form submit', async ({
+      page,
+    }) => {
     // 1. Title-only word: "cache" -> matches only /huong-dan-xoa-cache-trinh-duyet-va-may-tinh/
     await page.goto('/?s=cache');
     await expect(page.locator('#section_1769897078 h1')).toContainText('Kết quả tìm kiếm: cache');
@@ -638,6 +663,7 @@ test.describe('Blog listing and post detail', () => {
     expect(resDirectPage?.status()).toBe(200);
     await expect(page.locator('#post-list article')).toHaveCount(1);
   });
+});
 
   test('Dev-fixture search variant excludes draft post from results', async ({ page }) => {
     test.skip(STAGING, 'Dev fixtures are not deployed to staging');

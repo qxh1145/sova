@@ -151,6 +151,15 @@ test('production ignores CONTENT_SCENARIO', async () => {
   }
 });
 
+test('production honors CONTENT_SCENARIO when NEXT_PUBLIC_E2E is 1', async () => {
+  vi.stubEnv('NODE_ENV', 'production');
+  vi.stubEnv('NEXT_PUBLIC_E2E', '1');
+  vi.stubEnv('CONTENT_SCENARIO', 'extended');
+  const repo = getRepository();
+  const projects = await repo.listProjects({ page: 1, pageSize: 100 });
+  expect(projects.items.some((p) => p.slug === 'du-an-mock-mo-rong')).toBe(true);
+});
+
 test('src/dev is imported only by lib/repositories/index.ts', () => {
   const src = join(__dirname, '..');
   const importers = readdirSync(src, { recursive: true, encoding: 'utf8' })

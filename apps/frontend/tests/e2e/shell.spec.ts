@@ -204,8 +204,14 @@ test.describe('Site shell and primitives', () => {
     await expect(page.locator('#logo .header-wordmark')).toHaveText('Fixture');
   });
 
-  test('Unknown fixture variant returns 404', async ({ page }) => {
-    const res = await page.goto('/dev-fixtures/shell/non-existent-variant/');
-    expect(res?.status()).toBe(404);
+  test.describe('Unknown fixture variant 404', () => {
+    test.use({
+      allowConsole: [/Failed to load resource: the server responded with a status of 404/],
+    });
+
+    test('Unknown fixture variant returns 404', async ({ page }) => {
+      const res = await page.goto('/dev-fixtures/shell/non-existent-variant/');
+      expect(res?.status()).toBe(404);
+    });
   });
 });

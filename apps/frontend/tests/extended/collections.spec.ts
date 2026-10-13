@@ -1,6 +1,7 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '../e2e/fixtures';
 import { defaultContentData } from '../../src/lib/repositories/mock';
 import {
+  extendedMockPosts,
   mockPost,
   mockPostPath,
   mockPostSearchToken,
@@ -37,8 +38,7 @@ test.describe('Extended scenario data-driven placement', () => {
   });
 
   test('Project listing: /du-an/, filter Mobile App has 2 cards, one is mock', async ({ page }) => {
-    // Dev mode hydrates late; clicking the anchor before hydration reloads the page unfiltered.
-    await page.goto('/du-an/', { waitUntil: 'networkidle' });
+    await page.goto('/du-an/');
     const mobileAppFilter = page.locator('.filter-nav a[data-term="mobile-app"]');
     await mobileAppFilter.click();
     await expect(page.locator('.filter-nav li.active a')).toHaveAttribute(
@@ -56,7 +56,7 @@ test.describe('Extended scenario data-driven placement', () => {
   test('Project archive: /featured_item/ has 63 cards, mock last', async ({ page }) => {
     await page.goto('/featured_item/');
     const cards = page.locator('#portfolio-1541637127 .col');
-    await expect(cards).toHaveCount(63);
+    await expect(cards).toHaveCount(defaultContentData.projects.length + 1);
 
     const lastCardTitle = await cards.last().locator('.portfolio-box-title').innerText();
     expect(lastCardTitle.toLowerCase()).toBe(mockProject.title.toLowerCase());
@@ -98,13 +98,28 @@ test.describe('Extended scenario data-driven placement', () => {
     );
   });
 
-  test('Blog listing: /goc-nhin/page/5/ has 4 cards, last is mock', async ({ page }) => {
-    await page.goto('/goc-nhin/page/5/');
-    const articles = page.locator('#post-list article');
-    await expect(articles).toHaveCount(4);
+  test('Blog listing: /goc-nhin/page/5/ fills to 6 cards, and /goc-nhin/page/6/ renders overflow card', async ({
+    page,
+  }) => {
+    const totalViPosts = defaultContentData.posts.filter((p) => p.locale === 'vi').length + extendedMockPosts.length;
+    const postsOnPage5 = Math.min(6, totalViPosts - 24);
+    const postsOnPage6 = totalViPosts - 30;
 
-    const lastArticleTitle = await articles.last().locator('.title-post-archive').innerText();
-    expect(lastArticleTitle).toBe(mockPost.title);
+    // Page 5
+    await page.goto('/goc-nhin/page/5/');
+    const page5Articles = page.locator('#post-list article');
+    await expect(page5Articles).toHaveCount(postsOnPage5);
+
+    // Link to page 6 exists on page 5
+    const nextLink = page.locator('.pagination a[href*="/goc-nhin/page/6/"]');
+    await expect(nextLink.first()).toBeVisible();
+
+    // Page 6
+    await page.goto('/goc-nhin/page/6/');
+    const page6Articles = page.locator('#post-list article');
+    await expect(page6Articles).toHaveCount(postsOnPage6);
+    const page6Title = await page6Articles.last().locator('.title-post-archive').innerText();
+    expect(page6Title).toContain('Mock Mở Rộng');
   });
 
   test('Blog category: /creative-branding/ has 2 cards incl. mock; sidebar count 2', async ({

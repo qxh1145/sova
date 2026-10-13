@@ -1,27 +1,6 @@
 import { expect, test } from './fixtures';
 
 test.describe('Tabs and Pagination primitives', () => {
-  test.beforeEach(async ({ page }) => {
-    const consoleErrors: string[] = [];
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') {
-        const text = msg.text();
-        if (!text.startsWith('Failed to load resource: the server responded with a status of 404')) {
-          consoleErrors.push(text);
-        }
-      }
-    });
-    page.on('pageerror', (err) => {
-      consoleErrors.push(err.message);
-    });
-    (page as unknown as { __consoleErrors: string[] }).__consoleErrors = consoleErrors;
-  });
-
-  test.afterEach(async ({ page }) => {
-    const errors = (page as unknown as { __consoleErrors?: string[] }).__consoleErrors ?? [];
-    expect(errors, `Unexpected console/page errors:\n${errors.join('\n')}`).toEqual([]);
-  });
-
   const tabLocales = [
     { name: 'VI', url: '/dev-fixtures/primitives/tabs' },
     { name: 'EN', url: '/dev-fixtures/primitives/tabs?locale=en' },

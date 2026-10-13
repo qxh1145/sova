@@ -195,7 +195,66 @@ function isMapFrameRequest(request: import('@playwright/test').Request): boolean
   return false;
 }
 
-export const test = base.extend<{ networkGuard: string[] }>({
+export const GLOBAL_CONSOLE_ALLOW: RegExp[] = [
+  // Network guard deliberate abort on un-allowlisted outbound requests
+  /net::ERR_BLOCKED_BY_CLIENT/,
+  ...(STAGING
+    ? [
+        // Vercel toolbar injection on staging
+        /vercel\.live/,
+        /_vercel\/insights/,
+      ]
+    : []),
+];
+
+export interface FixtureOptions {
+  allowConsole: RegExp[];
+}
+
+export const test = base.extend<
+  FixtureOptions & {
+    networkGuard: string[];
+    consoleGuard: void;
+  }
+>({
+  allowConsole: [[], { option: true }],
+
+  consoleGuard: [
+    async ({ page, allowConsole }, use) => {
+      const errors: string[] = [];
+      page.on('console', (m) => {
+        if (m.type() === 'error') {
+          // Ignore errors originating while browsing the external eras-clone source mirror
+          if (page.url().startsWith('https://erasvietnam.vn')) return;
+          const loc = m.location();
+          if (loc?.url) {
+            try {
+              const url = new URL(loc.url);
+              if (url.hostname === 'erasvietnam.vn') return;
+              if (url.pathname.startsWith('/fixture')) return;
+              if (KNOWN_ABSENT_CSS_ASSETS.has(url.pathname)) return;
+            } catch {}
+          }
+          errors.push(m.text());
+        }
+      });
+      page.on('pageerror', (e) => {
+        if (page.url().startsWith('https://erasvietnam.vn')) return;
+        errors.push(e.message);
+      });
+      await use();
+      const allowList = Array.isArray(allowConsole)
+        ? allowConsole
+        : allowConsole
+          ? [allowConsole]
+          : [];
+      const allow = [...GLOBAL_CONSOLE_ALLOW, ...allowList];
+      const unexpected = errors.filter((t) => !allow.some((r) => r.test(t)));
+      expect(unexpected, `Unexpected console/page errors:\n${unexpected.join('\n')}`).toEqual([]);
+    },
+    { auto: true },
+  ],
+
   networkGuard: [
     async ({ context }, use) => {
       const blocked: string[] = [];

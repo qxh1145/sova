@@ -64,20 +64,7 @@ const countUpTexts = (page: Page) =>
 
 test.describe('Home query, hero and stats', () => {
   test.beforeEach(async ({ page }) => {
-    const consoleErrors: string[] = [];
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') {
-        const text = msg.text();
-        if (
-          !text.startsWith('Failed to load resource: the server responded with a status of 404')
-        ) {
-          consoleErrors.push(text);
-        }
-      }
-    });
-    page.on('pageerror', (err) => {
-      consoleErrors.push(err.message);
-    });
+    const missingResponses: string[] = [];
     page.on('response', (res) => {
       if (res.status() !== 404) return;
       const url = new URL(res.url());
@@ -88,14 +75,14 @@ test.describe('Home query, hero and stats', () => {
         url.searchParams.has('_rsc')
       )
         return;
-      consoleErrors.push(`404 ${res.url()}`);
+      missingResponses.push(`404 ${res.url()}`);
     });
-    (page as unknown as { __consoleErrors: string[] }).__consoleErrors = consoleErrors;
+    (page as unknown as { __missingResponses: string[] }).__missingResponses = missingResponses;
   });
 
   test.afterEach(async ({ page }) => {
-    const errors = (page as unknown as { __consoleErrors?: string[] }).__consoleErrors ?? [];
-    expect(errors, `Unexpected console/page errors:\n${errors.join('\n')}`).toEqual([]);
+    const errors = (page as unknown as { __missingResponses?: string[] }).__missingResponses ?? [];
+    expect(errors, `Unexpected 404 responses:\n${errors.join('\n')}`).toEqual([]);
   });
 
   test('Video banner attributes, single H1, and no duplicate IDs on VI and EN home routes', async ({
@@ -257,35 +244,33 @@ test.describe('Home query, hero and stats', () => {
     }
   });
 
-  test('Given the error scenario, then the localized error renders with no error message or stack', async ({
-    page,
-  }) => {
-    test.skip(STAGING, 'Dev fixtures are not deployed to staging');
+  test.describe('error fixture', () => {
+    test.use({
+      allowConsole: [/status of 500|react\.dev\/errors\/441/],
+    });
 
-    for (const [url, expectedTitle] of [
-      ['/dev-fixtures/home/error', 'Đã có lỗi xảy ra'],
-      ['/dev-fixtures/home/error?locale=en', 'An error occurred'],
-    ]) {
-      await page.goto(url);
-      const error = page.locator('.page-error-main');
-      await expect(error.locator('h2')).toHaveText(expectedTitle);
-      const text = await error.innerText();
-      expect(text).not.toContain('Transport error');
-      expect(text).not.toContain('Error:');
-      expect(text).not.toContain('stack');
+    test('Given the error scenario, then the localized error renders with no error message or stack', async ({
+      page,
+    }) => {
+      test.skip(STAGING, 'Dev fixtures are not deployed to staging');
 
-      // Retry re-runs the server render; the error repository still rejects.
-      await error.getByRole('button').click();
-      await expect(page.locator('.page-error-main h2')).toHaveText(expectedTitle);
-    }
+      for (const [url, expectedTitle] of [
+        ['/dev-fixtures/home/error', 'Đã có lỗi xảy ra'],
+        ['/dev-fixtures/home/error?locale=en', 'An error occurred'],
+      ]) {
+        await page.goto(url);
+        const error = page.locator('.page-error-main');
+        await expect(error.locator('h2')).toHaveText(expectedTitle);
+        const text = await error.innerText();
+        expect(text).not.toContain('Transport error');
+        expect(text).not.toContain('Error:');
+        expect(text).not.toContain('stack');
 
-    // The thrown render is expected here: a 500 document/RSC response and React's redacted
-    // Server Components error (#441). Anything else still fails afterEach.
-    const errors = (page as unknown as { __consoleErrors: string[] }).__consoleErrors;
-    const unexpected = errors.filter(
-      (e) => !e.includes('status of 500') && !e.includes('react.dev/errors/441'),
-    );
-    errors.splice(0, errors.length, ...unexpected);
+        // Retry re-runs the server render; the error repository still rejects.
+        await error.getByRole('button').click();
+        await expect(page.locator('.page-error-main h2')).toHaveText(expectedTitle);
+      }
+    });
   });
 
   test('Six featured project cards render in placement order on VI, and none on EN', async ({

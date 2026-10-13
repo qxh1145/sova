@@ -29,19 +29,8 @@ import type { Service } from '@/types/content';
 
 const WIDTHS = [390, 549, 550, 768, 849, 850, 1280, 1440];
 
-function setupConsoleCollector(page: Page) {
-  const consoleErrors: string[] = [];
-  page.on('console', (msg) => {
-    if (msg.type() === 'error') {
-      const text = msg.text();
-      if (!text.startsWith('Failed to load resource: the server responded with a status of 404')) {
-        consoleErrors.push(text);
-      }
-    }
-  });
-  page.on('pageerror', (err) => {
-    consoleErrors.push(err.message);
-  });
+function setupResponse404Collector(page: Page) {
+  const missingResponses: string[] = [];
   // The console 404 line carries no URL, so 404s are checked here. Only RSC prefetches of nav
   // routes that later epics build are expected; a missing asset or page document still fails.
   // ponytail: blanket _rsc allowance; drop it once every nav route exists (epic-fidelity).
@@ -54,23 +43,23 @@ function setupConsoleCollector(page: Page) {
       url.searchParams.has('_rsc')
     )
       return;
-    consoleErrors.push(`404 ${res.url()}`);
+    missingResponses.push(`404 ${res.url()}`);
   });
-  (page as unknown as { __consoleErrors: string[] }).__consoleErrors = consoleErrors;
+  (page as unknown as { __missingResponses: string[] }).__missingResponses = missingResponses;
 }
 
-function verifyConsoleCollector(page: Page) {
-  const errors = (page as unknown as { __consoleErrors?: string[] }).__consoleErrors ?? [];
-  expect(errors, `Unexpected console/page errors:\n${errors.join('\n')}`).toEqual([]);
+function verifyResponse404Collector(page: Page) {
+  const errors = (page as unknown as { __missingResponses?: string[] }).__missingResponses ?? [];
+  expect(errors, `Unexpected 404 responses:\n${errors.join('\n')}`).toEqual([]);
 }
 
 test.describe('Acceptance: Site shell on real routes', () => {
   test.beforeEach(async ({ page }) => {
-    setupConsoleCollector(page);
+    setupResponse404Collector(page);
   });
 
   test.afterEach(async ({ page }) => {
-    verifyConsoleCollector(page);
+    verifyResponse404Collector(page);
   });
 
   test('Header sticky 90→70 motion at 1440px and stuck behavior at 390px on real routes', async ({
@@ -552,11 +541,11 @@ const HOME_LOCALES = [
 for (const { locale, route, sections, absent } of HOME_LOCALES) {
   test.describe(`Acceptance: Home sections (${locale})`, () => {
     test.beforeEach(async ({ page }) => {
-      setupConsoleCollector(page);
+      setupResponse404Collector(page);
     });
 
     test.afterEach(async ({ page }) => {
-      verifyConsoleCollector(page);
+      verifyResponse404Collector(page);
     });
 
     test(`${locale.toUpperCase()} home sections are visible with source headings in source order`, async ({
@@ -598,11 +587,11 @@ for (const { locale, route, sections, absent } of HOME_LOCALES) {
 
 test.describe('Acceptance: Collections', () => {
   test.beforeEach(async ({ page }) => {
-    setupConsoleCollector(page);
+    setupResponse404Collector(page);
   });
 
   test.afterEach(async ({ page }) => {
-    verifyConsoleCollector(page);
+    verifyResponse404Collector(page);
   });
 
   const COLLECTION_ROUTES = [
@@ -647,11 +636,11 @@ test.describe('Acceptance: Collections', () => {
 
 test.describe('Acceptance: Services and About', () => {
   test.beforeEach(async ({ page }) => {
-    setupConsoleCollector(page);
+    setupResponse404Collector(page);
   });
 
   test.afterEach(async ({ page }) => {
-    verifyConsoleCollector(page);
+    verifyResponse404Collector(page);
   });
 
   const allServices: Service[] = [
@@ -709,11 +698,11 @@ test.describe('Acceptance: Services and About', () => {
 
 test.describe('Acceptance: Utility', () => {
   test.beforeEach(async ({ page }) => {
-    setupConsoleCollector(page);
+    setupResponse404Collector(page);
   });
 
   test.afterEach(async ({ page }) => {
-    verifyConsoleCollector(page);
+    verifyResponse404Collector(page);
   });
 
   for (const pageRecord of legalPages) {

@@ -36,29 +36,6 @@ const COPIES = {
 };
 
 test.describe('ConsultForm and drawer demo flow contract', () => {
-  test.beforeEach(async ({ page }) => {
-    const consoleErrors: string[] = [];
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') {
-        const text = msg.text();
-        if (
-          !text.startsWith('Failed to load resource: the server responded with a status of 404')
-        ) {
-          consoleErrors.push(text);
-        }
-      }
-    });
-    page.on('pageerror', (err) => {
-      consoleErrors.push(err.message);
-    });
-    (page as unknown as { __consoleErrors: string[] }).__consoleErrors = consoleErrors;
-  });
-
-  test.afterEach(async ({ page }) => {
-    const errors = (page as unknown as { __consoleErrors?: string[] }).__consoleErrors ?? [];
-    expect(errors, `Unexpected console/page errors:\n${errors.join('\n')}`).toEqual([]);
-  });
-
   test('ConsultForm and FormResponse import nothing from src/data or src/dev', () => {
     const consultFormSource = readFileSync(
       path.resolve(__dirname, '../../src/components/forms/ConsultForm.tsx'),

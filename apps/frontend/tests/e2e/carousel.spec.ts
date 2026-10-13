@@ -313,12 +313,6 @@ test.describe('Carousel contract checks', () => {
   test('Navigation away: client-side unmount leaves no running carousel or console errors', async ({
     page,
   }) => {
-    const consoleErrors: string[] = [];
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') consoleErrors.push(msg.text());
-    });
-    page.on('pageerror', (err) => consoleErrors.push(err.message));
-
     await openPaused(page, '/dev-fixtures/carousel/testimonials');
     await page.clock.runFor(1000);
 
@@ -340,12 +334,13 @@ test.describe('Carousel contract checks', () => {
     await expect(slides.nth(0)).toHaveClass(/is-selected/);
     await page.clock.fastForward(6500);
     await expect(slides.nth(1)).toHaveClass(/is-selected/);
-
-    expect(consoleErrors).toEqual([]);
   });
 
-  test('Unknown variant returns 404', async ({ page }) => {
-    const response = await page.goto('/dev-fixtures/carousel/nope');
-    expect(response?.status()).toBe(404);
+  test.describe('unknown variant', () => {
+    test.use({ allowConsole: [/Failed to load resource: the server responded with a status of 404/] });
+    test('Unknown variant returns 404', async ({ page }) => {
+      const response = await page.goto('/dev-fixtures/carousel/nope');
+      expect(response?.status()).toBe(404);
+    });
   });
 });

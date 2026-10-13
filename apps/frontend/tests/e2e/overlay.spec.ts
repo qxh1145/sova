@@ -1,28 +1,6 @@
 import { expect, expectNoDuplicateIds, getBodyOverflow, test } from './fixtures';
 
 test.describe('Overlay primitive and shell coordinator contract checks', () => {
-  test.beforeEach(async ({ page }) => {
-    const consoleErrors: string[] = [];
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') {
-        const text = msg.text();
-        // Ignore only the expected resource 404 from the guard test
-        if (!text.startsWith('Failed to load resource: the server responded with a status of 404')) {
-          consoleErrors.push(text);
-        }
-      }
-    });
-    page.on('pageerror', (err) => {
-      consoleErrors.push(err.message);
-    });
-    (page as unknown as { __consoleErrors: string[] }).__consoleErrors = consoleErrors;
-  });
-
-  test.afterEach(async ({ page }) => {
-    const errors = (page as unknown as { __consoleErrors?: string[] }).__consoleErrors ?? [];
-    expect(errors, `Unexpected console/page errors:\n${errors.join('\n')}`).toEqual([]);
-  });
-
   test('Matrix 1: Keyboard open — focus trigger, Enter opens dialog, moves focus inside, locks body scroll', async ({
     page,
   }) => {
@@ -400,9 +378,12 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
     await expect(page.locator('body')).not.toHaveAttribute('data-scroll-locked');
   });
 
-  test('Matrix 11: Guard off / unknown variant — returns 404', async ({ page }) => {
-    const response = await page.goto('/dev-fixtures/overlay/unknown-variant');
-    expect(response?.status()).toBe(404);
+  test.describe('unknown variant', () => {
+    test.use({ allowConsole: [/Failed to load resource: the server responded with a status of 404/] });
+    test('Matrix 11: Guard off / unknown variant — returns 404', async ({ page }) => {
+      const response = await page.goto('/dev-fixtures/overlay/unknown-variant');
+      expect(response?.status()).toBe(404);
+    });
   });
 
   test('Probe C4: Tall lightbox content scrolls with mouse wheel', async ({
