@@ -13,6 +13,7 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 import { LogoLink } from './LogoLink';
 import { HeaderMotion } from './HeaderMotion';
 import { MobileMenuTrigger } from './MobileMenu';
+import { NavDropdown } from './NavDropdown';
 
 export interface HeaderProps {
   locale: Locale;
@@ -61,22 +62,11 @@ function DesktopNavItem({ item, routes }: { item: NavigationItem; routes: RouteE
 
   if (item.children && item.children.length > 0) {
     return (
-      <li className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-design-default has-dropdown">
-        {href ? (
-          <Link href={href} className="nav-top-link" aria-expanded="false" aria-haspopup="menu">
-            <span>{item.label}</span>
-            <i className="icon-angle-down" aria-hidden="true" />
-          </Link>
-        ) : (
-          <a className="nav-top-link" aria-expanded="false" aria-haspopup="menu">
-            <span>{item.label}</span>
-            <i className="icon-angle-down" aria-hidden="true" />
-          </a>
-        )}
+      <NavDropdown label={item.label} href={href ?? undefined}>
         <ul className="sub-menu nav-dropdown nav-dropdown-simple dark">
           {item.children.map((child) => renderSubItem(child, routes))}
         </ul>
-      </li>
+      </NavDropdown>
     );
   }
 

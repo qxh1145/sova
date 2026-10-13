@@ -21,6 +21,7 @@ Nội dung sửa qua admin không làm thay đổi server/client boundary. Query
 | Island | Consumers | Vì sao / bằng chứng nguồn | Contract và kiểm chứng |
 | --- | --- | --- | --- |
 | HeaderMotion | shell | sticky shrink khi scroll: 90 → 70px | Observer/state ở header nhỏ; unmount cleanup; mobile 70px |
+| NavDropdown | desktop shell | submenu nguồn dùng `li.current-dropdown`; parent không có href | `ul.sub-menu` giữ markup server, `li` và parent render trong island; hover/focus/Enter/Space mở, Escape đóng và trả focus |
 | MobileMenu | shell | offcanvas + nested `.toggle-submenu` (`index:3598`) | open/close, Escape, overlay, focus return, scroll lock; submenu không nuốt link |
 | ConsultPopup/Dialog | shell | popup CF7 + `.eras-popup-close`, MagnificPopup (`index:4076`) | Trigger/close/focus; chỉ wrapper client, headings/layout server |
 | FloatingContactActions | shell | ar-contactus init, menu/prompt/cookies (`index:3744`) | Hotline/Messenger/Zalo/mail, open/close; không chỉ giữ phone và Zalo |

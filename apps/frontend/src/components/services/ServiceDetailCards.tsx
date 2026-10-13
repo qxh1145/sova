@@ -438,11 +438,15 @@ export const SERVICE_CAROUSEL_LABELS: Record<Locale, CarouselLabels> = {
     prev: 'Trước',
     next: 'Tiếp theo',
     goTo: 'Chuyển tới slide {index}',
+    pause: 'Tạm dừng trình chiếu',
+    play: 'Tiếp tục trình chiếu',
   },
   en: {
     prev: 'Previous',
     next: 'Next',
     goTo: 'Go to slide {index}',
+    pause: 'Pause slideshow',
+    play: 'Play slideshow',
   },
 };
 

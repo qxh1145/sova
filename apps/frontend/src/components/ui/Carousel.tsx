@@ -8,6 +8,7 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
   useSyncExternalStore,
   type ReactElement,
   type ReactNode,
@@ -21,6 +22,8 @@ export interface CarouselLabels {
   prev: string;
   next: string;
   goTo: string | ((index: number) => string);
+  pause: string;
+  play: string;
   /** Accessible name; when set the root becomes a `region` landmark. */
   region?: string;
 }
@@ -182,11 +185,14 @@ export function Carousel({
   );
 
   // Set once the user drags or clicks a control; hover-leave must not restart autoplay after that.
+  const rootRef = useRef<HTMLDivElement>(null);
   const userStopped = useRef(false);
+  const [isPaused, setIsPaused] = useState(false);
   const stopAutoplay = useCallback(() => {
     userStopped.current = true;
+    setIsPaused(true);
     emblaApi?.plugins().autoplay?.stop();
-  }, [emblaApi]);
+  }, [emblaApi, setIsPaused]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -198,8 +204,8 @@ export function Carousel({
 
   const pauseHover = useCallback(() => emblaApi?.plugins().autoplay?.stop(), [emblaApi]);
   const resumeHover = useCallback(() => {
-    if (!userStopped.current) emblaApi?.plugins().autoplay?.play();
-  }, [emblaApi]);
+    if (!userStopped.current && !rootRef.current?.contains(document.activeElement) && (!pauseOnHover || !rootRef.current?.matches(':hover'))) emblaApi?.plugins().autoplay?.play();
+  }, [emblaApi, pauseOnHover]);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi && wrapArrows && !emblaApi.canScrollPrev()) {
@@ -247,11 +253,16 @@ export function Carousel({
   return (
     <div
       id={id}
+      ref={rootRef}
       className={rootClasses}
       role={labels.region ? 'region' : undefined}
       aria-label={labels.region}
       onMouseEnter={pauseOnHover ? pauseHover : undefined}
       onMouseLeave={pauseOnHover ? resumeHover : undefined}
+      onFocusCapture={pauseHover}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) resumeHover();
+      }}
     >
       <div ref={emblaRef} className="flickity-viewport">
         <div className="flickity-slider">
@@ -265,6 +276,25 @@ export function Carousel({
           )}
         </div>
       </div>
+
+      {!!effectiveAutoplayMs && !isSingle && (
+        <button
+          type="button"
+          className="screen-reader-text"
+          aria-label={isPaused ? labels.play : labels.pause}
+          onClick={() => {
+            if (isPaused) {
+              userStopped.current = false;
+              setIsPaused(false);
+              if (!rootRef.current?.contains(document.activeElement)) emblaApi?.plugins().autoplay?.play();
+            } else {
+              stopAutoplay();
+            }
+          }}
+        >
+          {isPaused ? labels.play : labels.pause}
+        </button>
+      )}
 
       {arrows && slideCount > 1 && (
         <>

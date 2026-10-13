@@ -14,6 +14,8 @@ const VI_CAROUSEL_LABELS: CarouselLabels = {
   prev: 'Trước',
   next: 'Tiếp theo',
   goTo: 'Chuyển tới slide {index}',
+  pause: 'Tạm dừng trình chiếu',
+  play: 'Tiếp tục trình chiếu',
 };
 
 export function LatestPosts({ posts, copy, assets = [] }: LatestPostsProps) {

@@ -59,10 +59,9 @@ Baseline evidence: `apps/frontend/baseline/<route-key>/<viewport>.png|json` (`np
 | A52 | Auth submission parameters and form action dropped: Sova login form is mock-only; dropped hidden fields redirect_to and testcookie, form action POST endpoint, cookies, and local/session storage writes. Valid submit renders a status notice. | `login-eras/index__q_6b334f548d36.html:112,171-172`; `LoginForm.tsx` | epic-utility-pages | accepted (story 6.7) |
 | A53 | Non-source client validation messages: Source relied on server-side WordPress authentication error handling; Sova uses client-side Zod validation with Vietnamese error messages for required username and password fields. | `login-eras/index__q_6b334f548d36.html:108-175`; `src/lib/forms/schemas.ts` | epic-utility-pages | accepted (story 6.7) |
 | A54 | Register and lost-password links point to local page: Source links to external/dashboard URLs for register and lost-password; Sova rewrites them via rewriteEraLinks to local page routes (# / /login-eras/). | `login-eras/index__q_6b334f548d36.html:98,179`; `LoginView.tsx` | epic-utility-pages | accepted (story 6.7) |
-
-
-
-
+| A55 | Destination-free desktop nav parent becomes keyboard focusable; submenu opens by focus/Enter/Space and closes with Escape. | `eras-clone/index.html` menu-item-7258; `Header.tsx`, `NavDropdown.tsx` | epic-fidelity-and-handoff | accepted (story 7.6) |
+| A56 | Autoplay carousels expose focus-only pause/play control and pause while keyboard focus remains inside; source lacks keyboard motion controls. | `eras-clone/index.html` slider; `Carousel.tsx` | epic-fidelity-and-handoff | accepted (story 7.6) |
+| A57 | Dialog retains overlays for a timed `mfp-removing` close transition; reduced motion skips delay. | Flatsome `.mfp-removing` styles; `Dialog.tsx` | epic-fidelity-and-handoff | accepted (story 7.6) |
 
 ## Known baseline capture differences
 

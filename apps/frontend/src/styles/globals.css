@@ -326,3 +326,11 @@ html.has-custom-cursor .cursor-ring {
     display: none;
   }
 }
+
+/* Keep keyboard-open desktop dropdown above the legacy hidden state. */
+#masthead li.current-dropdown > .nav-dropdown {
+  left: -15px;
+  max-height: inherit;
+  opacity: 1;
+  visibility: visible;
+}
