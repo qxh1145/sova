@@ -314,23 +314,38 @@ test.describe('Acceptance: 8 responsive widths viewport checks', () => {
   const ROUTES = Array.from(familyRoutesMap.values());
 
   // Boundary rule: If sweep finds overflow/duplicate-id caused by page markup, record as bug in notes
-  // and add route to KNOWN_ISSUES skip list with a reason.
-  const KNOWN_ISSUES = new Map<string, string>([
+  // and add route to KNOWN_ISSUES skip list with a reason. Entries skip only the overflow/scroller
+  // checks at the listed widths; duplicate IDs are still checked everywhere.
+  const BELOW_550 = [390, 549];
+  const FROM_768 = [768, 849, 850, 1280, 1440];
+  const KNOWN_ISSUES = new Map<string, { widths: number[]; reason: string }>([
     [
       '/login-eras/',
-      'Login form markup (.row) overflows viewport at widths >= 768px due to bootstrap negative margins on #login',
+      {
+        widths: FROM_768,
+        reason: 'Login form markup (.row) overflows viewport at widths >= 768px due to bootstrap negative margins on #login',
+      },
     ],
     [
       '/en/porfolio-eras-vietnam/',
-      'Flatsome banner markup (.banner-layers) has overflow:auto with scrollWidth > clientWidth at widths < 550px',
+      {
+        widths: BELOW_550,
+        reason: 'Flatsome banner markup (.banner-layers) has overflow:auto with scrollWidth > clientWidth at widths < 550px',
+      },
     ],
     [
       '/ho-so-nang-luc-eras-vietnam/',
-      'Flatsome banner markup (.banner-layers) has overflow:auto with scrollWidth > clientWidth at widths < 550px',
+      {
+        widths: BELOW_550,
+        reason: 'Flatsome banner markup (.banner-layers) has overflow:auto with scrollWidth > clientWidth at widths < 550px',
+      },
     ],
     [
       '/featured_item/an-phat-cong-ty-co-phan-cong-nghe-thuong-mai-an-phat/',
-      'Flatsome banner markup (.banner-layers) has overflow:auto with scrollWidth > clientWidth at widths < 550px',
+      {
+        widths: BELOW_550,
+        reason: 'Flatsome banner markup (.banner-layers) has overflow:auto with scrollWidth > clientWidth at widths < 550px',
+      },
     ],
   ]);
 
@@ -346,53 +361,69 @@ test.describe('Acceptance: 8 responsive widths viewport checks', () => {
     test(`${kind} (${locale}) responsive widths: no overflow, no duplicate IDs`, async ({
       page,
     }, testInfo) => {
-      test.skip(KNOWN_ISSUES.has(path), `Known issue: ${KNOWN_ISSUES.get(path)}`);
+      const knownIssue = KNOWN_ISSUES.get(path);
 
       for (const width of WIDTHS) {
-        await page.setViewportSize({ width, height: 900 });
-        await page.goto(path);
+        await test.step(`Width ${width}px (${locale}): no overflow, no duplicate IDs, screenshot attached`, async () => {
+          await page.setViewportSize({ width, height: 900 });
+          await page.goto(path);
 
-        const hasHorizontalOverflow = await page.evaluate(
-          () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
-        );
-        expect(
-          hasHorizontalOverflow,
-          `Horizontal overflow detected on ${path} (${kind}) at width ${width}px`,
-        ).toBe(false);
+          if (knownIssue?.widths.includes(width)) {
+            testInfo.annotations.push({ type: 'known-issue', description: `${path} @ ${width}px: ${knownIssue.reason}` });
+          } else {
+            const overflowOffenders = await page.evaluate(() => {
+              const root = document.documentElement;
+              if (root.scrollWidth <= root.clientWidth) return null;
+              const offenders: string[] = [];
+              for (const el of Array.from(document.body.querySelectorAll('*'))) {
+                if (el.getBoundingClientRect().right <= root.clientWidth) continue;
+                // Report only the outermost offender of each overflowing subtree.
+                if (el.parentElement && el.parentElement.getBoundingClientRect().right > root.clientWidth) continue;
+                const id = el.id ? `#${el.id}` : '';
+                const cls = typeof el.className === 'string' && el.className.trim() ? `.${el.className.trim().split(/\s+/).join('.')}` : '';
+                offenders.push(`${el.tagName.toLowerCase()}${id}${cls}`);
+              }
+              return offenders;
+            });
+            expect
+              .soft(
+                overflowOffenders,
+                `Horizontal overflow detected on ${path} (${kind}) at width ${width}px: ${overflowOffenders?.join(', ')}`,
+              )
+              .toBeNull();
 
-        const unallowedScrollers = await page.evaluate((allowedSelectors) => {
-          const allEls = Array.from(document.querySelectorAll('*'));
-          const offenders: string[] = [];
-          for (const el of allEls) {
-            const style = window.getComputedStyle(el);
-            const ox = style.overflowX;
-            if (ox === 'auto' || ox === 'scroll') {
-              if (el.scrollWidth > el.clientWidth) {
-                const matchesAllowed = allowedSelectors.some((sel) => el.matches(sel) || Boolean(el.closest(sel)));
-                if (!matchesAllowed) {
-                  const tag = el.tagName.toLowerCase();
-                  const id = el.id ? `#${el.id}` : '';
-                  const cls = el.className && typeof el.className === 'string' ? `.${el.className.trim().split(/\s+/).join('.')}` : '';
-                  offenders.push(`${tag}${id}${cls}`);
+            const unallowedScrollers = await page.evaluate((allowedSelectors) => {
+              const offenders: string[] = [];
+              for (const el of Array.from(document.querySelectorAll('*'))) {
+                const ox = window.getComputedStyle(el).overflowX;
+                if ((ox === 'auto' || ox === 'scroll') && el.scrollWidth > el.clientWidth) {
+                  if (!allowedSelectors.some((sel) => el.matches(sel))) {
+                    const tag = el.tagName.toLowerCase();
+                    const id = el.id ? `#${el.id}` : '';
+                    const cls = el.className && typeof el.className === 'string' ? `.${el.className.trim().split(/\s+/).join('.')}` : '';
+                    offenders.push(`${tag}${id}${cls}`);
+                  }
                 }
               }
-            }
+              return offenders;
+            }, ALLOWED_SCROLLER_SELECTORS);
+
+            expect
+              .soft(
+                unallowedScrollers,
+                `Disallowed horizontal scrollers on ${path} at width ${width}px: ${unallowedScrollers.join(', ')}`,
+              )
+              .toEqual([]);
           }
-          return offenders;
-        }, ALLOWED_SCROLLER_SELECTORS);
 
-        expect(
-          unallowedScrollers,
-          `Disallowed horizontal scrollers on ${path} at width ${width}px: ${unallowedScrollers.join(', ')}`,
-        ).toEqual([]);
+          await expectNoDuplicateIds(page);
 
-        await expectNoDuplicateIds(page);
-
-        const screenshotPath = testInfo.outputPath(`shell-${locale}-${kind}-${width}.png`);
-        await page.screenshot({ path: screenshotPath, fullPage: false });
-        await testInfo.attach(`shell-${locale}-${kind}-${width}`, {
-          path: screenshotPath,
-          contentType: 'image/png',
+          const screenshotPath = testInfo.outputPath(`shell-${locale}-${kind}-${width}.png`);
+          await page.screenshot({ path: screenshotPath, fullPage: false });
+          await testInfo.attach(`shell-${locale}-${kind}-${width}`, {
+            path: screenshotPath,
+            contentType: 'image/png',
+          });
         });
       }
     });

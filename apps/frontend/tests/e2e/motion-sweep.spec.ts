@@ -50,7 +50,7 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
       // 2. Visit VI home via footer
       await clickAndAssertSoftNav(
         page.locator('#footer a[href="/"]'),
-        /\/$/,
+        /^https?:\/\/[^/]+\/$/,
         '/',
       );
 
@@ -106,7 +106,7 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
       // 2. Home /
       await clickAndAssertSoftNav(
         page.locator('#footer a[href="/"]'),
-        /\/$/,
+        /^https?:\/\/[^/]+\/$/,
         'Cycle 2: /',
       );
 
@@ -302,7 +302,9 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
 
       // Hold card background image requests
       const heldRoutes: (() => Promise<void>)[] = [];
+      let released = false;
       await page.route(/\/wp-content\/uploads\/.*\.(png|jpg|jpeg|webp)/i, async (route) => {
+        if (released) return route.continue();
         heldRoutes.push(async () => {
           await route.continue();
         });
@@ -313,6 +315,8 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
       await expect(section).toBeVisible();
 
       // Release held card background image requests
+      expect(heldRoutes.length, 'At least one image request must be held before release').toBeGreaterThan(0);
+      released = true;
       for (const release of heldRoutes) {
         await release();
       }
@@ -362,16 +366,28 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
       const section = page.locator('.horizontal-scroll-section');
       await expect(section).toBeVisible();
 
-      // Check distance is clamped at 0
-      const distance = await page.evaluate(() => {
+      // Precondition: the one card is narrower than the viewport, so the raw distance is negative.
+      const rawDistance = await page.evaluate(() => {
         const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
-        return Math.max(0, wrapper.scrollWidth - window.innerWidth);
+        return wrapper.scrollWidth - window.innerWidth;
       });
-      expect(distance).toBe(0);
+      expect(rawDistance, 'one-card wrapper must be narrower than the viewport').toBeLessThan(0);
 
-      // Scroll across multiple positions
+      // The component's own trigger must use the clamped distance (end >= start).
+      const range = await page.evaluate(() => {
+        const st = (window as unknown as {
+          ScrollTrigger?: { getAll: () => { trigger?: HTMLElement; start: number; end: number }[] };
+        }).ScrollTrigger;
+        const t = st?.getAll().find((x) => x.trigger?.classList.contains('horizontal-scroll-section'));
+        return t ? { start: t.start, end: t.end } : null;
+      });
+      expect(range, 'pin ScrollTrigger must exist on the one-card fixture').not.toBeNull();
+      expect(range!.end - range!.start, 'pin range must not be negative').toBeGreaterThanOrEqual(0);
+
+      // Scroll across multiple positions, past the pin start
       for (const scrollY of [0, 200, 500, 1000]) {
         await page.evaluate((y) => window.scrollTo(0, y), scrollY);
+        await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(scrollY);
         await page.waitForTimeout(50);
 
         const translateX = await page.evaluate(() => {
