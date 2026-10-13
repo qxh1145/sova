@@ -7,10 +7,10 @@ import { FOOTER_CTA_IDS } from './footerCtaIds';
 export interface FooterCTAProps {
   headingLines: string[];
   targetHref: string;
-  locale?: Locale;
+  locale: Locale;
 }
 
-export function FooterCTA({ headingLines, targetHref, locale = 'vi' }: FooterCTAProps) {
+export function FooterCTA({ headingLines, targetHref, locale }: FooterCTAProps) {
   const ids = FOOTER_CTA_IDS[locale];
 
   return (

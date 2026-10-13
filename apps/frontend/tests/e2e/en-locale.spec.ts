@@ -12,6 +12,15 @@ test.describe('EN locale parity', () => {
   }
   const EN_ROUTES = Array.from(familyRoutesMap.values());
 
+  // One non-home VI route per family: VI CTA rules must load beyond the home route CSS.
+  // login renders in the (utility) group without the site shell, so it has no FooterCTA.
+  const viFamilyRoutes = new Map<string, string>();
+  for (const r of routes) {
+    if (r.locale === 'vi' && r.path !== '/' && r.kind !== 'login' && !viFamilyRoutes.has(r.kind)) {
+      viFamilyRoutes.set(r.kind, r.path);
+    }
+  }
+
   const viToEnMap = buildCounterpartMap(routes, 'vi');
   const VI_COUNTERPART_PATHS = new Set(Object.keys(viToEnMap));
 
@@ -30,7 +39,7 @@ test.describe('EN locale parity', () => {
       const section = page.locator('#section_1016084764');
       await expect(section).toBeVisible();
 
-      // Heading ID and computed font size at <550px: 1.4rem = 22.4px (14px base * 1.6 or 16px * 1.4)
+      // Heading ID and computed font size at <550px
       const heading = page.locator('#text-3886040369');
       await expect(heading).toBeVisible();
       const fontSizeNarrow = await heading.evaluate((el) => {
@@ -57,18 +66,24 @@ test.describe('EN locale parity', () => {
           .filter((a) => !a.closest('.lang-switcher-inline'))
           .filter((a) => {
             const rawHref = a.getAttribute('href') || '';
-            return rawHref && !rawHref.startsWith('#') && !rawHref.startsWith('mailto:') && !rawHref.startsWith('tel:');
+            return (
+              rawHref &&
+              !rawHref.startsWith('#') &&
+              !rawHref.startsWith('mailto:') &&
+              !rawHref.startsWith('tel:')
+            );
           })
-          .map((a) => {
+          .flatMap((a) => {
             const href = a.getAttribute('href') || '';
-            let pathname = href;
+            let url: URL;
             try {
-              const url = new URL(href, window.location.origin);
-              pathname = url.pathname;
+              url = new URL(href, window.location.origin);
             } catch {
-              // keep as is
+              return [];
             }
-            return { pathname, html: a.outerHTML, href };
+            // Off-site links cannot point at a VI route
+            if (url.origin !== window.location.origin) return [];
+            return [{ pathname: url.pathname, html: a.outerHTML, href }];
           });
       });
 
@@ -84,24 +99,40 @@ test.describe('EN locale parity', () => {
     });
   }
 
-  test('Client navigation VI -> EN swaps CTA ids and rules correctly', async ({ page }) => {
+  for (const [kind, path] of viFamilyRoutes) {
+    test(`[${kind}] ${path} renders VI FooterCTA ids and styles`, async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(path);
+
+      await expect(page.locator('#section_539620154')).toBeVisible();
+      const heading = page.locator('#text-43480091');
+      await expect(heading).toBeVisible();
+      // 1.2rem = 19.2px below 550px
+      const fontSizeNarrow = await heading.evaluate((el) => window.getComputedStyle(el).fontSize);
+      expect(parseFloat(fontSizeNarrow)).toBeCloseTo(19.2, 0);
+
+      await page.setViewportSize({ width: 1280, height: 800 });
+      // 2.9rem = 46.4px from 550px
+      const fontSizeWide = await heading.evaluate((el) => window.getComputedStyle(el).fontSize);
+      expect(parseFloat(fontSizeWide)).toBeCloseTo(46.4, 0);
+    });
+  }
+
+  test('Language switcher VI -> EN swaps CTA ids and rules', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
 
     await expect(page.locator('#section_539620154')).toBeVisible();
     await expect(page.locator('#text-43480091')).toBeVisible();
 
-    // Client nav to EN Home
-    await page.goto('/en/home/');
+    await page.locator('.lang-switcher-inline a[href="/en/home/"]:visible').first().click();
+    await page.waitForURL('**/en/home/');
 
     await expect(page.locator('#section_1016084764')).toBeVisible();
-    await expect(page.locator('#text-3886040369')).toBeVisible();
-
+    await expect(page.locator('#section_539620154')).toHaveCount(0);
     const heading = page.locator('#text-3886040369');
-    const fontSize = await heading.evaluate((el) => {
-      const h2 = el.querySelector('h2') ?? el;
-      return window.getComputedStyle(h2).fontSize;
-    });
+    await expect(heading).toBeVisible();
+    const fontSize = await heading.evaluate((el) => window.getComputedStyle(el).fontSize);
     expect(parseFloat(fontSize)).toBeCloseTo(46.4, 0);
   });
 });

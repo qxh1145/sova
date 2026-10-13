@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { assertNoLeak } from './html';
+import { assertNoLeak, processHref } from './html';
 
 test.each([
   ['ERASx', 'ERAS'],
@@ -27,4 +27,20 @@ test('source files, route ids, public paths and asset names are not text', () =>
 test('an Eras slug inside body HTML is text, not a public path', () => {
   const body = JSON.stringify({ html: '<a href="/eras-portfolio/">x</a>' });
   expect(() => assertNoLeak('posts.ts', body)).toThrow('posts.ts: output contains "eras-"');
+});
+
+const stats = () => ({ brand: 0, scrub: 0 });
+
+test.each([
+  ['en/our-project/index.html', '../../lien-he/index.html', '/en/contact-us/'],
+  ['du-an/index.html', '../lien-he/index.html', '/lien-he/'],
+  ['en/our-project/index.html', 'https://erasvietnam.vn/', '/en/home/'],
+])('processHref from %s maps %s to %s', (file, raw, expected) => {
+  expect(processHref(raw, file, 1, stats())).toBe(expected);
+});
+
+test('EN footer privacy keeps the VI policy (story 6.8)', () => {
+  expect(processHref('../../chinh-sach-bao-mat/index.html', 'en/home/index.html', 1, stats())).toBe(
+    '/chinh-sach-bao-mat/',
+  );
 });

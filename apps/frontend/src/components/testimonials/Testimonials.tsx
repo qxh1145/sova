@@ -7,9 +7,9 @@ import {
   TESTIMONIALS_IDS,
   type TestimonialsConsumer,
 } from './testimonialsIds';
+import { TestimonialCard, type TestimonialSlideIds } from './TestimonialCard';
 
 export { type TestimonialsIds, TESTIMONIALS_IDS, type TestimonialsConsumer };
-import { TestimonialCard, type TestimonialSlideIds } from './TestimonialCard';
 
 export interface TestimonialsArt {
   photo: AssetRef;

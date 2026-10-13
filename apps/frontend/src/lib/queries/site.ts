@@ -36,7 +36,7 @@ export async function getShellProps(locale: Locale, repo: ContentRepository = ge
     logoAsset,
     shellContent: locale === 'en' ? en : vi,
     headerCtas: {
-      vi: locale === 'en' ? { ...viCta, href: '/en/contact-us/' } : viCta,
+      vi: locale === 'en' ? { ...viCta, href: enCta.href } : viCta,
       en: enCta,
     },
     counterparts: buildCounterpartMap(routes, locale),
@@ -55,8 +55,6 @@ export function listRoutes(): Promise<RouteEntry[]> {
   return getRepository().listRoutes();
 }
 
-export { buildCounterpartMap };
-
 export async function getCounterpartMap(locale: Locale): Promise<Record<string, string>> {
   return buildCounterpartMap(await listRoutes(), locale);
 }
@@ -64,4 +62,3 @@ export async function getCounterpartMap(locale: Locale): Promise<Record<string, 
 export async function resolveRoute(path: string) {
   return resolvePath(await listRoutes(), path);
 }
-

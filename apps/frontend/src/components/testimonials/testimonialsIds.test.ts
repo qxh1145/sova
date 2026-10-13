@@ -65,11 +65,18 @@ describe('TESTIMONIALS_IDS presets', () => {
       expect(vi.leftCol, `${consumer} leftCol ID differs`).not.toBe(en.leftCol);
       expect(vi.sliderWrapper, `${consumer} sliderWrapper ID differs`).not.toBe(en.sliderWrapper);
 
+      expect(Boolean(vi.slides), `${consumer} slides defined in both locales`).toBe(
+        Boolean(en.slides),
+      );
       if (vi.slides && en.slides) {
         expect(vi.slides.length).toBe(en.slides.length);
         for (let i = 0; i < vi.slides.length; i++) {
-          expect(vi.slides[i].row, `${consumer} slide[${i}] row differs`).not.toBe(en.slides[i].row);
-          expect(vi.slides[i].ndKh, `${consumer} slide[${i}] ndKh differs`).not.toBe(en.slides[i].ndKh);
+          expect(vi.slides[i].row, `${consumer} slide[${i}] row differs`).not.toBe(
+            en.slides[i].row,
+          );
+          expect(vi.slides[i].ndKh, `${consumer} slide[${i}] ndKh differs`).not.toBe(
+            en.slides[i].ndKh,
+          );
         }
       }
     }
@@ -79,7 +86,9 @@ describe('TESTIMONIALS_IDS presets', () => {
     for (const consumer of consumers) {
       const ids = collectIds(TESTIMONIALS_IDS[consumer].vi);
       for (const id of ids) {
-        expect(viIds.has(id), `Expected VI id ${id} (${consumer}) to exist in VI mirror`).toBe(true);
+        expect(viIds.has(id), `Expected VI id ${id} (${consumer}) to exist in VI mirror`).toBe(
+          true,
+        );
       }
     }
   });
@@ -88,7 +97,9 @@ describe('TESTIMONIALS_IDS presets', () => {
     for (const consumer of consumers) {
       const ids = collectIds(TESTIMONIALS_IDS[consumer].en);
       for (const id of ids) {
-        expect(enIds.has(id), `Expected EN id ${id} (${consumer}) to exist in EN mirror`).toBe(true);
+        expect(enIds.has(id), `Expected EN id ${id} (${consumer}) to exist in EN mirror`).toBe(
+          true,
+        );
       }
     }
   });
