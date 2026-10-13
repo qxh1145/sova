@@ -68,12 +68,20 @@ export function HorizontalProjects({ children }: HorizontalProjectsProps) {
         }
       });
 
-      if (typeof document !== 'undefined' && 'fonts' in document) {
-        document.fonts.ready.then(() => {
+      // Fonts, card images and the body observer share one refresh per frame.
+      let refreshRafId: number | null = null;
+      const scheduleRefresh = () => {
+        if (!isMounted || refreshRafId !== null) return;
+        refreshRafId = requestAnimationFrame(() => {
+          refreshRafId = null;
           if (isMounted) {
             ScrollTrigger.refresh();
           }
         });
+      };
+
+      if (typeof document !== 'undefined' && 'fonts' in document) {
+        document.fonts.ready.then(scheduleRefresh);
       }
 
       const cardContents = wrapper.querySelectorAll<HTMLElement>('.item-content');
@@ -85,9 +93,7 @@ export function HorizontalProjects({ children }: HorizontalProjectsProps) {
           const onDone = () => {
             img.onload = null;
             img.onerror = null;
-            if (isMounted) {
-              ScrollTrigger.refresh();
-            }
+            scheduleRefresh();
           };
           img.onload = onDone;
           img.onerror = onDone;
@@ -100,19 +106,9 @@ export function HorizontalProjects({ children }: HorizontalProjectsProps) {
         }
       });
 
-      let resizeRafId: number | null = null;
       let observer: ResizeObserver | null = null;
       if (typeof ResizeObserver !== 'undefined' && typeof document !== 'undefined' && document.body) {
-        observer = new ResizeObserver(() => {
-          if (!isMounted) return;
-          if (resizeRafId !== null) cancelAnimationFrame(resizeRafId);
-          resizeRafId = requestAnimationFrame(() => {
-            resizeRafId = null;
-            if (isMounted) {
-              ScrollTrigger.refresh();
-            }
-          });
-        });
+        observer = new ResizeObserver(scheduleRefresh);
         observer.observe(document.body);
       }
 
@@ -121,8 +117,8 @@ export function HorizontalProjects({ children }: HorizontalProjectsProps) {
         if (observer) {
           observer.disconnect();
         }
-        if (resizeRafId !== null) {
-          cancelAnimationFrame(resizeRafId);
+        if (refreshRafId !== null) {
+          cancelAnimationFrame(refreshRafId);
         }
         cleanups.forEach((fn) => fn());
       };

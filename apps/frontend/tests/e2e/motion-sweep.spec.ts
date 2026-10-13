@@ -356,6 +356,87 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
     });
   });
 
+  test.describe('Refresh coalescing (R-04)', () => {
+    test('Warm-cache remount of a pinned service page refreshes fewer times than it has cards', async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto('/lien-he/');
+      await expect(page.locator('header#header')).toBeVisible();
+
+      const softNav = async (href: string) => {
+        await page.evaluate(() => {
+          (window as unknown as { __navMarker?: string }).__navMarker = 'r04';
+        });
+        await page.locator(`#footer a[href="${href}"]`).first().click();
+        await expect(page).toHaveURL(new RegExp(`${href}$`));
+        const marker = await page.evaluate(
+          () => (window as unknown as { __navMarker?: string }).__navMarker,
+        );
+        expect(marker, `Soft nav to ${href} kept window.__navMarker`).toBe('r04');
+      };
+
+      // Cold mount, then make sure every card image sits in the document's image cache.
+      await softNav('/thiet-ke-website/');
+      await expect(page.locator('.horizontal-scroll-section')).toBeVisible();
+      await page.evaluate(async () => {
+        const urls = Array.from(
+          document.querySelectorAll<HTMLElement>('.horizontal-scroll-section .item-content'),
+        )
+          .map((el) => el.style.backgroundImage.match(/url\(["']?([^"')]+)["']?\)/)?.[1])
+          .filter((src): src is string => Boolean(src));
+        await Promise.all(
+          urls.map(
+            (src) =>
+              new Promise((resolve) => {
+                const img = new Image();
+                img.onload = img.onerror = resolve;
+                img.src = src;
+              }),
+          ),
+        );
+      });
+      await softNav('/lien-he/');
+
+      // gsap never calls the static refresh() itself, so every counted call comes from the island.
+      await page.evaluate(() => {
+        const w = window as unknown as {
+          ScrollTrigger: { refresh: (...args: unknown[]) => unknown };
+          __refreshCalls?: number;
+        };
+        const original = w.ScrollTrigger.refresh;
+        w.__refreshCalls = 0;
+        w.ScrollTrigger.refresh = function (this: unknown, ...args: unknown[]) {
+          w.__refreshCalls = (w.__refreshCalls ?? 0) + 1;
+          return original.apply(this, args);
+        };
+      });
+
+      await softNav('/thiet-ke-website/');
+      await expect(page.locator('.horizontal-scroll-section')).toBeVisible();
+      await page.waitForTimeout(300);
+
+      // Only cards with a background image register a load refresh.
+      const cards = await page.evaluate(
+        () =>
+          Array.from(
+            document.querySelectorAll<HTMLElement>('.horizontal-scroll-section .item-content'),
+          ).filter((el) => el.style.backgroundImage.includes('url(')).length,
+      );
+      const refreshCalls = await page.evaluate(
+        () => (window as unknown as { __refreshCalls?: number }).__refreshCalls ?? 0,
+      );
+      expect(
+        cards,
+        'Need several image cards to tell coalesced from per-card refreshes',
+      ).toBeGreaterThanOrEqual(4);
+      expect(
+        refreshCalls,
+        `Refresh calls (${refreshCalls}) must stay below the image card count (${cards})`,
+      ).toBeLessThan(cards);
+    });
+  });
+
   test.describe('IS2 guard: one-card fixture', () => {
     test('translateX is never > 0 at any scroll position when cards are narrower than viewport', async ({
       page,
