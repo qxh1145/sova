@@ -1,7 +1,7 @@
 import '@/styles/legacy/sections/route-seo-tu-khoa-website.css';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { seoMetadata } from "@/lib/queries/site";
+import { seoMetadata } from '@/lib/queries/site';
 import { getServiceAssets, getServicePage } from '@/lib/queries/services';
 import { SeoServiceView } from '@/components/services/SeoServiceView';
 

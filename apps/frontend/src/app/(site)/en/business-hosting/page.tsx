@@ -1,7 +1,7 @@
 import '@/styles/legacy/sections/route-en--business-hosting.css';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { seoMetadata } from "@/lib/queries/site";
+import { seoMetadata } from '@/lib/queries/site';
 import { getServiceAssets, getServicePage } from '@/lib/queries/services';
 import { HostingServiceView } from '@/components/services/HostingServiceView';
 

@@ -6,6 +6,7 @@ import { ProjectListView } from '@/components/projects/ProjectListView';
 import { getShellProps } from '@/lib/queries/site';
 import { getProjectListingPage } from '@/lib/queries/projects';
 import { createScenarioRepository } from '@/dev/scenarios';
+import { routes } from '@/data/routes';
 import type { Locale } from '@/types/content';
 
 export const dynamic = 'force-dynamic';
@@ -39,10 +40,15 @@ export default async function DevFixtureProjectsPage({
     variant === 'empty'
       ? createScenarioRepository('empty')
       : createScenarioRepository('happy-path');
+  // Scenario fixtures carry no project-list routes; borrow the registry's so the listing route guard passes.
+  const listingRepo = {
+    ...repo,
+    listRoutes: async () => routes.filter((r) => r.kind === 'project-list'),
+  };
 
   const [shell, data] = await Promise.all([
     getShellProps(locale, repo),
-    getProjectListingPage(locale, repo),
+    getProjectListingPage(locale, listingRepo),
   ]);
 
   if (!data) {

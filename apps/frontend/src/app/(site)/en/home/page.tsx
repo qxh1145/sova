@@ -14,11 +14,5 @@ export default async function EnHomePage() {
   const content = await getHomePage('en');
   const homeAssets = await getHomeAssets(content);
 
-  return (
-    <HomeView
-      content={content}
-      locale="en"
-      {...homeAssets}
-    />
-  );
+  return <HomeView content={content} locale="en" {...homeAssets} />;
 }

@@ -27,7 +27,9 @@ export async function generateMetadata({ params }: ProjectDetailPageProps): Prom
   const { slug } = await params;
   const routes = await listRoutes();
   const targetPath = `/featured_item/${slug}/`;
-  const routeEntry = routes.find((r) => r.locale === 'vi' && r.kind === 'project-detail' && r.path === targetPath);
+  const routeEntry = routes.find(
+    (r) => r.locale === 'vi' && r.kind === 'project-detail' && r.path === targetPath,
+  );
   if (!routeEntry) return {};
 
   const detail = await getProjectDetail(slug);
@@ -40,7 +42,9 @@ export default async function ViProjectDetailPage({ params }: ProjectDetailPageP
   const { slug } = await params;
   const routes = await listRoutes();
   const targetPath = `/featured_item/${slug}/`;
-  const routeEntry = routes.find((r) => r.locale === 'vi' && r.kind === 'project-detail' && r.path === targetPath);
+  const routeEntry = routes.find(
+    (r) => r.locale === 'vi' && r.kind === 'project-detail' && r.path === targetPath,
+  );
   if (!routeEntry) {
     notFound();
   }

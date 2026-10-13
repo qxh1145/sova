@@ -14,11 +14,5 @@ export default async function ViHomePage() {
   const content = await getHomePage('vi');
   const homeAssets = await getHomeAssets(content);
 
-  return (
-    <HomeView
-      content={content}
-      locale="vi"
-      {...homeAssets}
-    />
-  );
+  return <HomeView content={content} locale="vi" {...homeAssets} />;
 }

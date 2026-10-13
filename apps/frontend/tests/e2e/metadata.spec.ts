@@ -12,6 +12,17 @@ test.describe('Metadata & Indexing Acceptance', () => {
       familyRoutesMap.set(key, { locale: r.locale as 'vi' | 'en', path: r.path, kind: r.kind });
     }
   }
+  // Listing pages whose generateMetadata is not reached by each family's first route.
+  for (const path of [
+    '/goc-nhin/',
+    '/goc-nhin/page/2/',
+    '/thu-thuat/page/2/',
+    '/featured_item/',
+    '/featured_item_category/website/',
+  ]) {
+    const r = routes.find((route) => route.path === path)!;
+    familyRoutesMap.set(path, { locale: r.locale as 'vi' | 'en', path: r.path, kind: r.kind });
+  }
   const FAMILY_ROUTES = Array.from(familyRoutesMap.values());
 
   const counterpartMapVi = buildCounterpartMap(routes, 'vi');
@@ -58,7 +69,9 @@ test.describe('Metadata & Indexing Acceptance', () => {
     });
   }
 
-  test('Sitemap /sitemap.xml serves 148 registry loc pathnames and no aliases', async ({ request }) => {
+  test('Sitemap /sitemap.xml serves 148 registry loc pathnames and no aliases', async ({
+    request,
+  }) => {
     const response = await request.get('/sitemap.xml');
     expect(response.status()).toBe(200);
     const body = await response.text();
@@ -105,6 +118,13 @@ test.describe('Metadata & Indexing Acceptance', () => {
 
   test('Unknown project route /featured_item/khong-ton-tai-xyz/ returns 404', async ({ page }) => {
     const response = await page.goto('/featured_item/khong-ton-tai-xyz/');
+    expect(response?.status()).toBe(404);
+  });
+
+  test('Unknown project listing /featured_item_category/khong-ton-tai/ returns 404', async ({
+    page,
+  }) => {
+    const response = await page.goto('/featured_item_category/khong-ton-tai/');
     expect(response?.status()).toBe(404);
   });
 });

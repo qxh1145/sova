@@ -54,7 +54,6 @@ test('resolveRoute resolves aliases over the repository', async () => {
   expect(await resolveRoute('/cloud-vps/')).toBeNull();
 });
 
-
 test('getShellProps composes locale shell props', async () => {
   vi.stubEnv('CONTENT_SCENARIO', '');
   const en = await getShellProps('en');

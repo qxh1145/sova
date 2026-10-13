@@ -18,8 +18,7 @@ export async function generateStaticParams() {
     .filter(
       (r) =>
         r.locale === 'vi' &&
-        (r.kind === 'post-detail' ||
-          (r.kind === 'post-list' && catSlugs.has(r.path.slice(1, -1)))),
+        (r.kind === 'post-detail' || (r.kind === 'post-list' && catSlugs.has(r.path.slice(1, -1)))),
     )
     .map((r) => ({
       slug: r.path.replace(/^\/|\/$/g, ''),

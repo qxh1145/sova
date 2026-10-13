@@ -1,7 +1,7 @@
 import '@/styles/legacy/sections/route-dieu-khoan-su-dung.css';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { seoMetadata } from "@/lib/queries/site";
+import { seoMetadata } from '@/lib/queries/site';
 import { getLegalPage } from '@/lib/queries/pages';
 import { LegalView } from '@/components/legal/LegalView';
 

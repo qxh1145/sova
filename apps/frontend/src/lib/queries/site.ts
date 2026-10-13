@@ -2,7 +2,15 @@ import type { Metadata } from 'next';
 import { getRepository } from '@/lib/repositories';
 import type { ContentRepository } from '@/lib/repositories/contracts';
 import { buildCounterpartMap, pathForRouteId, resolvePath } from '@/lib/routes';
-import type { Locale, Navigation, PublicPath, RouteEntry, SEO, ShellContent, SiteSettings } from '@/types/content';
+import type {
+  Locale,
+  Navigation,
+  PublicPath,
+  RouteEntry,
+  SEO,
+  ShellContent,
+  SiteSettings,
+} from '@/types/content';
 import { resolveDeep } from './tokens';
 
 export const BRAND_TITLE_SUFFIX = ' - Công ty thiết kế website chuyên nghiệp | Sova';
@@ -72,7 +80,10 @@ export async function routeAlternates(path: PublicPath): Promise<Metadata['alter
   if (!entry) return { canonical: path };
   const other = buildCounterpartMap(routes, entry.locale)[path];
   const otherLocale = entry.locale === 'vi' ? 'en' : 'vi';
-  return { canonical: path, languages: { [entry.locale]: path, ...(other && { [otherLocale]: other }) } };
+  return {
+    canonical: path,
+    languages: { [entry.locale]: path, ...(other && { [otherLocale]: other }) },
+  };
 }
 
 export async function seoMetadata(seo: SEO): Promise<Metadata> {

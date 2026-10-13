@@ -2,7 +2,7 @@ import '@/styles/legacy/sections/route-eras-xin-chan-thanh-cam-on-quy-khach.css'
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getUtilityContent } from '@/lib/queries/pages';
-import { getShellContent , seoMetadata } from '@/lib/queries/site';
+import { getShellContent, seoMetadata } from '@/lib/queries/site';
 import { ThankYouView } from '@/components/utility/ThankYouView';
 
 export async function generateMetadata(): Promise<Metadata> {

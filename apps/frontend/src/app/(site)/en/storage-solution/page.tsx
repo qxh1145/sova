@@ -1,9 +1,8 @@
 import '@/styles/legacy/sections/route-en--storage-solution.css';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { seoMetadata } from "@/lib/queries/site";
 import { getServiceAssets, getServicePage } from '@/lib/queries/services';
-import { listRoutes } from '@/lib/queries/site';
+import { listRoutes, seoMetadata } from '@/lib/queries/site';
 import { StorageServiceView } from '@/components/services/StorageServiceView';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -13,10 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function EnStorageServicePage() {
-  const [page, routes] = await Promise.all([
-    getServicePage('storage', 'en'),
-    listRoutes(),
-  ]);
+  const [page, routes] = await Promise.all([getServicePage('storage', 'en'), listRoutes()]);
 
   if (!page) {
     notFound();
@@ -24,12 +20,5 @@ export default async function EnStorageServicePage() {
 
   const assets = await getServiceAssets(page);
 
-  return (
-    <StorageServiceView
-      page={page}
-      assets={assets}
-      routes={routes}
-      locale="en"
-    />
-  );
+  return <StorageServiceView page={page} assets={assets} routes={routes} locale="en" />;
 }

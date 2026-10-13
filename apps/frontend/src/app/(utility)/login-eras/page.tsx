@@ -4,7 +4,7 @@ import '@/styles/legacy/sections/route-login-eras.css'; // business-text-ok: rou
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getUtilityContent } from '@/lib/queries/pages';
-import { getSiteSettings, getShellContent , seoMetadata } from '@/lib/queries/site';
+import { getSiteSettings, getShellContent, seoMetadata } from '@/lib/queries/site';
 import { LoginView } from '@/components/utility/LoginView';
 
 export async function generateMetadata(): Promise<Metadata> {

@@ -281,3 +281,12 @@ test('getProjectDetail omits unresolved terms and hero asset without throwing', 
   expect(detail!.terms).toBeNull();
   expect(detail!.heroAsset).toBeNull();
 });
+
+test('getProjectListingPage returns null for a routeId outside the locale project-list registry', async () => {
+  const { getProjectListingPage } = await import('@/lib/queries/projects');
+  const repo = createMockRepository(defaultContentData);
+
+  expect(await getProjectListingPage('vi', repo, { routeId: 'route-khong-ton-tai' })).toBeNull();
+  expect(await getProjectListingPage('vi', repo, { routeId: 'route-thiet-ke-website' })).toBeNull();
+  expect(await getProjectListingPage('en', repo, { routeId: 'route-du-an' })).toBeNull();
+});

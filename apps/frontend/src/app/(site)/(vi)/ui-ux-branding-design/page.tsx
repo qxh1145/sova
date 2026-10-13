@@ -1,7 +1,7 @@
 import '@/styles/legacy/sections/route-ui-ux-branding-design.css';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { seoMetadata } from "@/lib/queries/site";
+import { seoMetadata } from '@/lib/queries/site';
 import { getServiceAssets, getServicePage } from '@/lib/queries/services';
 import { BrandingServiceView } from '@/components/services/BrandingServiceView';
 
