@@ -206,6 +206,11 @@ test.describe('Carousel contract checks', () => {
 
     await play.evaluate((element: HTMLElement) => element.blur());
     expect(await tick(page, slides, 6000)).toBe(0);
+    // Resize re-inits Embla (Autoplay playOnInit); the user pause must survive it.
+    const { width, height } = page.viewportSize()!;
+    await page.setViewportSize({ width: width - 100, height });
+    await page.waitForTimeout(200); // real time for ResizeObserver -> reInit
+    expect(await tick(page, slides, 12000), 'resize restarted paused autoplay').toBe(0);
     await play.focus();
     await page.keyboard.press('Enter');
     await expect(pause).toBeFocused();

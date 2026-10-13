@@ -194,18 +194,33 @@ export function Carousel({
     emblaApi?.plugins().autoplay?.stop();
   }, [emblaApi, setIsPaused]);
 
+  // Autoplay must stay held while stopped by the user, focused inside, or hovered.
+  const isHeld = useCallback(
+    () =>
+      userStopped.current ||
+      !!rootRef.current?.contains(document.activeElement) ||
+      (pauseOnHover && !!rootRef.current?.matches(':hover')),
+    [pauseOnHover],
+  );
+
   useEffect(() => {
     if (!emblaApi) return;
+    // reInit (resize, slide mutation) re-runs Autoplay playOnInit; re-apply any hold.
+    const holdOnReInit = () => {
+      if (isHeld()) emblaApi.plugins().autoplay?.stop();
+    };
     emblaApi.on('pointerDown', stopAutoplay);
+    emblaApi.on('reInit', holdOnReInit);
     return () => {
       emblaApi.off('pointerDown', stopAutoplay);
+      emblaApi.off('reInit', holdOnReInit);
     };
-  }, [emblaApi, stopAutoplay]);
+  }, [emblaApi, stopAutoplay, isHeld]);
 
   const pauseHover = useCallback(() => emblaApi?.plugins().autoplay?.stop(), [emblaApi]);
   const resumeHover = useCallback(() => {
-    if (!userStopped.current && !rootRef.current?.contains(document.activeElement) && (!pauseOnHover || !rootRef.current?.matches(':hover'))) emblaApi?.plugins().autoplay?.play();
-  }, [emblaApi, pauseOnHover]);
+    if (!isHeld()) emblaApi?.plugins().autoplay?.play();
+  }, [emblaApi, isHeld]);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi && wrapArrows && !emblaApi.canScrollPrev()) {
