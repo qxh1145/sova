@@ -159,6 +159,48 @@ html.has-custom-cursor .cursor-ring {
   margin-bottom: 0.5em;
 }
 
+/* VI Footer CTA: source index.html:2870,2921. Made shell-wide so non-home VI routes get CTA rules. */
+#text-43480091 {
+  font-size: 1.2rem;
+  text-align: left;
+}
+@media (min-width: 550px) {
+  #text-43480091 {
+    font-size: 2.9rem;
+  }
+}
+#section_539620154 {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+@media (min-width: 550px) {
+  #section_539620154 {
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+}
+
+/* EN Footer CTA: source en/home/index.html:2697,2748. Made shell-wide so all EN routes get CTA rules. */
+#text-3886040369 {
+  font-size: 1.4rem;
+  text-align: left;
+}
+@media (min-width: 550px) {
+  #text-3886040369 {
+    font-size: 2.9rem;
+  }
+}
+#section_1016084764 {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+@media (min-width: 550px) {
+  #section_1016084764 {
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+}
+
 /* SEO FAQ answers: source per-id rule on every answer `.text` (`font-size: 1.1rem; color: #fff`). */
 #col-161830420 .accordion-inner > .text,
 #col-1084451967 .accordion-inner > .text {

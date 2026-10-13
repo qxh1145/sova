@@ -1,6 +1,6 @@
 import { getRepository } from '@/lib/repositories';
 import type { ContentRepository } from '@/lib/repositories/contracts';
-import { pathForRouteId, resolvePath } from '@/lib/routes';
+import { buildCounterpartMap, pathForRouteId, resolvePath } from '@/lib/routes';
 import type { Locale, Navigation, RouteEntry, ShellContent, SiteSettings } from '@/types/content';
 import { resolveDeep } from './tokens';
 
@@ -26,6 +26,8 @@ export async function getShellProps(locale: Locale, repo: ContentRepository = ge
     label: shell.headerCta.label,
     href: pathForRouteId(routes, shell.headerCta.routeId) ?? fallback,
   });
+  const viCta = cta(vi, '/lien-he/');
+  const enCta = cta(en, '/en/contact-us/');
   return {
     locale,
     settings,
@@ -33,7 +35,10 @@ export async function getShellProps(locale: Locale, repo: ContentRepository = ge
     routes,
     logoAsset,
     shellContent: locale === 'en' ? en : vi,
-    headerCtas: { vi: cta(vi, '/lien-he/'), en: cta(en, '/en/contact-us/') },
+    headerCtas: {
+      vi: locale === 'en' ? { ...viCta, href: enCta.href } : viCta,
+      en: enCta,
+    },
     counterparts: buildCounterpartMap(routes, locale),
   };
 }
@@ -50,21 +55,6 @@ export function listRoutes(): Promise<RouteEntry[]> {
   return getRepository().listRoutes();
 }
 
-/** Builds a pathname -> counterpart pathname map for a given locale from a routes list. */
-export function buildCounterpartMap(routes: RouteEntry[], locale: Locale): Record<string, string> {
-  const map: Record<string, string> = {};
-  const byId = new Map(routes.map((r) => [r.id, r]));
-  for (const r of routes) {
-    if (r.locale === locale && r.counterpartId) {
-      const counterpart = byId.get(r.counterpartId);
-      if (counterpart) {
-        map[r.path] = counterpart.path;
-      }
-    }
-  }
-  return map;
-}
-
 export async function getCounterpartMap(locale: Locale): Promise<Record<string, string>> {
   return buildCounterpartMap(await listRoutes(), locale);
 }
@@ -72,4 +62,3 @@ export async function getCounterpartMap(locale: Locale): Promise<Record<string, 
 export async function resolveRoute(path: string) {
   return resolvePath(await listRoutes(), path);
 }
-

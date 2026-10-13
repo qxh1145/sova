@@ -31,7 +31,7 @@ export function FAQTopicsView({ page, topics }: FAQTopicsViewProps) {
     ),
   }));
 
-  const homeHref = page.locale === 'en' ? '/en/' : '/';
+  const homeHref = page.locale === 'en' ? '/en/home/' : '/';
 
   return (
     <div id="content" role="main">

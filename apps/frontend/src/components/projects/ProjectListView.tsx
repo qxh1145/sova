@@ -31,7 +31,7 @@ export function ProjectListView({
       ? ['Projects Partnered', 'with Sova']
       : ['Dự án đồng hành', 'cùng Sova'],
     breadcrumb: [
-      { label: isEn ? 'Home' : 'Trang chủ', href: '/' },
+      { label: isEn ? 'Home' : 'Trang chủ', href: isEn ? '/en/home/' : '/' },
       { label: isEn ? 'Projects' : 'Dự án' },
     ],
   };

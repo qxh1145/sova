@@ -250,7 +250,7 @@ export const brandingServices: Service[] = [
       imageId: 'asset-a6e7f1bdf3',
       bgImageId: 'asset-e83e570e84',
       breadcrumb: [
-        { label: 'Home', href: '/en/' },
+        { label: 'Home', href: '/en/home/' },
         { label: 'Services' },
         { label: 'UI/UX, Branding Design' },
       ],

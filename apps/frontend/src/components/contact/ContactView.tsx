@@ -24,7 +24,7 @@ export function ContactView({
   consultLabels,
 }: ContactViewProps) {
   const preset = getContactPreset(page.locale);
-  const homeHref = page.locale === 'en' ? '/en/' : '/';
+  const homeHref = page.locale === 'en' ? '/en/home/' : '/';
 
   return (
     <div id="content" role="main">

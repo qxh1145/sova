@@ -3,8 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { parse } from 'node-html-parser';
 import {
   Testimonials,
-  TESTIMONIALS_IDS_VI,
-  TESTIMONIALS_IDS_EN,
+  TESTIMONIALS_IDS,
   TESTIMONIALS_LABELS,
 } from './Testimonials';
 import type { AssetRef, SectionCopy, Testimonial } from '@/types/content';
@@ -133,7 +132,7 @@ describe('Testimonials component', () => {
         avatars={mockAvatars}
         copy={mockCopy}
         art={mockArt}
-        ids={TESTIMONIALS_IDS_VI}
+        ids={TESTIMONIALS_IDS.home.vi}
         labels={TESTIMONIALS_LABELS.vi}
       />,
     );
@@ -198,7 +197,7 @@ describe('Testimonials component', () => {
         avatars={mockAvatars}
         copy={{ ...mockCopy, titleLines: ['Khách hàng nhận xét', 'về chúng tôi'] }}
         art={mockArt}
-        ids={TESTIMONIALS_IDS_VI}
+        ids={TESTIMONIALS_IDS.home.vi}
         labels={TESTIMONIALS_LABELS.vi}
       />,
     );
@@ -219,7 +218,7 @@ describe('Testimonials component', () => {
         avatars={mockAvatars}
         copy={{ eyebrow: 'Sova', title: 'Customer Reviews' }}
         art={mockArt}
-        ids={TESTIMONIALS_IDS_EN}
+        ids={TESTIMONIALS_IDS.home.en}
         labels={TESTIMONIALS_LABELS.en}
       />,
     );
@@ -246,7 +245,7 @@ describe('Testimonials component', () => {
         avatars={[]}
         copy={mockCopy}
         art={mockArt}
-        ids={TESTIMONIALS_IDS_VI}
+        ids={TESTIMONIALS_IDS.home.vi}
         labels={TESTIMONIALS_LABELS.vi}
       />,
     );
@@ -263,7 +262,7 @@ describe('Testimonials component', () => {
         avatars={mockAvatars}
         copy={mockCopy}
         art={mockArt}
-        ids={TESTIMONIALS_IDS_VI}
+        ids={TESTIMONIALS_IDS.home.vi}
         labels={TESTIMONIALS_LABELS.vi}
       />,
     );

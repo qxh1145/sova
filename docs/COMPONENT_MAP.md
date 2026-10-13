@@ -225,3 +225,12 @@ Không xây SocialLanding, Careers, JobDetail, ApplyForm, SocialFooter hoặc te
 ## Coverage theo từng file
 
 Bảng ROUTE_MAP gán mỗi URL canonical vào đúng cây ở trên. `evidence/pages.json` lưu **thứ tự section, heading, số dòng, forms, fields, sliders/options, iframe, video, class markers** cho cả 169 HTML mirror; `evidence/links.json` lưu mỗi anchor và line. Đây là dữ liệu audit, không phải schema production hay HTML-to-JSX generator.
+
+## Locale ID Preset Convention
+
+Áp dụng cho mọi component hỗ trợ đa ngôn ngữ (VI/EN) có CSS id theo locale (G4 / Story 7.4):
+- Khai báo kiểu và presets trong file `*Ids.ts` nằm cùng thư mục component (ví dụ: `footerCtaIds.ts`, `testimonialsIds.ts`).
+- Shape chuẩn: `Record<Locale, ComponentIds>` (hoặc `Record<Consumer, Record<Locale, ComponentIds>>`).
+- Consumer đọc trực tiếp theo pattern: `PRESET[locale]` (hoặc `PRESET.<consumer>[locale]`). Không dùng wrapper helper/getter nếu key chỉ là `Locale`.
+- Trường hợp ngoại lệ có nhiều route trên một view (ví dụ LegalView, PaymentGuideView): tiếp tục dùng path-keyed presets.
+
