@@ -1,5 +1,6 @@
 {
   "viewports": [390, 549, 550, 768, 849, 850, 1280, 1440],
+  "marqueeViewports": [575, 1199, 1380],
   "viewportHeight": 900,
   "rows": [
     {
@@ -7,28 +8,32 @@
       "url": "/",
       "family": "home",
       "locale": "vi",
-      "reason": "family"
+      "reason": "family",
+      "marquee": true
     },
     {
       "key": "home-en",
       "url": "/en/home/",
       "family": "home",
       "locale": "en",
-      "reason": "family"
+      "reason": "family",
+      "marquee": true
     },
     {
       "key": "about-vi",
       "url": "/gioi-thieu/",
       "family": "about",
       "locale": "vi",
-      "reason": "family"
+      "reason": "family",
+      "marquee": true
     },
     {
       "key": "about-en",
       "url": "/en/about-us/",
       "family": "about",
       "locale": "en",
-      "reason": "family"
+      "reason": "family",
+      "marquee": true
     },
     {
       "key": "contact-vi",
@@ -63,14 +68,16 @@
       "url": "/thiet-ke-website/",
       "family": "website",
       "locale": "vi",
-      "reason": "family; exception: duplicated form (A06)"
+      "reason": "family; exception: duplicated form (A06)",
+      "marquee": true
     },
     {
       "key": "website-en",
       "url": "/en/website-development/",
       "family": "website",
       "locale": "en",
-      "reason": "family"
+      "reason": "family",
+      "marquee": true
     },
     {
       "key": "seo-vi",
@@ -296,6 +303,48 @@
       "family": "content",
       "locale": "en",
       "reason": "exception: terms heading wrap row/col with strong"
+    },
+    {
+      "key": "content-warranty-vi",
+      "url": "/chinh-sach-bao-hanh/",
+      "family": "content",
+      "locale": "vi",
+      "reason": "family; legal warranty policy"
+    },
+    {
+      "key": "content-warranty-en",
+      "url": "/en/warranty-policy/",
+      "family": "content",
+      "locale": "en",
+      "reason": "family; legal warranty policy"
+    },
+    {
+      "key": "content-refund-vi",
+      "url": "/chinh-sach-hoan-tien/",
+      "family": "content",
+      "locale": "vi",
+      "reason": "family; legal refund policy"
+    },
+    {
+      "key": "content-refund-en",
+      "url": "/en/refund-policy/",
+      "family": "content",
+      "locale": "en",
+      "reason": "family; legal refund policy"
+    },
+    {
+      "key": "payment-vi",
+      "url": "/huong-dan-thanh-toan/",
+      "family": "payment",
+      "locale": "vi",
+      "reason": "family; payment guide utility"
+    },
+    {
+      "key": "payment-en",
+      "url": "/en/payment-guide/",
+      "family": "payment",
+      "locale": "en",
+      "reason": "family; payment guide utility"
     },
     {
       "key": "project-detail-thp",

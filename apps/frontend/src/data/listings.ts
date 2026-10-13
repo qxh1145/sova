@@ -92,10 +92,10 @@ export const listingSettings: ListingSettings[] = [
         assetIds: [],
         sources: [{ file: 'en/our-project/index.html', line: 708 }],
       },
-      cta: { label: 'Connect now →', href: '/lien-he/' },
+      cta: { label: 'Connect now →', href: '/en/contact-us/' },
       imageId: 'asset-f85d3636d6',
       bgImageId: 'asset-40c494b5f4',
-      breadcrumb: [{ label: 'Home', href: '/' }, { label: 'Projects' }],
+      breadcrumb: [{ label: 'Home', href: '/en/home/' }, { label: 'Projects' }],
     },
   },
   {

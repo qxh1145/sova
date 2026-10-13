@@ -62,6 +62,18 @@ export async function expectNoDuplicateIds(page: Page) {
   ).toBe(unique.size);
 }
 
+export async function expectNoClientStorage(page: Page) {
+  const storage = await page.evaluate(() => ({
+    local: localStorage.length,
+    session: sessionStorage.length,
+  }));
+  expect(storage.local).toBe(0);
+  expect(storage.session).toBe(0);
+
+  const cookies = await page.context().cookies();
+  expect(cookies).toEqual([]);
+}
+
 export const getBodyOverflow = (page: Page) =>
   page.evaluate(() => window.getComputedStyle(document.body).overflow);
 
@@ -80,6 +92,91 @@ export async function installRafCounter(page: Page) {
     target.__getRafCount = () => count;
     target.__resetRafCount = () => {
       count = 0;
+    };
+  });
+}
+
+export async function installListenerCounter(page: Page) {
+  await page.addInitScript(() => {
+    // Composite map: target (Window | Document) -> type -> Set<listener_capture_key>
+    // or Map keyed by listener with Set/Map of contexts to preserve exact object identity
+    const windowListeners = new Map<string, Map<EventListenerOrEventListenerObject, Set<boolean>>>();
+    const docListeners = new Map<string, Map<EventListenerOrEventListenerObject, Set<boolean>>>();
+
+    function getRegistry(target: EventTarget) {
+      return target === window ? windowListeners : docListeners;
+    }
+
+    function normalizeCapture(options?: boolean | AddEventListenerOptions | EventListenerOptions): boolean {
+      if (typeof options === 'boolean') return options;
+      return Boolean(options?.capture);
+    }
+
+    const origAdd = EventTarget.prototype.addEventListener;
+    const origRemove = EventTarget.prototype.removeEventListener;
+
+    EventTarget.prototype.addEventListener = function (
+      this: EventTarget,
+      type: string,
+      listener: EventListenerOrEventListenerObject | null,
+      options?: boolean | AddEventListenerOptions,
+    ) {
+      if (listener && (this === window || this === document)) {
+        const registry = getRegistry(this);
+        let typeMap = registry.get(type);
+        if (!typeMap) {
+          typeMap = new Map();
+          registry.set(type, typeMap);
+        }
+        let captureSet = typeMap.get(listener);
+        if (!captureSet) {
+          captureSet = new Set();
+          typeMap.set(listener, captureSet);
+        }
+        captureSet.add(normalizeCapture(options));
+      }
+      return origAdd.call(this, type, listener as EventListenerOrEventListenerObject, options);
+    };
+
+    EventTarget.prototype.removeEventListener = function (
+      this: EventTarget,
+      type: string,
+      listener: EventListenerOrEventListenerObject | null,
+      options?: boolean | EventListenerOptions,
+    ) {
+      if (listener && (this === window || this === document)) {
+        const registry = getRegistry(this);
+        const typeMap = registry.get(type);
+        if (typeMap) {
+          const captureSet = typeMap.get(listener);
+          if (captureSet) {
+            captureSet.delete(normalizeCapture(options));
+            if (captureSet.size === 0) {
+              typeMap.delete(listener);
+            }
+          }
+          if (typeMap.size === 0) {
+            registry.delete(type);
+          }
+        }
+      }
+      return origRemove.call(this, type, listener as EventListenerOrEventListenerObject, options);
+    };
+
+    (window as unknown as { __liveListeners: () => Record<string, number> }).__liveListeners = () => {
+      const counts: Record<string, number> = {};
+      for (const registry of [windowListeners, docListeners]) {
+        for (const [type, typeMap] of registry.entries()) {
+          let count = 0;
+          for (const captureSet of typeMap.values()) {
+            count += captureSet.size;
+          }
+          if (count > 0) {
+            counts[type] = (counts[type] || 0) + count;
+          }
+        }
+      }
+      return counts;
     };
   });
 }

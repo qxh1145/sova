@@ -8,15 +8,18 @@ export interface LatestPostsProps {
   posts: Post[];
   copy: SectionCopy;
   assets?: AssetRef[];
+  href?: string;
 }
 
 const VI_CAROUSEL_LABELS: CarouselLabels = {
   prev: 'Trước',
   next: 'Tiếp theo',
   goTo: 'Chuyển tới slide {index}',
+  pause: 'Tạm dừng trình chiếu',
+  play: 'Tiếp tục trình chiếu',
 };
 
-export function LatestPosts({ posts, copy, assets = [] }: LatestPostsProps) {
+export function LatestPosts({ posts, copy, assets = [], href = '/goc-nhin/' }: LatestPostsProps) {
   const seen = new Set<string>();
   const dedupedPosts: Post[] = [];
   for (const post of posts) {
@@ -77,7 +80,7 @@ export function LatestPosts({ posts, copy, assets = [] }: LatestPostsProps) {
               {copy.description && (
                 <div id="text-578526168" className="text">
                   <p>
-                    <Link href="/goc-nhin/" className="but-lh">
+                    <Link href={href} className="but-lh">
                       {copy.description}
                     </Link>
                   </p>

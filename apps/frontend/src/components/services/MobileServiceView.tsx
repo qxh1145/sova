@@ -18,11 +18,11 @@ import {
 } from './ServiceDetailCards';
 import {
   Testimonials,
-  TESTIMONIALS_IDS_MOBILE_EN,
-  TESTIMONIALS_IDS_MOBILE_VI,
+  TESTIMONIALS_IDS,
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { FAQList } from '@/components/faq/FAQList';
+import { faqToggleLabel } from '@/components/faq/faqIds';
 import { FeaturedProjects, type FeaturedProjectsIds } from '@/components/projects/FeaturedProjects';
 
 const FEATURED_PROJECTS_IDS_MOBILE: FeaturedProjectsIds = {
@@ -94,7 +94,7 @@ export function MobileServiceView({ page, assets, locale }: MobileServiceViewPro
           avatars={assets.testimonialAvatars}
           copy={copy.testimonials}
           art={assets.testimonialArt}
-          ids={isEn ? TESTIMONIALS_IDS_MOBILE_EN : TESTIMONIALS_IDS_MOBILE_VI}
+          ids={TESTIMONIALS_IDS.mobile[locale]}
           labels={TESTIMONIALS_LABELS[locale]}
         />
       )}
@@ -146,7 +146,7 @@ export function MobileServiceView({ page, assets, locale }: MobileServiceViewPro
                     faqs={faqs}
                     type="single"
                     defaultOpen="first"
-                    labels={{ toggle: isEn ? 'Toggle answer' : 'Mở rộng câu trả lời' }} // business-text-ok: accordion toggle label
+                    labels={{ toggle: faqToggleLabel(locale) }}
                   />
                 </div>
               </div>

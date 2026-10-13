@@ -8,8 +8,7 @@ import { FeaturedProjects } from '@/components/projects/FeaturedProjects';
 import { PartnerLogos } from '@/components/partners/PartnerLogos';
 import {
   Testimonials,
-  TESTIMONIALS_IDS_EN,
-  TESTIMONIALS_IDS_VI,
+  TESTIMONIALS_IDS,
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { LatestPosts } from '@/components/blog/LatestPosts';
@@ -189,13 +188,14 @@ export function HomeView({
         avatars={testimonialAssets}
         copy={content.sectionCopy.testimonials}
         art={content.testimonialArt}
-        ids={isEn ? TESTIMONIALS_IDS_EN : TESTIMONIALS_IDS_VI}
+        ids={TESTIMONIALS_IDS.home[locale]}
         labels={TESTIMONIALS_LABELS[locale]}
       />
       <LatestPosts
         posts={content.posts}
         copy={content.sectionCopy.posts}
         assets={postAssets}
+        href={isEn ? '/en/insight/' : '/goc-nhin/'}
       />
     </main>
   );

@@ -102,6 +102,50 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
     expect(await getBodyOverflow(page)).not.toBe('hidden');
   });
 
+  test('project lightbox closes through mfp-removing and can reopen mid-close', async ({ page }) => {
+    await page.goto('/featured_item/bossman-cong-ty-co-phan-bossman-viet-nam/');
+    const link = page.locator('#slider-duan a.lightbox-gallery');
+    await link.click();
+    await expect(page.locator('.mfp-wrap')).toHaveClass(/mfp-ready/);
+    await page.keyboard.press('Escape');
+    await expect(page.locator('.mfp-wrap')).toHaveClass(/mfp-removing/);
+    await expect(page.locator('.mfp-bg')).toHaveClass(/mfp-removing/);
+    await link.click();
+    await expect(page.locator('.mfp-wrap')).not.toHaveClass(/mfp-removing/);
+    await expect(page.getByRole('dialog')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('.mfp-wrap')).toHaveCount(0);
+    await expect(link).toBeFocused();
+  });
+
+  test('Dialog close phase persists until transition, while reduced motion skips it', async ({ page }) => {
+    await page.goto('/dev-fixtures/overlay/menu-consult');
+    const trigger = page.getByTestId('menu-trigger');
+    await trigger.click();
+    await expect(page.locator('.mfp-wrap')).toHaveClass(/mfp-ready/);
+    await page.keyboard.press('Escape');
+    await expect(page.locator('.mfp-wrap')).toHaveClass(/mfp-removing/);
+    await expect(page.locator('.mfp-bg')).toHaveClass(/mfp-removing/);
+    await expect(page.locator('.mfp-wrap')).toHaveCount(0);
+    await expect(trigger).toBeFocused();
+
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await trigger.click();
+    await expect(page.locator('.mfp-wrap')).toHaveClass(/mfp-ready/);
+    await page.evaluate(() => {
+      const w = window as unknown as { __sawRemoving: boolean };
+      w.__sawRemoving = false;
+      new MutationObserver(() => {
+        if (document.querySelector('.mfp-removing')) w.__sawRemoving = true;
+      }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
+    });
+    await page.keyboard.press('Escape');
+    await expect(page.locator('.mfp-wrap')).toHaveCount(0, { timeout: 150 });
+    await expect(page.locator('.mfp-wrap')).toHaveCount(0);
+    await expect(trigger).toBeFocused();
+    expect(await page.evaluate(() => (window as unknown as { __sawRemoving: boolean }).__sawRemoving)).toBe(false);
+  });
+
   test('Matrix 4: Overlay click — pointer down on .mfp-container outside content closes and returns focus', async ({
     page,
   }) => {
@@ -116,6 +160,8 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
     const container = page.locator('.mfp-container');
     await expect(container).toBeVisible();
     await container.click({ position: { x: 20, y: 20 } });
+    await expect(page.locator('.mfp-wrap')).toHaveClass(/mfp-removing/);
+    await expect(page.locator('.mfp-bg')).toHaveClass(/mfp-removing/);
     await expect(dialog).toHaveCount(0);
 
     // Focus returns to trigger
@@ -133,6 +179,8 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
     await expect(dialog).toBeVisible();
 
     await page.locator('[role="dialog"] button.mfp-close').click();
+    await expect(page.locator('.mfp-wrap')).toHaveClass(/mfp-removing/);
+    await expect(page.locator('.mfp-bg')).toHaveClass(/mfp-removing/);
     await expect(dialog).toHaveCount(0);
 
     // Focus returns to trigger

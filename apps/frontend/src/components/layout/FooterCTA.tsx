@@ -1,25 +1,31 @@
 import { Fragment } from 'react';
 import Link from 'next/link';
 
+import type { Locale } from '@/types/content';
+import { FOOTER_CTA_IDS } from './footerCtaIds';
+
 export interface FooterCTAProps {
   headingLines: string[];
   targetHref: string;
+  locale: Locale;
 }
 
-export function FooterCTA({ headingLines, targetHref }: FooterCTAProps) {
+export function FooterCTA({ headingLines, targetHref, locale }: FooterCTAProps) {
+  const ids = FOOTER_CTA_IDS[locale];
+
   return (
-    <section className="section ss-last" id="section_539620154">
+    <section className="section ss-last" id={ids.section}>
       <div className="section-bg fill" />
       <div className="section-content relative">
         <div
-          id="gap-701964121"
+          id={ids.gap}
           className="gap-element clearfix"
           style={{ display: 'block', height: 'auto', paddingTop: 78 }}
         />
-        <div className="row align-middle align-center" id="row-2042733711">
-          <div id="col-395461297" className="col medium-9 small-9 large-9">
+        <div className="row align-middle align-center" id={ids.row}>
+          <div id={ids.colLeft} className="col medium-9 small-9 large-9">
             <div className="col-inner">
-              <div id="text-43480091" className="text">
+              <div id={ids.text} className="text">
                 <h1>
                   <Link href={targetHref} style={{ display: 'block' }}>
                     {headingLines.map((line, i) => (
@@ -34,7 +40,7 @@ export function FooterCTA({ headingLines, targetHref }: FooterCTAProps) {
             </div>
           </div>
 
-          <div id="col-1563444768" className="col medium-3 small-3 large-3">
+          <div id={ids.colRight} className="col medium-3 small-3 large-3">
             <div className="col-inner text-right">
               <Link className="plain" href={targetHref}>
                 <div className="icon-box featured-box icon-box-footer icon-box-right text-right">

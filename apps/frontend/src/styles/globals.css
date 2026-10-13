@@ -92,10 +92,21 @@ html.has-custom-cursor .cursor-ring {
   }
 }
 
-/* Not in source: stop the home marquee for users who ask for reduced motion. */
+/* Not in source: stop the home marquee and the contact widget pulse for users who ask for reduced motion. */
 @media (prefers-reduced-motion: reduce) {
-  .cs-moving_text {
+  .cs-moving_text,
+  .arcu-widget .arcu-message-button .pulsation {
     animation-play-state: paused;
+  }
+  /* Thank-you check mark: skip the looping draw and show it fully drawn. */
+  .success-animate svg,
+  .success-animate .circle,
+  .success-animate .check {
+    animation: none;
+  }
+  .success-animate .circle,
+  .success-animate .check {
+    stroke-dashoffset: 0;
   }
 }
 
@@ -146,6 +157,48 @@ html.has-custom-cursor .cursor-ring {
 #section_922596210 .icon-box-text > .text > h3,
 #section_1367982414 .icon-box-text > .text > h3 {
   margin-bottom: 0.5em;
+}
+
+/* VI Footer CTA: source index.html:2870,2921. Made shell-wide so non-home VI routes get CTA rules. */
+#text-43480091 {
+  font-size: 1.2rem;
+  text-align: left;
+}
+@media (min-width: 550px) {
+  #text-43480091 {
+    font-size: 2.9rem;
+  }
+}
+#section_539620154 {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+@media (min-width: 550px) {
+  #section_539620154 {
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+}
+
+/* EN Footer CTA: source en/home/index.html:2697,2748. Made shell-wide so all EN routes get CTA rules. */
+#text-3886040369 {
+  font-size: 1.4rem;
+  text-align: left;
+}
+@media (min-width: 550px) {
+  #text-3886040369 {
+    font-size: 2.9rem;
+  }
+}
+#section_1016084764 {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+@media (min-width: 550px) {
+  #section_1016084764 {
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
 }
 
 /* SEO FAQ answers: source per-id rule on every answer `.text` (`font-size: 1.1rem; color: #fff`). */
@@ -314,4 +367,12 @@ html.has-custom-cursor .cursor-ring {
   .timeline-track [aria-hidden='true'] {
     display: none;
   }
+}
+
+/* Keep keyboard-open desktop dropdown above the legacy hidden state. */
+#masthead li.current-dropdown > .nav-dropdown {
+  left: -15px;
+  max-height: inherit;
+  opacity: 1;
+  visibility: visible;
 }

@@ -26,6 +26,8 @@ export interface DialogProps {
 
 function DialogPortalInner({
   variant,
+  closing,
+  onTransitionEnd,
   holder = 'inline',
   side = 'right',
   id,
@@ -36,7 +38,7 @@ function DialogPortalInner({
   labels,
   onCloseAutoFocus,
   children,
-}: Omit<DialogProps, 'open' | 'onOpenChange'>) {
+}: Omit<DialogProps, 'open' | 'onOpenChange'> & { closing: boolean; onTransitionEnd: () => void }) {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -51,8 +53,8 @@ function DialogPortalInner({
   const variantClass = variant === 'off-canvas' ? `off-canvas off-canvas-${side}` : undefined;
   const readyClass = isReady ? 'mfp-ready' : undefined;
 
-  const overlayClasses = ['mfp-bg', variantClass, readyClass].filter(Boolean).join(' ');
-  const wrapClasses = ['mfp-wrap', 'mfp-close-btn-in', 'mfp-auto-cursor', variantClass, readyClass].filter(Boolean).join(' ');
+  const overlayClasses = ['mfp-bg', variantClass, readyClass, closing && 'mfp-removing'].filter(Boolean).join(' ');
+  const wrapClasses = ['mfp-wrap', 'mfp-close-btn-in', 'mfp-auto-cursor', variantClass, readyClass, closing && 'mfp-removing'].filter(Boolean).join(' ');
   const contentClasses = [
     'mfp-content',
     variant === 'lightbox' ? 'lightbox-content' : undefined,
@@ -62,12 +64,16 @@ function DialogPortalInner({
     .join(' ');
 
   return (
-    <DialogPrimitive.Overlay asChild>
+    <DialogPrimitive.Overlay asChild forceMount>
       <div style={{ display: 'contents' }}>
         <div className={overlayClasses} />
         <div className={wrapClasses} style={{ pointerEvents: 'auto', overflowY: 'auto' }}>
           <div className={`mfp-container mfp-s-ready mfp-${holder}-holder`}>
             <DialogPrimitive.Content
+              forceMount
+              onTransitionEnd={(event) => {
+                if (event.target === event.currentTarget && event.propertyName === 'opacity' && closing) onTransitionEnd();
+              }}
               id={id}
               className={contentClasses}
               onCloseAutoFocus={onCloseAutoFocus}
@@ -112,16 +118,46 @@ function DialogPortalInner({
   );
 }
 
+// Reduced motion unmounts at once: never enter the `mfp-removing` phase.
+const animateClose = () => !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 export function Dialog({
   open,
   onOpenChange,
   ...rest
 }: DialogProps) {
+  const [closing, setClosing] = useState(false);
+  const [previousOpen, setPreviousOpen] = useState(open);
+
+  if (open !== previousOpen) {
+    setPreviousOpen(open);
+    setClosing(!open && animateClose());
+  }
+
+  useEffect(() => {
+    if (open || !closing) return;
+    const timeout = window.setTimeout(() => setClosing(false), 300);
+    return () => window.clearTimeout(timeout);
+  }, [open, closing]);
+
   return (
-    <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
-      <DialogPrimitive.Portal>
-        <DialogPortalInner {...rest} />
-      </DialogPrimitive.Portal>
+    <DialogPrimitive.Root
+      open={open || closing}
+      onOpenChange={(nextOpen) => {
+        if (nextOpen) setClosing(false);
+        if (!nextOpen && open) setClosing(animateClose());
+        onOpenChange(nextOpen);
+      }}
+    >
+      {(open || closing) && (
+        <DialogPrimitive.Portal forceMount>
+          <DialogPortalInner
+            {...rest}
+            closing={!open && closing}
+            onTransitionEnd={() => setClosing(false)}
+          />
+        </DialogPrimitive.Portal>
+      )}
     </DialogPrimitive.Root>
   );
 }

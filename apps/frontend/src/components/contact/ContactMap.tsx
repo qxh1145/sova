@@ -1,5 +1,5 @@
 export interface ContactMapProps {
-  embedUrl?: string | null;
+  embedUrl: string;
   title: string;
 }
 

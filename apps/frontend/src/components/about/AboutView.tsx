@@ -12,8 +12,7 @@ import { Marquee } from '@/components/motion/Marquee';
 import { Carousel } from '@/components/ui/Carousel';
 import {
   Testimonials,
-  TESTIMONIALS_IDS_ABOUT_EN,
-  TESTIMONIALS_IDS_ABOUT_VI,
+  TESTIMONIALS_IDS,
   TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 
@@ -37,7 +36,7 @@ export interface AboutViewProps {
 export function AboutView({ page, assets, locale }: AboutViewProps) {
   const isVi = locale === 'vi';
   const heroIds = isVi ? ABOUT_HERO_IDS_VI : ABOUT_HERO_IDS_EN;
-  const testimonialIds = isVi ? TESTIMONIALS_IDS_ABOUT_VI : TESTIMONIALS_IDS_ABOUT_EN;
+  const testimonialIds = TESTIMONIALS_IDS.about[locale];
   const labels = TESTIMONIALS_LABELS[locale];
 
   return (

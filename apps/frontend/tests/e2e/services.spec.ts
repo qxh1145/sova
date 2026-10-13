@@ -805,7 +805,7 @@ const SEO_SERVICES_ROUTES = [
     ],
     headingLines: ['Top-Ranking', 'SEO Services'],
     breadcrumb: 'Home / Services / Website keyword SEO',
-    homeHref: '/en/',
+    homeHref: '/en/home/',
     homeLabel: 'Home',
     breadcrumbId: 'text-4167340980',
     topGapId: 'gap-716151157',
@@ -1025,7 +1025,7 @@ const BRANDING_SERVICES_ROUTES = [
     ],
     headingLines: ['UI/UX,', 'Branding Design'],
     breadcrumb: 'Home / Services / UI/UX, Branding Design',
-    homeHref: '/en/',
+    homeHref: '/en/home/',
     homeLabel: 'Home',
     breadcrumbId: 'text-931641378',
     heroCtaId: 'text-1083235922',
@@ -1262,7 +1262,7 @@ const WEBSITE_SERVICES_ROUTES = [
     path: '/en/website-development/',
     headingLines: ['Professional', 'Website Development'],
     breadcrumb: 'Home / Services / Website Development',
-    homeHref: '/en/',
+    homeHref: '/en/home/',
     homeLabel: 'Home',
     sectionIds: [
       'banner-653181182',
@@ -1374,7 +1374,10 @@ test.describe('Website Service Pages (Story 5.7)', () => {
 
       // Hero CTA
       const heroCta = page.locator('main .banner a.but-lh');
-      await expect(heroCta).toHaveAttribute('href', '/lien-he/');
+      await expect(heroCta).toHaveAttribute(
+        'href',
+        config.locale === 'en' ? '/en/contact-us/' : '/lien-he/',
+      );
 
       // Marquee present, with Ellipse-2351.svg separator
       const marquee = page.locator('.cs-moving_text_wrap');

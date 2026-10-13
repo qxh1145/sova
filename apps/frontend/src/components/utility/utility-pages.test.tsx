@@ -6,6 +6,7 @@ import { siteSettings } from '@/data/site';
 import { shellContent } from '@/data/shell';
 import { createMockRepository } from '@/lib/repositories/mock';
 import type { ContentData, ContentRepository } from '@/lib/repositories/contracts';
+import type { UtilityContent } from '@/types/content';
 import { ThankYouView } from './ThankYouView';
 import ThankYouPage from '@/app/(site)/(vi)/eras-xin-chan-thanh-cam-on-quy-khach/page'; // business-text-ok: route import
 import HoSoNangLucPage from '@/app/(site)/(vi)/ho-so-nang-luc-eras-vietnam/page'; // business-text-ok: route import
@@ -164,6 +165,15 @@ describe('ThankYouView component', () => {
 
   it('invokes notFound() when login record is missing', async () => {
     repository = repoWith({ utilityContent: [] });
+
+    await expect(LoginPage()).rejects.toThrow('NEXT_NOT_FOUND');
+    expect(notFoundMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('invokes notFound() when record.login property is missing', async () => {
+    const loginRecord = utilityContent.find((c) => c.id === 'login-vi')!;
+    const recordWithoutLogin = { ...loginRecord, login: undefined };
+    repository = repoWith({ utilityContent: [recordWithoutLogin as UtilityContent] });
 
     await expect(LoginPage()).rejects.toThrow('NEXT_NOT_FOUND');
     expect(notFoundMock).toHaveBeenCalledTimes(1);

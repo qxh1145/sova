@@ -43,12 +43,17 @@ export interface WebsiteContactValidationMessages {
   phoneInvalid: string;
 }
 
+function requiredText(message: string, max?: number) {
+  const schema = z.string().trim().min(1, { message });
+  return typeof max === 'number' ? schema.max(max) : schema;
+}
+
 export function websiteContactSchema(messages: WebsiteContactValidationMessages) {
   return z.object({
     // max() mirrors the source inputs' maxlength (400 / textarea 2000)
-    'your-name': z.string().trim().min(1, { message: messages.nameRequired }).max(400),
+    'your-name': requiredText(messages.nameRequired, 400),
     'your-phone': optionalPhoneSchema(messages.phoneInvalid),
-    'your-lvuc': z.string().trim().min(1, { message: messages.businessRequired }).max(400),
+    'your-lvuc': requiredText(messages.businessRequired, 400),
     'your-message': z.string().trim().max(2000).optional(),
   });
 }
@@ -63,19 +68,16 @@ export interface ContactValidationMessages {
 
 export function contactSchema(messages: ContactValidationMessages) {
   return z.object({
-    'your-name': z.string().trim().min(1, { message: messages.required }).max(400),
-    'your-email': z
-      .string()
-      .trim()
-      .min(1, { message: messages.required })
-      .max(400)
-      .pipe(z.string().email({ message: messages.emailInvalid })),
-    service: z.string().trim().min(1, { message: messages.required }),
+    'your-name': requiredText(messages.required, 400),
+    'your-email': requiredText(messages.required, 400).pipe(
+      z.string().email({ message: messages.emailInvalid }),
+    ),
+    service: requiredText(messages.required),
     'tel-584': phoneSchema({
       required: messages.required,
       invalid: messages.phoneInvalid,
     }),
-    'your-message': z.string().trim().min(1, { message: messages.required }).max(2000),
+    'your-message': requiredText(messages.required, 2000),
   });
 }
 
@@ -95,4 +97,3 @@ export function loginSchema(messages: LoginValidationMessages) {
 }
 
 export type LoginFormValues = z.infer<ReturnType<typeof loginSchema>>;
-

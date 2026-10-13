@@ -1,6 +1,6 @@
 import { expect, expectNoDuplicateIds, test } from './fixtures';
 import { paymentGuides } from '../../src/data/pages/legal';
-import { getPaymentPreset } from '../../src/components/legal/PaymentGuideView';
+import { getPaymentPreset } from '../../src/components/legal/paymentIds';
 
 test.describe('Payment Guide Pages', () => {
   for (const record of paymentGuides) {

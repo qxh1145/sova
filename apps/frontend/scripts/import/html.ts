@@ -6,6 +6,8 @@ import {
   rewriteEraLinks,
 } from '../../src/lib/content/brand.ts';
 import { SCRUB_RULES, scrubContacts } from '../../src/lib/content/scrub.ts';
+import { routes } from '../../src/data/routes.ts';
+import { buildCounterpartMap } from '../../src/lib/routes.ts';
 
 export interface Stats {
   brand: number;
@@ -21,11 +23,23 @@ export function processText(raw: string, stats: Stats): string {
   return branded.text;
 }
 
+const EN_COUNTERPARTS = buildCounterpartMap(routes, 'vi');
+/** VI targets EN records keep as-is (story 6.8: footer privacy links the VI policy). */
+const KEEP_VI = new Set(['/chinh-sach-bao-mat/']);
+
 /** Href pipeline: decode -> scrub -> link rewrite (logged). */
 export function processHref(raw: string, file: string, line: number, stats: Stats): string | null {
   const scrubbed = scrubContacts(decodeEscapes(raw));
   stats.scrub += scrubbed.count;
-  const href = rewriteEraLinks(scrubbed.text, `https://erasvietnam.vn/${file}`);
+  let href = rewriteEraLinks(scrubbed.text, `https://erasvietnam.vn/${file}`);
+  if (
+    file.startsWith('en/') &&
+    href &&
+    !KEEP_VI.has(href) &&
+    Object.hasOwn(EN_COUNTERPARTS, href)
+  ) {
+    href = EN_COUNTERPARTS[href];
+  }
   if (href !== scrubbed.text)
     console.log(`link ${file}:${line} ${raw} -> ${href ?? '(unwrapped)'}`);
   return href;
@@ -115,7 +129,9 @@ export function sanitize(
     if (!(node instanceof HTMLElement)) return '';
     const tag = node.rawTagName?.toLowerCase() ?? '';
     if (DROPPED.has(tag)) return '';
-    const cls = hooks.keepClass ? attr('class', node.getAttribute('class')?.trim() || undefined) : '';
+    const cls = hooks.keepClass
+      ? attr('class', node.getAttribute('class')?.trim() || undefined)
+      : '';
     if (tag === 'br') return `<br${cls}>`;
     if (tag === 'hr' && allowed.has(tag)) return '<hr>';
     if (allowed.has(tag) && (tag === 'img' || tag === 'source')) {

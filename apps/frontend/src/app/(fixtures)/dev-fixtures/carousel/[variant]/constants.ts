@@ -4,5 +4,7 @@ export const FIXTURE_CAROUSEL_LABELS: CarouselLabels = {
   prev: 'Previous',
   next: 'Next',
   goTo: 'Go to slide {index}',
+  pause: 'Pause slideshow',
+  play: 'Play slideshow',
   region: 'Carousel',
 };
