@@ -1,16 +1,14 @@
 import '@/styles/legacy/sections/route-en--business-vps.css';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import { seoMetadata } from '@/lib/queries/site';
 import { getServiceAssets, getServicePage } from '@/lib/queries/services';
 import { VpsServiceView } from '@/components/services/VpsServiceView';
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getServicePage('vps', 'en');
   if (!page) return {};
-  return {
-    title: page.service.seo.title,
-    description: page.service.seo.description,
-  };
+  return seoMetadata(page.service.seo);
 }
 
 export default async function EnVpsServicePage() {

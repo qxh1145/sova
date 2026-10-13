@@ -1,3 +1,4 @@
+import { seoMetadata } from '@/lib/queries/site';
 import '@/styles/legacy/sections/route-cau-hoi-thuong-gap.css';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
@@ -8,10 +9,7 @@ import { FAQTopicsView } from '@/components/faq/FAQTopicsView';
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getFAQPage('vi');
   if (!page) return {};
-  return {
-    title: page.seo.title,
-    description: page.seo.description,
-  };
+  return seoMetadata(page.seo);
 }
 
 export default async function CauHoiThuongGapPage() {

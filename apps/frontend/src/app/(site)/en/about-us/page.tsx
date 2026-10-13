@@ -1,3 +1,4 @@
+import { seoMetadata } from '@/lib/queries/site';
 import '@/styles/legacy/sections/route-en--about-us.css';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
@@ -7,10 +8,7 @@ import { AboutView } from '@/components/about/AboutView';
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getAboutPage('en');
   if (!page) return {};
-  return {
-    title: page.seo.title,
-    description: page.seo.description,
-  };
+  return seoMetadata(page.seo);
 }
 
 export default async function EnAboutPage() {

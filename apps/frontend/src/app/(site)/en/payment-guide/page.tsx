@@ -1,3 +1,4 @@
+import { seoMetadata } from '@/lib/queries/site';
 import '@/styles/legacy/sections/route-en--payment-guide.css';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
@@ -7,10 +8,7 @@ import { PaymentGuideView } from '@/components/legal/PaymentGuideView';
 export async function generateMetadata(): Promise<Metadata> {
   const guide = await getPaymentGuide('en');
   if (!guide) return {};
-  return {
-    title: guide.seo.title,
-    description: guide.seo.description,
-  };
+  return seoMetadata(guide.seo);
 }
 
 export default async function PaymentGuidePage() {
