@@ -10,7 +10,7 @@ import { UnmountToggle } from './UnmountToggle';
 
 export const dynamic = 'force-dynamic';
 
-const VALID_VARIANTS = new Set(['empty', 'error', 'missing-media', 'unmount']);
+const VALID_VARIANTS = new Set(['empty', 'error', 'missing-media', 'unmount', 'one-card']);
 
 export default async function DevFixtureHomePage({
   params,
@@ -45,6 +45,20 @@ export default async function DevFixtureHomePage({
           categories={projectCategories}
         />
       </UnmountToggle>
+    );
+  }
+
+  if (variant === 'one-card') {
+    const home = await getHomePage('vi');
+    if (!home) notFound();
+    const { projectAssets, projectCategories } = await getHomeAssets(home);
+    return (
+      <FeaturedProjects
+        projects={home.projects.slice(0, 1)}
+        copy={home.sectionCopy.projects}
+        assets={projectAssets}
+        categories={projectCategories}
+      />
     );
   }
 

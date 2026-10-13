@@ -24,6 +24,7 @@ import { getContactPreset } from '../../src/components/contact/contactIds';
 import { getFAQPreset } from '../../src/components/faq/faqIds';
 import { getLegalPreset } from '../../src/components/legal/legalIds';
 import { getPaymentPreset } from '../../src/components/legal/paymentIds';
+import { routes } from '@/data/routes';
 import type { Service } from '@/types/content';
 
 const WIDTHS = [390, 549, 550, 768, 849, 850, 1280, 1440];
@@ -302,16 +303,52 @@ test.describe('Acceptance: Site shell on real routes', () => {
 });
 
 test.describe('Acceptance: 8 responsive widths viewport checks', () => {
-  const ROUTES = [
-    { locale: 'vi', path: '/' },
-    { locale: 'en', path: '/en/home/' },
+  // One route per (kind, locale) derived from routes registry
+  const familyRoutesMap = new Map<string, { locale: string; path: string; kind: string }>();
+  for (const r of routes) {
+    const key = `${r.kind}:${r.locale}`;
+    if (!familyRoutesMap.has(key)) {
+      familyRoutesMap.set(key, { locale: r.locale, path: r.path, kind: r.kind });
+    }
+  }
+  const ROUTES = Array.from(familyRoutesMap.values());
+
+  // Boundary rule: If sweep finds overflow/duplicate-id caused by page markup, record as bug in notes
+  // and add route to KNOWN_ISSUES skip list with a reason.
+  const KNOWN_ISSUES = new Map<string, string>([
+    [
+      '/login-eras/',
+      'Login form markup (.row) overflows viewport at widths >= 768px due to bootstrap negative margins on #login',
+    ],
+    [
+      '/en/porfolio-eras-vietnam/',
+      'Flatsome banner markup (.banner-layers) has overflow:auto with scrollWidth > clientWidth at widths < 550px',
+    ],
+    [
+      '/ho-so-nang-luc-eras-vietnam/',
+      'Flatsome banner markup (.banner-layers) has overflow:auto with scrollWidth > clientWidth at widths < 550px',
+    ],
+    [
+      '/featured_item/an-phat-cong-ty-co-phan-cong-nghe-thuong-mai-an-phat/',
+      'Flatsome banner markup (.banner-layers) has overflow:auto with scrollWidth > clientWidth at widths < 550px',
+    ],
+  ]);
+
+  const ALLOWED_SCROLLER_SELECTORS = [
+    '.horizontal-scroll-section',
+    '.vps-table-wrapper',
+    '.timeline-track-wrap',
+    '.embla__viewport',
+    '.flickity-viewport',
   ];
 
-  for (const { locale, path } of ROUTES) {
-    for (const width of WIDTHS) {
-      test(`Width ${width}px (${locale}): no overflow, no duplicate IDs, screenshot attached`, async ({
-        page,
-      }, testInfo) => {
+  for (const { locale, path, kind } of ROUTES) {
+    test(`${kind} (${locale}) responsive widths: no overflow, no duplicate IDs`, async ({
+      page,
+    }, testInfo) => {
+      test.skip(KNOWN_ISSUES.has(path), `Known issue: ${KNOWN_ISSUES.get(path)}`);
+
+      for (const width of WIDTHS) {
         await page.setViewportSize({ width, height: 900 });
         await page.goto(path);
 
@@ -320,19 +357,45 @@ test.describe('Acceptance: 8 responsive widths viewport checks', () => {
         );
         expect(
           hasHorizontalOverflow,
-          `Horizontal overflow detected on ${path} at width ${width}px`,
+          `Horizontal overflow detected on ${path} (${kind}) at width ${width}px`,
         ).toBe(false);
+
+        const unallowedScrollers = await page.evaluate((allowedSelectors) => {
+          const allEls = Array.from(document.querySelectorAll('*'));
+          const offenders: string[] = [];
+          for (const el of allEls) {
+            const style = window.getComputedStyle(el);
+            const ox = style.overflowX;
+            if (ox === 'auto' || ox === 'scroll') {
+              if (el.scrollWidth > el.clientWidth) {
+                const matchesAllowed = allowedSelectors.some((sel) => el.matches(sel) || Boolean(el.closest(sel)));
+                if (!matchesAllowed) {
+                  const tag = el.tagName.toLowerCase();
+                  const id = el.id ? `#${el.id}` : '';
+                  const cls = el.className && typeof el.className === 'string' ? `.${el.className.trim().split(/\s+/).join('.')}` : '';
+                  offenders.push(`${tag}${id}${cls}`);
+                }
+              }
+            }
+          }
+          return offenders;
+        }, ALLOWED_SCROLLER_SELECTORS);
+
+        expect(
+          unallowedScrollers,
+          `Disallowed horizontal scrollers on ${path} at width ${width}px: ${unallowedScrollers.join(', ')}`,
+        ).toEqual([]);
 
         await expectNoDuplicateIds(page);
 
-        const screenshotPath = testInfo.outputPath(`shell-${locale}-${width}.png`);
+        const screenshotPath = testInfo.outputPath(`shell-${locale}-${kind}-${width}.png`);
         await page.screenshot({ path: screenshotPath, fullPage: false });
-        await testInfo.attach(`shell-${locale}-${width}`, {
+        await testInfo.attach(`shell-${locale}-${kind}-${width}`, {
           path: screenshotPath,
           contentType: 'image/png',
         });
-      });
-    }
+      }
+    });
   }
 });
 
