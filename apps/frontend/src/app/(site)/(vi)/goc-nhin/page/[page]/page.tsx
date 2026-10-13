@@ -14,8 +14,31 @@ export async function generateStaticParams() {
     .map((parts) => ({ page: parts[2] }));
 }
 
+import type { Metadata } from 'next';
+import { BRAND_TITLE_SUFFIX, routeAlternates } from '@/lib/queries/site';
+
 interface GocNhinPagedProps {
   params: Promise<{ page: string }>;
+}
+
+export async function generateMetadata({ params }: GocNhinPagedProps): Promise<Metadata> {
+  const { page: pageStr } = await params;
+  const pageNum = parsePageParam(pageStr);
+  if (pageNum === null) return {};
+
+  const targetPath: `/${string}` = `/goc-nhin/page/${pageNum}/`;
+  const data = await getBlogListingPage({
+    page: pageNum,
+    locale: 'vi',
+  });
+  if (!data) return {};
+
+  const title = `${data.settings?.heading.title ?? data.copy.title}${BRAND_TITLE_SUFFIX}`;
+  const alternates = await routeAlternates(targetPath);
+  return {
+    title,
+    alternates,
+  };
 }
 
 export default async function ViGocNhinPagedPage({ params }: GocNhinPagedProps) {

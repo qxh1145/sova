@@ -45,6 +45,10 @@ export default async function DevFixtureProjectsPage({
     getProjectListingPage(locale, repo),
   ]);
 
+  if (!data) {
+    notFound();
+  }
+
   return (
     <SiteShell {...shell}>
       <ProjectListView {...data} loading={variant === 'loading'} />

@@ -1,8 +1,11 @@
+import type { Metadata } from 'next';
 import { getRepository } from '@/lib/repositories';
 import type { ContentRepository } from '@/lib/repositories/contracts';
 import { buildCounterpartMap, pathForRouteId, resolvePath } from '@/lib/routes';
-import type { Locale, Navigation, RouteEntry, ShellContent, SiteSettings } from '@/types/content';
+import type { Locale, Navigation, PublicPath, RouteEntry, SEO, ShellContent, SiteSettings } from '@/types/content';
 import { resolveDeep } from './tokens';
+
+export const BRAND_TITLE_SUFFIX = ' - Công ty thiết kế website chuyên nghiệp | Sova';
 
 const resolveSettings = (settings: SiteSettings) =>
   JSON.stringify(settings).includes('{{site.') ? resolveDeep(settings, settings) : settings;
@@ -61,4 +64,23 @@ export async function getCounterpartMap(locale: Locale): Promise<Record<string, 
 
 export async function resolveRoute(path: string) {
   return resolvePath(await listRoutes(), path);
+}
+
+export async function routeAlternates(path: PublicPath): Promise<Metadata['alternates']> {
+  const routes = await listRoutes();
+  const entry = routes.find((r) => r.path === path);
+  if (!entry) return { canonical: path };
+  const other = buildCounterpartMap(routes, entry.locale)[path];
+  const otherLocale = entry.locale === 'vi' ? 'en' : 'vi';
+  return { canonical: path, languages: { [entry.locale]: path, ...(other && { [otherLocale]: other }) } };
+}
+
+export async function seoMetadata(seo: SEO): Promise<Metadata> {
+  const alternates = await routeAlternates(seo.canonicalPath);
+  return {
+    title: seo.title,
+    ...(seo.description && { description: seo.description }),
+    alternates,
+    ...(seo.noIndex && { robots: { index: false, follow: true } }),
+  };
 }

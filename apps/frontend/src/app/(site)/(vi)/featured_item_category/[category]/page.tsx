@@ -1,7 +1,9 @@
 import '@/styles/legacy/sections/route-featured_item_category--branding.css';
 import '@/styles/legacy/sections/route-featured_item_category--mobile-app.css';
 import '@/styles/legacy/sections/route-featured_item_category--website.css';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { BRAND_TITLE_SUFFIX, routeAlternates } from '@/lib/queries/site';
 import { getProjectListingPage } from '@/lib/queries/projects';
 import {
   ProjectArchiveView,
@@ -40,6 +42,23 @@ interface FeaturedItemCategoryProps {
   params: Promise<{ category: string }>;
 }
 
+export async function generateMetadata({ params }: FeaturedItemCategoryProps): Promise<Metadata> {
+  const { category } = await params;
+  if (!Object.hasOwn(IDS, category)) return {};
+  const data = await getProjectListingPage('vi', undefined, {
+    routeId: `route-featured_item_category--${category}`,
+    category,
+  });
+  if (!data) return {};
+
+  const title = `${data.settings?.heading.title ?? category}${BRAND_TITLE_SUFFIX}`;
+  const alternates = await routeAlternates(`/featured_item_category/${category}/`);
+  return {
+    title,
+    alternates,
+  };
+}
+
 export default async function ViFeaturedItemCategoryPage({ params }: FeaturedItemCategoryProps) {
   const { category } = await params;
   if (!Object.hasOwn(IDS, category)) notFound();
@@ -47,5 +66,6 @@ export default async function ViFeaturedItemCategoryPage({ params }: FeaturedIte
     routeId: `route-featured_item_category--${category}`,
     category,
   });
+  if (!data) notFound();
   return <ProjectArchiveView {...data} ids={IDS[category]} />;
 }

@@ -34,12 +34,22 @@ export async function getProjectListingPage(
     routeId = locale === 'en' ? 'route-en--our-project' : 'route-du-an',
     category,
   }: { routeId?: EntityId; category?: string } = {},
-): Promise<ProjectListingPageData> {
+): Promise<ProjectListingPageData | null> {
+  const routes = await repository.listRoutes();
+  const targetRoute = routes.find((r) => r.id === routeId);
+  if (!targetRoute || targetRoute.kind !== 'project-list' || targetRoute.locale !== locale) {
+    return null;
+  }
+
   const [allProjectsResult, allCategories, settings] = await Promise.all([
     repository.listProjects({ page: 1, pageSize: Number.MAX_SAFE_INTEGER }),
     repository.getProjectCategories(),
     repository.getListingSettings(routeId),
   ]);
+
+  if (category && !allCategories.some((c) => c.slug === category)) {
+    return null;
+  }
 
   // Filter projects by locale
   const localeProjects = allProjectsResult.items.filter((p) => p.locale === locale);

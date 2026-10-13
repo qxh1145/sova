@@ -138,18 +138,18 @@ test('getProjectListingPage returns locale projects, categories with derived cou
   } as unknown as ContentData);
 
   const viData = await getProjectListingPage('vi', repo);
-  expect(viData.locale).toBe('vi');
-  expect(viData.projects).toHaveLength(62);
-  expect(viData.copy.filterAll).toBe('Tất cả');
-  expect(viData.categories.find((c) => c.slug === 'website')?.count).toBe(59);
-  expect(viData.categories.find((c) => c.slug === 'branding')?.count).toBe(2);
-  expect(viData.categories.find((c) => c.slug === 'mobile-app')?.count).toBe(1);
+  expect(viData!.locale).toBe('vi');
+  expect(viData!.projects).toHaveLength(62);
+  expect(viData!.copy.filterAll).toBe('Tất cả');
+  expect(viData!.categories.find((c) => c.slug === 'website')?.count).toBe(59);
+  expect(viData!.categories.find((c) => c.slug === 'branding')?.count).toBe(2);
+  expect(viData!.categories.find((c) => c.slug === 'mobile-app')?.count).toBe(1);
 
   const enData = await getProjectListingPage('en', repo);
-  expect(enData.locale).toBe('en');
-  expect(enData.projects).toHaveLength(0);
-  expect(enData.copy.filterAll).toBe('All');
-  expect(enData.categories.every((c) => c.count === 0)).toBe(true);
+  expect(enData!.locale).toBe('en');
+  expect(enData!.projects).toHaveLength(0);
+  expect(enData!.copy.filterAll).toBe('All');
+  expect(enData!.categories.every((c) => c.count === 0)).toBe(true);
 });
 
 test('getProjectListingPage serves featured archives: 62 all, 59/2/1 by category, THP branding', async () => {
@@ -162,10 +162,10 @@ test('getProjectListingPage serves featured archives: 62 all, 59/2/1 by category
   } as unknown as ContentData);
 
   const archive = await getProjectListingPage('vi', repo, { routeId: 'route-featured_item' });
-  expect(archive.projects).toHaveLength(62);
-  expect(archive.settings?.heading.title).toBe('Công ty Cổ phần Phát triển Công nghệ THP');
-  expect(archive.heroImage).not.toBeNull();
-  expect(archive.bgImage).not.toBeNull();
+  expect(archive!.projects).toHaveLength(62);
+  expect(archive!.settings?.heading.title).toBe('Công ty Cổ phần Phát triển Công nghệ THP');
+  expect(archive!.heroImage).not.toBeNull();
+  expect(archive!.bgImage).not.toBeNull();
 
   const expected = {
     website: [59, 'Website'],
@@ -178,24 +178,24 @@ test('getProjectListingPage serves featured archives: 62 all, 59/2/1 by category
       category: slug,
     });
     expect(
-      data.projects.map((p) => p.id),
+      data!.projects.map((p) => p.id),
       slug,
     ).toEqual(idsIn(slug));
-    expect(data.projects).toHaveLength(count as number);
-    expect(data.settings?.heading.title).toBe(title);
-    expect(data.categories.find((c) => c.slug === slug)?.count).toBe(count);
-    expect(data.thumbnailAssets).toHaveLength(count as number);
+    expect(data!.projects).toHaveLength(count as number);
+    expect(data!.settings?.heading.title).toBe(title);
+    expect(data!.categories.find((c) => c.slug === slug)?.count).toBe(count);
+    expect(data!.thumbnailAssets).toHaveLength(count as number);
   }
   const branding = await getProjectListingPage('vi', repo, { category: 'branding' });
-  expect(branding.projects.map((p) => p.id)).toContain('project-2348');
+  expect(branding!.projects.map((p) => p.id)).toContain('project-2348');
 
   const unknown = await getProjectListingPage('vi', repo, { category: 'nope' });
-  expect(unknown.projects).toHaveLength(0);
+  expect(unknown).toBeNull();
 
   // du-an default is unchanged.
   const duAn = await getProjectListingPage('vi', repo);
-  expect(duAn.settings?.routeId).toBe('route-du-an');
-  expect(duAn.projects).toHaveLength(62);
+  expect(duAn!.settings?.routeId).toBe('route-du-an');
+  expect(duAn!.projects).toHaveLength(62);
 });
 
 test('every listing hero asset id resolves to a committed asset', () => {
@@ -209,10 +209,10 @@ test('getProjectListingPage resolves both listing hero images from committed dat
   const repo = createMockRepository(defaultContentData);
   for (const locale of ['vi', 'en'] as const) {
     const data = await getProjectListingPage(locale, repo);
-    expect(data.heroImage?.id, locale).toBe(data.settings?.hero?.imageId);
-    expect(data.bgImage?.id, locale).toBe(data.settings?.hero?.bgImageId);
-    expect(data.heroImage).not.toBeNull();
-    expect(data.bgImage).not.toBeNull();
+    expect(data!.heroImage?.id, locale).toBe(data!.settings?.hero?.imageId);
+    expect(data!.bgImage?.id, locale).toBe(data!.settings?.hero?.bgImageId);
+    expect(data!.heroImage).not.toBeNull();
+    expect(data!.bgImage).not.toBeNull();
   }
 });
 

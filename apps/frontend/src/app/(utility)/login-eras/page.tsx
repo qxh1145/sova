@@ -4,16 +4,13 @@ import '@/styles/legacy/sections/route-login-eras.css'; // business-text-ok: rou
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getUtilityContent } from '@/lib/queries/pages';
-import { getSiteSettings, getShellContent } from '@/lib/queries/site';
+import { getSiteSettings, getShellContent , seoMetadata } from '@/lib/queries/site';
 import { LoginView } from '@/components/utility/LoginView';
 
 export async function generateMetadata(): Promise<Metadata> {
   const record = await getUtilityContent('login-vi');
   if (!record?.seo) return {};
-  return {
-    title: record.seo.title,
-    description: record.seo.description,
-  };
+  return seoMetadata(record.seo);
 }
 
 export default async function LoginPage() {

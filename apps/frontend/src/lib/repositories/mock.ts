@@ -248,7 +248,7 @@ function createRawRepository(data: ContentData): ContentRepository {
       return data.utilityContent.find((c) => c.id === id) ?? null;
     },
     async listRoutes() {
-      return data.routes;
+      return data.routes ?? routes;
     },
   };
 }
