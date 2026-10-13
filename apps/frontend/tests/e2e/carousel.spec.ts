@@ -55,26 +55,43 @@ async function expectAutoplayEvery(page: Page, slides: Locator, delay: number) {
 }
 
 test.describe('Real route autoplay controls', () => {
-  for (const [name, url, width, selector] of [
-    ['home testimonials', '/', 1280, '.slide-kh .flickity-enabled'],
-    ['about goals', '/gioi-thieu/', 390, '#slider-512312949'],
-    ['pricing cards', '/thiet-ke-website/', 390, '.slide_tke1 .flickity-enabled'],
-    ['service cards', '/thiet-ke-app-mobile/', 390, '.slide_tkap .flickity-enabled'],
-    ['project gallery', '/featured_item/xanhthienthanh-cong-ty-co-phan-dau-tu-va-phat-trien-xanh-thien-thanh/', 1280, '#slider-duan .flickity-enabled'],
+  const VI = { pause: 'Tạm dừng trình chiếu', play: 'Tiếp tục trình chiếu' };
+  const EN = { pause: 'Pause slideshow', play: 'Play slideshow' };
+  for (const [name, url, width, selector, labels] of [
+    ['home testimonials', '/', 1280, '.slide-kh .flickity-enabled', VI],
+    ['EN home testimonials', '/en/home/', 1280, '.slide-kh .flickity-enabled', EN],
+    ['about goals', '/gioi-thieu/', 390, '#slider-512312949', VI],
+    ['pricing cards', '/thiet-ke-website/', 390, '.slide_tke1 .flickity-enabled', VI],
+    ['service cards', '/thiet-ke-app-mobile/', 390, '.slide_tkap .flickity-enabled', VI],
+    ['project gallery', '/featured_item/xanhthienthanh-cong-ty-co-phan-dau-tu-va-phat-trien-xanh-thien-thanh/', 1280, '#slider-duan .flickity-enabled', VI],
   ] as const) {
     test(`${name}: keyboard pauses real autoplay`, async ({ page }) => {
       await page.setViewportSize({ width, height: 800 });
+      await page.clock.install();
       await page.goto(url);
       const slider = page.locator(selector).first();
       await expect(slider).toBeVisible();
-      const pause = slider.getByRole('button', { name: 'Tạm dừng trình chiếu' });
+      await expect(slider.locator('.flickity-slider')).toHaveAttribute('style', /translate/);
+      await page.clock.pauseAt(await page.evaluate(() => Date.now() + 500));
+      const slides = slider.locator('.flickity-slider > *');
+      const pause = slider.getByRole('button', { name: labels.pause });
       await pause.focus();
       await expect(pause).toBeFocused();
       await page.keyboard.press('Enter');
-      const play = slider.getByRole('button', { name: 'Tiếp tục trình chiếu' });
+      const play = slider.getByRole('button', { name: labels.play });
       await expect(play).toBeFocused();
+      const stoppedAt = await selected(slides);
+      await play.evaluate((element: HTMLElement) => element.blur());
+      expect(await tick(page, slides, 12000), 'paused carousel advanced').toBe(stoppedAt);
+
+      await play.focus();
       await page.keyboard.press('Enter');
       await expect(pause).toBeFocused();
+      await pause.evaluate((element: HTMLElement) => element.blur());
+      // Stop at the first advance: a long single tick can wrap a short gallery back to stoppedAt.
+      let advanced = false;
+      for (let waited = 0; waited < 12000 && !advanced; waited += 500) advanced = (await tick(page, slides, 500)) !== stoppedAt;
+      expect(advanced, 'resumed carousel did not advance').toBe(true);
     });
   }
 });
@@ -194,6 +211,24 @@ test.describe('Carousel contract checks', () => {
     await expect(pause).toBeFocused();
     expect(await tick(page, slides, 12000)).toBe(0);
     await pause.evaluate((element: HTMLElement) => element.blur());
+    expect(await tick(page, slides, 6000)).toBe(1);
+  });
+
+  test('Focus and hover guards: mouse leave keeps focus pause, blur keeps hover pause', async ({ page }) => {
+    await openPaused(page, '/dev-fixtures/carousel/testimonials');
+    const slides = page.locator(`${TESTIMONIALS} .flickity-slider > *`);
+    const pause = page.getByRole('region', { name: 'Carousel' }).getByRole('button', { name: 'Pause slideshow' });
+
+    await pause.focus();
+    await page.locator(TESTIMONIALS).hover();
+    await leaveSlider(page);
+    expect(await tick(page, slides, 12000), 'mouse leave resumed while focus inside').toBe(0);
+
+    await page.locator(TESTIMONIALS).hover();
+    await pause.evaluate((element: HTMLElement) => element.blur());
+    expect(await tick(page, slides, 12000), 'blur resumed under hovering pointer').toBe(0);
+
+    await leaveSlider(page);
     expect(await tick(page, slides, 6000)).toBe(1);
   });
 

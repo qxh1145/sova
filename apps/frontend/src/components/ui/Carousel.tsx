@@ -277,7 +277,7 @@ export function Carousel({
         </div>
       </div>
 
-      {effectiveAutoplayMs && !isSingle && (
+      {!!effectiveAutoplayMs && !isSingle && (
         <button
           type="button"
           className="screen-reader-text"

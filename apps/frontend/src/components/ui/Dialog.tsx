@@ -118,6 +118,9 @@ function DialogPortalInner({
   );
 }
 
+// Reduced motion unmounts at once: never enter the `mfp-removing` phase.
+const animateClose = () => !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 export function Dialog({
   open,
   onOpenChange,
@@ -128,13 +131,12 @@ export function Dialog({
 
   if (open !== previousOpen) {
     setPreviousOpen(open);
-    setClosing(!open);
+    setClosing(!open && animateClose());
   }
 
   useEffect(() => {
     if (open || !closing) return;
-    const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 300;
-    const timeout = window.setTimeout(() => setClosing(false), delay);
+    const timeout = window.setTimeout(() => setClosing(false), 300);
     return () => window.clearTimeout(timeout);
   }, [open, closing]);
 
@@ -143,7 +145,7 @@ export function Dialog({
       open={open || closing}
       onOpenChange={(nextOpen) => {
         if (nextOpen) setClosing(false);
-        if (!nextOpen && open) setClosing(true);
+        if (!nextOpen && open) setClosing(animateClose());
         onOpenChange(nextOpen);
       }}
     >

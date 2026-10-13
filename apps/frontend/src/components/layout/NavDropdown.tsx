@@ -48,7 +48,7 @@ export function NavDropdown({
         {...(href ? { href } : { role: 'button', tabIndex: 0 })}
         aria-expanded={open}
         aria-haspopup="true"
-        onClick={href ? undefined : () => setOpen((value) => !value)}
+        onClick={href ? undefined : () => setOpen(true)}
         onKeyDown={(event) => {
           if (!href && (event.key === 'Enter' || event.key === ' ')) {
             event.preventDefault();

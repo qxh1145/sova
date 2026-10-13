@@ -28,7 +28,9 @@ test.describe('Accordion primitive and shared FAQ list', () => {
       ['/en/faq/', 'Toggle answer'],
     ]) {
       await page.goto(url);
-      await expect(page.locator('span.toggle[aria-label]').first()).toHaveAttribute('aria-label', label);
+      const toggles = page.locator('span.toggle');
+      await expect(toggles.first()).toBeAttached();
+      for (const toggle of await toggles.all()) await expect(toggle).toHaveAttribute('aria-label', label);
     }
   });
 
