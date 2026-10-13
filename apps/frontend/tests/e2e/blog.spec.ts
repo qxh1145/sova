@@ -41,7 +41,8 @@ test.describe('Blog listing and post detail', () => {
     const expectedPosts = expectedIds.map((id) => postMap.get(id)!);
     const validThumbPosts = expectedPosts.filter((p) => {
       const a = assetMap.get(p.thumbnailId!);
-      return a && a.status !== 'missing' && a.src;
+      expect(a, `thumbnail asset ${p.thumbnailId} for ${p.id}`).toBeDefined();
+      return a!.status !== 'missing' && Boolean(a!.src);
     });
     const imgs = articles.locator('img.wp-post-image');
     await expect(imgs).toHaveCount(validThumbPosts.length);
@@ -105,6 +106,7 @@ test.describe('Blog listing and post detail', () => {
       await expect(page.locator('h1.cs-page_title')).toHaveText(post.title);
       const heroId = post.featuredImageId ?? post.thumbnailId;
       const heroAsset = heroId ? assetMap.get(heroId) : null;
+      if (heroId) expect(heroAsset, `hero asset ${heroId} for ${post.path}`).toBeDefined();
       const heroImg = page.locator('.blog-single .post-image img');
       if (heroAsset && heroAsset.status !== 'missing' && heroAsset.src) {
         await expect(heroImg).toHaveAttribute('src', heroAsset.src);
@@ -212,6 +214,7 @@ test.describe('Blog listing and post detail', () => {
   });
 
   test('Pages 2 to 5 render expected cards and pagination links', async ({ page }) => {
+    let renderedThumbs = 0;
     for (let p = 2; p <= 5; p++) {
       await page.goto(`/goc-nhin/page/${p}/`);
       const snapshot = listingSnapshots.find(
@@ -224,6 +227,23 @@ test.describe('Blog listing and post detail', () => {
       const actualIds = await articles.evaluateAll((els) => els.map((el) => el.id));
       expect(actualIds).toEqual(snapshot.orderedIds);
       await expect(page.locator('h2.category-title')).toHaveCount(0);
+
+      // Thumbnails: local covers render with their src, missing ones (A14) are dropped
+      const validThumbSrcs = snapshot.orderedIds
+        .map((id) => {
+          const thumbnailId = postMap.get(id)!.thumbnailId!;
+          const a = assetMap.get(thumbnailId);
+          expect(a, `thumbnail asset ${thumbnailId} for ${id}`).toBeDefined();
+          return a!;
+        })
+        .filter((a) => a.status !== 'missing' && a.src)
+        .map((a) => a.src);
+      const imgs = articles.locator('img.wp-post-image');
+      await expect(imgs).toHaveCount(validThumbSrcs.length);
+      expect(await imgs.evaluateAll((els) => els.map((el) => el.getAttribute('src')))).toEqual(
+        validThumbSrcs,
+      );
+      renderedThumbs += validThumbSrcs.length;
 
       // Pagination checks
       const pagination = page.locator('.pagination');
@@ -247,6 +267,8 @@ test.describe('Blog listing and post detail', () => {
         await expect(pagination.locator('.page-numbers.dots')).toHaveCount(1);
       }
     }
+    // Pages 4 and 5 keep local covers, so the image assertion is never vacuous here.
+    expect(renderedThumbs).toBeGreaterThan(0);
   });
 
   test('All 6 category listings render hero, h2 category title, cards matching snapshot, and sidebar', async ({
