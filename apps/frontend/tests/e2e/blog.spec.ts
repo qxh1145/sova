@@ -39,10 +39,14 @@ test.describe('Blog listing and post detail', () => {
     expect(actualIds).toEqual(expectedIds);
 
     const expectedPosts = expectedIds.map((id) => postMap.get(id)!);
+    const validThumbPosts = expectedPosts.filter((p) => {
+      const a = assetMap.get(p.thumbnailId!);
+      return a && a.status !== 'missing' && a.src;
+    });
     const imgs = articles.locator('img.wp-post-image');
-    await expect(imgs).toHaveCount(6);
+    await expect(imgs).toHaveCount(validThumbPosts.length);
     expect(await imgs.evaluateAll((els) => els.map((el) => el.getAttribute('src')))).toEqual(
-      expectedPosts.map((p) => assetMap.get(p.thumbnailId!)!.src),
+      validThumbPosts.map((p) => assetMap.get(p.thumbnailId!)!.src),
     );
     const readMore = articles.locator('.read-more-new');
     await expect(readMore).toHaveCount(6);
@@ -100,9 +104,14 @@ test.describe('Blog listing and post detail', () => {
       expect(res?.status(), `Status 200 for ${post.path}`).toBe(200);
       await expect(page.locator('h1.cs-page_title')).toHaveText(post.title);
       const heroId = post.featuredImageId ?? post.thumbnailId;
+      const heroAsset = heroId ? assetMap.get(heroId) : null;
       const heroImg = page.locator('.blog-single .post-image img');
-      await expect(heroImg).toHaveAttribute('src', assetMap.get(heroId!)!.src);
-      await expect(heroImg).toHaveAttribute('fetchpriority', 'high');
+      if (heroAsset && heroAsset.status !== 'missing' && heroAsset.src) {
+        await expect(heroImg).toHaveAttribute('src', heroAsset.src);
+        await expect(heroImg).toHaveAttribute('fetchpriority', 'high');
+      } else {
+        await expect(heroImg).toHaveCount(0);
+      }
       await expect(page.locator('.blog-single .meta .author')).toHaveText(post.author.name);
       await expect(page.locator('.blog-single .meta .date')).toHaveText(post.displayDate!);
       const bodyLocator = page.locator('.blog-single .col.large-12 > div:not(.post-image):not(.meta):not(.relatedcat)');

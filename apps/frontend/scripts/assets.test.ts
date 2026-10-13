@@ -135,7 +135,7 @@ test('verify fails on a changed fl-icons byte', () => {
 test('verify fails on a local AssetRef absent from the source hash', () => {
   const file = path.join(APP, 'tests/baseline/source-hash.json');
   const original = readFileSync(file, 'utf8');
-  const rel = 'wp-content/uploads/2023/10/ERAS-THUMB-WEBSITE-1.webp';
+  const rel = 'wp-content/uploads/2024/03/contact_hero_bg.jpg';
   const hashes = JSON.parse(original) as Record<string, string>;
   expect(hashes[rel]).toBeDefined();
   delete hashes[rel];

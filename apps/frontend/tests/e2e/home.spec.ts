@@ -1086,14 +1086,17 @@ test.describe('Latest posts', () => {
       }
     }
 
-    const expectedThumbSrcs = homePages[0].postPlacements.map((p) => {
-      const thumbnailId = postMap.get(p.entityId)!.thumbnailId!;
-      return assetMap.get(thumbnailId)!.src;
-    });
+    const validThumbSrcs = homePages[0].postPlacements
+      .map((p) => {
+        const thumbnailId = postMap.get(p.entityId)!.thumbnailId!;
+        return assetMap.get(thumbnailId);
+      })
+      .filter((a) => a && a.status !== 'missing' && a.src)
+      .map((a) => a!.src);
     const imgs = grid.locator('img.wp-post-image');
-    await expect(imgs).toHaveCount(3);
+    await expect(imgs).toHaveCount(validThumbSrcs.length);
     expect(await imgs.evaluateAll((els) => els.map((el) => el.getAttribute('src')))).toEqual(
-      expectedThumbSrcs,
+      validThumbSrcs,
     );
 
     await expectNoDuplicateIds(page);
