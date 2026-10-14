@@ -1,9 +1,6 @@
 import type { ProjectListingPageData } from '@/lib/queries/projects';
 import { PageHero } from '@/components/hero/PageHero';
-import {
-  PROJECT_HERO_IDS_VI,
-  PROJECT_HERO_IDS_EN,
-} from './projectHeroIds';
+import { PROJECT_HERO_IDS_VI, PROJECT_HERO_IDS_EN } from './projectHeroIds';
 import { ProjectFilters } from './ProjectFilters';
 import { toCardData } from './ProjectCard';
 
@@ -27,9 +24,7 @@ export function ProjectListView({
   const sectionId = isEn ? 'section_2024589567' : 'section_2137536464';
 
   const defaultHero = {
-    headingLines: isEn
-      ? ['Projects Partnered', 'with Sova']
-      : ['Dự án đồng hành', 'cùng Sova'],
+    headingLines: isEn ? ['Projects Partnered', 'with Sova'] : ['Dự án đồng hành', 'cùng Sova'],
     breadcrumb: [
       { label: isEn ? 'Home' : 'Trang chủ', href: isEn ? '/en/home/' : '/' },
       { label: isEn ? 'Projects' : 'Dự án' },

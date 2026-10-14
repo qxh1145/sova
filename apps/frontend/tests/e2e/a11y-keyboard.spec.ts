@@ -10,7 +10,9 @@ test.describe('Desktop keyboard navigation', () => {
   ] as const) {
     test(`${label} submenu opens by keyboard and Escape restores focus`, async ({ page }) => {
       await page.goto(path);
-      const item = page.locator('#masthead .header-nav-main > li.has-dropdown').filter({ hasText: label });
+      const item = page
+        .locator('#masthead .header-nav-main > li.has-dropdown')
+        .filter({ hasText: label });
       const parent = item.locator('> .nav-top-link');
       await page.keyboard.press('Tab');
       for (
@@ -44,9 +46,13 @@ test.describe('Desktop keyboard navigation', () => {
       await expect(parent).toHaveAttribute('aria-expanded', 'false');
     });
 
-    test(`${label} submenu opens on hover, stays open on click, closes on leave`, async ({ page }) => {
+    test(`${label} submenu opens on hover, stays open on click, closes on leave`, async ({
+      page,
+    }) => {
       await page.goto(path);
-      const item = page.locator('#masthead .header-nav-main > li.has-dropdown').filter({ hasText: label });
+      const item = page
+        .locator('#masthead .header-nav-main > li.has-dropdown')
+        .filter({ hasText: label });
       const firstLink = item.locator('.sub-menu a').first();
       await expect(firstLink).toBeHidden();
       await item.locator('> .nav-top-link').hover();
@@ -65,7 +71,8 @@ test.describe('Keyboard sweep per route family', () => {
 
   // One route per (kind, locale), same derivation as acceptance.spec.ts.
   const families = new Map<string, string>();
-  for (const r of routes) if (!families.has(`${r.kind}:${r.locale}`)) families.set(`${r.kind}:${r.locale}`, r.path);
+  for (const r of routes)
+    if (!families.has(`${r.kind}:${r.locale}`)) families.set(`${r.kind}:${r.locale}`, r.path);
 
   for (const [family, path] of families) {
     test(`${family} ${path}: every Tab stop keeps visible focus`, async ({ page }) => {
@@ -84,7 +91,11 @@ test.describe('Keyboard sweep per route family', () => {
             const missed =
               !!last &&
               (!last.isConnected ||
-                [...document.querySelectorAll<HTMLElement>('a[href], button, input, select, textarea, [tabindex]')].some(
+                [
+                  ...document.querySelectorAll<HTMLElement>(
+                    'a[href], button, input, select, textarea, [tabindex]',
+                  ),
+                ].some(
                   (el) =>
                     el.tabIndex >= 0 &&
                     !(el as HTMLButtonElement).disabled &&
@@ -97,7 +108,9 @@ test.describe('Keyboard sweep per route family', () => {
           w.__sweepLast = active;
           const path: string[] = [];
           for (let el: Element | null = active; el && el !== document.body; el = el.parentElement) {
-            path.unshift(`${el.tagName.toLowerCase()}:${Array.prototype.indexOf.call(el.parentElement?.children ?? [], el)}`);
+            path.unshift(
+              `${el.tagName.toLowerCase()}:${Array.prototype.indexOf.call(el.parentElement?.children ?? [], el)}`,
+            );
           }
           const key = `${active.tagName.toLowerCase()}${active.id ? `#${active.id}` : ''} ${active.getAttribute('aria-label') ?? active.textContent?.trim().slice(0, 40) ?? ''} @${path.join('>')}`;
           const rect = active.getBoundingClientRect();

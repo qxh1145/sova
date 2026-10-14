@@ -3,11 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/ui/FormField';
 import { FormResponse, ScreenReaderResponse, formStatusClass } from '@/components/ui/FormResponse';
-import {
-  consultSchema,
-  zodResolver,
-  type ConsultFormValues,
-} from '@/lib/forms/schemas';
+import { consultSchema, zodResolver, type ConsultFormValues } from '@/lib/forms/schemas';
 import { useSubmitStatus } from '@/lib/forms/useSubmitStatus';
 import { useGatedMockAdapter } from '@/app/(fixtures)/dev-fixtures/gatedMockAdapter';
 import { FIXTURE_FORM_LABELS, type FormVariant } from './constants';
@@ -81,9 +77,7 @@ export function FormFixture({ variant }: FormFixtureProps) {
             disabled={isSubmitting}
             aria-busy={isSubmitting}
             value={
-              isSubmitting
-                ? FIXTURE_FORM_LABELS.submittingButton
-                : FIXTURE_FORM_LABELS.submitButton
+              isSubmitting ? FIXTURE_FORM_LABELS.submittingButton : FIXTURE_FORM_LABELS.submitButton
             }
             className="wpcf7-form-control has-spinner wpcf7-submit"
           />
@@ -93,11 +87,7 @@ export function FormFixture({ variant }: FormFixtureProps) {
         <FormResponse status={status} labels={responseLabels} />
       </form>
 
-      <button
-        type="button"
-        data-testid="fixture-release"
-        onClick={release}
-      >
+      <button type="button" data-testid="fixture-release" onClick={release}>
         {FIXTURE_FORM_LABELS.releaseButton}
       </button>
     </div>

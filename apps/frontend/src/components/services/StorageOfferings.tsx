@@ -293,15 +293,9 @@ export function StorageOfferings({
       <div className="section-content relative">
         {/* Deco Row: hide-for-small */}
         <div className="row align-bottom" id={ids.decoRow}>
-          <div
-            id={ids.decoCol}
-            className="col hide-for-small medium-2 small-12 large-2"
-          >
+          <div id={ids.decoCol} className="col hide-for-small medium-2 small-12 large-2">
             <div className="col-inner">
-              <div
-                className="img has-hover x md-x lg-x y md-y lg-y"
-                id={ids.decoImg}
-              >
+              <div className="img has-hover x md-x lg-x y md-y lg-y" id={ids.decoImg}>
                 <div className="img-inner dark">
                   {decoIcon && (
                     <img
@@ -357,7 +351,7 @@ export function StorageOfferings({
             const cardIds = ids.gridCards[idx];
             const items = offering.items ?? [];
             const media = offering.mediaId ? mediaMap[offering.mediaId] : null;
-            const href = offering.cta ? resolvedHrefs[offering.cta.routeId] ?? '#' : '#';
+            const href = offering.cta ? (resolvedHrefs[offering.cta.routeId] ?? '#') : '#';
             const isCenterIcon = idx === 0;
 
             return (
@@ -376,23 +370,15 @@ export function StorageOfferings({
                     }}
                   />
                   <div id={cardIds?.titleText} className="text">
-                    <h3 style={{ fontFamily: 'Poppins, sans-serif' }}>
-                      {offering.title}
-                    </h3>
+                    <h3 style={{ fontFamily: 'Poppins, sans-serif' }}>{offering.title}</h3>
                   </div>
                   <div
                     id={cardIds?.gapTop}
                     className="gap-element clearfix"
                     style={{ display: 'block', height: 'auto' }}
                   />
-                  <div
-                    className="img has-hover x md-x lg-x y md-y lg-y"
-                    id={cardIds?.imageWrapper}
-                  >
-                    <div
-                      className="img-inner image-cover dark"
-                      style={{ paddingTop: '100%' }}
-                    >
+                  <div className="img has-hover x md-x lg-x y md-y lg-y" id={cardIds?.imageWrapper}>
+                    <div className="img-inner image-cover dark" style={{ paddingTop: '100%' }}>
                       {media && (
                         <img
                           decoding="async"
@@ -453,11 +439,7 @@ export function StorageOfferings({
                   />
                   {offering.cta && (
                     <p>
-                      <Link
-                        className="but-lh"
-                        style={{ borderRadius: 12 }}
-                        href={href}
-                      >
+                      <Link className="but-lh" style={{ borderRadius: 12 }} href={href}>
                         {offering.cta.label}
                       </Link>
                     </p>
@@ -489,7 +471,7 @@ export function StorageOfferings({
               const slideIds = ids.sliderCards[idx];
               const items = offering.items ?? [];
               const media = offering.mediaId ? mediaMap[offering.mediaId] : null;
-              const href = offering.cta ? resolvedHrefs[offering.cta.routeId] ?? '#' : '#';
+              const href = offering.cta ? (resolvedHrefs[offering.cta.routeId] ?? '#') : '#';
               const isCenterIcon = idx === 0;
               const slideTitle = offering.slideTitle ?? offering.title;
 
@@ -513,9 +495,7 @@ export function StorageOfferings({
                         }}
                       />
                       <div id={slideIds?.titleText} className="text">
-                        <h3 style={{ fontFamily: 'Poppins, sans-serif' }}>
-                          {slideTitle}
-                        </h3>
+                        <h3 style={{ fontFamily: 'Poppins, sans-serif' }}>{slideTitle}</h3>
                       </div>
                       <div
                         id={slideIds?.gapTop}
@@ -526,10 +506,7 @@ export function StorageOfferings({
                         className="img has-hover x md-x lg-x y md-y lg-y"
                         id={slideIds?.imageWrapper}
                       >
-                        <div
-                          className="img-inner image-cover dark"
-                          style={{ paddingTop: '100%' }}
-                        >
+                        <div className="img-inner image-cover dark" style={{ paddingTop: '100%' }}>
                           {media && (
                             <img
                               decoding="async"
@@ -590,11 +567,7 @@ export function StorageOfferings({
                       />
                       {offering.cta && (
                         <p>
-                          <Link
-                            className="but-lh"
-                            style={{ borderRadius: 12 }}
-                            href={href}
-                          >
+                          <Link className="but-lh" style={{ borderRadius: 12 }} href={href}>
                             {offering.cta.label}
                           </Link>
                         </p>

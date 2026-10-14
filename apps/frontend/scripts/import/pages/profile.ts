@@ -2,13 +2,7 @@ import type { AssetRegistry } from '../assets.ts';
 import type { CompanyProfileContent } from '../../../src/types/content.ts';
 import { applyBrandTerms } from '../../../src/lib/content/brand.ts';
 import type { Stats } from '../html.ts';
-import {
-  bannerTitle,
-  identity,
-  must,
-  seoOf,
-  type Page,
-} from './shared.ts';
+import { bannerTitle, identity, must, seoOf, type Page } from './shared.ts';
 
 export function profile(page: Page, registry: AssetRegistry, stats: Stats): CompanyProfileContent {
   const { root, file, lineOf, source, route } = page as Page & { source: string };

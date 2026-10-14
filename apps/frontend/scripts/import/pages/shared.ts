@@ -1,7 +1,5 @@
 import { HTMLElement, TextNode, type Node } from 'node-html-parser';
-import type {
-  AssetRegistry,
-} from '../assets.ts';
+import type { AssetRegistry } from '../assets.ts';
 import type {
   CollectionPlacement,
   EntityId,
@@ -20,13 +18,21 @@ import { matchServiceByTitle, plain, trimBreaks } from '../services.ts';
 
 export const STAT_KEYS = ['clients', 'projects', 'members', 'years'];
 export const EXPECTED = { goals: 6, purpose: 4, timeline: 9, capabilities: 3, legalRoutes: 10 };
-export const RICH_ALLOWED: ReadonlySet<string> = new Set([...ALLOWED, 'h2', 'h3', 'h4', 'h5', 'h6']);
+export const RICH_ALLOWED: ReadonlySet<string> = new Set([
+  ...ALLOWED,
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+]);
 
 /** Q1: real payment accounts and QR codes are not imported; these placeholders stand in. */
-export const DEMO_ACCOUNT: Record<Locale, { bank: string; holder: string; accountNumber: string }> = {
-  vi: { bank: 'Ngân hàng Demo', holder: 'SOVA DEMO', accountNumber: '0000000000' },
-  en: { bank: 'Demo Bank', holder: 'SOVA DEMO', accountNumber: '0000000000' },
-};
+export const DEMO_ACCOUNT: Record<Locale, { bank: string; holder: string; accountNumber: string }> =
+  {
+    vi: { bank: 'Ngân hàng Demo', holder: 'SOVA DEMO', accountNumber: '0000000000' },
+    en: { bank: 'Demo Bank', holder: 'SOVA DEMO', accountNumber: '0000000000' },
+  };
 export const PAYMENT_LABELS: Record<Locale, { accountNumber: string; holder: string }> = {
   vi: { accountNumber: 'Số tài khoản:', holder: 'Chủ tài khoản:' },
   en: { accountNumber: 'Account Number:', holder: 'Account Holder:' },
@@ -71,7 +77,11 @@ export interface Page {
 export const placements = (ids: EntityId[]): CollectionPlacement[] =>
   ids.map((entityId, i) => ({ entityId, order: i + 1 }));
 
-export const rich = (html: string, sources: SourceRef[], assetIds: EntityId[] = []): RichContent => ({
+export const rich = (
+  html: string,
+  sources: SourceRef[],
+  assetIds: EntityId[] = [],
+): RichContent => ({
   format: 'sanitized-html',
   html,
   assetIds,

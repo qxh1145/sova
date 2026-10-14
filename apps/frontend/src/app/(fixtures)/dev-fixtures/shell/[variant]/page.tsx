@@ -48,7 +48,9 @@ export default async function FixtureShellPage({
   const shellElement = (
     <SiteShell {...shell}>
       <main id="main" style={{ paddingTop: 120 }}>
-        <Link href="/dev-fixtures/overlay/single" data-testid="fixture-client-nav">Nav {/* business-text-ok: fixture nav */}</Link>
+        <Link href="/dev-fixtures/overlay/single" data-testid="fixture-client-nav">
+          Nav {/* business-text-ok: fixture nav */}
+        </Link>
         <div style={{ height: 2500 }} />
       </main>
     </SiteShell>

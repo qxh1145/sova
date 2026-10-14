@@ -167,3 +167,37 @@ test('contact in CTA: the pricing Zalo token resolves to SiteSettings.zaloHref; 
     'https://example.com/zalo?a=1&b=2',
   );
 });
+
+test('dangling service asset ids throw naming the service and ids', async () => {
+  repository = repoWith();
+  const page = (await getServicePage('website', 'vi'))!;
+
+  // advantagesPhotoId
+  const withDanglingAdvPhoto = {
+    ...page,
+    service: { ...page.service, advantagesPhotoId: 'asset-adv-gone' },
+  };
+  await expect(getServiceAssets(withDanglingAdvPhoto)).rejects.toThrow(
+    'service-website-vi references missing ids: asset-adv-gone',
+  );
+
+  // hero.ctaIconId
+  const withDanglingCtaIcon = {
+    ...page,
+    service: {
+      ...page.service,
+      hero: { ...page.service.hero, ctaIconId: 'asset-cta-gone' },
+    },
+  };
+  await expect(getServiceAssets(withDanglingCtaIcon)).rejects.toThrow(
+    'service-website-vi references missing ids: asset-cta-gone',
+  );
+
+  // plan icon / hard-coded website id
+  const repoWithoutPlanIcon = repoWith({
+    assets: assets.filter((a) => a.id !== 'asset-017f167e30'),
+  });
+  await expect(getServiceAssets(page, repoWithoutPlanIcon)).rejects.toThrow(
+    'service-website-vi references missing ids: asset-017f167e30',
+  );
+});

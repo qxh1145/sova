@@ -17,7 +17,6 @@ export interface TestimonialsArt {
   line: AssetRef;
 }
 
-
 export interface TestimonialsProps {
   testimonials: Testimonial[];
   avatars?: AssetRef[];

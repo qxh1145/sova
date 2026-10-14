@@ -12,13 +12,7 @@ export interface FAQListProps {
   labels: FAQListLabels;
 }
 
-export function FAQList({
-  faqs,
-  type,
-  defaultOpen,
-  className,
-  labels,
-}: FAQListProps) {
+export function FAQList({ faqs, type, defaultOpen, className, labels }: FAQListProps) {
   const defaultValue = defaultOpen === 'first' && faqs.length > 0 ? [`${faqs[0].id}-0`] : [];
 
   return (
@@ -26,12 +20,7 @@ export function FAQList({
       {faqs.map((faq, index) => {
         const itemKey = `${faq.id}-${index}`;
         return (
-          <AccordionItem
-            key={itemKey}
-            value={itemKey}
-            title={faq.question}
-            labels={labels}
-          >
+          <AccordionItem key={itemKey} value={itemKey} title={faq.question} labels={labels}>
             <RichText content={faq.answer} />
           </AccordionItem>
         );

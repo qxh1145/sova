@@ -49,7 +49,9 @@ function mirror(
         `featured_item/${slug}/index.html`,
         `<html><body class="postid-${category.length * 100 + i} featured-item-category-${o.category ?? category}">` +
           `<h1 class="entry-title">${slug}</h1>` +
-          (o.gallery ? `<div class="slider-wrapper relative" id="slider-duan">${o.gallery}</div>` : '') +
+          (o.gallery
+            ? `<div class="slider-wrapper relative" id="slider-duan">${o.gallery}</div>`
+            : '') +
           `<div class="qodef-portfolio-content"><p>${o.terms ?? 'Terms'}</p></div>` +
           (o.date ? `<div class="qodef-e qodef-info--date">${o.date}</div>` : '') +
           (o.sidebar
@@ -135,7 +137,8 @@ test('galleryLayout imports as slider or row based on #slider-duan markup', () =
   const { projects } = run(
     mirror({
       'website-0': {
-        gallery: '<div class="slider slider-nav-circle"><div class="img col"><img src="1.jpg"></div></div>',
+        gallery:
+          '<div class="slider slider-nav-circle"><div class="img col"><img src="1.jpg"></div></div>',
       },
       'website-1': {
         gallery: '<div class="row"><div class="col large-12"><img src="1.jpg"></div></div>',

@@ -3,14 +3,7 @@ import type { AssetRegistry } from '../assets.ts';
 import type { ContactFormContent, ContactPageContent, Locale } from '../../../src/types/content.ts';
 import { processText, sanitize, type Stats } from '../html.ts';
 import { plain } from '../services.ts';
-import {
-  hooks,
-  identity,
-  must,
-  rich,
-  seoOf,
-  type Page,
-} from './shared.ts';
+import { hooks, identity, must, rich, seoOf, type Page } from './shared.ts';
 
 export const CONTACT_FORM_MESSAGES: Record<
   Locale,
@@ -53,7 +46,8 @@ export function contact(page: Page, registry: AssetRegistry, stats: Stats): Cont
   const seo = seoOf(page, registry, stats);
 
   const icons = root.querySelectorAll('#content .icon-box .icon-inner img');
-  if (icons.length !== 3) throw new Error(`Source drift: ${file} expected exactly 3 icon-box images`);
+  if (icons.length !== 3)
+    throw new Error(`Source drift: ${file} expected exactly 3 icon-box images`);
   const addressIconId = must(registry.image(icons[0], file, lineOf), page, 'address icon');
   const phoneIconId = must(registry.image(icons[1], file, lineOf), page, 'phone icon');
   const emailIconId = must(registry.image(icons[2], file, lineOf), page, 'email icon');
@@ -61,7 +55,9 @@ export function contact(page: Page, registry: AssetRegistry, stats: Stats): Cont
   const formEl = must(root.querySelector('.wpcf7 form'), page, 'contact form');
   const labelEls = formEl.querySelectorAll('label');
   if (labelEls.length !== 5) {
-    throw new Error(`Source drift: ${file} expected exactly 5 form labels, found ${labelEls.length}`);
+    throw new Error(
+      `Source drift: ${file} expected exactly 5 form labels, found ${labelEls.length}`,
+    );
   }
 
   const labelTexts = labelEls.map((l) => {
@@ -72,17 +68,15 @@ export function contact(page: Page, registry: AssetRegistry, stats: Stats): Cont
 
   const optionEls = formEl.querySelectorAll('select option');
   if (optionEls.length !== 8) {
-    throw new Error(`Source drift: ${file} expected exactly 8 select options, found ${optionEls.length}`);
+    throw new Error(
+      `Source drift: ${file} expected exactly 8 select options, found ${optionEls.length}`,
+    );
   }
 
   const servicePrompt = plain(optionEls[0], stats);
   const serviceOptions = optionEls.slice(1).map((opt) => plain(opt, stats));
 
-  const submitInput = must(
-    formEl.querySelector('input.wpcf7-submit'),
-    page,
-    'submit input',
-  );
+  const submitInput = must(formEl.querySelector('input.wpcf7-submit'), page, 'submit input');
   const submitValue = submitInput.getAttribute('value');
   if (!submitValue) {
     throw new Error(`Source drift: ${file} missing submit input value`);

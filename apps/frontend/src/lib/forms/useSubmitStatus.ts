@@ -17,10 +17,7 @@ export type SubmitAction =
   | { type: 'SUBMIT_ERROR' }
   | { type: 'RESET' };
 
-export function submitStatusReducer(
-  state: SubmitState,
-  action: SubmitAction,
-): SubmitState {
+export function submitStatusReducer(state: SubmitState, action: SubmitAction): SubmitState {
   switch (action.type) {
     case 'SUBMIT_START':
       return { status: 'submitting' };

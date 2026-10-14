@@ -240,6 +240,16 @@ test.describe('Custom cursor island', () => {
     expect(rafCalls).toBe(0);
   });
 
+  test('Reduced motion on root route disables custom cursor updates', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
+    await page.mouse.move(100, 100);
+    await expect(page.locator('html')).not.toHaveClass(/has-custom-cursor/);
+    expect(await page.locator('.cursor-dot').evaluate((el) => (el as HTMLElement).style.left)).toBe(
+      '',
+    );
+  });
+
   test('Navigation persistence: one cursor node and single RAF loop', async ({ page }) => {
     await installRafCounter(page);
 

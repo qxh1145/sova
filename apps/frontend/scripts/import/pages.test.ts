@@ -131,7 +131,11 @@ test('services: unmatched card title throws Source drift error in home card reso
 test('services: EN card 2 resolves to mobile service while keeping website arrow href', () => {
   const enServices = [
     { id: 'service-website-en', title: 'Website Development', path: '/en/website-development/' },
-    { id: 'service-mobile-en', title: 'App Mobile Development', path: '/en/app-mobile-development/' },
+    {
+      id: 'service-mobile-en',
+      title: 'App Mobile Development',
+      path: '/en/app-mobile-development/',
+    },
   ];
 
   const { root, lineOf } = parsed(
@@ -148,7 +152,12 @@ test('services: EN card 2 resolves to mobile service while keeping website arrow
   expect(service?.id).toBe('service-mobile-en');
 
   const arrowEl = card.querySelector('.nut_xthem a')!;
-  const arrowHref = processHref(arrowEl.getAttribute('href') ?? '', 'en/home/index.html', lineOf(arrowEl.range[0]), stats());
+  const arrowHref = processHref(
+    arrowEl.getAttribute('href') ?? '',
+    'en/home/index.html',
+    lineOf(arrowEl.range[0]),
+    stats(),
+  );
   expect(arrowHref).toBe('/en/website-development/');
 });
 
@@ -305,9 +314,5 @@ test('contact: drift throw on 7 options', () => {
 });
 
 test('contact: drift throw on missing submit value', () => {
-  expect(() => runContact(contactHtml({ submitVal: '' }))).toThrow(
-    /missing submit input value/,
-  );
+  expect(() => runContact(contactHtml({ submitVal: '' }))).toThrow(/missing submit input value/);
 });
-
-

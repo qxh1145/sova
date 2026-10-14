@@ -2,11 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { parse } from 'node-html-parser';
 import { websitePricing } from '@/data/pricing/website';
-import {
-  PricingCards,
-  PRICING_CARDS_IDS_VI,
-  PRICING_CARDS_IDS_EN,
-} from './PricingCards';
+import { PricingCards, PRICING_CARDS_IDS_VI, PRICING_CARDS_IDS_EN } from './PricingCards';
 
 const viPricing = websitePricing.find((p) => p.locale === 'vi' && p.kind === 'cards')!;
 const enPricing = websitePricing.find((p) => p.locale === 'en' && p.kind === 'cards')!;
@@ -30,7 +26,7 @@ describe('PricingCards', () => {
         copy={{ eyebrow: 'Bảng giá dịch vụ', title: 'Thiết kế website' }}
         ids={PRICING_CARDS_IDS_VI}
         labels={labels}
-      />
+      />,
     );
     const root = parse(html);
 
@@ -65,7 +61,7 @@ describe('PricingCards', () => {
         copy={{ eyebrow: 'Service Pricing Table', title: 'Website Development' }}
         ids={PRICING_CARDS_IDS_EN}
         labels={labels}
-      />
+      />,
     );
     const root = parse(html);
 
@@ -80,13 +76,11 @@ describe('PricingCards', () => {
     expect(gridCards.map((card) => card.querySelector('.gia_giam')?.text.trim())).toEqual(
       enPricing.plans.map((plan) => plan.originalPrice?.displayText),
     );
+    expect(gridCards.map((card) => card.querySelector('.gia_giam + h3')?.text.trim())).toEqual(
+      enPricing.plans.map((plan) => plan.price?.displayText),
+    );
     expect(
-      gridCards.map((card) => card.querySelector('.gia_giam + h3')?.text.trim()),
-    ).toEqual(enPricing.plans.map((plan) => plan.price?.displayText));
-    expect(
-      root
-        .querySelectorAll('#slider-1604990153 .gia_giam + h3')
-        .map((el) => el.text.trim()),
+      root.querySelectorAll('#slider-1604990153 .gia_giam + h3').map((el) => el.text.trim()),
     ).toEqual(enPricing.plans.map((plan) => plan.price?.displayText));
 
     // Slider sits outside section for EN

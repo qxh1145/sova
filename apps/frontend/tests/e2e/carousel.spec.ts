@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test';
-import { ALLOW_404, expect, test } from './fixtures';
+import { ALLOW_404, dragSlider, expect, test } from './fixtures';
 
 const TESTIMONIALS = '#slider-1717467276';
 
@@ -289,22 +289,12 @@ test.describe('Carousel contract checks', () => {
     const slides = page.locator(`${TESTIMONIALS} .flickity-slider > *`);
     await expect(slides.nth(0)).toHaveClass(/is-selected/);
 
-    const box = (await viewport.boundingBox())!;
-    const startX = box.x + box.width * 0.4;
-    const startY = box.y + box.height / 2;
-
     // 5px is under dragThreshold:10
-    await page.mouse.move(startX, startY);
-    await page.mouse.down();
-    await page.mouse.move(startX - 5, startY, { steps: 5 });
-    await page.mouse.up();
+    await dragSlider(page, viewport, 5, 5);
     await expect(slides.nth(0)).toHaveClass(/is-selected/);
 
     // 35% of the viewport width: past the threshold and far enough to snap to the next slide
-    await page.mouse.move(startX, startY);
-    await page.mouse.down();
-    await page.mouse.move(startX - Math.round(box.width * 0.35), startY, { steps: 15 });
-    await page.mouse.up();
+    await dragSlider(page, viewport, 0.35);
     await expect(slides.nth(1)).toHaveClass(/is-selected/);
 
     await leaveSlider(page);

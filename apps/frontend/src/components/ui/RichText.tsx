@@ -10,10 +10,5 @@ export function RichText({ content, className }: RichTextProps) {
     throw new Error(`Unsupported RichContent format: ${(content as { format?: string }).format}`);
   }
 
-  return (
-    <div
-      className={className}
-      dangerouslySetInnerHTML={{ __html: content.html }}
-    />
-  );
+  return <div className={className} dangerouslySetInnerHTML={{ __html: content.html }} />;
 }

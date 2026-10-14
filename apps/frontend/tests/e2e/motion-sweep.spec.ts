@@ -3,7 +3,9 @@ import { routes } from '@/data/routes';
 
 test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and edge guards', () => {
   test.describe('Listener leak across client navigation cycles', () => {
-    test('Cycle navigation from /lien-he/ to home, service, and mobile-menu offcanvas', async ({ page }) => {
+    test('Cycle navigation from /lien-he/ to home, service, and mobile-menu offcanvas', async ({
+      page,
+    }) => {
       await page.setViewportSize({ width: 390, height: 844 });
       await installListenerCounter(page);
 
@@ -27,9 +29,10 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
         const actualMarker = await page.evaluate(
           () => (window as unknown as { __navMarker?: number }).__navMarker,
         );
-        expect(actualMarker, `Soft nav preserved window.__navMarker (${currentMarker}) on ${description}`).toBe(
-          currentMarker,
-        );
+        expect(
+          actualMarker,
+          `Soft nav preserved window.__navMarker (${currentMarker}) on ${description}`,
+        ).toBe(currentMarker);
       }
 
       // Cycle 1: /lien-he/ -> /thiet-ke-website/ -> /lien-he/ -> / -> /lien-he/ -> offcanvas open + nav -> /lien-he/
@@ -48,11 +51,7 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
       );
 
       // 2. Visit VI home via footer
-      await clickAndAssertSoftNav(
-        page.locator('#footer a[href="/"]'),
-        /^https?:\/\/[^/]+\/$/,
-        '/',
-      );
+      await clickAndAssertSoftNav(page.locator('#footer a[href="/"]'), /^https?:\/\/[^/]+\/$/, '/');
 
       // Nav back to /lien-he/
       await clickAndAssertSoftNav(
@@ -62,7 +61,11 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
       );
 
       // 3. Offcanvas cycle: open mobile menu at 390 and navigate via menu link
-      const menuTrigger = page.locator('.flex-col a[aria-controls="main-menu"]:visible, #azt-contact-footer a[data-open="#main-menu"]').first();
+      const menuTrigger = page
+        .locator(
+          '.flex-col a[aria-controls="main-menu"]:visible, #azt-contact-footer a[data-open="#main-menu"]',
+        )
+        .first();
       await menuTrigger.click();
       await expect(page.locator('#main-menu')).toBeVisible();
       await clickAndAssertSoftNav(
@@ -79,11 +82,12 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
       );
 
       // Record listener counts and triggers after cycle 1
-      const cycle1Listeners = await page.evaluate(
-        () => (window as unknown as { __liveListeners: () => Record<string, number> }).__liveListeners(),
+      const cycle1Listeners = await page.evaluate(() =>
+        (window as unknown as { __liveListeners: () => Record<string, number> }).__liveListeners(),
       );
       const cycle1Triggers = await page.evaluate(() => {
-        const st = (window as unknown as { ScrollTrigger?: { getAll: () => unknown[] } }).ScrollTrigger;
+        const st = (window as unknown as { ScrollTrigger?: { getAll: () => unknown[] } })
+          .ScrollTrigger;
         return st ? st.getAll().length : 0;
       });
       expect(cycle1Triggers, 'ScrollTrigger count on /lien-he/ after cycle 1 must be 0').toBe(0);
@@ -118,7 +122,11 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
       );
 
       // 3. Offcanvas menu to /gioi-thieu/
-      const menuTrigger2 = page.locator('.flex-col a[aria-controls="main-menu"]:visible, #azt-contact-footer a[data-open="#main-menu"]').first();
+      const menuTrigger2 = page
+        .locator(
+          '.flex-col a[aria-controls="main-menu"]:visible, #azt-contact-footer a[data-open="#main-menu"]',
+        )
+        .first();
       await menuTrigger2.click();
       await expect(page.locator('#main-menu')).toBeVisible();
       await clickAndAssertSoftNav(
@@ -135,11 +143,12 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
       );
 
       // Record listener counts and triggers after cycle 2
-      const cycle2Listeners = await page.evaluate(
-        () => (window as unknown as { __liveListeners: () => Record<string, number> }).__liveListeners(),
+      const cycle2Listeners = await page.evaluate(() =>
+        (window as unknown as { __liveListeners: () => Record<string, number> }).__liveListeners(),
       );
       const cycle2Triggers = await page.evaluate(() => {
-        const st = (window as unknown as { ScrollTrigger?: { getAll: () => unknown[] } }).ScrollTrigger;
+        const st = (window as unknown as { ScrollTrigger?: { getAll: () => unknown[] } })
+          .ScrollTrigger;
         return st ? st.getAll().length : 0;
       });
       expect(cycle2Triggers, 'ScrollTrigger count on /lien-he/ after cycle 2 must be 0').toBe(0);
@@ -176,19 +185,24 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
 
         // Measure trigger start and pin-spacer top
         const pinData = await page.evaluate(() => {
-          const st = (window as unknown as {
-            ScrollTrigger?: {
-              getAll: () => {
-                trigger?: HTMLElement;
-                start: number;
-                end: number;
-              }[];
-            };
-          }).ScrollTrigger;
-          const triggerObj = st?.getAll().find((t) =>
-            t.trigger?.classList.contains('horizontal-scroll-section') ||
-            Boolean(t.trigger?.querySelector('.scrolling-wrapper')),
-          );
+          const st = (
+            window as unknown as {
+              ScrollTrigger?: {
+                getAll: () => {
+                  trigger?: HTMLElement;
+                  start: number;
+                  end: number;
+                }[];
+              };
+            }
+          ).ScrollTrigger;
+          const triggerObj = st
+            ?.getAll()
+            .find(
+              (t) =>
+                t.trigger?.classList.contains('horizontal-scroll-section') ||
+                Boolean(t.trigger?.querySelector('.scrolling-wrapper')),
+            );
           const pinSpacer = document.querySelector('.pin-spacer') as HTMLElement;
           const rect = pinSpacer.getBoundingClientRect();
           const spacerDocTop = Math.round(window.scrollY + rect.top);
@@ -215,7 +229,8 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
         const halfData = await page.evaluate(() => {
           const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
           const transform = window.getComputedStyle(wrapper).transform;
-          const matrix = transform && transform !== 'none' ? new DOMMatrixReadOnly(transform) : null;
+          const matrix =
+            transform && transform !== 'none' ? new DOMMatrixReadOnly(transform) : null;
           return {
             translateX: matrix ? matrix.m41 : 0,
           };
@@ -231,7 +246,9 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
 
   test.describe('Resize from 1440 to 390 on home and service page', () => {
     for (const testPath of ['/', '/thiet-ke-website/']) {
-      test(`Resize 1440 -> 390 on ${testPath} refreshes pin start and translation`, async ({ page }) => {
+      test(`Resize 1440 -> 390 on ${testPath} refreshes pin start and translation`, async ({
+        page,
+      }) => {
         await page.setViewportSize({ width: 1440, height: 900 });
         await page.goto(testPath);
 
@@ -243,19 +260,24 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
         await page.waitForTimeout(100);
 
         const pinData = await page.evaluate(() => {
-          const st = (window as unknown as {
-            ScrollTrigger?: {
-              getAll: () => {
-                trigger?: HTMLElement;
-                start: number;
-                end: number;
-              }[];
-            };
-          }).ScrollTrigger;
-          const triggerObj = st?.getAll().find((t) =>
-            t.trigger?.classList.contains('horizontal-scroll-section') ||
-            Boolean(t.trigger?.querySelector('.scrolling-wrapper')),
-          );
+          const st = (
+            window as unknown as {
+              ScrollTrigger?: {
+                getAll: () => {
+                  trigger?: HTMLElement;
+                  start: number;
+                  end: number;
+                }[];
+              };
+            }
+          ).ScrollTrigger;
+          const triggerObj = st
+            ?.getAll()
+            .find(
+              (t) =>
+                t.trigger?.classList.contains('horizontal-scroll-section') ||
+                Boolean(t.trigger?.querySelector('.scrolling-wrapper')),
+            );
           const pinSpacer = document.querySelector('.pin-spacer') as HTMLElement;
           const rect = pinSpacer.getBoundingClientRect();
           const spacerDocTop = Math.round(window.scrollY + rect.top);
@@ -282,7 +304,8 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
         const halfData = await page.evaluate(() => {
           const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
           const transform = window.getComputedStyle(wrapper).transform;
-          const matrix = transform && transform !== 'none' ? new DOMMatrixReadOnly(transform) : null;
+          const matrix =
+            transform && transform !== 'none' ? new DOMMatrixReadOnly(transform) : null;
           return {
             translateX: matrix ? matrix.m41 : 0,
           };
@@ -297,7 +320,9 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
   });
 
   test.describe('Late image load pin trigger refresh', () => {
-    test('Holding and releasing card background images updates pin start correctly', async ({ page }) => {
+    test('Holding and releasing card background images updates pin start correctly', async ({
+      page,
+    }) => {
       await page.setViewportSize({ width: 390, height: 900 });
 
       // Hold card background image requests
@@ -315,7 +340,10 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
       await expect(section).toBeVisible();
 
       // Release held card background image requests
-      expect(heldRoutes.length, 'At least one image request must be held before release').toBeGreaterThan(0);
+      expect(
+        heldRoutes.length,
+        'At least one image request must be held before release',
+      ).toBeGreaterThan(0);
       released = true;
       for (const release of heldRoutes) {
         await release();
@@ -326,19 +354,24 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
       await page.waitForTimeout(400);
 
       const pinData = await page.evaluate(() => {
-        const st = (window as unknown as {
-          ScrollTrigger?: {
-            getAll: () => {
-              trigger?: HTMLElement;
-              start: number;
-              end: number;
-            }[];
-          };
-        }).ScrollTrigger;
-        const triggerObj = st?.getAll().find((t) =>
-          t.trigger?.classList.contains('horizontal-scroll-section') ||
-          Boolean(t.trigger?.querySelector('.scrolling-wrapper')),
-        );
+        const st = (
+          window as unknown as {
+            ScrollTrigger?: {
+              getAll: () => {
+                trigger?: HTMLElement;
+                start: number;
+                end: number;
+              }[];
+            };
+          }
+        ).ScrollTrigger;
+        const triggerObj = st
+          ?.getAll()
+          .find(
+            (t) =>
+              t.trigger?.classList.contains('horizontal-scroll-section') ||
+              Boolean(t.trigger?.querySelector('.scrolling-wrapper')),
+          );
         const pinSpacer = document.querySelector('.pin-spacer') as HTMLElement;
         const rect = pinSpacer.getBoundingClientRect();
         const spacerDocTop = Math.round(window.scrollY + rect.top);
@@ -456,10 +489,16 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
 
       // The component's own trigger must use the clamped distance (end >= start).
       const range = await page.evaluate(() => {
-        const st = (window as unknown as {
-          ScrollTrigger?: { getAll: () => { trigger?: HTMLElement; start: number; end: number }[] };
-        }).ScrollTrigger;
-        const t = st?.getAll().find((x) => x.trigger?.classList.contains('horizontal-scroll-section'));
+        const st = (
+          window as unknown as {
+            ScrollTrigger?: {
+              getAll: () => { trigger?: HTMLElement; start: number; end: number }[];
+            };
+          }
+        ).ScrollTrigger;
+        const t = st
+          ?.getAll()
+          .find((x) => x.trigger?.classList.contains('horizontal-scroll-section'));
         return t ? { start: t.start, end: t.end } : null;
       });
       expect(range, 'pin ScrollTrigger must exist on the one-card fixture').not.toBeNull();
@@ -474,11 +513,15 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
         const translateX = await page.evaluate(() => {
           const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
           const transform = window.getComputedStyle(wrapper).transform;
-          const matrix = transform && transform !== 'none' ? new DOMMatrixReadOnly(transform) : null;
+          const matrix =
+            transform && transform !== 'none' ? new DOMMatrixReadOnly(transform) : null;
           return matrix ? matrix.m41 : 0;
         });
 
-        expect(translateX, `translateX at scroll ${scrollY}px must never be > 0`).toBeLessThanOrEqual(0);
+        expect(
+          translateX,
+          `translateX at scroll ${scrollY}px must never be > 0`,
+        ).toBeLessThanOrEqual(0);
       }
     });
   });
@@ -493,7 +536,9 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
     const familyEntries = Array.from(familyMap.entries());
 
     for (const [kind, path] of familyEntries) {
-      test(`Reduced motion on ${kind} (${path}): no infinite running animations`, async ({ page }) => {
+      test(`Reduced motion on ${kind} (${path}): no infinite running animations`, async ({
+        page,
+      }) => {
         await page.emulateMedia({ reducedMotion: 'reduce' });
         await page.goto(path);
 
@@ -506,7 +551,8 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
               if (effect && 'getComputedTiming' in effect) {
                 const timing = effect.getComputedTiming();
                 if (timing.iterations === Infinity) {
-                  const animName = (anim as { animationName?: string }).animationName ?? anim.id ?? 'unnamed';
+                  const animName =
+                    (anim as { animationName?: string }).animationName ?? anim.id ?? 'unnamed';
                   offenders.push(animName);
                 }
               }

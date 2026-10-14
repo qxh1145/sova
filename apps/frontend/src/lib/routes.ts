@@ -9,7 +9,6 @@ export function normalizePath(input: string): PublicPath {
 }
 
 const firstSegment = (path: string) => path.split('/')[1];
-export const pathSegments = (path: string): string[] => path.split('/').filter(Boolean);
 
 /**
  * Validates and parses the page segment of a paged route (`/page/N/`).
@@ -153,4 +152,3 @@ export function buildCounterpartMap(routes: RouteEntry[], locale: Locale): Recor
   }
   return map;
 }
-

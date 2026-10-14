@@ -210,11 +210,7 @@ export function ContactView({
             {/* Form Column */}
             <div id={preset.main.formColId} className="col medium-6 small-12 large-6">
               <div className="col-inner">
-                <ContactForm
-                  form={page.form}
-                  consult={consultLabels}
-                  locale={page.locale}
-                />
+                <ContactForm form={page.form} consult={consultLabels} locale={page.locale} />
               </div>
             </div>
           </div>

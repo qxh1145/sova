@@ -1,5 +1,12 @@
 import type { ReactNode } from 'react';
-import type { AssetRef, Locale, Navigation, RouteEntry, ShellContent, SiteSettings } from '@/types/content';
+import type {
+  AssetRef,
+  Locale,
+  Navigation,
+  RouteEntry,
+  ShellContent,
+  SiteSettings,
+} from '@/types/content';
 import { Footer } from './Footer';
 import { Header, type HeaderProps } from './Header';
 import { ShellOverlayProvider } from './ShellOverlayProvider';
@@ -73,10 +80,7 @@ export function SiteShell({
         settings={settings}
         contactHref={contactHref}
       />
-      <FloatingContactActions
-        labels={shellContent.floatingContacts}
-        settings={settings}
-      />
+      <FloatingContactActions labels={shellContent.floatingContacts} settings={settings} />
       <CustomCursor />
     </ShellOverlayProvider>
   );

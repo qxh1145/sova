@@ -108,13 +108,7 @@ export interface ServiceBenefitsProps {
   ids: ServiceBenefitsIds;
 }
 
-export function ServiceBenefits({
-  copy,
-  benefits,
-  video,
-  icons = [],
-  ids,
-}: ServiceBenefitsProps) {
+export function ServiceBenefits({ copy, benefits, video, icons = [], ids }: ServiceBenefitsProps) {
   if (!benefits.length && !video) return null;
 
   return (

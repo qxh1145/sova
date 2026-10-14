@@ -2,11 +2,7 @@ import type { AssetRegistry } from '../assets.ts';
 import type { HeroContent, ListingSettings } from '../../../src/types/content.ts';
 import { processHref, type Stats } from '../html.ts';
 import { linkModel, plain } from '../services.ts';
-import {
-  must,
-  rich,
-  type Page,
-} from './shared.ts';
+import { must, rich, type Page } from './shared.ts';
 
 export function listing(page: Page, registry: AssetRegistry, stats: Stats): ListingSettings {
   const headingLines = must(
@@ -63,7 +59,13 @@ export function listing(page: Page, registry: AssetRegistry, stats: Stats): List
           breadcrumb = [
             {
               label: plain(homeLink, stats),
-              href: processHref(homeLink.getAttribute('href') ?? '', file, lineOf(homeLink.range[0]), stats) ?? '/',
+              href:
+                processHref(
+                  homeLink.getAttribute('href') ?? '',
+                  file,
+                  lineOf(homeLink.range[0]),
+                  stats,
+                ) ?? '/',
             },
             {
               label: lastText,

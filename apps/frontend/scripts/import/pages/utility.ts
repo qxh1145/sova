@@ -3,14 +3,7 @@ import type { AssetRegistry } from '../assets.ts';
 import type { LoginFormContent, Locale, RichContent, SEO } from '../../../src/types/content.ts';
 import { processHref, processText, sanitize, type Stats } from '../html.ts';
 import { trimBreaks } from '../services.ts';
-import {
-  hooks,
-  must,
-  rich,
-  RICH_ALLOWED,
-  seoOf,
-  type Page,
-} from './shared.ts';
+import { hooks, must, rich, RICH_ALLOWED, seoOf, type Page } from './shared.ts';
 
 export function thankYou(page: Page, registry: AssetRegistry, stats: Stats) {
   const inner = must(page.root.querySelector('#content .form_tke .col-inner'), page, 'message');
@@ -40,7 +33,10 @@ export function sample(page: Page, registry: AssetRegistry, stats: Stats) {
   };
 }
 
-export const LOGIN_MESSAGES: Record<Locale, { usernameRequired: string; passwordRequired: string }> = {
+export const LOGIN_MESSAGES: Record<
+  Locale,
+  { usernameRequired: string; passwordRequired: string }
+> = {
   vi: {
     usernameRequired: 'Lỗi: Trường tên người dùng đang trống.',
     passwordRequired: 'Lỗi: Mục mật khẩu đang trống.',
@@ -51,7 +47,11 @@ export const LOGIN_MESSAGES: Record<Locale, { usernameRequired: string; password
   },
 };
 
-export function login(page: Page, registry: AssetRegistry, stats: Stats): {
+export function login(
+  page: Page,
+  registry: AssetRegistry,
+  stats: Stats,
+): {
   id: string;
   seo: SEO;
   body: RichContent;
@@ -84,11 +84,7 @@ export function login(page: Page, registry: AssetRegistry, stats: Stats): {
     stats,
   );
 
-  const registerA = must(
-    formEl.querySelector('a[href*="action=register"]'),
-    page,
-    'register link',
-  );
+  const registerA = must(formEl.querySelector('a[href*="action=register"]'), page, 'register link');
   const registerText = processText(registerA.text.trim(), stats);
   const registerHref = must(
     processHref(registerA.getAttribute('href') ?? '', page.file, line, stats),
@@ -138,11 +134,7 @@ export function login(page: Page, registry: AssetRegistry, stats: Stats): {
   );
   const rememberLabel = processText(rememberLabelEl.text.trim(), stats);
 
-  const lostA = must(
-    formEl.querySelector('a.wp-login-lost-password'),
-    page,
-    'lost password link',
-  );
+  const lostA = must(formEl.querySelector('a.wp-login-lost-password'), page, 'lost password link');
   const lostPasswordText = processText(lostA.text.trim(), stats);
   const lostPasswordHref = must(
     processHref(lostA.getAttribute('href') ?? '', page.file, line, stats),
@@ -156,11 +148,7 @@ export function login(page: Page, registry: AssetRegistry, stats: Stats): {
     stats,
   ).trim();
 
-  const privacyA = must(
-    page.root.querySelector('a.privacy-policy-link'),
-    page,
-    'privacy link',
-  );
+  const privacyA = must(page.root.querySelector('a.privacy-policy-link'), page, 'privacy link');
   const privacyText = processText(privacyA.text.trim(), stats);
   const privacyHref = must(
     processHref(privacyA.getAttribute('href') ?? '', page.file, line, stats),

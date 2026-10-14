@@ -12,10 +12,7 @@ import {
   SERVICE_PACKAGE_CARDS_IDS_BRANDING_EN,
   SERVICE_PACKAGE_CARDS_IDS_BRANDING_VI,
 } from './ServicePackageCards';
-import {
-  Testimonials,
-  TESTIMONIALS_IDS,
-} from '@/components/testimonials/Testimonials';
+import { Testimonials, TESTIMONIALS_IDS } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
 import { FeaturedProjects, type FeaturedProjectsIds } from '@/components/projects/FeaturedProjects';
 

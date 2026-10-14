@@ -1,8 +1,5 @@
 import type { AssetRef, CarouselLabels, Project } from '@/types/content';
-import {
-  ProjectGallerySingle,
-  ProjectGallerySlider,
-} from './ProjectGallerySlider';
+import { ProjectGallerySingle, ProjectGallerySlider } from './ProjectGallerySlider';
 
 export interface ProjectGalleryProps {
   galleryAssets: AssetRef[];

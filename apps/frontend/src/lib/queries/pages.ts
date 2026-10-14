@@ -20,6 +20,7 @@ import type {
   ServiceKey,
   UtilityContent,
 } from '@/types/content';
+import { assertResolved, missingIds } from './assets';
 import { SUBTRACT_ICON_ID, resolveTestimonialArt } from './services';
 
 const SERVICE_KEYS: ServiceKey[] = [
@@ -34,12 +35,6 @@ const SERVICE_KEYS: ServiceKey[] = [
 ];
 const ALL = { page: 1, pageSize: Number.MAX_SAFE_INTEGER };
 const idsOf = (placements: CollectionPlacement[]) => placements.map((p) => p.entityId);
-const missingIds = (wanted: EntityId[], found: { id: EntityId }[] = []) =>
-  wanted.filter((id) => !found.some((f) => f.id === id));
-
-function assertResolved(pageId: EntityId, missing: EntityId[]) {
-  if (missing.length) throw new Error(`${pageId} references missing ids: ${missing.join(', ')}`);
-}
 
 /**
  * The home page with its shared stats and entities resolved; null when missing. Throws
@@ -205,14 +200,8 @@ export async function getAboutPage(
 ): Promise<AboutPageContent | null> {
   const record = await repository.getAboutPage(locale);
   if (!record) return null;
-  const {
-    statIds,
-    marqueeSeparatorId,
-    testimonialArtIds,
-    purposeImageId,
-    timelineDotId,
-    ...page
-  } = record;
+  const { statIds, marqueeSeparatorId, testimonialArtIds, purposeImageId, timelineDotId, ...page } =
+    record;
   const [stats, testimonials, partners, assets, shell] = await Promise.all([
     repository.getStats(statIds),
     repository.getTestimonials(record.testimonialIds, locale),

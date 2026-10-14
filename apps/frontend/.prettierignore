@@ -9,3 +9,5 @@ tsconfig.json
 .omc/
 /baseline/
 src/styles/legacy/
+src/app/(utility)/login-eras/bootstrap-subset.css
+tests/baseline/*_ACCEPTANCE.md

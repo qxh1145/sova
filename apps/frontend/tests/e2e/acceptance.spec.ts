@@ -26,21 +26,20 @@ import { getLegalPreset } from '../../src/components/legal/legalIds';
 import { getPaymentPreset } from '../../src/components/legal/paymentIds';
 import { routes } from '@/data/routes';
 import type { Service } from '@/types/content';
+import manifest from '../baseline/manifest.json';
 
-const WIDTHS = [390, 549, 550, 768, 849, 850, 1280, 1440];
+const WIDTHS = manifest.viewports;
+const ALLOWED_RSC_PATHNAMES = new Set<string>([]);
 
 function setupResponse404Collector(page: Page) {
   const missingResponses: string[] = [];
-  // The console 404 line carries no URL, so 404s are checked here. Only RSC prefetches of nav
-  // routes that later epics build are expected; a missing asset or page document still fails.
-  // ponytail: blanket _rsc allowance; drop it once every nav route exists (epic-fidelity).
   page.on('response', (res) => {
     if (res.status() !== 404) return;
     const url = new URL(res.url());
     if (
       url.pathname.startsWith('/dev-fixtures/') ||
       KNOWN_ABSENT_CSS_ASSETS.has(url.pathname) ||
-      url.searchParams.has('_rsc')
+      (url.searchParams.has('_rsc') && ALLOWED_RSC_PATHNAMES.has(url.pathname))
     )
       return;
     missingResponses.push(`404 ${res.url()}`);
@@ -647,9 +646,35 @@ test.describe('Acceptance: Collections', () => {
         page.locator(landmark).first(),
         `Landmark ${landmark} visible on ${routePath}`,
       ).toBeVisible();
+
+      if (routePath === '/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/') {
+        await expect(page.locator('h1.current-post-title')).toHaveText(
+          'Công ty Cổ phần Phát triển Công nghệ THP',
+        );
+        await expect(page.locator('#slider-duan .img.col')).toHaveCount(2);
+      }
     });
   }
 });
+
+const EXPECTED_SERVICE_FAQ_COUNTS: Record<string, number> = {
+  '/thiet-ke-website/': 8,
+  '/en/website-development/': 8,
+  '/thiet-ke-app-mobile/': 8,
+  '/en/app-mobile-development/': 9,
+  '/seo-tu-khoa-website/': 8,
+  '/en/website-keyword-seo/': 8,
+  '/ui-ux-branding-design/': 10,
+  '/en/ui-ux-branding-design-2/': 10,
+  '/giai-phap-luu-tru/': 4,
+  '/en/storage-solution/': 4,
+  '/e-mail-doanh-nghiep/': 9,
+  '/en/business-e-mail/': 9,
+  '/hosting-doanh-nghiep/': 10,
+  '/en/business-hosting/': 10,
+  '/vps-doanh-nghiep/': 12,
+  '/en/business-vps/': 12,
+};
 
 test.describe('Acceptance: Services and About', () => {
   test.beforeEach(async ({ page }) => {
@@ -681,7 +706,7 @@ test.describe('Acceptance: Services and About', () => {
       );
       await expect(page.locator('main h1').first()).toBeVisible();
 
-      const expectedFaqCount = service.faqs?.length ?? 0;
+      const expectedFaqCount = EXPECTED_SERVICE_FAQ_COUNTS[service.path] ?? 0;
       await expect(page.locator('.accordion-item')).toHaveCount(expectedFaqCount);
 
       if ((service.testimonialIds?.length ?? 0) > 0) {
@@ -689,9 +714,10 @@ test.describe('Acceptance: Services and About', () => {
       }
 
       if (service.pricingId) {
-        await expect(
-          page.locator('.eras-table-price, main table, .vps-table-wrapper').first(),
-        ).toBeVisible();
+        const selector = ['email', 'hosting', 'vps'].includes(service.key)
+          ? '.vps-table-wrapper'
+          : '.eras-table-price';
+        await expect(page.locator(selector).first()).toBeVisible();
       }
     });
   }

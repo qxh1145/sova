@@ -19,7 +19,12 @@ describe('LatestPosts component', () => {
     play: 'Tiếp tục',
   };
 
-  const createPost = (id: string, path: `/${string}`, title: string, thumbnailId?: string): Post => ({
+  const createPost = (
+    id: string,
+    path: `/${string}`,
+    title: string,
+    thumbnailId?: string,
+  ): Post => ({
     id,
     locale: 'vi',
     path,
@@ -155,7 +160,12 @@ describe('LatestPosts component', () => {
 
   it('handles missing media fallback: keeps .image-cover, title and link, omits img', () => {
     const posts: Post[] = [
-      createPost('post-missing-status', '/bai-viet-missing/', 'Missing Status Post', 'asset-missing'),
+      createPost(
+        'post-missing-status',
+        '/bai-viet-missing/',
+        'Missing Status Post',
+        'asset-missing',
+      ),
       createPost('post-no-asset', '/bai-viet-no-asset/', 'No Asset Post', 'asset-not-found'),
       createPost('post-no-thumb', '/bai-viet-no-thumb/', 'No Thumbnail ID Post'),
     ];

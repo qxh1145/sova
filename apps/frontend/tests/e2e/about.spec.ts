@@ -106,9 +106,7 @@ test.describe('About Pages (Story 5.10)', () => {
       await expect(countUps).toHaveCount(4);
       const values = await countUps.allInnerTexts();
       expect(values).toEqual(
-        record.statIds.map((id) =>
-          String(stats.find((s) => s.id === id)!.value).padStart(2, '0'),
-        ),
+        record.statIds.map((id) => String(stats.find((s) => s.id === id)!.value).padStart(2, '0')),
       );
 
       await context.close();
@@ -197,14 +195,10 @@ test.describe('About Pages (Story 5.10)', () => {
       );
       await expect(gridItems).toHaveCount(27);
 
-      const sliderCols = page.locator(
-        `#${config.pillarsSectionId} .slide_gthieu .col-logo`,
-      );
+      const sliderCols = page.locator(`#${config.pillarsSectionId} .slide_gthieu .col-logo`);
       await expect(sliderCols).toHaveCount(3);
 
-      const sliderItems = page.locator(
-        `#${config.pillarsSectionId} .slide_gthieu .icon-box`,
-      );
+      const sliderItems = page.locator(`#${config.pillarsSectionId} .slide_gthieu .icon-box`);
       await expect(sliderItems).toHaveCount(27);
 
       // Sanitized HTML renders as markup: entities decode, none print literally.
@@ -215,13 +209,9 @@ test.describe('About Pages (Story 5.10)', () => {
       page,
     }) => {
       const targetGrid = page.locator(`#${config.targetSectionId} .row_muctieu.hide-for-small`);
-      const targetSlider = page.locator(
-        `#${config.targetSectionId} .slide_gth.show-for-small`,
-      );
+      const targetSlider = page.locator(`#${config.targetSectionId} .slide_gth.show-for-small`);
 
-      const pillarsGrid = page.locator(
-        `#${config.pillarsSectionId} .hover_gra.hide-for-small`,
-      );
+      const pillarsGrid = page.locator(`#${config.pillarsSectionId} .hover_gra.hide-for-small`);
       const pillarsSlider = page.locator(
         `#${config.pillarsSectionId} .slide_gthieu.show-for-small`,
       );

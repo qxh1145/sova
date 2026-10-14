@@ -17,10 +17,7 @@ export function toCardData(project: ProjectCardData): ProjectCardData {
   };
 }
 
-export function categoryLabel(
-  categoryIds: string[],
-  categoryMap: Map<string, string>,
-): string {
+export function categoryLabel(categoryIds: string[], categoryMap: Map<string, string>): string {
   return categoryIds
     .map((id) => categoryMap.get(id))
     .filter(Boolean)

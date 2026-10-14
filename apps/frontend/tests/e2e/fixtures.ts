@@ -1,4 +1,4 @@
-import { test as base, expect, type Page } from '@playwright/test';
+import { test as base, expect, type Locator, type Page } from '@playwright/test';
 
 // Fail-closed: any non-local host is a violation unless listed here.
 export const MAPS_EMBED_ALLOWLIST = [
@@ -286,3 +286,14 @@ export const test = base.extend<
 });
 
 export { expect };
+
+export async function dragSlider(page: Page, viewport: Locator, distance: number, steps = 15) {
+  const box = (await viewport.boundingBox())!;
+  const startX = box.x + box.width * 0.4;
+  const startY = box.y + box.height / 2;
+  const deltaX = Math.abs(distance) <= 1 ? Math.round(box.width * distance) : distance;
+  await page.mouse.move(startX, startY);
+  await page.mouse.down();
+  await page.mouse.move(startX - deltaX, startY, { steps });
+  await page.mouse.up();
+}

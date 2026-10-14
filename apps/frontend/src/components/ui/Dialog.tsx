@@ -53,8 +53,19 @@ function DialogPortalInner({
   const variantClass = variant === 'off-canvas' ? `off-canvas off-canvas-${side}` : undefined;
   const readyClass = isReady ? 'mfp-ready' : undefined;
 
-  const overlayClasses = ['mfp-bg', variantClass, readyClass, closing && 'mfp-removing'].filter(Boolean).join(' ');
-  const wrapClasses = ['mfp-wrap', 'mfp-close-btn-in', 'mfp-auto-cursor', variantClass, readyClass, closing && 'mfp-removing'].filter(Boolean).join(' ');
+  const overlayClasses = ['mfp-bg', variantClass, readyClass, closing && 'mfp-removing']
+    .filter(Boolean)
+    .join(' ');
+  const wrapClasses = [
+    'mfp-wrap',
+    'mfp-close-btn-in',
+    'mfp-auto-cursor',
+    variantClass,
+    readyClass,
+    closing && 'mfp-removing',
+  ]
+    .filter(Boolean)
+    .join(' ');
   const contentClasses = [
     'mfp-content',
     variant === 'lightbox' ? 'lightbox-content' : undefined,
@@ -72,7 +83,12 @@ function DialogPortalInner({
             <DialogPrimitive.Content
               forceMount
               onTransitionEnd={(event) => {
-                if (event.target === event.currentTarget && event.propertyName === 'opacity' && closing) onTransitionEnd();
+                if (
+                  event.target === event.currentTarget &&
+                  event.propertyName === 'opacity' &&
+                  closing
+                )
+                  onTransitionEnd();
               }}
               id={id}
               className={contentClasses}
@@ -85,11 +101,7 @@ function DialogPortalInner({
                 <DialogPrimitive.Description>{description}</DialogPrimitive.Description>
               ) : null}
               <DialogPrimitive.Close asChild>
-                <button
-                  type="button"
-                  className="mfp-close"
-                  aria-label={labels.close}
-                >
+                <button type="button" className="mfp-close" aria-label={labels.close}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="28"
@@ -121,11 +133,7 @@ function DialogPortalInner({
 // Reduced motion unmounts at once: never enter the `mfp-removing` phase.
 const animateClose = () => !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-export function Dialog({
-  open,
-  onOpenChange,
-  ...rest
-}: DialogProps) {
+export function Dialog({ open, onOpenChange, ...rest }: DialogProps) {
   const [closing, setClosing] = useState(false);
   const [previousOpen, setPreviousOpen] = useState(open);
 

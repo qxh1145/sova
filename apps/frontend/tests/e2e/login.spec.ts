@@ -182,9 +182,7 @@ test.describe('Legacy Login UI (/login-eras/)', () => {
     await expect(userInput).toHaveAttribute('aria-invalid', 'true');
   });
 
-  test('Alias: GET /dang-ky-nghi-phep/ permanently redirects to /login-eras/', async ({
-    page,
-  }) => {
+  test('Alias: GET /dang-ky-nghi-phep/ permanently redirects to /login-eras/', async ({ page }) => {
     const response = await page.goto('/dang-ky-nghi-phep/');
     expect(response?.status()).toBe(200);
     const redirect = await response!.request().redirectedFrom()!.response();

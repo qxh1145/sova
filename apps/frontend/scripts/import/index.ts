@@ -30,7 +30,8 @@ const curatedHeader = (flag: string) =>
 /** Curated files are seeded once; re-import only when `flag` is set to '1'. Logs each skip. */
 function keepCurated(file: string, flag: string) {
   const keep = existsSync(file) && process.env[flag] !== '1';
-  if (keep) console.log(`skipped ${path.relative(process.cwd(), file)} (curated; ${flag}=1 to overwrite)`);
+  if (keep)
+    console.log(`skipped ${path.relative(process.cwd(), file)} (curated; ${flag}=1 to overwrite)`);
   return keep;
 }
 

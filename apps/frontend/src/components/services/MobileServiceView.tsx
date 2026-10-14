@@ -1,10 +1,7 @@
 import type { Locale } from '@/types/content';
 import type { ServiceAssets, ServicePage } from '@/lib/queries/services';
 import { PageHero } from '@/components/hero/PageHero';
-import {
-  SERVICE_HERO_IDS_MOBILE_EN,
-  SERVICE_HERO_IDS_MOBILE_VI,
-} from './serviceHeroIds';
+import { SERVICE_HERO_IDS_MOBILE_EN, SERVICE_HERO_IDS_MOBILE_VI } from './serviceHeroIds';
 import {
   ServiceBenefits,
   SERVICE_BENEFITS_IDS_MOBILE_EN,
@@ -15,10 +12,7 @@ import {
   SERVICE_DETAIL_CARDS_IDS_MOBILE_EN,
   SERVICE_DETAIL_CARDS_IDS_MOBILE_VI,
 } from './ServiceDetailCards';
-import {
-  Testimonials,
-  TESTIMONIALS_IDS,
-} from '@/components/testimonials/Testimonials';
+import { Testimonials, TESTIMONIALS_IDS } from '@/components/testimonials/Testimonials';
 import { FAQList } from '@/components/faq/FAQList';
 import { faqToggleLabel } from '@/components/faq/faqIds';
 import { FeaturedProjects, type FeaturedProjectsIds } from '@/components/projects/FeaturedProjects';

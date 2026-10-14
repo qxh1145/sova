@@ -18,10 +18,7 @@ import {
   SERVICE_DETAIL_CARDS_IDS_WEBSITE_EN,
   SERVICE_DETAIL_CARDS_IDS_WEBSITE_VI,
 } from './ServiceDetailCards';
-import {
-  Testimonials,
-  TESTIMONIALS_IDS,
-} from '@/components/testimonials/Testimonials';
+import { Testimonials, TESTIMONIALS_IDS } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
 import { WebsiteContactForm } from '@/components/forms/WebsiteContactForm';
 import { FeaturedProjects, type FeaturedProjectsIds } from '@/components/projects/FeaturedProjects';

@@ -3,8 +3,6 @@ import type { PageHeroIds } from '@/components/hero/PageHero';
 export const ABOUT_HERO_IDS_VI: PageHeroIds = {
   banner: 'banner-588612431',
   textBox: 'text-box-560198567',
-  textBoxY: 'y15',
-  textBoxMdLgY: 'md-y50 lg-y50',
   row: 'row-387512971',
   leftCol: 'col-1855465827',
   breadcrumbText: 'text-1518130574',
@@ -20,8 +18,6 @@ export const ABOUT_HERO_IDS_VI: PageHeroIds = {
 export const ABOUT_HERO_IDS_EN: PageHeroIds = {
   banner: 'banner-1388775398',
   textBox: 'text-box-1006279776',
-  textBoxY: 'y15',
-  textBoxMdLgY: 'md-y50 lg-y50',
   row: 'row-705326161',
   leftCol: 'col-839642777',
   breadcrumbText: 'text-1446170075',
