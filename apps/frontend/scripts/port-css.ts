@@ -314,7 +314,13 @@ async function main() {
       // 2. wp-includes/css/buttons.min__q_e3dfde8c2bed.css
       const { css: buttonsCss, ...buttonsEntry } = portBlock(buttonsBlock, source);
       text += `\n/* source: ${buttonsEntry.source}:${buttonsEntry.line} (head, ${source}:${buttonsBlock.line}) */\n${buttonsCss.trim()}\n`;
-      own.push({ file, kind: 'route-head', ...buttonsEntry, htmlLine: buttonsBlock.line, route: route.id });
+      own.push({
+        file,
+        kind: 'route-head',
+        ...buttonsEntry,
+        htmlLine: buttonsBlock.line,
+        route: route.id,
+      });
 
       // 3. wp-content/mu-plugins/include/css/login-eras.css
       const { css: loginRaw, ...loginEntry } = portBlock(loginBlock, source);
@@ -325,7 +331,13 @@ async function main() {
         return '--sova-login-';
       });
       text += `\n/* source: ${loginEntry.source}:${loginEntry.line} (head, ${source}:${loginBlock.line}) */\n${loginCss.trim()}\n`;
-      own.push({ file, kind: 'route-head', ...loginEntry, htmlLine: loginBlock.line, route: route.id });
+      own.push({
+        file,
+        kind: 'route-head',
+        ...loginEntry,
+        htmlLine: loginBlock.line,
+        route: route.id,
+      });
     } else {
       for (const block of headOf(html)) {
         const id = attr(block.tag, 'id');

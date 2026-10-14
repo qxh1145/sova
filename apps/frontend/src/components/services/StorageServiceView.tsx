@@ -8,10 +8,7 @@ import {
   STORAGE_OFFERINGS_IDS_EN,
   STORAGE_OFFERINGS_IDS_VI,
 } from './StorageOfferings';
-import {
-  Testimonials,
-  TESTIMONIALS_IDS,
-} from '@/components/testimonials/Testimonials';
+import { Testimonials, TESTIMONIALS_IDS } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
 import { FeaturedProjects, type FeaturedProjectsIds } from '@/components/projects/FeaturedProjects';
 
@@ -50,12 +47,7 @@ const FAQ_IDS = {
   },
 };
 
-export function StorageServiceView({
-  page,
-  assets,
-  routes,
-  locale,
-}: StorageServiceViewProps) {
+export function StorageServiceView({ page, assets, routes, locale }: StorageServiceViewProps) {
   const isEn = locale === 'en';
   const { service, faqs, testimonials } = page;
   const copy = service.sectionCopy;

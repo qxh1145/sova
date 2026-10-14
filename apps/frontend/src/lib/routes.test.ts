@@ -122,8 +122,7 @@ test('reserved root slugs cover non-[slug] roots and aliases, plus static roots,
     expect(reserved).toContain(s);
   for (const s of ['login-eras', 'lien-he', 'dang-ky-nghi-phep', 'porfolio-eras-vietnam'])
     expect(reserved).toContain(s);
-  for (const s of ['tim-kiem', 'page', 'dev-fixtures'])
-    expect(reserved).toContain(s);
+  for (const s of ['tim-kiem', 'page', 'dev-fixtures']) expect(reserved).toContain(s);
   for (const s of ['social-marketing', 'thu-thuat', ...slugs.postSlugs])
     expect(reserved).not.toContain(s);
 });
@@ -192,7 +191,10 @@ test('parsePageParam parses digits with default min 2 or custom min', () => {
 });
 
 test('categoryIdBySlug resolves category id from array', () => {
-  const cats = [{ id: 'cat-1', slug: 'branding' }, { id: 'cat-2', slug: 'website' }];
+  const cats = [
+    { id: 'cat-1', slug: 'branding' },
+    { id: 'cat-2', slug: 'website' },
+  ];
   expect(categoryIdBySlug(cats, 'branding')).toBe('cat-1');
   expect(categoryIdBySlug(cats, 'website')).toBe('cat-2');
   expect(categoryIdBySlug(cats, 'missing')).toBeUndefined();
@@ -204,4 +206,3 @@ test('pathForRouteId returns path for existing route and undefined for missing',
   expect(pathForRouteId(routes, 'route-lien-he')).toBe('/lien-he/');
   expect(pathForRouteId(routes, 'route-non-existent')).toBeUndefined();
 });
-

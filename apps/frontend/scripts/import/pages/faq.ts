@@ -2,13 +2,7 @@ import type { AssetRegistry } from '../assets.ts';
 import type { FAQPageContent } from '../../../src/types/content.ts';
 import type { Stats } from '../html.ts';
 import { plain } from '../services.ts';
-import {
-  bannerTitle,
-  identity,
-  must,
-  seoOf,
-  type Page,
-} from './shared.ts';
+import { bannerTitle, identity, must, seoOf, type Page } from './shared.ts';
 
 export function faqPage(page: Page, registry: AssetRegistry, stats: Stats): FAQPageContent {
   const { root, lineOf, route } = page;

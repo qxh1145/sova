@@ -257,7 +257,9 @@ describe('form schemas', () => {
       const badMessage = schema.safeParse({ ...validPayload, 'your-message': '' });
       expect(badMessage.success).toBe(false);
       if (!badMessage.success) {
-        expect(badMessage.error.format()['your-message']?._errors[0]).toBe(contactMessages.required);
+        expect(badMessage.error.format()['your-message']?._errors[0]).toBe(
+          contactMessages.required,
+        );
       }
     });
 

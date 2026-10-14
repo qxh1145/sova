@@ -2,11 +2,7 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-  loginSchema,
-  zodResolver,
-  type LoginFormValues,
-} from '@/lib/forms/schemas';
+import { loginSchema, zodResolver, type LoginFormValues } from '@/lib/forms/schemas';
 import { useHydrated } from '@/lib/forms/useHydrated';
 import type { LoginFormContent } from '@/types/content';
 
@@ -103,13 +99,7 @@ export function LoginForm({ form, demoNotice }: LoginFormProps) {
         </div>
       )}
 
-      <form
-        name="loginform"
-        id="loginform"
-        method="post"
-        noValidate
-        onSubmit={onSubmit}
-      >
+      <form name="loginform" id="loginform" method="post" noValidate onSubmit={onSubmit}>
         <h1 className="text-center">{form.heading}</h1>
         <p className="text-center mt-3 mb-4">
           {form.noAccountText}{' '}
@@ -151,9 +141,7 @@ export function LoginForm({ form, demoNotice }: LoginFormProps) {
               className="button button-secondary wp-hide-pw hide-if-no-js"
               data-toggle={showPassword ? '1' : '0'}
               aria-pressed={showPassword}
-              aria-label={
-                showPassword ? form.hidePasswordLabel : form.showPasswordLabel
-              }
+              aria-label={showPassword ? form.hidePasswordLabel : form.showPasswordLabel}
               onClick={() => setShowPassword((prev) => !prev)}
             >
               <span
@@ -184,10 +172,7 @@ export function LoginForm({ form, demoNotice }: LoginFormProps) {
             />{' '}
             <label htmlFor="rememberme">{form.rememberLabel}</label>
           </p>
-          <p
-            id="nav"
-            className="col lg-6 mt-0 justify-content-end d-flex align-items-center"
-          >
+          <p id="nav" className="col lg-6 mt-0 justify-content-end d-flex align-items-center">
             <a className="wp-login-lost-password" href={form.lostPasswordHref}>
               {form.lostPasswordText}
             </a>

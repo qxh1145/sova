@@ -12,6 +12,7 @@ import type {
   ServiceKey,
   Testimonial,
 } from '@/types/content';
+import { assertResolved, missingIds } from './assets';
 import { applyFAQPlacements, getFAQs } from './faq';
 
 export function getService(key: ServiceKey, locale: Locale): Promise<Service | null> {
@@ -104,13 +105,16 @@ export async function getServiceAssets(
   const offeringMediaIds = service.offerings
     .map((o) => o.mediaId)
     .filter((id): id is string => Boolean(id));
-  const avatarIds = testimonials
-    .map((t) => t.avatarId)
-    .filter((id): id is string => Boolean(id));
+  const avatarIds = testimonials.map((t) => t.avatarId).filter((id): id is string => Boolean(id));
 
   const projectAssetIds = projects
     .map((p) => p.galleryIds[0])
     .filter((id): id is string => Boolean(id));
+
+  const websiteAssetIds =
+    service.key === 'website'
+      ? ['asset-017f167e30', 'asset-0284853c00', 'asset-4314679580', 'asset-400b882328']
+      : [];
 
   const [
     heroImages,
@@ -147,17 +151,50 @@ export async function getServiceAssets(
       TESTIMONIAL_ART_IDS.quoteIconId,
       TESTIMONIAL_ART_IDS.lineId,
     ]),
-    service.key === 'website'
-      ? repository.getAssets([
-          'asset-017f167e30',
-          'asset-0284853c00',
-          'asset-4314679580',
-          'asset-400b882328',
-        ])
-      : Promise.resolve([]),
+    websiteAssetIds.length ? repository.getAssets(websiteAssetIds) : Promise.resolve([]),
     projectAssetIds.length ? repository.getAssets(projectAssetIds) : Promise.resolve([]),
     projects.length ? repository.getProjectCategories() : Promise.resolve([]),
   ]);
+
+  const wanted = [
+    ...(heroImageId ? [heroImageId] : []),
+    ...(heroBgImageId ? [heroBgImageId] : []),
+    ...(benefitsBgImageId ? [benefitsBgImageId] : []),
+    ...(advantagesPhotoId ? [advantagesPhotoId] : []),
+    ...(advantagesDecoId ? [advantagesDecoId] : []),
+    ...(offeringsBgImageId ? [offeringsBgImageId] : []),
+    ...(heroCtaIconId ? [heroCtaIconId] : []),
+    ...(videoId ? [videoId] : []),
+    ...benefitIconIds,
+    ...offeringMediaIds,
+    SUBTRACT_ICON_ID,
+    ...avatarIds,
+    TESTIMONIAL_ART_IDS.photoId,
+    TESTIMONIAL_ART_IDS.quoteIconId,
+    TESTIMONIAL_ART_IDS.lineId,
+    ...websiteAssetIds,
+    ...projectAssetIds,
+  ];
+
+  const allResolved = [
+    ...heroImages,
+    ...heroBgImages,
+    ...benefitsBgImages,
+    ...advantagesPhotos,
+    ...advantagesDecos,
+    ...offeringsBgImages,
+    ...ctaIcons,
+    ...videoAssets,
+    ...benefitIcons,
+    ...offeringMedia,
+    ...subtractAssets,
+    ...testimonialAvatars,
+    ...artAssets,
+    ...extraAssets,
+    ...projectAssets,
+  ];
+
+  assertResolved(service.id, missingIds(wanted, allResolved));
 
   const testimonialArt = resolveTestimonialArt(artAssets);
 
@@ -212,13 +249,15 @@ export async function getServicePage(key: ServiceKey, locale: Locale): Promise<S
     (id) => allProjects?.items.find((p) => p.id === id) ?? [],
   );
   const missing = [
-    ...placements.map((p) => p.faqId).filter((id) => !faqs.some((f) => f.id === id)),
-    ...service.testimonialIds.filter((id) => !testimonials.some((t) => t.id === id)),
-    ...service.featuredProjectIds.filter((id) => !projects.some((p) => p.id === id)),
+    ...missingIds(
+      placements.map((p) => p.faqId),
+      faqs,
+    ),
+    ...missingIds(service.testimonialIds, testimonials),
+    ...missingIds(service.featuredProjectIds, projects),
     ...(service.pricingId && !pricing ? [service.pricingId] : []),
   ];
-  if (missing.length)
-    throw new Error(`${service.id} references missing ids: ${missing.join(', ')}`);
+  assertResolved(service.id, missing);
   return {
     service,
     faqs: applyFAQPlacements(faqs, placements),

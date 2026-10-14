@@ -2,14 +2,8 @@
 
 import Link from 'next/link';
 import { Dialog } from '@/components/ui/Dialog';
-import {
-  ShellOverlayProvider,
-  useShellOverlay,
-} from '@/components/layout/ShellOverlayProvider';
-import {
-  FIXTURE_OVERLAY_LABELS,
-  type OverlayVariant,
-} from './constants';
+import { ShellOverlayProvider, useShellOverlay } from '@/components/layout/ShellOverlayProvider';
+import { FIXTURE_OVERLAY_LABELS, type OverlayVariant } from './constants';
 
 function OverlayFixtureContent({ variant }: { variant: OverlayVariant }) {
   const { open, handoff, close, isOpen, onCloseAutoFocus } = useShellOverlay();
@@ -149,10 +143,7 @@ function OverlayFixtureContent({ variant }: { variant: OverlayVariant }) {
         </div>
       )}
 
-      <div
-        data-testid="scroll-spacer"
-        style={{ height: '200vh', marginTop: 32 }}
-      >
+      <div data-testid="scroll-spacer" style={{ height: '200vh', marginTop: 32 }}>
         <p>{FIXTURE_OVERLAY_LABELS.spacerText}</p>
       </div>
     </div>

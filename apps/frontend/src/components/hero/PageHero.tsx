@@ -53,6 +53,11 @@ export interface PageHeroProps {
   ctaIcon?: AssetRef | null;
 }
 
+function Gap({ id, className = 'gap-element clearfix' }: { id?: string; className?: string }) {
+  if (!id) return null;
+  return <div id={id} className={className} style={{ display: 'block', height: 'auto' }} />;
+}
+
 export function PageHero({
   hero,
   heroImage,
@@ -92,13 +97,7 @@ export function PageHero({
                   <div className="row align-middle" id={ids.row}>
                     <div id={ids.leftCol} className="col medium-6 small-12 large-6">
                       <div className="col-inner">
-                        {ids.topGap && (
-                          <div
-                            id={ids.topGap}
-                            className={ids.topGapClass ?? 'gap-element clearfix'}
-                            style={{ display: 'block', height: 'auto' }}
-                          />
-                        )}
+                        <Gap id={ids.topGap} className={ids.topGapClass} />
                         {breadcrumb && ids.breadcrumbText && (
                           <div id={ids.breadcrumbText} className="text">
                             <p>
@@ -120,13 +119,10 @@ export function PageHero({
                             </p>
                           </div>
                         )}
-                        {ids.breadcrumbGap && (
-                          <div
-                            id={ids.breadcrumbGap}
-                            className="gap-element clearfix show-for-small"
-                            style={{ display: 'block', height: 'auto' }}
-                          />
-                        )}
+                        <Gap
+                          id={ids.breadcrumbGap}
+                          className="gap-element clearfix show-for-small"
+                        />
                         <div
                           id={ids.headingText}
                           className={ids.headingClass ?? 'text kanit-font page_text_go'}
@@ -139,46 +135,16 @@ export function PageHero({
                             ))}
                           </h1>
                         </div>
-                        {ids.headingGap && (
-                          <div
-                            id={ids.headingGap}
-                            className="gap-element clearfix show-for-small"
-                            style={{ display: 'block', height: 'auto' }}
-                          />
-                        )}
-                        {ids.gap1 && (
-                          <div
-                            id={ids.gap1}
-                            className="gap-element clearfix"
-                            style={{ display: 'block', height: 'auto' }}
-                          />
-                        )}
-                        {ids.gap1b && (
-                          <div
-                            id={ids.gap1b}
-                            className={ids.gap1bClass ?? 'gap-element clearfix'}
-                            style={{ display: 'block', height: 'auto' }}
-                          />
-                        )}
+                        <Gap id={ids.headingGap} className="gap-element clearfix show-for-small" />
+                        <Gap id={ids.gap1} />
+                        <Gap id={ids.gap1b} className={ids.gap1bClass} />
                         {hero.description && ids.descText && (
                           <div id={ids.descText} className="text">
                             <RichText content={hero.description} />
                           </div>
                         )}
-                        {ids.gap2 && (
-                          <div
-                            id={ids.gap2}
-                            className={ids.gap2Class ?? 'gap-element clearfix'}
-                            style={{ display: 'block', height: 'auto' }}
-                          />
-                        )}
-                        {ids.gap2b && (
-                          <div
-                            id={ids.gap2b}
-                            className="gap-element clearfix hide-for-small"
-                            style={{ display: 'block', height: 'auto' }}
-                          />
-                        )}
+                        <Gap id={ids.gap2} className={ids.gap2Class} />
+                        <Gap id={ids.gap2b} className="gap-element clearfix hide-for-small" />
                         {hero.cta && ids.ctaText && (
                           <div id={ids.ctaText} className="text">
                             <p>
@@ -235,13 +201,7 @@ export function PageHero({
           </div>
         </div>
       </div>
-      {ids.bottomGap && (
-        <div
-          id={ids.bottomGap}
-          className={ids.bottomGapClass ?? 'gap-element clearfix'}
-          style={{ display: 'block', height: 'auto' }}
-        />
-      )}
+      <Gap id={ids.bottomGap} className={ids.bottomGapClass} />
     </>
   );
 }

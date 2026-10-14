@@ -44,9 +44,7 @@ describe('PartnerLogos component', () => {
   ];
 
   it('renders logos in order with alt="", correct src, width, height, and decoding="async"', () => {
-    const html = renderToStaticMarkup(
-      <PartnerLogos partners={mockPartners} assets={mockAssets} />,
-    );
+    const html = renderToStaticMarkup(<PartnerLogos partners={mockPartners} assets={mockAssets} />);
     const root = parse(html);
 
     const cols = root.querySelectorAll('.gallery-col.col');
@@ -84,10 +82,7 @@ describe('PartnerLogos component', () => {
   });
 
   it('omits <img> when partner logo asset status is missing (no throw)', () => {
-    const assetsWithMissing: AssetRef[] = [
-      mockAssets[0],
-      { ...mockAssets[1], status: 'missing' },
-    ];
+    const assetsWithMissing: AssetRef[] = [mockAssets[0], { ...mockAssets[1], status: 'missing' }];
     let html = '';
     expect(() => {
       html = renderToStaticMarkup(

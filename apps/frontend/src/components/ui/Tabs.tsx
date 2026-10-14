@@ -16,9 +16,7 @@ export interface TabsProps {
 }
 
 export function Tabs({ items, defaultValue, className }: TabsProps) {
-  const [activeTab, setActiveTab] = useState<string>(
-    defaultValue ?? items[0]?.value ?? '',
-  );
+  const [activeTab, setActiveTab] = useState<string>(defaultValue ?? items[0]?.value ?? '');
 
   return (
     <TabsPrimitive.Root
@@ -37,9 +35,7 @@ export function Tabs({ items, defaultValue, className }: TabsProps) {
             return (
               <li
                 key={item.value}
-                className={['tab', 'has-icon', isActive ? 'active' : '']
-                  .filter(Boolean)
-                  .join(' ')}
+                className={['tab', 'has-icon', isActive ? 'active' : ''].filter(Boolean).join(' ')}
                 role="presentation"
               >
                 <TabsPrimitive.Trigger

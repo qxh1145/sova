@@ -355,12 +355,7 @@ export const SERVICE_PACKAGE_CARDS_IDS_BRANDING_VI: ServicePackageCardsIds = {
       titleText: 'text-2965169389',
       titleGap: 'gap-615453650',
       descText: 'text-984069717',
-      itemGaps: [
-        'gap-1790440585',
-        'gap-1036277898',
-        'gap-1309205038',
-        'gap-1852310801',
-      ],
+      itemGaps: ['gap-1790440585', 'gap-1036277898', 'gap-1309205038', 'gap-1852310801'],
       extraGapBeforeBtn: 'gap-689723330',
       gapBeforeBtn: 'gap-1000469319',
     },
@@ -426,12 +421,7 @@ export const SERVICE_PACKAGE_CARDS_IDS_BRANDING_VI: ServicePackageCardsIds = {
       titleText: 'text-444195937',
       titleGap: 'gap-1350788908',
       descText: 'text-1272220084',
-      itemGaps: [
-        'gap-85348813',
-        'gap-637193070',
-        'gap-1736968316',
-        'gap-370272283',
-      ],
+      itemGaps: ['gap-85348813', 'gap-637193070', 'gap-1736968316', 'gap-370272283'],
       extraGapBeforeBtn: 'gap-424264258',
       gapBeforeBtn: 'gap-1898347681',
     },
@@ -502,12 +492,7 @@ export const SERVICE_PACKAGE_CARDS_IDS_BRANDING_EN: ServicePackageCardsIds = {
       titleText: 'text-4097438956',
       titleGap: 'gap-1003079185',
       descText: 'text-334632791',
-      itemGaps: [
-        'gap-72030617',
-        'gap-1513956506',
-        'gap-1865515865',
-        'gap-1832442383',
-      ],
+      itemGaps: ['gap-72030617', 'gap-1513956506', 'gap-1865515865', 'gap-1832442383'],
       extraGapBeforeBtn: 'gap-107903591',
       gapBeforeBtn: 'gap-2066558912',
     },
@@ -573,12 +558,7 @@ export const SERVICE_PACKAGE_CARDS_IDS_BRANDING_EN: ServicePackageCardsIds = {
       titleText: 'text-3351464585',
       titleGap: 'gap-237149774',
       descText: 'text-4258147755',
-      itemGaps: [
-        'gap-1066580906',
-        'gap-1230168127',
-        'gap-1793904744',
-        'gap-959724399',
-      ],
+      itemGaps: ['gap-1066580906', 'gap-1230168127', 'gap-1793904744', 'gap-959724399'],
       extraGapBeforeBtn: 'gap-1970270194',
       gapBeforeBtn: 'gap-432832933',
     },
@@ -617,11 +597,7 @@ function CardContent({
         }}
       />
       <div id={cardIds.titleText} className="text">
-        {cardIds.descText ? (
-          <h3>{offering.title}</h3>
-        ) : (
-          <h2>{offering.title}</h2>
-        )}
+        {cardIds.descText ? <h3>{offering.title}</h3> : <h2>{offering.title}</h2>}
         {!cardIds.descText && offering.description && (
           <p>
             {offering.description}
@@ -713,11 +689,7 @@ function CardContent({
 
       {offering.ctaHref && (
         <p>
-          <Link
-            className="but-lh"
-            style={{ borderRadius: 12 }}
-            href={offering.ctaHref.href}
-          >
+          <Link className="but-lh" style={{ borderRadius: 12 }} href={offering.ctaHref.href}>
             {offering.ctaHref.label}
           </Link>
         </p>
@@ -771,16 +743,14 @@ export function ServicePackageCards({
               )}
               <div id={ids.headingText} className="text">
                 <h2>
-                  {copy.titleLines ? (
-                    copy.titleLines.map((line, idx) => (
-                      <span key={idx}>
-                        {idx > 0 && <br />}
-                        {line}
-                      </span>
-                    ))
-                  ) : (
-                    copy.title
-                  )}
+                  {copy.titleLines
+                    ? copy.titleLines.map((line, idx) => (
+                        <span key={idx}>
+                          {idx > 0 && <br />}
+                          {line}
+                        </span>
+                      ))
+                    : copy.title}
                 </h2>
               </div>
               <div
@@ -809,11 +779,7 @@ export function ServicePackageCards({
                 className={`col ${cardIds?.isBlur ? 'col-blur-blue ' : ''}medium-3 small-12 large-3`}
               >
                 {cardIds && (
-                  <CardContent
-                    offering={offering}
-                    cardIds={cardIds}
-                    subtractIcon={subtractIcon}
-                  />
+                  <CardContent offering={offering} cardIds={cardIds} subtractIcon={subtractIcon} />
                 )}
               </div>
             );

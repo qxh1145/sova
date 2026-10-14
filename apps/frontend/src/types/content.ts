@@ -142,13 +142,6 @@ export interface OfferingPanel {
   ctaHref?: { label: string; href: string };
 }
 
-export interface WebsiteContent {
-  serviceId: EntityId;
-  whyChooseUs: OfferingPanel[];
-  contactHeading: string;
-  contactCopy: RichContent;
-}
-
 export interface Project extends LocalizedIdentity {
   slug: string;
   categoryIds: EntityId[];

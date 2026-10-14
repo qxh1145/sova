@@ -136,9 +136,9 @@ describe('ThankYouView component', () => {
   it('invokes notFound() when thank-you record is missing', async () => {
     repository = repoWith({ utilityContent: [] });
 
-    await expect(
-      ThankYouPage({ searchParams: Promise.resolve({}) }),
-    ).rejects.toThrow('NEXT_NOT_FOUND');
+    await expect(ThankYouPage({ searchParams: Promise.resolve({}) })).rejects.toThrow(
+      'NEXT_NOT_FOUND',
+    );
     expect(notFoundMock).toHaveBeenCalledTimes(1);
   });
 
@@ -187,4 +187,3 @@ describe('ThankYouView component', () => {
     expect(String(title)).not.toMatch(/&\w+;/);
   });
 });
-

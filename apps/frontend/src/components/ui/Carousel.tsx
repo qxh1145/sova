@@ -254,9 +254,7 @@ export function Carousel({
       if (typeof goTo === 'function') {
         return goTo(index);
       }
-      return goTo.includes('{index}')
-        ? goTo.replace('{index}', String(index))
-        : `${goTo} ${index}`;
+      return goTo.includes('{index}') ? goTo.replace('{index}', String(index)) : `${goTo} ${index}`;
     },
     [goTo],
   );
@@ -301,7 +299,8 @@ export function Carousel({
             if (isPaused) {
               userStopped.current = false;
               setIsPaused(false);
-              if (!rootRef.current?.contains(document.activeElement)) emblaApi?.plugins().autoplay?.play();
+              if (!rootRef.current?.contains(document.activeElement))
+                emblaApi?.plugins().autoplay?.play();
             } else {
               stopAutoplay();
             }

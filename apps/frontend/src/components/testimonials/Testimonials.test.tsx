@@ -1,14 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { parse } from 'node-html-parser';
-import {
-  Testimonials,
-  TESTIMONIALS_IDS,
-} from './Testimonials';
+import { Testimonials, TESTIMONIALS_IDS } from './Testimonials';
 import type { AssetRef, CarouselLabels, SectionCopy, Testimonial } from '@/types/content';
 
 const TEST_LABELS: Record<'vi' | 'en', CarouselLabels> = {
-  vi: { prev: 'Trước', next: 'Tiếp theo', goTo: 'Chuyển tới slide {index}', pause: 'Tạm dừng', play: 'Tiếp tục' },
+  vi: {
+    prev: 'Trước',
+    next: 'Tiếp theo',
+    goTo: 'Chuyển tới slide {index}',
+    pause: 'Tạm dừng',
+    play: 'Tiếp tục',
+  },
   en: { prev: 'Previous', next: 'Next', goTo: 'Go to slide {index}', pause: 'Pause', play: 'Play' },
 };
 

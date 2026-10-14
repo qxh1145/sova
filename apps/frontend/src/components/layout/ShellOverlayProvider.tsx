@@ -66,11 +66,7 @@ export function isElementVisible(element: HTMLElement): boolean {
   if (style && (style.display === 'none' || style.visibility === 'hidden')) {
     return false;
   }
-  return (
-    element.offsetWidth > 0 ||
-    element.offsetHeight > 0 ||
-    element.getClientRects().length > 0
-  );
+  return element.offsetWidth > 0 || element.offsetHeight > 0 || element.getClientRects().length > 0;
 }
 
 export function restoreFocus(trigger: HTMLElement | null): boolean {
@@ -143,11 +139,7 @@ export function ShellOverlayProvider({ children }: { children: ReactNode }) {
     [active, isOpen, open, handoff, close, onCloseAutoFocus],
   );
 
-  return (
-    <ShellOverlayContext.Provider value={value}>
-      {children}
-    </ShellOverlayContext.Provider>
-  );
+  return <ShellOverlayContext.Provider value={value}>{children}</ShellOverlayContext.Provider>;
 }
 
 export function useShellOverlay(): ShellOverlayContextValue {

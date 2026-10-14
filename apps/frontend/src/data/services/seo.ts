@@ -116,7 +116,8 @@ export const seoServices: Service[] = [
       {
         id: 'service-seo-vi-offering-seo-onpage',
         title: 'SEO ONPAGE',
-        description: 'SEO Onpage là quá trình tối ưu hóa trực tiếp trên trang web để cải thiện thứ hạng trên công cụ tìm kiếm (Google, Bing,…).',
+        description:
+          'SEO Onpage là quá trình tối ưu hóa trực tiếp trên trang web để cải thiện thứ hạng trên công cụ tìm kiếm (Google, Bing,…).',
         items: [
           'Tối Ưu Nội Dung Chuẩn SEO',
           'Tối Ưu URL Chuẩn SEO',
@@ -137,7 +138,8 @@ export const seoServices: Service[] = [
       {
         id: 'service-seo-vi-offering-seo-offpage',
         title: 'SEO OFFPAGE',
-        description: 'SEO Offpage là quá trình tối ưu hóa các yếu tố bên ngoài trang web nhằm tăng độ uy tín, cải thiện thứ hạng trên Google.',
+        description:
+          'SEO Offpage là quá trình tối ưu hóa các yếu tố bên ngoài trang web nhằm tăng độ uy tín, cải thiện thứ hạng trên Google.',
         items: [
           'PR Online & Báo Chí',
           'Social Media Marketing',
@@ -158,7 +160,8 @@ export const seoServices: Service[] = [
       {
         id: 'service-seo-vi-offering-cham-soc-website',
         title: 'CHĂM SÓC WEBSITE',
-        description: 'Dịch vụ chăm sóc nội dung website giúp trang web luôn tươi mới, thu hút khách hàng và cải thiện thứ hạng trên Google.',
+        description:
+          'Dịch vụ chăm sóc nội dung website giúp trang web luôn tươi mới, thu hút khách hàng và cải thiện thứ hạng trên Google.',
         items: [
           'Viết Bài Chuẩn SEO',
           'Tối Ưu Lại Nội Dung Cũ',
@@ -179,7 +182,8 @@ export const seoServices: Service[] = [
       {
         id: 'service-seo-vi-offering-content-writer',
         title: 'CONTENT WRITER',
-        description: 'Sáng tạo nội dung chất lượng, thu hút người đọc và tối ưu SEO để tăng hiệu quả truyền thông.',
+        description:
+          'Sáng tạo nội dung chất lượng, thu hút người đọc và tối ưu SEO để tăng hiệu quả truyền thông.',
         items: [
           'Viết Bài Blog, Bài PR, Bài SEO',
           'Sáng Tạo Nội Dung Cho Mạng Xã Hội',
@@ -327,7 +331,8 @@ export const seoServices: Service[] = [
       {
         id: 'service-seo-en-offering-seo-onpage',
         title: 'SEO ONPAGE',
-        description: 'On-Page SEO refers to the optimization process performed directly on the website to improve rankings on search engines like Google, Bing, and others.',
+        description:
+          'On-Page SEO refers to the optimization process performed directly on the website to improve rankings on search engines like Google, Bing, and others.',
         items: [
           'SEO Content Optimization',
           'SEO URL Optimization',
@@ -348,7 +353,8 @@ export const seoServices: Service[] = [
       {
         id: 'service-seo-en-offering-seo-offpage',
         title: 'SEO OFFPAGE',
-        description: 'Off-Page SEO refers to the process of optimizing external factors to increase your website’s authority and improve its ranking on Google.',
+        description:
+          'Off-Page SEO refers to the process of optimizing external factors to increase your website’s authority and improve its ranking on Google.',
         items: [
           'Online PR & Media Coverage',
           'Social Media Marketing',
@@ -369,7 +375,8 @@ export const seoServices: Service[] = [
       {
         id: 'service-seo-en-offering-website-maintenance',
         title: 'WEBSITE MAINTENANCE',
-        description: 'Our website content maintenance service ensures your site remains fresh, engaging for visitors, and improves its Google rankings.',
+        description:
+          'Our website content maintenance service ensures your site remains fresh, engaging for visitors, and improves its Google rankings.',
         items: [
           'SEO Content Writing',
           'Update & Optimize Existing Content',
@@ -390,7 +397,8 @@ export const seoServices: Service[] = [
       {
         id: 'service-seo-en-offering-content-writer',
         title: 'CONTENT WRITER',
-        description: 'Crafting high-quality content that captivates audiences and is fully optimized for SEO, ensuring maximum impact on your brand’s communication strategy.',
+        description:
+          'Crafting high-quality content that captivates audiences and is fully optimized for SEO, ensuring maximum impact on your brand’s communication strategy.',
         items: [
           'Blog Posts, PR Articles, and SEO Content Writing',
           'Social Media Content Creation',

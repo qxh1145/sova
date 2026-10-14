@@ -4,11 +4,7 @@ import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/ui/FormField';
 import { FormResponse, ScreenReaderResponse, formStatusClass } from '@/components/ui/FormResponse';
 import { useSubmitAdapter } from '@/lib/forms/SubmitAdapterContext';
-import {
-  consultSchema,
-  zodResolver,
-  type ConsultFormValues,
-} from '@/lib/forms/schemas';
+import { consultSchema, zodResolver, type ConsultFormValues } from '@/lib/forms/schemas';
 import { useHydrated } from '@/lib/forms/useHydrated';
 import { useSubmitStatus } from '@/lib/forms/useSubmitStatus';
 import type { Locale, ShellContent } from '@/types/content';

@@ -3,17 +3,12 @@ import { Fragment } from 'react';
 import type { AboutPageContent, Locale, RichContent } from '@/types/content';
 import type { AboutAssets } from '@/lib/queries/pages';
 import { PageHero } from '@/components/hero/PageHero';
-import {
-  ABOUT_HERO_IDS_EN,
-  ABOUT_HERO_IDS_VI,
-} from './aboutHeroIds';
-import { StatCounter } from '@/components/home/StatCounter';
+import { ABOUT_HERO_IDS_EN, ABOUT_HERO_IDS_VI } from './aboutHeroIds';
+import { ABOUT_IDS_EN, ABOUT_IDS_VI } from './aboutIds';
+import { StatCounter } from '@/components/ui/StatCounter';
 import { Marquee } from '@/components/motion/Marquee';
 import { Carousel } from '@/components/ui/Carousel';
-import {
-  Testimonials,
-  TESTIMONIALS_IDS,
-} from '@/components/testimonials/Testimonials';
+import { Testimonials, TESTIMONIALS_IDS } from '@/components/testimonials/Testimonials';
 
 /** Inner HTML of a single-paragraph block, for rendering inside the source's own `<p>`. */
 const paragraphHtml = (content: RichContent) => ({ __html: content.html.replace(/<\/?p>/g, '') });
@@ -35,79 +30,43 @@ export interface AboutViewProps {
 export function AboutView({ page, assets, locale }: AboutViewProps) {
   const isVi = locale === 'vi';
   const heroIds = isVi ? ABOUT_HERO_IDS_VI : ABOUT_HERO_IDS_EN;
+  const ids = isVi ? ABOUT_IDS_VI : ABOUT_IDS_EN;
   const testimonialIds = TESTIMONIALS_IDS.about[locale];
   const labels = page.carouselLabels;
 
   return (
     <div id="content" role="main">
       {/* 1. PageHero */}
-      <PageHero
-        hero={page.hero}
-        bgImage={assets.heroBgImage}
-        ids={heroIds}
-      />
+      <PageHero hero={page.hero} bgImage={assets.heroBgImage} ids={heroIds} />
 
       {/* 2. Section ss-target (Stats + Goals) */}
-      <section
-        className="section ss-target"
-        id={isVi ? 'section_1141404686' : 'section_797840299'}
-      >
+      <section className="section ss-target" id={ids.targetSection}>
         <div className="section-bg fill" />
         <div className="section-content relative">
           {/* Stats Box */}
-          <div
-            className="row align-center"
-            id={isVi ? 'row-1696242377' : 'row-1366495858'}
-          >
-            <div
-              id={isVi ? 'col-188830866' : 'col-766178260'}
-              className="col col-thanhtuu small-12 large-12"
-            >
-              <div
-                className="col-inner"
-                style={{ backgroundColor: 'rgb(0, 0, 0)' }}
-              >
-                <div
-                  className="row"
-                  id={isVi ? 'row-1472759901' : 'row-998052860'}
-                >
-                  <div
-                    id={isVi ? 'col-2041784750' : 'col-1078161984'}
-                    className="col medium-5 small-12 large-5"
-                  >
+          <div className="row align-center" id={ids.statsRow}>
+            <div id={ids.statsCol} className="col col-thanhtuu small-12 large-12">
+              <div className="col-inner" style={{ backgroundColor: 'rgb(0, 0, 0)' }}>
+                <div className="row" id={ids.achievementsRow}>
+                  <div id={ids.achievementsTextCol} className="col medium-5 small-12 large-5">
                     <div className="col-inner">
-                      <div
-                        id={isVi ? 'text-1037698079' : 'text-714894948'}
-                        className="text"
-                      >
+                      <div id={ids.achievementsTitleText} className="text">
                         <h2 style={{ fontWeight: 500 }}>
                           <strong>{page.sectionCopy.achievements.title}</strong>
                         </h2>
                       </div>
-                      <div
-                        id={isVi ? 'text-980361501' : 'text-1716153683'}
-                        className="text"
-                      >
+                      <div id={ids.achievementsDescText} className="text">
                         <p>{page.sectionCopy.achievements.description}</p>
                       </div>
                     </div>
                   </div>
 
-                  <div
-                    id={isVi ? 'col-1961182997' : 'col-178856789'}
-                    className="col col-line medium-7 small-12 large-7"
-                  >
+                  <div id={ids.statsLineCol} className="col col-line medium-7 small-12 large-7">
                     <div className="col-inner">
-                      <div
-                        className="row row-collapse"
-                        id={isVi ? 'row-1192570169' : 'row-1084136091'}
-                      >
+                      <div className="row row-collapse" id={ids.statsRowCollapse}>
                         {/* 4 stats */}
                         {page.stats.map((stat) => (
-                          <div
-                            key={stat.id}
-                            className="col medium-6 small-12 large-6"
-                          >
+                          <div key={stat.id} className="col medium-6 small-12 large-6">
                             <div className="col-inner">
                               <div className="row row-small">
                                 <div className="col medium-6 small-6 large-6">
@@ -141,9 +100,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                                           </span>
                                         </strong>
                                       </p>
-                                      <p style={{ marginBottom: 0 }}>
-                                        {stat.label}
-                                      </p>
+                                      <p style={{ marginBottom: 0 }}>{stat.label}</p>
                                     </div>
                                   </div>
                                 </div>
@@ -160,7 +117,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
           </div>
 
           <div
-            id={isVi ? 'gap-681364153' : 'gap-2063779756'}
+            id={ids.gapStatsGoals}
             className="gap-element clearfix"
             style={{ display: 'block', height: 'auto' }}
           />
@@ -168,24 +125,16 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
           {/* Desktop Goals Grid (hide-for-small) */}
           <div
             className="row row-collapse align-equal row_muctieu hide-for-small"
-            id={isVi ? 'row-186565714' : 'row-805541012'}
+            id={ids.goalsRow}
           >
-            <div
-              id={isVi ? 'col-564521486' : 'col-1915624184'}
-              className="col col-no-hover medium-6 small-12 large-6"
-            >
+            <div id={ids.goalsCol} className="col col-no-hover medium-6 small-12 large-6">
               <div className="col-inner">
                 <p>
                   <strong>
-                    <span style={{ color: '#0065df' }}>
-                      {page.sectionCopy.goals.eyebrow}
-                    </span>
+                    <span style={{ color: '#0065df' }}>{page.sectionCopy.goals.eyebrow}</span>
                   </strong>
                 </p>
-                <div
-                  id={isVi ? 'text-1702143824' : 'text-4010481756'}
-                  className="text"
-                >
+                <div id={ids.goalsTitleText} className="text">
                   <h2>{page.sectionCopy.goals.title}</h2>
                 </div>
                 <div
@@ -197,25 +146,20 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                   }}
                 />
                 <div
-                  id={isVi ? 'gap-165150200' : 'gap-166127597'}
+                  id={ids.goalsGap}
                   className="gap-element clearfix"
                   style={{ display: 'block', height: 'auto' }}
                 />
-                <div
-                  id={isVi ? 'text-860603892' : 'text-3919715460'}
-                  className="text text-target1"
-                >
+                <div id={ids.goalsDescText} className="text text-target1">
                   <p>
-                    {page.sectionCopy.goals.descriptionLines ? (
-                      page.sectionCopy.goals.descriptionLines.map((line, lIdx) => (
-                        <Fragment key={lIdx}>
-                          {line}
-                          {lIdx < page.sectionCopy.goals.descriptionLines!.length - 1 && <br />}
-                        </Fragment>
-                      ))
-                    ) : (
-                      page.sectionCopy.goals.description
-                    )}
+                    {page.sectionCopy.goals.descriptionLines
+                      ? page.sectionCopy.goals.descriptionLines.map((line, lIdx) => (
+                          <Fragment key={lIdx}>
+                            {line}
+                            {lIdx < page.sectionCopy.goals.descriptionLines!.length - 1 && <br />}
+                          </Fragment>
+                        ))
+                      : page.sectionCopy.goals.description}
                   </p>
                 </div>
               </div>
@@ -226,14 +170,8 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
               const icon = assets.goalIcons[idx];
               const numStr = String(idx + 1).padStart(2, '0');
               return (
-                <div
-                  key={goal.id}
-                  className="col medium-3 small-12 large-3"
-                >
-                  <div
-                    className="col-inner"
-                    style={{ backgroundColor: 'rgb(24, 24, 24)' }}
-                  >
+                <div key={goal.id} className="col medium-3 small-12 large-3">
+                  <div className="col-inner" style={{ backgroundColor: 'rgb(24, 24, 24)' }}>
                     <div
                       className="is-border"
                       style={{
@@ -242,10 +180,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                       }}
                     />
                     <div className="icon-box featured-box icon-1 icon-box-center text-center">
-                      <div
-                        className="icon-box-img"
-                        style={{ width: idx === 0 ? '100px' : '70px' }}
-                      >
+                      <div className="icon-box-img" style={{ width: idx === 0 ? '100px' : '70px' }}>
                         <div className="icon">
                           <div className="icon-inner">
                             <img
@@ -310,7 +245,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
           {/* Mobile Goals Carousel (show-for-small) */}
           <div className="show-for-small">
             <Carousel
-              id={isVi ? 'slider-512312949' : 'slider-1289423272'}
+              id={ids.goalsSlider}
               className="slider-wrapper relative slide_mobi_new slide_gth show-for-small"
               align="start"
               loop
@@ -329,10 +264,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                 return (
                   <div key={goal.id} className="row">
                     <div className="col medium-3 small-12 large-3">
-                      <div
-                        className="col-inner"
-                        style={{ backgroundColor: 'rgb(24, 24, 24)' }}
-                      >
+                      <div className="col-inner" style={{ backgroundColor: 'rgb(24, 24, 24)' }}>
                         <div
                           className="is-border"
                           style={{
@@ -403,16 +335,13 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
       </section>
 
       <div
-        id={isVi ? 'gap-1472870350' : 'gap-1159051192'}
+        id={ids.gapAfterTarget}
         className="gap-element clearfix hide-for-small"
         style={{ display: 'block', height: 'auto' }}
       />
 
       {/* 3. Section Purpose (4 Panels with Background Image) */}
-      <section
-        className="section"
-        id={isVi ? 'section_131774738' : 'section_919330019'}
-      >
+      <section className="section" id={ids.purposeSection}>
         <div className="section-bg fill">
           <img
             decoding="async"
@@ -428,24 +357,15 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
 
         <div className="section-content relative">
           <div
-            id={isVi ? 'gap-1406529355' : 'gap-1068654508'}
+            id={ids.purposeGapTop}
             className="gap-element clearfix"
             style={{ display: 'block', height: 'auto' }}
           />
 
-          <div
-            className="row align-middle"
-            id={isVi ? 'row-788512587' : 'row-62989127'}
-          >
-            <div
-              id={isVi ? 'col-2045357103' : 'col-1886049242'}
-              className="col medium-4 small-12 large-4"
-            >
+          <div className="row align-middle" id={ids.purposeRow}>
+            <div id={ids.purposeColText} className="col medium-4 small-12 large-4">
               <div className="col-inner">
-                <div
-                  id={isVi ? 'text-1893230912' : 'text-2779745755'}
-                  className="text"
-                >
+                <div id={ids.purposeTitleText} className="text">
                   <h2>
                     {page.sectionCopy.purpose.titleLines
                       ? page.sectionCopy.purpose.titleLines.map((line, i) => (
@@ -457,36 +377,21 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                       : page.sectionCopy.purpose.title}
                   </h2>
                 </div>
-                <div
-                  id={isVi ? 'text-4107563506' : 'text-3191549886'}
-                  className="text"
-                >
+                <div id={ids.purposeDescText} className="text">
                   <p>{page.sectionCopy.purpose.description}</p>
                 </div>
               </div>
             </div>
 
-            <div
-              id={isVi ? 'col-815383787' : 'col-1161888073'}
-              className="col hide-for-small medium-1 small-12 large-1"
-            >
+            <div id={ids.purposeColSpacer} className="col hide-for-small medium-1 small-12 large-1">
               <div className="col-inner" />
             </div>
 
-            <div
-              id={isVi ? 'col-1170217171' : 'col-633323285'}
-              className="col medium-7 small-12 large-7"
-            >
+            <div id={ids.purposeColPanels} className="col medium-7 small-12 large-7">
               <div className="col-inner">
-                <div
-                  className="row align-equal row_cacsp"
-                  id={isVi ? 'row-562429176' : 'row-1553857743'}
-                >
+                <div className="row align-equal row_cacsp" id={ids.purposeRowPanels}>
                   {page.purposePanels.map((panel, idx) => (
-                    <div
-                      key={idx}
-                      className="col col-line-top medium-6 small-12 large-6"
-                    >
+                    <div key={idx} className="col col-line-top medium-6 small-12 large-6">
                       <div
                         className="col-inner"
                         style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}
@@ -513,7 +418,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
           </div>
 
           <div
-            id={isVi ? 'gap-1070645614' : 'gap-860808831'}
+            id={ids.purposeGapBottom}
             className="gap-element clearfix hide-for-small"
             style={{ display: 'block', height: 'auto' }}
           />
@@ -521,30 +426,18 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
       </section>
 
       {/* 4. Timeline Section */}
-      <section
-        className="section"
-        id={isVi ? 'section_1028360740' : 'section_754352421'}
-      >
+      <section className="section" id={ids.timelineHeaderSection}>
         <div className="section-bg fill" />
         <div className="section-content relative">
           <div
-            id={isVi ? 'gap-1085555265' : 'gap-1647792049'}
+            id={ids.timelineHeaderGap}
             className="gap-element clearfix"
             style={{ display: 'block', height: 'auto' }}
           />
-          <div
-            className="row"
-            id={isVi ? 'row-1741222967' : 'row-1659002981'}
-          >
-            <div
-              id={isVi ? 'col-816027828' : 'col-296982899'}
-              className="col small-12 large-12"
-            >
+          <div className="row" id={ids.timelineHeaderRow}>
+            <div id={ids.timelineHeaderCol} className="col small-12 large-12">
               <div className="col-inner">
-                <div
-                  id={isVi ? 'text-812681974' : 'text-3440252893'}
-                  className="text"
-                >
+                <div id={ids.timelineHeaderText} className="text">
                   <h2>{page.sectionCopy.timeline.title}</h2>
                 </div>
               </div>
@@ -553,19 +446,13 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
         </div>
       </section>
 
-      <section
-        className="section hinhthanh-phattrien"
-        id={isVi ? 'section_1917554661' : 'section_1904563230'}
-      >
+      <section className="section hinhthanh-phattrien" id={ids.timelineItemsSection}>
         <div className="section-bg fill" />
         <div className="section-content relative timeline-track-wrap">
           <div className="timeline-track">
             {/* Primary set of 9 items */}
             {page.timeline.map((item) => (
-              <div
-                key={item.id}
-                className="timeline-item row row-collapse row-full-width"
-              >
+              <div key={item.id} className="timeline-item row row-collapse row-full-width">
                 <div className="col small-12 large-12">
                   <div className="col-inner">
                     <div className="text text-border">
@@ -583,9 +470,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                     </div>
                     <div className="text">
                       <h3>
-                        <span style={{ color: '#0065df', fontSize: '120%' }}>
-                          {item.year}
-                        </span>
+                        <span style={{ color: '#0065df', fontSize: '120%' }}>{item.year}</span>
                       </h3>
                       <h3>
                         <span style={{ fontSize: '110%' }}>{item.title}</span>
@@ -620,9 +505,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                     </div>
                     <div className="text">
                       <h3>
-                        <span style={{ color: '#0065df', fontSize: '120%' }}>
-                          {item.year}
-                        </span>
+                        <span style={{ color: '#0065df', fontSize: '120%' }}>{item.year}</span>
                       </h3>
                       <h3>
                         <span style={{ fontSize: '110%' }}>{item.title}</span>
@@ -638,32 +521,18 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
       </section>
 
       {/* 5. Section Pillars (3 columns x 9 cards = 27 icon cards) */}
-      <section
-        className="section ss-ndv"
-        id={isVi ? 'section_409269634' : 'section_683818777'}
-      >
+      <section className="section ss-ndv" id={ids.pillarsSection}>
         <div className="section-bg fill" />
         <div className="section-content relative">
-          <div
-            className="row"
-            id={isVi ? 'row-892063837' : 'row-706033494'}
-          >
-            <div
-              id={isVi ? 'col-1354221943' : 'col-73683071'}
-              className="col medium-4 small-12 large-4"
-            >
+          <div className="row" id={ids.pillarsHeaderRow}>
+            <div id={ids.pillarsHeaderCol} className="col medium-4 small-12 large-4">
               <div className="col-inner">
                 <p>
                   <strong>
-                    <span style={{ color: '#0065df' }}>
-                      {page.sectionCopy.pillars.eyebrow}
-                    </span>
+                    <span style={{ color: '#0065df' }}>{page.sectionCopy.pillars.eyebrow}</span>
                   </strong>
                 </p>
-                <div
-                  id={isVi ? 'text-2739233815' : 'text-4284818701'}
-                  className="text"
-                >
+                <div id={ids.pillarsTitleText} className="text">
                   <h2>
                     {page.sectionCopy.pillars.titleLines
                       ? page.sectionCopy.pillars.titleLines.map((line, i) => (
@@ -683,13 +552,8 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                     backgroundColor: 'rgb(0, 101, 223)',
                   }}
                 />
-                <div
-                  id={isVi ? 'text-4029503385' : 'text-453324421'}
-                  className="text"
-                >
-                  <p style={{ padding: '0 30px 0 0' }}>
-                    {page.sectionCopy.pillars.description}
-                  </p>
+                <div id={ids.pillarsDescText} className="text">
+                  <p style={{ padding: '0 30px 0 0' }}>{page.sectionCopy.pillars.description}</p>
                 </div>
               </div>
             </div>
@@ -698,7 +562,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
           {/* Mobile Pillars Carousel (show-for-small) */}
           <div className="show-for-small">
             <Carousel
-              id={isVi ? 'slider-1249079120' : 'slider-1065485534'}
+              id={ids.pillarsSlider}
               className="slider-wrapper relative slide_gthieu show-for-small"
               align="center"
               loop
@@ -736,10 +600,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                         {items.map((itemText, itemIdx) => (
                           <Fragment key={itemIdx}>
                             <div className="icon-box featured-box icon-center icon-box-left text-left">
-                              <div
-                                className="icon-box-img"
-                                style={{ width: '22px' }}
-                              >
+                              <div className="icon-box-img" style={{ width: '22px' }}>
                                 <div className="icon">
                                   <div className="icon-inner">
                                     <img
@@ -779,22 +640,13 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
           </div>
 
           {/* Desktop Pillars Row (hide-for-small, 3 columns x 9 cards) */}
-          <div
-            className="row hover_gra hide-for-small"
-            id={isVi ? 'row-1937338944' : 'row-1643800002'}
-          >
+          <div className="row hover_gra hide-for-small" id={ids.pillarsDesktopRow}>
             {page.capabilities.map((cap) => {
               const items = listItemsHtml(cap.content);
 
               return (
-                <div
-                  key={cap.id}
-                  className="col col-logo medium-4 small-12 large-4"
-                >
-                  <div
-                    className="col-inner"
-                    style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}
-                  >
+                <div key={cap.id} className="col col-logo medium-4 small-12 large-4">
+                  <div className="col-inner" style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}>
                     <div className="text">
                       <h3>{cap.title}</h3>
                     </div>
@@ -810,10 +662,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                     {items.map((itemText, itemIdx) => (
                       <Fragment key={itemIdx}>
                         <div className="icon-box featured-box icon-center icon-box-left text-left">
-                          <div
-                            className="icon-box-img"
-                            style={{ width: '22px' }}
-                          >
+                          <div className="icon-box-img" style={{ width: '22px' }}>
                             <div className="icon">
                               <div className="icon-inner">
                                 <img
@@ -854,20 +703,17 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
 
       {/* Gap before marquee */}
       <div
-        id={isVi ? 'gap-1648265805' : 'gap-1673675551'}
+        id={ids.marqueeGapBefore}
         className="gap-element clearfix"
         style={{ display: 'block', height: 'auto' }}
       />
 
       {/* Marquee */}
-      <Marquee
-        items={page.marqueeText}
-        separator={page.marqueeSeparator}
-      />
+      <Marquee items={page.marqueeText} separator={page.marqueeSeparator} />
 
       {/* Gap after marquee */}
       <div
-        id={isVi ? 'gap-2067762025' : 'gap-1813090216'}
+        id={ids.marqueeGapAfter}
         className="gap-element clearfix"
         style={{ display: 'block', height: 'auto' }}
       />

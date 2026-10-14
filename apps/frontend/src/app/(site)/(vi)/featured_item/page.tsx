@@ -28,11 +28,5 @@ export default async function ViFeaturedItemArchivePage() {
   if (!data) {
     notFound();
   }
-  return (
-    <ProjectArchiveView
-      {...data}
-      ids={IDS}
-      listingPath="/featured_item/"
-    />
-  );
+  return <ProjectArchiveView {...data} ids={IDS} listingPath="/featured_item/" />;
 }

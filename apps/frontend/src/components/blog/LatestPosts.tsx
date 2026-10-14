@@ -12,13 +12,7 @@ export interface LatestPostsProps {
   labels: CarouselLabels;
 }
 
-export function LatestPosts({
-  posts,
-  copy,
-  assets = [],
-  href,
-  labels,
-}: LatestPostsProps) {
+export function LatestPosts({ posts, copy, assets = [], href, labels }: LatestPostsProps) {
   const seen = new Set<string>();
   const dedupedPosts: Post[] = [];
   for (const post of posts) {
@@ -99,9 +93,7 @@ export function LatestPosts({
                     <PostCard
                       key={post.id}
                       post={post}
-                      thumbnailAsset={
-                        post.thumbnailId ? assetMap.get(post.thumbnailId) : undefined
-                      }
+                      thumbnailAsset={post.thumbnailId ? assetMap.get(post.thumbnailId) : undefined}
                     />
                   ))}
                 </div>

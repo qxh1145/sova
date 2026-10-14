@@ -88,11 +88,7 @@ function renderCtas(headerCtas: HeaderProps['headerCtas']) {
   return CTA_CONFIG.map(({ key, className }) => (
     <li key={key} className={className}>
       <div className="header-button">
-        <Link
-          href={headerCtas[key].href}
-          className="button primary"
-          style={{ borderRadius: 9 }}
-        >
+        <Link href={headerCtas[key].href} className="button primary" style={{ borderRadius: 9 }}>
           <span>{headerCtas[key].label}</span>
         </Link>
       </div>

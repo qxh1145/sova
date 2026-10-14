@@ -105,7 +105,10 @@ export function FloatingContactActions({ labels, settings }: FloatingContactActi
         className={`messangers-block arcuAnimated has-header${isOpen ? ' arcu-show' : ''}`}
         id="arcu-menu"
       >
-        <div className="arcu-menu-header arcu-icon-center" style={{ backgroundColor: FLOATING_CONTACT_COLOR }}>
+        <div
+          className="arcu-menu-header arcu-icon-center"
+          style={{ backgroundColor: FLOATING_CONTACT_COLOR }}
+        >
           <div className="arcu-menu-header-content arcu-text-center">{labels.menuHeader}</div>
         </div>
         <div className="messangers-list-container">

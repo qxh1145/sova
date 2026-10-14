@@ -56,11 +56,7 @@ export function MobileContactBar({ labels, settings, contactHref }: MobileContac
         {settings.zaloHref && (
           <a href={settings.zaloHref} target="_blank" rel="noopener noreferrer">
             <span>
-              <img
-                src={CONTACT_ICON_SRC.zalo}
-                alt={labels.zalo}
-                className="zalo-icon"
-              />
+              <img src={CONTACT_ICON_SRC.zalo} alt={labels.zalo} className="zalo-icon" />
               <span className="azt-contact-footer-btn-label">{labels.zalo}</span>
             </span>
           </a>

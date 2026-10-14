@@ -8,3 +8,10 @@ export function getAssets(
 ): Promise<AssetRef[]> {
   return repository.getAssets(ids);
 }
+
+export const missingIds = (wanted: EntityId[], found: { id: EntityId }[] = []) =>
+  wanted.filter((id) => !found.some((f) => f.id === id));
+
+export function assertResolved(pageId: EntityId, missing: EntityId[]) {
+  if (missing.length) throw new Error(`${pageId} references missing ids: ${missing.join(', ')}`);
+}

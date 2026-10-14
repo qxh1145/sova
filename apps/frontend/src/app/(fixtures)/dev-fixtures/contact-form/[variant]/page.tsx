@@ -26,10 +26,7 @@ export default async function FixtureContactFormPage({
   const resolvedSearchParams = await searchParams;
   const locale: Locale = resolvedSearchParams.locale === 'en' ? 'en' : 'vi';
 
-  const [page, shell] = await Promise.all([
-    getContactPage(locale),
-    getShellContent(locale),
-  ]);
+  const [page, shell] = await Promise.all([getContactPage(locale), getShellContent(locale)]);
 
   if (!page || !page.form) {
     notFound();

@@ -87,11 +87,7 @@ export default async function FixturePrimitivesPage({
           />
         </section>
         <section data-testid="action-pagination-section" style={{ marginTop: 40 }}>
-          <ActionPaginationDemo
-            labels={paginationLabels}
-            initialPage={1}
-            total={5}
-          />
+          <ActionPaginationDemo labels={paginationLabels} initialPage={1} total={5} />
         </section>
       </div>
     </main>

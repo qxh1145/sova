@@ -2,14 +2,7 @@ import type { AssetRegistry } from './assets.ts';
 import type { AssetRef, RouteEntry, Stat } from '../../src/types/content.ts';
 import type { Stats } from './html.ts';
 import { load } from './projects.ts';
-import {
-  count,
-  EXPECTED,
-  must,
-  readStats,
-  type Page,
-  type PageRefs,
-} from './pages/shared.ts';
+import { count, EXPECTED, must, readStats, type Page, type PageRefs } from './pages/shared.ts';
 import { home } from './pages/home.ts';
 import { about } from './pages/about.ts';
 import { contact } from './pages/contact.ts';

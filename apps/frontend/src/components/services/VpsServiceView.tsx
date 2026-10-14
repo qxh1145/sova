@@ -12,10 +12,7 @@ import {
   PRICING_TABLE_IDS_VPS_EN,
   PRICING_TABLE_IDS_VPS_VI,
 } from '@/components/pricing/PricingTable';
-import {
-  Testimonials,
-  TESTIMONIALS_IDS,
-} from '@/components/testimonials/Testimonials';
+import { Testimonials, TESTIMONIALS_IDS } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
 
 export interface VpsServiceViewProps {
