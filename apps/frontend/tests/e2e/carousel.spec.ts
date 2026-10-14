@@ -357,3 +357,12 @@ test.describe('Carousel contract checks', () => {
     });
   });
 });
+
+test('project gallery carousel is a named region landmark', async ({ page }) => {
+  await page.goto(
+    '/featured_item/xanhthienthanh-cong-ty-co-phan-dau-tu-va-phat-trien-xanh-thien-thanh/',
+  );
+  const slider = page.locator('#slider-duan .flickity-enabled');
+  await expect(slider).toHaveAttribute('role', 'region');
+  await expect(slider).toHaveAttribute('aria-label', 'Thư viện ảnh dự án');
+});

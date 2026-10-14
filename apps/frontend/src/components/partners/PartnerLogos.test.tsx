@@ -83,6 +83,27 @@ describe('PartnerLogos component', () => {
     }).toThrowError(/asset-logo-2/);
   });
 
+  it('omits <img> when partner logo asset status is missing (no throw)', () => {
+    const assetsWithMissing: AssetRef[] = [
+      mockAssets[0],
+      { ...mockAssets[1], status: 'missing' },
+    ];
+    let html = '';
+    expect(() => {
+      html = renderToStaticMarkup(
+        <PartnerLogos partners={mockPartners} assets={assetsWithMissing} />,
+      );
+    }).not.toThrow();
+
+    const root = parse(html);
+    const cols = root.querySelectorAll('.gallery-col.col');
+    expect(cols).toHaveLength(2);
+
+    const imgs = root.querySelectorAll('img.gal-doitac');
+    expect(imgs).toHaveLength(1);
+    expect(imgs[0].getAttribute('src')).toBe(mockAssets[0].src);
+  });
+
   it('renders empty row when partners array is empty', () => {
     const html = renderToStaticMarkup(<PartnerLogos partners={[]} assets={[]} />);
     const root = parse(html);

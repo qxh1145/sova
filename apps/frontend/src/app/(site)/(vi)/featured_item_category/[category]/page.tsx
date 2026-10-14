@@ -4,7 +4,7 @@ import '@/styles/legacy/sections/route-featured_item_category--website.css';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { BRAND_TITLE_SUFFIX, routeAlternates } from '@/lib/queries/site';
-import { getProjectListingPage } from '@/lib/queries/projects';
+import { getProjectListingPage, listProjectCategorySlugs } from '@/lib/queries/projects';
 import {
   ProjectArchiveView,
   type ProjectArchiveIds,
@@ -35,7 +35,7 @@ const IDS: Record<string, ProjectArchiveIds> = {
 };
 
 export async function generateStaticParams() {
-  return Object.keys(IDS).map((category) => ({ category }));
+  return (await listProjectCategorySlugs()).map((category) => ({ category }));
 }
 
 interface FeaturedItemCategoryProps {

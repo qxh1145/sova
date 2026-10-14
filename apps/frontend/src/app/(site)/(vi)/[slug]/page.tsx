@@ -1,7 +1,7 @@
 import '@/styles/legacy/sections/route-goc-nhin.css';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { categorySlugs } from '@/lib/routes';
+import { categorySlugs, pathForRouteId } from '@/lib/routes';
 import type { Metadata } from 'next';
 import { BRAND_TITLE_SUFFIX, listRoutes, routeAlternates, seoMetadata } from '@/lib/queries/site';
 import { getBlogListingPage, getPostDetail } from '@/lib/queries/posts';
@@ -79,6 +79,7 @@ export default async function ViPostDetailPage({ params }: PostDetailPageProps) 
     }
 
     const { post, featuredAsset, related, copy } = detail;
+    const blogHref = pathForRouteId(routes, 'route-goc-nhin') ?? '/goc-nhin/';
 
     return (
       <main id="main">
@@ -101,7 +102,7 @@ export default async function ViPostDetailPage({ params }: PostDetailPageProps) 
                   {copy.breadcrumbHome}
                 </Link>
                 {' | '}
-                <Link href="/goc-nhin/" style={{ color: '#808080', textDecoration: 'none' }}>
+                <Link href={blogHref} style={{ color: '#808080', textDecoration: 'none' }}>
                   {copy.breadcrumbBlog}
                 </Link>
                 {' | '}

@@ -5,20 +5,12 @@ import type { AssetRef } from '@/types/content';
 import { Carousel, type CarouselLabels } from '@/components/ui/Carousel';
 import { GalleryLightbox } from '@/components/projects/GalleryLightbox';
 
-const GALLERY_CAROUSEL_LABELS: CarouselLabels = {
-  prev: 'Trước',
-  next: 'Tiếp theo',
-  goTo: 'Chuyển tới slide {index}',
-  pause: 'Tạm dừng trình chiếu',
-  play: 'Tiếp tục trình chiếu',
-  region: 'Thư viện ảnh dự án',
-};
-
 export interface ProjectGallerySliderProps {
   galleryAssets: AssetRef[];
+  labels: CarouselLabels;
 }
 
-export function ProjectGallerySlider({ galleryAssets }: ProjectGallerySliderProps) {
+export function ProjectGallerySlider({ galleryAssets, labels }: ProjectGallerySliderProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const triggerRef = useRef<HTMLAnchorElement | null>(null);
 
@@ -32,7 +24,7 @@ export function ProjectGallerySlider({ galleryAssets }: ProjectGallerySliderProp
         arrows
         dots
         containScroll={false}
-        labels={GALLERY_CAROUSEL_LABELS}
+        labels={labels}
       >
         {galleryAssets.map((img, index) => (
           <div className="img col" key={img.id}>

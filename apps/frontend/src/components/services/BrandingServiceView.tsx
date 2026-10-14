@@ -15,11 +15,9 @@ import {
 import {
   Testimonials,
   TESTIMONIALS_IDS,
-  TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
 import { FeaturedProjects, type FeaturedProjectsIds } from '@/components/projects/FeaturedProjects';
-import { SERVICE_CAROUSEL_LABELS } from './ServiceDetailCards';
 
 const FEATURED_PROJECTS_IDS_BRANDING: FeaturedProjectsIds = {
   row: 'row-262932845',
@@ -60,6 +58,7 @@ export function BrandingServiceView({ page, assets, locale }: BrandingServiceVie
   const { service, faqs, testimonials } = page;
   const copy = service.sectionCopy;
   const faqIds = FAQ_IDS[locale];
+  const labels = page.carouselLabels;
 
   return (
     <main id="main">
@@ -91,7 +90,7 @@ export function BrandingServiceView({ page, assets, locale }: BrandingServiceVie
           bgImage={assets.offeringsBgImage}
           subtractIcon={assets.subtractIcon}
           ids={isEn ? SERVICE_PACKAGE_CARDS_IDS_BRANDING_EN : SERVICE_PACKAGE_CARDS_IDS_BRANDING_VI}
-          labels={SERVICE_CAROUSEL_LABELS[locale]}
+          labels={labels}
           sliderClass="slide_ui"
         />
       )}
@@ -120,7 +119,7 @@ export function BrandingServiceView({ page, assets, locale }: BrandingServiceVie
           copy={copy.testimonials}
           art={assets.testimonialArt}
           ids={TESTIMONIALS_IDS.branding[locale]}
-          labels={TESTIMONIALS_LABELS[locale]}
+          labels={labels}
         />
       )}
 

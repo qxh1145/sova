@@ -1,28 +1,13 @@
 import type { Metadata } from 'next';
 import '@/styles/legacy/sections/route-goc-nhin.css';
 import { notFound } from 'next/navigation';
-import { categorySlugs, parsePageParam, pathSegments } from '@/lib/routes';
-import { BRAND_TITLE_SUFFIX, listRoutes, routeAlternates } from '@/lib/queries/site';
-import { getBlogListingPage } from '@/lib/queries/posts';
+import { parsePageParam } from '@/lib/routes';
+import { BRAND_TITLE_SUFFIX, routeAlternates } from '@/lib/queries/site';
+import { getBlogCategoryPagedParams, getBlogListingPage } from '@/lib/queries/posts';
 import { BlogListView } from '@/components/blog/BlogListView';
 
-export async function generateStaticParams() {
-  const routes = await listRoutes();
-  const catSlugs = new Set(categorySlugs(routes));
-
-  return routes
-    .filter((r) => {
-      if (r.locale !== 'vi' || r.kind !== 'post-list') return false;
-      const parts = pathSegments(r.path); // ['thu-thuat', 'page', '2']
-      return parts.length === 3 && parts[1] === 'page' && catSlugs.has(parts[0]);
-    })
-    .map((r) => {
-      const parts = pathSegments(r.path);
-      return {
-        slug: parts[0],
-        page: parts[2],
-      };
-    });
+export function generateStaticParams() {
+  return getBlogCategoryPagedParams();
 }
 
 interface ViCategoryPagedPageProps {

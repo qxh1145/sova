@@ -377,12 +377,24 @@ export interface UtilityContent {
   login?: LoginFormContent;
 }
 
+export interface CarouselLabels {
+  prev: string;
+  next: string;
+  goTo: string;
+  pause: string;
+  play: string;
+  region?: string;
+}
+
 export interface ShellContent {
   locale: Locale;
   headerCta: {
     label: string;
     routeId: EntityId;
   };
+  carouselLabels: CarouselLabels;
+  /** Region name for the project-detail gallery carousel. */
+  projectGalleryLabel: string;
   footerCta: {
     headingLines: string[];
     targetRouteId: EntityId;
@@ -500,6 +512,8 @@ export interface HomePageContent extends LocalizedIdentity {
     quoteIcon: Asset;
     line: Asset;
   };
+  postListingHref: string;
+  carouselLabels: CarouselLabels;
 }
 
 /** Stored home record: raw ids and placements; queries fill resolved arrays. */
@@ -513,6 +527,8 @@ export type HomePageRecord = Omit<
   | 'posts'
   | 'marqueeSeparator'
   | 'testimonialArt'
+  | 'postListingHref'
+  | 'carouselLabels'
 > & {
   statIds: EntityId[];
   serviceIds: EntityId[];
@@ -559,6 +575,7 @@ export interface AboutPageContent extends LocalizedIdentity {
   };
   purposeImage: Asset;
   timelineDot: Asset;
+  carouselLabels: CarouselLabels;
 }
 
 /** Stored about record; query fills resolved entities. */
@@ -570,6 +587,7 @@ export type AboutPageRecord = Omit<
   | 'testimonialArt'
   | 'purposeImage'
   | 'timelineDot'
+  | 'carouselLabels'
 > & {
   statIds: EntityId[];
   marqueeSeparatorId: EntityId;

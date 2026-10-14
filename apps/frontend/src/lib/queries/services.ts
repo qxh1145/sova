@@ -1,6 +1,7 @@
 import { getRepository } from '@/lib/repositories';
 import type {
   AssetRef,
+  CarouselLabels,
   EntityId,
   FAQ,
   Locale,
@@ -28,6 +29,7 @@ export interface ServicePage {
   testimonials: Testimonial[];
   projects: Project[];
   pricing: Pricing | null;
+  carouselLabels: CarouselLabels;
 }
 
 export interface ServiceAssets {
@@ -193,7 +195,7 @@ export async function getServicePage(key: ServiceKey, locale: Locale): Promise<S
   const service = await repository.getService(key, locale);
   if (!service) return null;
   const placements = [...service.faqs].sort((a, b) => a.order - b.order);
-  const [faqs, testimonials, allProjects, pricing] = await Promise.all([
+  const [faqs, testimonials, allProjects, pricing, shell] = await Promise.all([
     getFAQs(
       placements.map((p) => p.faqId),
       locale,
@@ -204,6 +206,7 @@ export async function getServicePage(key: ServiceKey, locale: Locale): Promise<S
       ? repository.listProjects({ page: 1, pageSize: Number.MAX_SAFE_INTEGER })
       : null,
     service.pricingId ? repository.getPricing(service.pricingId, locale) : null,
+    repository.getShellContent(locale),
   ]);
   const projects = service.featuredProjectIds.flatMap(
     (id) => allProjects?.items.find((p) => p.id === id) ?? [],
@@ -222,5 +225,6 @@ export async function getServicePage(key: ServiceKey, locale: Locale): Promise<S
     testimonials,
     projects,
     pricing,
+    carouselLabels: shell.carouselLabels,
   };
 }

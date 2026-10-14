@@ -1,4 +1,4 @@
-import type { AssetRef, Locale, OfferingPanel, SectionCopy } from '@/types/content';
+import type { AssetRef, OfferingPanel, SectionCopy } from '@/types/content';
 import { Carousel, type CarouselLabels } from '@/components/ui/Carousel';
 
 export interface ServiceDetailCardsIds {
@@ -433,22 +433,6 @@ export const SERVICE_DETAIL_CARDS_IDS_WEBSITE_EN: ServiceDetailCardsIds = {
 };
 
 
-export const SERVICE_CAROUSEL_LABELS: Record<Locale, CarouselLabels> = {
-  vi: {
-    prev: 'Trước',
-    next: 'Tiếp theo',
-    goTo: 'Chuyển tới slide {index}',
-    pause: 'Tạm dừng trình chiếu',
-    play: 'Tiếp tục trình chiếu',
-  },
-  en: {
-    prev: 'Previous',
-    next: 'Next',
-    goTo: 'Go to slide {index}',
-    pause: 'Pause slideshow',
-    play: 'Play slideshow',
-  },
-};
 
 export interface ServiceDetailCardsProps {
   copy?: SectionCopy;

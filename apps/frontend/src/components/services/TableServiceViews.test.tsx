@@ -6,12 +6,21 @@ import { HostingServiceView } from './HostingServiceView';
 import { VpsServiceView } from './VpsServiceView';
 import { EmailServiceView } from './EmailServiceView';
 
+const mockLabels = {
+  prev: 'Trước',
+  next: 'Tiếp theo',
+  goTo: 'Chuyển tới slide {index}',
+  pause: 'Tạm dừng',
+  play: 'Tiếp tục',
+};
+
 const page = (pricing: ServicePage['pricing']): ServicePage => ({
   service: hostingServices[0],
   faqs: [],
   testimonials: [],
   projects: [],
   pricing,
+  carouselLabels: mockLabels,
 });
 const assets = {} as ServiceAssets;
 

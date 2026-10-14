@@ -13,12 +13,26 @@ export const pathSegments = (path: string): string[] => path.split('/').filter(B
 
 /**
  * Validates and parses the page segment of a paged route (`/page/N/`).
- * Returns the page number (>= 2), or null when the segment is not digits or is < 2.
+ * Returns the page number (>= min, default 2), or null when the segment is not digits or is < min.
  */
-export function parsePageParam(pageStr: string): number | null {
+export function parsePageParam(pageStr: string, min = 2): number | null {
   if (!/^[1-9]\d*$/.test(pageStr)) return null;
   const pageNum = parseInt(pageStr, 10);
-  return pageNum >= 2 ? pageNum : null;
+  return pageNum >= min ? pageNum : null;
+}
+
+/** Computes total pages from total item count and page size. */
+export function totalPages(total: number, size: number): number {
+  if (size <= 0) return 0;
+  return Math.ceil(Math.max(0, total) / size);
+}
+
+/** Resolves category entity id by its slug. */
+export function categoryIdBySlug<T extends { id: string; slug: string }>(
+  categories: readonly T[],
+  slug: string,
+): string | undefined {
+  return categories.find((c) => c.slug === slug)?.id;
 }
 
 export const categorySlugs = (routes: RouteEntry[]) =>
@@ -26,10 +40,12 @@ export const categorySlugs = (routes: RouteEntry[]) =>
     .filter((r) => r.kind === 'post-list' && r.entityId && r.path.split('/').length === 3)
     .map((r) => firstSegment(r.path));
 
+const STATIC_RESERVED_ROOT_SLUGS = ['tim-kiem', 'page', 'dev-fixtures'];
+
 /**
  * Root slugs the `[slug]` resolver must not hand to a post or category: the first segment of
  * every canonical path it does not own (all but post details and post-category listings and
- * their pages) plus the first segment of every alias.
+ * their pages) plus the first segment of every alias, plus static/proxy routes.
  */
 export function reservedRootSlugs(routes: RouteEntry[]): string[] {
   const categories = new Set(categorySlugs(routes));
@@ -39,7 +55,7 @@ export function reservedRootSlugs(routes: RouteEntry[]): string[] {
     ...(owned(r) ? [] : [firstSegment(r.path)]),
     ...r.aliases.map(firstSegment),
   ]);
-  return [...new Set(slugs.filter(Boolean))].sort();
+  return [...new Set([...STATIC_RESERVED_ROOT_SLUGS, ...slugs.filter(Boolean)])].sort();
 }
 
 /** Throws on the first broken registry rule, naming the offending path, id or slug. */
