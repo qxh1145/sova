@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { ProjectShowcaseItem } from './ProjectShowcaseItem';
 import { FeaturedProjects } from './FeaturedProjects';
-import type { Project, ProjectCategory, SectionCopy } from '@/types/content';
+import type { AssetRef, Project, ProjectCategory, SectionCopy } from '@/types/content';
 
 describe('FeaturedProjects and ProjectShowcaseItem edge cases', () => {
   const mockProject: Project = {
@@ -72,6 +72,33 @@ describe('FeaturedProjects and ProjectShowcaseItem edge cases', () => {
 
     expect(html).toContain('Project Without Image');
     expect(html).toContain('Website');
+  });
+
+  it('omits background image when gallery asset has status missing', () => {
+    const projectWithGallery: Project = {
+      ...mockProject,
+      galleryIds: ['asset-proj-missing'],
+    };
+    const assetsWithMissing: AssetRef[] = [
+      {
+        id: 'asset-proj-missing',
+        src: '/missing-proj.png',
+        alt: '',
+        kind: 'image',
+        status: 'missing',
+        sources: [],
+      },
+    ];
+    const html = renderToStaticMarkup(
+      <FeaturedProjects
+        projects={[projectWithGallery]}
+        copy={mockCopy}
+        assets={assetsWithMissing}
+        categories={[mockCategory]}
+      />,
+    );
+    expect(html).toContain('Project Without Image');
+    expect(html).not.toContain('background-image');
   });
 
   it('uses the Home source ids when no ids prop is passed', () => {

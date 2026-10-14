@@ -15,6 +15,8 @@ import {
   PROJECT_HERO_IDS_FEATURED_WEBSITE,
 } from '@/components/projects/projectHeroIds';
 
+import { getRepository } from '@/lib/repositories';
+
 // Source element ids per category archive; legacy CSS targets them.
 const IDS: Record<string, ProjectArchiveIds> = {
   branding: {
@@ -35,7 +37,8 @@ const IDS: Record<string, ProjectArchiveIds> = {
 };
 
 export async function generateStaticParams() {
-  return Object.keys(IDS).map((category) => ({ category }));
+  const categories = await getRepository().getProjectCategories();
+  return categories.map((c) => ({ category: c.slug }));
 }
 
 interface FeaturedItemCategoryProps {

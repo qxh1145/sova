@@ -7,6 +7,13 @@ export const shellContent: ShellContent[] = [
       label: 'Liên hệ',
       routeId: 'route-lien-he',
     },
+    carouselLabels: {
+      prev: 'Trước',
+      next: 'Tiếp theo',
+      goTo: 'Chuyển tới slide {index}',
+      pause: 'Tạm dừng trình chiếu',
+      play: 'Tiếp tục trình chiếu',
+    },
     footerCta: {
       headingLines: ['Hiện thực hoá', 'ý tưởng của bạn'],
       targetRouteId: 'route-lien-he',
@@ -59,6 +66,13 @@ export const shellContent: ShellContent[] = [
     headerCta: {
       label: 'Contact Us',
       routeId: 'route-en--contact-us',
+    },
+    carouselLabels: {
+      prev: 'Previous',
+      next: 'Next',
+      goTo: 'Go to slide {index}',
+      pause: 'Pause slideshow',
+      play: 'Play slideshow',
     },
     footerCta: {
       headingLines: ['Realize your amazing digital experience!'],

@@ -9,7 +9,6 @@ import { PartnerLogos } from '@/components/partners/PartnerLogos';
 import {
   Testimonials,
   TESTIMONIALS_IDS,
-  TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { LatestPosts } from '@/components/blog/LatestPosts';
 
@@ -189,13 +188,14 @@ export function HomeView({
         copy={content.sectionCopy.testimonials}
         art={content.testimonialArt}
         ids={TESTIMONIALS_IDS.home[locale]}
-        labels={TESTIMONIALS_LABELS[locale]}
+        labels={content.carouselLabels}
       />
       <LatestPosts
         posts={content.posts}
         copy={content.sectionCopy.posts}
         assets={postAssets}
-        href={isEn ? '/en/insight/' : '/goc-nhin/'}
+        href={content.postListingHref}
+        labels={content.carouselLabels}
       />
     </main>
   );

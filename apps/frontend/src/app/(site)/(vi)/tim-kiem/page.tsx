@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { blogListingCopy } from '@/data/listings';
 import { BRAND_TITLE_SUFFIX } from '@/lib/queries/site';
 import { getBlogSearchPage } from '@/lib/queries/posts';
+import { parsePageParam } from '@/lib/routes';
 import { BlogListView } from '@/components/blog/BlogListView';
 
 export const metadata: Metadata = {
@@ -25,10 +26,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const pageStr = Array.isArray(rawPage) ? rawPage[0] : rawPage;
   let pageNum = 1;
   if (pageStr !== undefined) {
-    if (!/^[1-9]\d*$/.test(pageStr)) {
+    const parsed = parsePageParam(pageStr, 1);
+    if (parsed === null) {
       notFound();
     }
-    pageNum = parseInt(pageStr, 10);
+    pageNum = parsed;
   }
 
   const data = await getBlogSearchPage({

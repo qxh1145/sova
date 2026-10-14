@@ -1,6 +1,7 @@
 import { blogDetailCopy, blogListingCopy } from '@/data/listings';
 import { getRepository } from '@/lib/repositories';
 import type { ContentRepository } from '@/lib/repositories/contracts';
+import { pathForRouteId, totalPages } from '@/lib/routes';
 import type {
   AssetRef,
   ListingSettings,
@@ -30,6 +31,7 @@ export interface BlogListingPageData {
   basePath: string;
   copy: (typeof blogListingCopy)['vi'] | (typeof blogListingCopy)['en'];
   searchQuery?: string;
+  blogBasePath: string;
 }
 
 async function resolveListingTail(
@@ -41,6 +43,7 @@ async function resolveListingTail(
     copy: BlogListingPageData['copy'];
     settings?: ListingSettings | null;
     searchQuery?: string;
+    blogBasePath: string;
   },
 ): Promise<BlogListingPageData> {
   const thumbnailIds = result.items
@@ -48,7 +51,7 @@ async function resolveListingTail(
     .filter((id): id is string => Boolean(id));
 
   const thumbnailAssets = thumbnailIds.length ? await repository.getAssets(thumbnailIds) : [];
-  const totalPages = Math.ceil(result.total / result.pageSize);
+  const totalPagesCount = totalPages(result.total, result.pageSize);
 
   return {
     posts: result.items,
@@ -56,12 +59,13 @@ async function resolveListingTail(
     page: result.page,
     pageSize: result.pageSize,
     total: result.total,
-    totalPages,
+    totalPages: totalPagesCount,
     settings: options.settings ?? null,
     categories,
     basePath: options.basePath,
     copy: options.copy,
     ...(options.searchQuery !== undefined ? { searchQuery: options.searchQuery } : {}),
+    blogBasePath: options.blogBasePath,
   };
 }
 
@@ -73,45 +77,51 @@ export async function getBlogListingPage(
 
   const routes = await repository.listRoutes();
 
-  let routeId = input.routeId;
-  let targetRoute: (typeof routes)[0] | undefined;
-
-  if (routeId) {
-    targetRoute = routes.find((r) => r.id === routeId);
-  } else if (category) {
-    const catPath = page === 1 ? `/${category}/` : `/${category}/page/${page}/`;
-    targetRoute = routes.find((r) => r.locale === locale && r.path === catPath);
-    if (targetRoute) {
-      routeId = targetRoute.id;
-    }
-  } else if (locale === 'en') {
-    targetRoute = routes.find((r) => r.locale === 'en' && r.path === '/en/insight/');
-    if (targetRoute) {
-      routeId = targetRoute.id;
-    }
-  } else {
-    const gocNhinPath = page === 1 ? '/goc-nhin/' : `/goc-nhin/page/${page}/`;
-    targetRoute = routes.find((r) => r.locale === 'vi' && r.path === gocNhinPath);
-    if (targetRoute) {
-      routeId = targetRoute.id;
+  if (input.routeId) {
+    const explicitRoute = routes.find((r) => r.id === input.routeId);
+    if (!explicitRoute || explicitRoute.kind !== 'post-list') {
+      return null;
     }
   }
 
-  if (!targetRoute || targetRoute.kind !== 'post-list') {
+  const blogBasePath =
+    locale === 'en'
+      ? (pathForRouteId(routes, 'route-en--insight') ?? '/en/insight/')
+      : (pathForRouteId(routes, 'route-goc-nhin') ?? '/goc-nhin/');
+  const basePath = category ? `/${category}/` : blogBasePath;
+
+  const baseRoute = routes.find((r) => r.locale === locale && r.path === basePath);
+  if (!baseRoute || baseRoute.kind !== 'post-list') {
     return null;
   }
 
-  const [result, settings, categories] = await Promise.all([
+  const [result, categories] = await Promise.all([
     repository.listPosts({ locale, category, page, pageSize }),
-    routeId ? repository.getListingSettings(routeId) : null,
     repository.getPostCategories(locale),
   ]);
 
-  const basePath = category ? `/${category}/` : locale === 'en' ? '/en/insight/' : '/goc-nhin/';
+  const totalPagesCount = totalPages(result.total, pageSize);
+  if (page < 1 || (page > 1 && page > totalPagesCount)) {
+    return null;
+  }
+
+  let routeId = input.routeId;
+  if (!routeId) {
+    if (page === 1) {
+      routeId = baseRoute.id;
+    } else {
+      const pagedPath = `${basePath}page/${page}/`;
+      const pagedRoute = routes.find((r) => r.locale === locale && r.path === pagedPath);
+      routeId = pagedRoute?.id ?? baseRoute.id;
+    }
+  }
+
+  const settings = routeId ? await repository.getListingSettings(routeId) : null;
   const copy = blogListingCopy[locale];
 
   return resolveListingTail(result, categories, repository, {
     basePath,
+    blogBasePath,
     copy,
     settings,
   });
@@ -130,20 +140,23 @@ export async function getBlogSearchPage(
   const { query, page = 1, pageSize = 6 } = input;
   const locale: Locale = 'vi';
 
-  const [result, categories] = await Promise.all([
+  const [result, categories, routes] = await Promise.all([
     repository.searchPosts({ locale, query, page, pageSize }),
     repository.getPostCategories(locale),
+    repository.listRoutes(),
   ]);
 
-  const totalPages = Math.ceil(result.total / result.pageSize);
-  if (page > 1 && page > totalPages) {
+  const totalPagesCount = totalPages(result.total, result.pageSize);
+  if (page < 1 || (page > 1 && page > totalPagesCount)) {
     return null;
   }
 
   const copy = blogListingCopy[locale];
+  const blogBasePath = pathForRouteId(routes, 'route-goc-nhin') ?? '/goc-nhin/';
 
   return resolveListingTail(result, categories, repository, {
     basePath: '/',
+    blogBasePath,
     copy,
     settings: null,
     searchQuery: query,

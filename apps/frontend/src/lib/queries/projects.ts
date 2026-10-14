@@ -1,8 +1,11 @@
 import { projectListingCopy } from '@/data/listings';
+import { featuredItemOrder } from '@/data/projects';
 import { getRepository } from '@/lib/repositories';
 import type { ContentRepository } from '@/lib/repositories/contracts';
+import { categoryIdBySlug } from '@/lib/routes';
 import type {
   AssetRef,
+  CarouselLabels,
   EntityId,
   ListingSettings,
   Locale,
@@ -47,7 +50,8 @@ export async function getProjectListingPage(
     repository.getListingSettings(routeId),
   ]);
 
-  if (category && !allCategories.some((c) => c.slug === category)) {
+  const categoryId = category ? categoryIdBySlug(allCategories, category) : undefined;
+  if (category && !categoryId) {
     return null;
   }
 
@@ -60,10 +64,16 @@ export async function getProjectListingPage(
     count: localeProjects.filter((p) => p.categoryIds.includes(cat.id)).length,
   }));
 
-  const categoryId = category && allCategories.find((c) => c.slug === category)?.id;
+  const isFeaturedItem = routeId === 'route-featured_item' || targetRoute.path === '/featured_item/';
+  const featuredOrderMap = new Map(featuredItemOrder.map((id, idx) => [id, idx]));
+
   const projects = category
     ? localeProjects.filter((p) => categoryId && p.categoryIds.includes(categoryId))
-    : localeProjects;
+    : isFeaturedItem
+      ? [...localeProjects].sort(
+          (a, b) => (featuredOrderMap.get(a.id) ?? 999) - (featuredOrderMap.get(b.id) ?? 999),
+        )
+      : localeProjects;
 
   // Fetch thumbnail assets
   const thumbnailIds = projects.map((p) => p.thumbnailId).filter((id): id is string => Boolean(id));
@@ -105,6 +115,7 @@ export interface ProjectDetailData {
   galleryAssets: AssetRef[];
   terms: UtilityContent | null;
   related: RelatedProjectCard[];
+  carouselLabels: CarouselLabels;
 }
 
 export async function getProjectDetail(
@@ -114,10 +125,11 @@ export async function getProjectDetail(
   const project = await repository.getProject(slug);
   if (!project) return null;
 
-  const [allCategories, relatedProjects, terms] = await Promise.all([
+  const [allCategories, relatedProjects, terms, shell] = await Promise.all([
     repository.getProjectCategories(),
     repository.getRelatedProjects(project.id),
     project.deliveryTermsId ? repository.getUtilityContent(project.deliveryTermsId) : null,
+    repository.getShellContent(project.locale),
   ]);
 
   const relatedCards = relatedProjects.slice(0, 4);
@@ -154,5 +166,6 @@ export async function getProjectDetail(
     galleryAssets,
     terms,
     related,
+    carouselLabels: shell.carouselLabels,
   };
 }

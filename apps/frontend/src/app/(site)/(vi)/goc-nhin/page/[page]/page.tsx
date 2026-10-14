@@ -1,20 +1,19 @@
 import '@/styles/legacy/sections/route-goc-nhin.css';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { BRAND_TITLE_SUFFIX, listRoutes, routeAlternates } from '@/lib/queries/site';
+import { BRAND_TITLE_SUFFIX, routeAlternates } from '@/lib/queries/site';
 import { getBlogListingPage } from '@/lib/queries/posts';
-import { parsePageParam, pathSegments } from '@/lib/routes';
+import { parsePageParam, totalPages } from '@/lib/routes';
+import { getRepository } from '@/lib/repositories';
 import { BlogListView } from '@/components/blog/BlogListView';
 
 export async function generateStaticParams() {
-  const routes = await listRoutes();
-  return routes
-    .filter(
-      (r) => r.locale === 'vi' && r.kind === 'post-list' && r.path.startsWith('/goc-nhin/page/'),
-    )
-    .map((r) => pathSegments(r.path))
-    .filter((parts) => parts.length === 3 && parts[1] === 'page' && /^\d+$/.test(parts[2]))
-    .map((parts) => ({ page: parts[2] }));
+  const repo = getRepository();
+  const { total } = await repo.listPosts({ locale: 'vi', page: 1, pageSize: 6 });
+  const maxPages = totalPages(total, 6);
+  return Array.from({ length: Math.max(0, maxPages - 1) }, (_, i) => ({
+    page: String(i + 2),
+  }));
 }
 
 interface GocNhinPagedProps {

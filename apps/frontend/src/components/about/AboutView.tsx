@@ -13,7 +13,6 @@ import { Carousel } from '@/components/ui/Carousel';
 import {
   Testimonials,
   TESTIMONIALS_IDS,
-  TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 
 /** Inner HTML of a single-paragraph block, for rendering inside the source's own `<p>`. */
@@ -37,7 +36,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
   const isVi = locale === 'vi';
   const heroIds = isVi ? ABOUT_HERO_IDS_VI : ABOUT_HERO_IDS_EN;
   const testimonialIds = TESTIMONIALS_IDS.about[locale];
-  const labels = TESTIMONIALS_LABELS[locale];
+  const labels = page.carouselLabels;
 
   return (
     <div id="content" role="main">

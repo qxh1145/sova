@@ -133,15 +133,6 @@ const mockOverflowRoutes: RouteEntry[] = mockOverflowPosts.map((p) => ({
   source: { file: 'mock/post.html', line: 1 },
 }));
 
-export const mockGocNhinPage6Route: RouteEntry = {
-  id: 'route-goc-nhin--page--6',
-  locale: 'vi',
-  path: '/goc-nhin/page/6/',
-  kind: 'post-list',
-  aliases: [],
-  source: { file: 'mock/extended.html', line: 1 },
-};
-
 export const extendedMockPosts = [mockPost, ...mockOverflowPosts];
 
 export function withRecords(
@@ -174,5 +165,5 @@ export const buildExtendedFixtures = (): ContentData =>
   withRecords(defaultContentData, {
     projects: [mockProject],
     posts: [mockPost, ...mockOverflowPosts],
-    routes: [mockProjectRoute, mockPostRoute, ...mockOverflowRoutes, mockGocNhinPage6Route],
+    routes: [mockProjectRoute, mockPostRoute, ...mockOverflowRoutes],
   });

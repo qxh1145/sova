@@ -17,12 +17,10 @@ import {
   ServiceDetailCards,
   SERVICE_DETAIL_CARDS_IDS_WEBSITE_EN,
   SERVICE_DETAIL_CARDS_IDS_WEBSITE_VI,
-  SERVICE_CAROUSEL_LABELS,
 } from './ServiceDetailCards';
 import {
   Testimonials,
   TESTIMONIALS_IDS,
-  TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
 import { WebsiteContactForm } from '@/components/forms/WebsiteContactForm';
@@ -70,6 +68,7 @@ export function WebsiteServiceView({ page, assets, locale }: WebsiteServiceViewP
   const { service, faqs, testimonials, pricing } = page;
   const copy = service.sectionCopy;
   const faqIds = FAQ_IDS[locale];
+  const labels = page.carouselLabels;
 
   if (!pricing || pricing.kind !== 'cards') {
     throw new Error(`${service.id} requires cards pricing`);
@@ -113,7 +112,7 @@ export function WebsiteServiceView({ page, assets, locale }: WebsiteServiceViewP
         planIcons={assets.planIcons}
         subtractIcon={assets.subtractIcon}
         ids={isEn ? PRICING_CARDS_IDS_EN : PRICING_CARDS_IDS_VI}
-        labels={SERVICE_CAROUSEL_LABELS[locale]}
+        labels={labels}
       />
 
       {/* 4. Story 8: Form banner */}
@@ -272,7 +271,7 @@ export function WebsiteServiceView({ page, assets, locale }: WebsiteServiceViewP
           offerings={service.offerings}
           subtractIcon={assets.subtractIcon}
           ids={isEn ? SERVICE_DETAIL_CARDS_IDS_WEBSITE_EN : SERVICE_DETAIL_CARDS_IDS_WEBSITE_VI}
-          labels={SERVICE_CAROUSEL_LABELS[locale]}
+          labels={labels}
           sliderClass="slide_tsao"
           dots
         />
@@ -302,7 +301,7 @@ export function WebsiteServiceView({ page, assets, locale }: WebsiteServiceViewP
           copy={copy.testimonials}
           art={assets.testimonialArt}
           ids={TESTIMONIALS_IDS.website[locale]}
-          labels={TESTIMONIALS_LABELS[locale]}
+          labels={labels}
         />
       )}
 

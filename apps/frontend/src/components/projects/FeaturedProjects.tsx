@@ -35,7 +35,9 @@ export function FeaturedProjects({
   if (!projects.length) return null;
 
   const categoryMap = new Map(categories.map((c) => [c.id, c.label]));
-  const assetMap = new Map(assets.map((a) => [a.id, a.src]));
+  const assetMap = new Map(
+    assets.filter((a) => a.status !== 'missing').map((a) => [a.id, a.src]),
+  );
   const resolvedIds = { ...FEATURED_PROJECTS_DEFAULT_IDS, ...ids };
 
   return (

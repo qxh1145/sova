@@ -83,6 +83,13 @@ export const fixtures: ContentData = {
     {
       locale: 'vi',
       headerCta: { label: 'Fixture CTA', routeId: 'route-1' },
+      carouselLabels: {
+        prev: 'Trước',
+        next: 'Tiếp theo',
+        goTo: 'Chuyển tới slide {index}',
+        pause: 'Tạm dừng trình chiếu',
+        play: 'Tiếp tục trình chiếu',
+      },
       footerCta: { headingLines: ['Fixture Heading'], targetRouteId: 'route-1' },
       copyright: 'Copyright © 2026 {{site.companyName}} | All Rights Reserved.',
       themeCredit: 'Flatsome Theme',
@@ -127,6 +134,13 @@ export const fixtures: ContentData = {
     {
       locale: 'en',
       headerCta: { label: 'Fixture CTA EN', routeId: 'route-en-1' },
+      carouselLabels: {
+        prev: 'Previous',
+        next: 'Next',
+        goTo: 'Go to slide {index}',
+        pause: 'Pause slideshow',
+        play: 'Play slideshow',
+      },
       footerCta: { headingLines: ['Fixture Heading EN'], targetRouteId: 'route-en-1' },
       copyright: 'Copyright © 2026 {{site.companyName}} | All Rights Reserved.',
       themeCredit: 'Flatsome Theme',

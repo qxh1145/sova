@@ -1,18 +1,14 @@
 import { expect, test, vi } from 'vitest';
 import type { ContentData, ContentRepository } from '@/lib/repositories/contracts';
-import { createMockRepository } from '@/lib/repositories/mock';
+import { createMockRepository, defaultContentData } from '@/lib/repositories/mock';
 import { assets } from '@/data/assets';
 import { faqs } from '@/data/faq';
-import { navigation } from '@/data/navigation';
 import { aboutPages } from '@/data/pages/about';
 import { contactPages } from '@/data/pages/contact';
 import { homePages } from '@/data/pages/home';
 import { legalPages, paymentGuides } from '@/data/pages/legal';
-import { faqPages } from '@/data/pages/faq';
-import { partners } from '@/data/partners';
 import { posts } from '@/data/posts';
 import { projectCategories } from '@/data/project-categories';
-import { projects } from '@/data/projects';
 import { websitePricing } from '@/data/pricing/website';
 import { brandingServices } from '@/data/services/branding';
 import { emailServices } from '@/data/services/email';
@@ -21,9 +17,7 @@ import { seoServices } from '@/data/services/seo';
 import { storageServices } from '@/data/services/storage';
 import { websiteServices } from '@/data/services/website';
 import { siteSettings } from '@/data/site';
-import { stats } from '@/data/stats';
-import { testimonials } from '@/data/testimonials';
-import type { ContactPageContent, SiteSettings } from '@/types/content';
+import type { ContactPageContent, HomePageContent, SiteSettings } from '@/types/content';
 import { getFAQs } from './faq';
 import {
   getAboutAssets,
@@ -60,31 +54,17 @@ const websiteWithPhone = { ...website, summary: `${website.summary} {{site.phone
 // The committed import output, with optional overrides of one domain.
 const repoWith = (data: Partial<ContentData> = {}) =>
   createMockRepository({
-    siteSettings,
-    navigation,
+    ...defaultContentData,
     services: [
       websiteWithPhone,
       ...websiteServices.filter((s) => s.locale !== 'vi'),
       ...[mobileServices, seoServices, brandingServices, storageServices, emailServices].flat(),
     ],
-    faqs,
-    testimonials,
-    partners,
-    projects,
-    projectCategories: [],
-    posts,
-    postCategories: [],
-    stats,
-    pricing: websitePricing,
-    assets,
-    homePages,
-    aboutPages,
     contactPages: [contactWithPhone],
-    legalPages,
-    paymentGuides,
-    faqPages,
+    projectCategories: [],
+    postCategories: [],
     ...data,
-  } as unknown as ContentData);
+  });
 
 test('phone change: contact, legal warranty, FAQs and service page all show the new phone', async () => {
   const phone = '1111 222 333';
@@ -318,6 +298,48 @@ test('getHomeAssets reads assets from the repository it is given', async () => {
     home!.projects.map((p) => p.galleryIds[0]).filter(Boolean),
   );
   expect(getCategoriesSpy).toHaveBeenCalledOnce();
+});
+
+test('getHomeAssets throws on dangling asset id but passes through status: missing', async () => {
+  repository = repoWith({ projectCategories });
+  const home = await getHomePage('vi');
+  expect(home).not.toBeNull();
+
+  // Dangling asset id throws
+  const danglingHome: HomePageContent = {
+    ...home!,
+    partners: [
+      ...home!.partners,
+      { id: 'partner-dangling', name: 'Dangling', logoId: 'asset-does-not-exist', sources: [] },
+    ],
+  };
+  await expect(getHomeAssets(danglingHome, repository)).rejects.toThrow(
+    `${home!.id} references missing ids: asset-does-not-exist`,
+  );
+
+  // Missing status asset resolves without throwing
+  const repoWithMissing = repoWith({
+    assets: [
+      ...assets,
+      {
+        id: 'asset-missing-status',
+        src: '/missing.png',
+        alt: '',
+        kind: 'image',
+        status: 'missing',
+        sources: [],
+      },
+    ],
+  });
+  const missingStatusHome: HomePageContent = {
+    ...home!,
+    partners: [
+      ...home!.partners,
+      { id: 'partner-missing', name: 'Missing', logoId: 'asset-missing-status', sources: [] },
+    ],
+  };
+  const res = await getHomeAssets(missingStatusHome, repoWithMissing);
+  expect(res.partnerAssets.some((a) => a.id === 'asset-missing-status' && a.status === 'missing')).toBe(true);
 });
 
 test('getAboutAssets resolves hero background, subtract icon and goal icons in goal order', async () => {

@@ -15,7 +15,6 @@ import {
 import {
   Testimonials,
   TESTIMONIALS_IDS,
-  TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
 
@@ -87,7 +86,7 @@ export function VpsServiceView({ page, assets, locale }: VpsServiceViewProps) {
           copy={copy.testimonials}
           art={assets.testimonialArt}
           ids={TESTIMONIALS_IDS.vps[locale]}
-          labels={TESTIMONIALS_LABELS[locale]}
+          labels={page.carouselLabels}
         />
       )}
 

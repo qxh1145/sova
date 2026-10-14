@@ -14,12 +14,10 @@ import {
   ServiceDetailCards,
   SERVICE_DETAIL_CARDS_IDS_MOBILE_EN,
   SERVICE_DETAIL_CARDS_IDS_MOBILE_VI,
-  SERVICE_CAROUSEL_LABELS,
 } from './ServiceDetailCards';
 import {
   Testimonials,
   TESTIMONIALS_IDS,
-  TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { FAQList } from '@/components/faq/FAQList';
 import { faqToggleLabel } from '@/components/faq/faqIds';
@@ -42,6 +40,7 @@ export function MobileServiceView({ page, assets, locale }: MobileServiceViewPro
   const isEn = locale === 'en';
   const { service, faqs, testimonials } = page;
   const copy = service.sectionCopy;
+  const labels = page.carouselLabels;
 
   return (
     <main id="main">
@@ -68,7 +67,7 @@ export function MobileServiceView({ page, assets, locale }: MobileServiceViewPro
         offerings={service.offerings}
         subtractIcon={assets.subtractIcon}
         ids={isEn ? SERVICE_DETAIL_CARDS_IDS_MOBILE_EN : SERVICE_DETAIL_CARDS_IDS_MOBILE_VI}
-        labels={SERVICE_CAROUSEL_LABELS[locale]}
+        labels={labels}
       />
 
       {/* 4. Story 9: Featured projects */}
@@ -95,7 +94,7 @@ export function MobileServiceView({ page, assets, locale }: MobileServiceViewPro
           copy={copy.testimonials}
           art={assets.testimonialArt}
           ids={TESTIMONIALS_IDS.mobile[locale]}
-          labels={TESTIMONIALS_LABELS[locale]}
+          labels={labels}
         />
       )}
 

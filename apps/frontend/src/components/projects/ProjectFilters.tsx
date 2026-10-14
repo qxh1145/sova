@@ -5,6 +5,7 @@ import type { AssetRef, Locale, ProjectCategory } from '@/types/content';
 import { ProjectCard, categoryLabel, type ProjectCardData } from './ProjectCard';
 import { ProjectGrid, type ProjectGridProps } from './ProjectGrid';
 import { Pagination, type PaginationLabels } from '@/components/ui/Pagination';
+import { categoryIdBySlug, totalPages } from '@/lib/routes';
 
 export interface ProjectFiltersProps {
   projects: ProjectCardData[];
@@ -56,12 +57,12 @@ export function ProjectFilters({
   // Filter in memory
   const filteredProjects = useMemo(() => {
     if (!selectedSlug) return projects;
-    const matchingCat = categories.find((c) => c.slug === selectedSlug);
-    if (!matchingCat) return projects;
-    return projects.filter((p) => p.categoryIds.includes(matchingCat.id));
+    const matchingCatId = categoryIdBySlug(categories, selectedSlug);
+    if (!matchingCatId) return projects;
+    return projects.filter((p) => p.categoryIds.includes(matchingCatId));
   }, [projects, selectedSlug, categories]);
 
-  const totalPages = pageSize ? Math.ceil(filteredProjects.length / pageSize) || 1 : 1;
+  const pageCount = pageSize ? totalPages(filteredProjects.length, pageSize) : 1;
 
   const paginatedProjects = useMemo(() => {
     if (!pageSize) return filteredProjects;
@@ -136,10 +137,10 @@ export function ProjectFilters({
 
       {pageSize && paginationLabels ? (
         <div className="pagination-wrapper text-center mt-20" id="portfolio-pagination">
-          {!loading && filteredProjects.length > 0 && totalPages > 1 ? (
+          {!loading && filteredProjects.length > 0 && pageCount > 1 ? (
             <Pagination
               current={currentPage}
-              total={totalPages}
+              total={pageCount}
               labels={paginationLabels}
               onPageChange={handlePageChange}
             />

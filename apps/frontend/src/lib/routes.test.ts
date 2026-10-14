@@ -2,8 +2,17 @@ import { expect, test } from 'vitest';
 import { posts } from '@/data/posts';
 import { projects } from '@/data/projects';
 import { routes } from '@/data/routes';
+import {
+  categoryIdBySlug,
+  normalizePath,
+  parsePageParam,
+  pathForRouteId,
+  reservedRootSlugs,
+  resolvePath,
+  totalPages,
+  validateRoutes,
+} from './routes';
 import type { RouteEntry } from '@/types/content';
-import { normalizePath, pathForRouteId, reservedRootSlugs, resolvePath, validateRoutes } from './routes';
 
 const slugs = { postSlugs: posts.map((p) => p.slug), projectSlugs: projects.map((p) => p.slug) };
 // The 16 `excluded` rows of docs/evidence/routes.json.
@@ -107,11 +116,13 @@ test('I/O matrix: canonical, no slash + query + hash, alias, unknown', () => {
   expect(normalizePath('goc-nhin')).toBe('/goc-nhin/');
 });
 
-test('reserved root slugs cover non-[slug] roots and aliases, not post categories', () => {
+test('reserved root slugs cover non-[slug] roots and aliases, plus static roots, not post categories', () => {
   const reserved = reservedRootSlugs(routes);
   for (const s of ['en', 'goc-nhin', 'du-an', 'featured_item', 'featured_item_category'])
     expect(reserved).toContain(s);
   for (const s of ['login-eras', 'lien-he', 'dang-ky-nghi-phep', 'porfolio-eras-vietnam'])
+    expect(reserved).toContain(s);
+  for (const s of ['tim-kiem', 'page', 'dev-fixtures'])
     expect(reserved).toContain(s);
   for (const s of ['social-marketing', 'thu-thuat', ...slugs.postSlugs])
     expect(reserved).not.toContain(s);
@@ -139,6 +150,11 @@ test('validateRoutes rejects crafted registries', () => {
       projectSlugs: ['lien-he'],
     }),
   ).toThrow('lien-he');
+  for (const staticSlug of ['tim-kiem', 'page', 'dev-fixtures']) {
+    expect(() =>
+      validateRoutes([route('/a/')], { postSlugs: [staticSlug], projectSlugs: [] }),
+    ).toThrow(staticSlug);
+  }
   expect(() => validateRoutes([route('/gioi-thieu/'), route('/en/gioi-thieu/')], noSlugs)).toThrow(
     '/en/gioi-thieu/',
   );
@@ -154,6 +170,32 @@ test('validateRoutes rejects crafted registries', () => {
       noSlugs,
     ),
   ).toThrow('featured_item_category');
+});
+
+test('totalPages computes ceil(total / size)', () => {
+  expect(totalPages(27, 6)).toBe(5);
+  expect(totalPages(7, 6)).toBe(2);
+  expect(totalPages(6, 6)).toBe(1);
+  expect(totalPages(1, 6)).toBe(1);
+  expect(totalPages(0, 6)).toBe(0);
+  expect(totalPages(10, 0)).toBe(0);
+});
+
+test('parsePageParam parses digits with default min 2 or custom min', () => {
+  expect(parsePageParam('1')).toBeNull();
+  expect(parsePageParam('2')).toBe(2);
+  expect(parsePageParam('5')).toBe(5);
+  expect(parsePageParam('1', 1)).toBe(1);
+  expect(parsePageParam('0', 1)).toBeNull();
+  expect(parsePageParam('abc')).toBeNull();
+  expect(parsePageParam('-1')).toBeNull();
+});
+
+test('categoryIdBySlug resolves category id from array', () => {
+  const cats = [{ id: 'cat-1', slug: 'branding' }, { id: 'cat-2', slug: 'website' }];
+  expect(categoryIdBySlug(cats, 'branding')).toBe('cat-1');
+  expect(categoryIdBySlug(cats, 'website')).toBe('cat-2');
+  expect(categoryIdBySlug(cats, 'missing')).toBeUndefined();
 });
 
 test('pathForRouteId returns path for existing route and undefined for missing', () => {

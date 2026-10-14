@@ -1,5 +1,6 @@
 import { getRepository } from '@/lib/repositories';
 import type { ContentRepository } from '@/lib/repositories/contracts';
+import { pathForRouteId } from '@/lib/routes';
 import type {
   AboutPageContent,
   AssetRef,
@@ -62,21 +63,24 @@ export async function getHomePage(
     ...page
   } = record;
   // ponytail: no get-by-ids for projects/posts in the repository; one full page is fine for mock data.
-  const [stats, testimonials, partners, projects, posts, services, artAssets] = await Promise.all([
-    repository.getStats(statIds),
-    repository.getTestimonials(idsOf(testimonialPlacements), locale),
-    repository.getPartners(idsOf(partnerPlacements)),
-    projectPlacements.length ? repository.listProjects(ALL) : null,
-    postPlacements.length ? repository.listPosts({ locale, ...ALL }) : null,
-    // Matched by id over every key, so the check does not depend on the id format.
-    Promise.all(SERVICE_KEYS.map((key) => repository.getService(key, locale))),
-    repository.getAssets([
-      marqueeSeparatorId,
-      testimonialArtIds.photoId,
-      testimonialArtIds.quoteIconId,
-      testimonialArtIds.lineId,
-    ]),
-  ]);
+  const [stats, testimonials, partners, projects, posts, services, artAssets, shell, routes] =
+    await Promise.all([
+      repository.getStats(statIds),
+      repository.getTestimonials(idsOf(testimonialPlacements), locale),
+      repository.getPartners(idsOf(partnerPlacements)),
+      projectPlacements.length ? repository.listProjects(ALL) : null,
+      postPlacements.length ? repository.listPosts({ locale, ...ALL }) : null,
+      // Matched by id over every key, so the check does not depend on the id format.
+      Promise.all(SERVICE_KEYS.map((key) => repository.getService(key, locale))),
+      repository.getAssets([
+        marqueeSeparatorId,
+        testimonialArtIds.photoId,
+        testimonialArtIds.quoteIconId,
+        testimonialArtIds.lineId,
+      ]),
+      repository.getShellContent(locale),
+      repository.listRoutes(),
+    ]);
   const servicesList = services.filter((s): s is Service => s !== null);
   assertResolved(record.id, [
     ...missingIds(statIds, stats),
@@ -96,6 +100,10 @@ export async function getHomePage(
     ),
   ]);
 
+  const blogRouteId = locale === 'en' ? 'route-en--insight' : 'route-goc-nhin';
+  const postListingHref =
+    pathForRouteId(routes, blogRouteId) ?? (locale === 'en' ? '/en/insight/' : '/goc-nhin/');
+
   const projectItems = projects?.items ?? [];
   const postItems = posts?.items ?? [];
   const marqueeSeparator = artAssets.find((a) => a.id === marqueeSeparatorId);
@@ -109,6 +117,8 @@ export async function getHomePage(
     posts: idsOf(postPlacements).map((id) => postItems.find((p) => p.id === id)!),
     marqueeSeparator: marqueeSeparator!,
     testimonialArt: resolveTestimonialArt(artAssets, testimonialArtIds),
+    postListingHref,
+    carouselLabels: shell.carouselLabels,
   };
 }
 
@@ -162,6 +172,22 @@ export async function getHomeAssets(
       postThumbnailIds.length ? repository.getAssets(postThumbnailIds) : Promise.resolve([]),
     ]);
 
+  const wanted = [
+    ...(content.hero.videoId ? [content.hero.videoId] : []),
+    ...galleryAssetIds,
+    ...partnerLogoIds,
+    ...testimonialAvatarIds,
+    ...postThumbnailIds,
+  ];
+  const allResolved = [
+    ...videoAssets,
+    ...projectAssets,
+    ...partnerAssets,
+    ...testimonialAssets,
+    ...postAssets,
+  ];
+  assertResolved(content.id, missingIds(wanted, allResolved));
+
   return {
     videoAsset: videoAssets[0] ?? null,
     projectAssets,
@@ -187,7 +213,7 @@ export async function getAboutPage(
     timelineDotId,
     ...page
   } = record;
-  const [stats, testimonials, partners, assets] = await Promise.all([
+  const [stats, testimonials, partners, assets, shell] = await Promise.all([
     repository.getStats(statIds),
     repository.getTestimonials(record.testimonialIds, locale),
     repository.getPartners(record.partnerIds),
@@ -199,6 +225,7 @@ export async function getAboutPage(
       purposeImageId,
       timelineDotId,
     ]),
+    repository.getShellContent(locale),
   ]);
   assertResolved(record.id, [
     ...missingIds(statIds, stats),
@@ -225,6 +252,7 @@ export async function getAboutPage(
     testimonialArt: resolveTestimonialArt(assets, testimonialArtIds),
     purposeImage: byId(purposeImageId),
     timelineDot: byId(timelineDotId),
+    carouselLabels: shell.carouselLabels,
   };
 }
 

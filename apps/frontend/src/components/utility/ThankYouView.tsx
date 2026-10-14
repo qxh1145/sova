@@ -1,15 +1,17 @@
 import type { UtilityContent } from '@/types/content';
 import { RichText } from '@/components/ui/RichText';
+import { THANK_YOU_IDS, type ThankYouPreset } from './thankYouIds';
 
 export interface ThankYouViewProps {
   content: UtilityContent;
   demoLabel?: string;
+  ids?: ThankYouPreset;
 }
 
-export function ThankYouView({ content, demoLabel }: ThankYouViewProps) {
+export function ThankYouView({ content, demoLabel, ids = THANK_YOU_IDS }: ThankYouViewProps) {
   return (
     <div id="content" role="main">
-      <section className="section dark" id="section_430522107">
+      <section className="section dark" id={ids.sectionId}>
         <div className="section-bg fill">
           <img
             decoding="async"
@@ -24,18 +26,18 @@ export function ThankYouView({ content, demoLabel }: ThankYouViewProps) {
 
         <div className="section-content relative">
           <div
-            id="gap-490568669"
+            id={ids.gapTopId}
             className="gap-element clearfix"
             style={{ display: 'block', height: 'auto' }}
           />
           <div
-            id="gap-1163282652"
+            id={ids.gapBottomId}
             className="gap-element clearfix"
             style={{ display: 'block', height: 'auto' }}
           />
 
-          <div className="row align-middle align-center" id="row-884857160">
-            <div id="col-1741565368" className="col form_tke medium-7 small-12 large-7">
+          <div className="row align-middle align-center" id={ids.rowId}>
+            <div id={ids.colId} className="col form_tke medium-7 small-12 large-7">
               <div className="col-inner text-center">
                 {demoLabel ? <span className="wpcf7-demo-badge">{demoLabel}</span> : null}
                 <RichText content={content.body} className="text" />

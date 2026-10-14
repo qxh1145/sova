@@ -1,6 +1,8 @@
-import { expect, test } from 'vitest';
+import { expect, test, vi } from 'vitest';
+import { getRepository } from '@/lib/repositories';
 import { createMockRepository, defaultContentData } from '@/lib/repositories/mock';
 import { posts } from '@/data/posts';
+import { totalPages } from '@/lib/routes';
 import {
   getBlogListingPage,
   getBlogSearchPage,
@@ -158,6 +160,48 @@ test('getBlogListingPage returns null for unknown route or unsourced page', asyn
   expect(await getBlogListingPage({ page: 6 }, repository)).toBeNull();
   // category slug that resolves to a non-post-list route
   expect(await getBlogListingPage({ category: 'gioi-thieu' }, repository)).toBeNull();
+});
+
+test('registry paged rows match derived pages and 404 gates reject out-of-range pages', async () => {
+  const allPosts = await repository.listPosts({ locale: 'vi', page: 1, pageSize: 100 });
+  const gocNhinTotalPages = totalPages(allPosts.total, 6);
+  const derivedGocNhinPaths: string[] = [];
+  for (let p = 2; p <= gocNhinTotalPages; p++) {
+    derivedGocNhinPaths.push(`/goc-nhin/page/${p}/`);
+  }
+
+  const categories = await repository.getPostCategories('vi');
+  const derivedCategoryPaths: string[] = [];
+  for (const cat of categories) {
+    const pages = totalPages(cat.count, 6);
+    for (let p = 2; p <= pages; p++) {
+      derivedCategoryPaths.push(`/${cat.slug}/page/${p}/`);
+    }
+  }
+
+  const expectedPaths = [...derivedGocNhinPaths, ...derivedCategoryPaths].sort();
+  const registryPagedPaths = defaultContentData.routes
+    .filter((r) => r.path.includes('/page/'))
+    .map((r) => r.path)
+    .sort();
+
+  expect(expectedPaths).toEqual(registryPagedPaths);
+
+  expect(await getBlogListingPage({ page: 6 }, repository)).toBeNull();
+  expect(await getBlogListingPage({ category: 'thu-thuat', page: 3 }, repository)).toBeNull();
+  expect(await getBlogListingPage({ category: 'creative-branding', page: 2 }, repository)).toBeNull();
+
+  vi.stubEnv('CONTENT_SCENARIO', 'extended');
+  try {
+    const extendedRepo = getRepository();
+    const extendedPage6 = await getBlogListingPage({ page: 6 }, extendedRepo);
+    expect(extendedPage6).not.toBeNull();
+    expect(extendedPage6!.page).toBe(6);
+    expect(extendedPage6!.totalPages).toBe(6);
+    expect(extendedPage6!.posts).toHaveLength(2);
+  } finally {
+    vi.unstubAllEnvs();
+  }
 });
 
 test('getBlogListingPage returns EN shell with no posts for en insight', async () => {
@@ -383,6 +427,7 @@ test('getBlogSearchPage: pagination 6/page, null past end, empty result shape, d
   expect(page1!.totalPages).toBe(5);
   expect(page1!.page).toBe(1);
   expect(page1!.basePath).toBe('/');
+  expect(page1!.blogBasePath).toBe('/goc-nhin/');
   expect(page1!.searchQuery).toBe('');
   expect(page1!.settings).toBeNull();
   expect(page1!.categories).toHaveLength(6);
@@ -393,6 +438,10 @@ test('getBlogSearchPage: pagination 6/page, null past end, empty result shape, d
   expect(page5).not.toBeNull();
   expect(page5!.posts).toHaveLength(3);
   expect(page5!.page).toBe(5);
+
+  // Page < 1 returns null
+  expect(await getBlogSearchPage({ query: '', page: 0 }, repository)).toBeNull();
+  expect(await getBlogSearchPage({ query: '', page: -1 }, repository)).toBeNull();
 
   // Page past end returns null
   const pastEnd = await getBlogSearchPage({ query: '', page: 6 }, repository);

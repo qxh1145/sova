@@ -18,7 +18,6 @@ import {
 import {
   Testimonials,
   TESTIMONIALS_IDS,
-  TESTIMONIALS_LABELS,
 } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
 
@@ -92,7 +91,7 @@ export function HostingServiceView({ page, assets, locale }: HostingServiceViewP
           copy={copy.testimonials}
           art={assets.testimonialArt}
           ids={TESTIMONIALS_IDS.hosting[locale]}
-          labels={TESTIMONIALS_LABELS[locale]}
+          labels={page.carouselLabels}
         />
       )}
 
