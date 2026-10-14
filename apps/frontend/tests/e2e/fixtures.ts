@@ -100,14 +100,19 @@ export async function installListenerCounter(page: Page) {
   await page.addInitScript(() => {
     // Composite map: target (Window | Document) -> type -> Set<listener_capture_key>
     // or Map keyed by listener with Set/Map of contexts to preserve exact object identity
-    const windowListeners = new Map<string, Map<EventListenerOrEventListenerObject, Set<boolean>>>();
+    const windowListeners = new Map<
+      string,
+      Map<EventListenerOrEventListenerObject, Set<boolean>>
+    >();
     const docListeners = new Map<string, Map<EventListenerOrEventListenerObject, Set<boolean>>>();
 
     function getRegistry(target: EventTarget) {
       return target === window ? windowListeners : docListeners;
     }
 
-    function normalizeCapture(options?: boolean | AddEventListenerOptions | EventListenerOptions): boolean {
+    function normalizeCapture(
+      options?: boolean | AddEventListenerOptions | EventListenerOptions,
+    ): boolean {
       if (typeof options === 'boolean') return options;
       return Boolean(options?.capture);
     }
@@ -163,21 +168,22 @@ export async function installListenerCounter(page: Page) {
       return origRemove.call(this, type, listener as EventListenerOrEventListenerObject, options);
     };
 
-    (window as unknown as { __liveListeners: () => Record<string, number> }).__liveListeners = () => {
-      const counts: Record<string, number> = {};
-      for (const registry of [windowListeners, docListeners]) {
-        for (const [type, typeMap] of registry.entries()) {
-          let count = 0;
-          for (const captureSet of typeMap.values()) {
-            count += captureSet.size;
-          }
-          if (count > 0) {
-            counts[type] = (counts[type] || 0) + count;
+    (window as unknown as { __liveListeners: () => Record<string, number> }).__liveListeners =
+      () => {
+        const counts: Record<string, number> = {};
+        for (const registry of [windowListeners, docListeners]) {
+          for (const [type, typeMap] of registry.entries()) {
+            let count = 0;
+            for (const captureSet of typeMap.values()) {
+              count += captureSet.size;
+            }
+            if (count > 0) {
+              counts[type] = (counts[type] || 0) + count;
+            }
           }
         }
-      }
-      return counts;
-    };
+        return counts;
+      };
   });
 }
 
@@ -206,6 +212,13 @@ export const GLOBAL_CONSOLE_ALLOW: RegExp[] = [
       ]
     : []),
 ];
+
+/** Intentional 404 navigations: the browser logs the document's resource-load failure. */
+export const ALLOW_404 = /^Failed to load resource: the server responded with a status of 404/;
+
+/** Error fixtures: the thrown render returns a 500 and React logs redacted Server Components error #441. */
+export const ALLOW_SERVER_ERROR =
+  /^Failed to load resource: the server responded with a status of 500|react\.dev\/errors\/441/;
 
 export interface FixtureOptions {
   allowConsole: RegExp[];
@@ -243,12 +256,7 @@ export const test = base.extend<
         errors.push(e.message);
       });
       await use();
-      const allowList = Array.isArray(allowConsole)
-        ? allowConsole
-        : allowConsole
-          ? [allowConsole]
-          : [];
-      const allow = [...GLOBAL_CONSOLE_ALLOW, ...allowList];
+      const allow = [...GLOBAL_CONSOLE_ALLOW, ...allowConsole];
       const unexpected = errors.filter((t) => !allow.some((r) => r.test(t)));
       expect(unexpected, `Unexpected console/page errors:\n${unexpected.join('\n')}`).toEqual([]);
     },

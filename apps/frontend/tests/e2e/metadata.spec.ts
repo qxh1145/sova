@@ -1,4 +1,4 @@
-import { expect, test } from './fixtures';
+import { ALLOW_404, ALLOW_SERVER_ERROR, expect, test } from './fixtures';
 import { routes } from '../../src/data/routes';
 import { buildCounterpartMap } from '../../src/lib/routes';
 import { BRAND_TITLE_SUFFIX } from '../../src/lib/queries/site';
@@ -107,9 +107,7 @@ test.describe('Metadata & Indexing Acceptance', () => {
 
   test.describe('Utility error fixture', () => {
     test.use({
-      allowConsole: [
-        /Failed to load resource: the server responded with a status of 500|react\.dev\/errors\/441/,
-      ],
+      allowConsole: [ALLOW_SERVER_ERROR],
     });
 
     test('Utility error boundary catches error and renders .page-error-main with retry', async ({
@@ -126,10 +124,12 @@ test.describe('Metadata & Indexing Acceptance', () => {
 
   test.describe('Unknown routes 404', () => {
     test.use({
-      allowConsole: [/Failed to load resource: the server responded with a status of 404/],
+      allowConsole: [ALLOW_404],
     });
 
-    test('Unknown project route /featured_item/khong-ton-tai-xyz/ returns 404', async ({ page }) => {
+    test('Unknown project route /featured_item/khong-ton-tai-xyz/ returns 404', async ({
+      page,
+    }) => {
       const response = await page.goto('/featured_item/khong-ton-tai-xyz/');
       expect(response?.status()).toBe(404);
     });

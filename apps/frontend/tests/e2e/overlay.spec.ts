@@ -1,4 +1,4 @@
-import { expect, expectNoDuplicateIds, getBodyOverflow, test } from './fixtures';
+import { ALLOW_404, expect, expectNoDuplicateIds, getBodyOverflow, test } from './fixtures';
 
 test.describe('Overlay primitive and shell coordinator contract checks', () => {
   test('Matrix 1: Keyboard open — focus trigger, Enter opens dialog, moves focus inside, locks body scroll', async ({
@@ -80,7 +80,9 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
     expect(await getBodyOverflow(page)).not.toBe('hidden');
   });
 
-  test('project lightbox closes through mfp-removing and can reopen mid-close', async ({ page }) => {
+  test('project lightbox closes through mfp-removing and can reopen mid-close', async ({
+    page,
+  }) => {
     await page.goto('/featured_item/bossman-cong-ty-co-phan-bossman-viet-nam/');
     const link = page.locator('#slider-duan a.lightbox-gallery');
     await link.click();
@@ -96,7 +98,9 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
     await expect(link).toBeFocused();
   });
 
-  test('Dialog close phase persists until transition, while reduced motion skips it', async ({ page }) => {
+  test('Dialog close phase persists until transition, while reduced motion skips it', async ({
+    page,
+  }) => {
     await page.goto('/dev-fixtures/overlay/menu-consult');
     const trigger = page.getByTestId('menu-trigger');
     await trigger.click();
@@ -121,7 +125,9 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
     await expect(page.locator('.mfp-wrap')).toHaveCount(0, { timeout: 150 });
     await expect(page.locator('.mfp-wrap')).toHaveCount(0);
     await expect(trigger).toBeFocused();
-    expect(await page.evaluate(() => (window as unknown as { __sawRemoving: boolean }).__sawRemoving)).toBe(false);
+    expect(
+      await page.evaluate(() => (window as unknown as { __sawRemoving: boolean }).__sawRemoving),
+    ).toBe(false);
   });
 
   test('Matrix 4: Overlay click — pointer down on .mfp-container outside content closes and returns focus', async ({
@@ -182,7 +188,10 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
       w.__lockObs = new MutationObserver(() => {
         if (!document.body.hasAttribute('data-scroll-locked')) w.__unlocked = true;
       });
-      w.__lockObs.observe(document.body, { attributes: true, attributeFilter: ['data-scroll-locked'] });
+      w.__lockObs.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['data-scroll-locked'],
+      });
     });
 
     // Activate consult inside menu
@@ -316,7 +325,9 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
     await page.evaluate(() => {
       (window as unknown as { __dupErrors: string[] }).__dupErrors = [];
       const obs = new MutationObserver(() => {
-        const ids = Array.from(document.querySelectorAll('[id]')).map((el) => el.id).filter(Boolean);
+        const ids = Array.from(document.querySelectorAll('[id]'))
+          .map((el) => el.id)
+          .filter(Boolean);
         const seen = new Set<string>();
         for (const id of ids) {
           if (seen.has(id)) {
@@ -379,16 +390,14 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
   });
 
   test.describe('unknown variant', () => {
-    test.use({ allowConsole: [/Failed to load resource: the server responded with a status of 404/] });
+    test.use({ allowConsole: [ALLOW_404] });
     test('Matrix 11: Guard off / unknown variant — returns 404', async ({ page }) => {
       const response = await page.goto('/dev-fixtures/overlay/unknown-variant');
       expect(response?.status()).toBe(404);
     });
   });
 
-  test('Probe C4: Tall lightbox content scrolls with mouse wheel', async ({
-    page,
-  }) => {
+  test('Probe C4: Tall lightbox content scrolls with mouse wheel', async ({ page }) => {
     // .mfp-wrap sits inside Radix RemoveScroll tree via display:contents DialogPrimitive.Overlay,
     // so wheel events are handled by .mfp-wrap and scrollTop increases while body scroll remains locked.
     await page.goto('/dev-fixtures/overlay/single');
@@ -397,7 +406,9 @@ test.describe('Overlay primitive and shell coordinator contract checks', () => {
     await expect(dialog).toBeVisible();
 
     await page.evaluate(() => {
-      const content = document.querySelector('[data-testid="single-dialog-content"]') as HTMLElement;
+      const content = document.querySelector(
+        '[data-testid="single-dialog-content"]',
+      ) as HTMLElement;
       content.style.height = '3000px';
     });
 

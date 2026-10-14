@@ -1,4 +1,4 @@
-import { expect, test } from './fixtures';
+import { ALLOW_404, ALLOW_SERVER_ERROR, expect, test } from './fixtures';
 import { hasSource, missingSourceMessage, openSource } from '../baseline/source';
 
 test.describe('/du-an/ and /en/our-project/ project listing, filter and pagination', () => {
@@ -205,9 +205,7 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
 
   test.describe('Dev fixtures variants', () => {
     test.use({
-      allowConsole: [
-        /Failed to load resource: the server responded with a status of 500|react\.dev\/errors\/441/,
-      ],
+      allowConsole: [ALLOW_SERVER_ERROR],
     });
 
     test('Dev fixtures variants: loading, empty, error', async ({ page }) => {
@@ -426,7 +424,7 @@ test.describe('/featured_item/ archive and /featured_item_category/* archives', 
 
   test.describe('Unknown category 404', () => {
     test.use({
-      allowConsole: [/Failed to load resource: the server responded with a status of 404/],
+      allowConsole: [ALLOW_404],
     });
 
     test('Unknown category is a 404', async ({ page }) => {
@@ -632,7 +630,9 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
     await expect(xttSlides.nth(1)).toHaveClass(/is-selected/);
 
     // Click 2nd slide link -> lightbox opens at "2 of 4", scroll locked
-    await page.locator('#slider-duan .flickity-slider > .img.col:nth-child(2) a.lightbox-gallery').click();
+    await page
+      .locator('#slider-duan .flickity-slider > .img.col:nth-child(2) a.lightbox-gallery')
+      .click();
     const xttDialog = page.locator('[role="dialog"]');
     await expect(xttDialog).toBeVisible();
     await expect(xttDialog.locator('.mfp-counter')).toHaveText('2 of 4');
@@ -696,7 +696,7 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
 
   test.describe('Unknown project slug 404', () => {
     test.use({
-      allowConsole: [/Failed to load resource: the server responded with a status of 404/],
+      allowConsole: [ALLOW_404],
     });
 
     test('Unknown slug -> 404', async ({ page }) => {

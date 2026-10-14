@@ -1,5 +1,12 @@
 import type { Locator, Page } from '@playwright/test';
-import { expect, expectNoDuplicateIds, KNOWN_ABSENT_CSS_ASSETS, STAGING, test } from './fixtures';
+import {
+  ALLOW_SERVER_ERROR,
+  expect,
+  expectNoDuplicateIds,
+  KNOWN_ABSENT_CSS_ASSETS,
+  STAGING,
+  test,
+} from './fixtures';
 import { homePages } from '../../src/data/pages/home';
 import { partners } from '../../src/data/partners';
 import { posts } from '../../src/data/posts';
@@ -246,7 +253,7 @@ test.describe('Home query, hero and stats', () => {
 
   test.describe('error fixture', () => {
     test.use({
-      allowConsole: [/status of 500|react\.dev\/errors\/441/],
+      allowConsole: [ALLOW_SERVER_ERROR],
     });
 
     test('Given the error scenario, then the localized error renders with no error message or stack', async ({

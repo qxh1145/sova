@@ -44,7 +44,6 @@ export interface ServiceAdvantagesIds {
   cards: ServiceAdvantageCardIds[];
 }
 
-
 const SEO_PHOTO_SRCSET =
   '/wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash.webp 1000w, /wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-320x400.webp 320w, /wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-640x800.webp 640w, /wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-768x960.webp 768w';
 
@@ -333,7 +332,6 @@ export const SERVICE_ADVANTAGES_IDS_WEBSITE_EN: ServiceAdvantagesIds = {
   ],
 };
 
-
 export interface ServiceAdvantagesProps {
   copy: SectionCopy;
   benefits: Feature[];
@@ -368,7 +366,10 @@ export function ServiceAdvantages({
           />
         )}
         <div className={ids.headingRowClass ?? 'row align-bottom'} id={ids.headingRow}>
-          <div id={ids.headingCol} className={ids.headingColClass ?? 'col medium-6 small-12 large-6'}>
+          <div
+            id={ids.headingCol}
+            className={ids.headingColClass ?? 'col medium-6 small-12 large-6'}
+          >
             <div className="col-inner">
               {copy.eyebrow && (
                 <p>
@@ -381,16 +382,14 @@ export function ServiceAdvantages({
                 <>
                   <div id={ids.desktopHeadingText} className="text hide-for-small">
                     <h2>
-                      {copy.titleLines && copy.titleLines.length > 1 ? (
-                        copy.titleLines.map((line, idx) => (
-                          <span key={idx}>
-                            {line}
-                            {idx < copy.titleLines!.length - 1 && <br />}
-                          </span>
-                        ))
-                      ) : (
-                        copy.title
-                      )}
+                      {copy.titleLines && copy.titleLines.length > 1
+                        ? copy.titleLines.map((line, idx) => (
+                            <span key={idx}>
+                              {line}
+                              {idx < copy.titleLines!.length - 1 && <br />}
+                            </span>
+                          ))
+                        : copy.title}
                     </h2>
                   </div>
                   <div id={ids.mobileHeadingText} className="text show-for-small">
@@ -428,7 +427,6 @@ export function ServiceAdvantages({
             </div>
           </div>
 
-
           {ids.subtitleCol && ids.subtitleText && copy.description ? (
             <div id={ids.subtitleCol} className="col medium-6 small-12 large-6">
               <div className="col-inner">
@@ -442,26 +440,17 @@ export function ServiceAdvantages({
             </div>
           ) : (
             ids.emptyCol && (
-              <div
-                id={ids.emptyCol}
-                className="col hide-for-small medium-4 small-12 large-4"
-              >
+              <div id={ids.emptyCol} className="col hide-for-small medium-4 small-12 large-4">
                 <div className="col-inner" />
               </div>
             )
           )}
 
           {ids.decoCol && (
-            <div
-              id={ids.decoCol}
-              className="col hide-for-small medium-2 small-12 large-2"
-            >
+            <div id={ids.decoCol} className="col hide-for-small medium-2 small-12 large-2">
               <div className="col-inner">
                 {deco && (
-                  <div
-                    className="img has-hover x md-x lg-x y md-y lg-y"
-                    id={ids.decoImg}
-                  >
+                  <div className="img has-hover x md-x lg-x y md-y lg-y" id={ids.decoImg}>
                     <div className="img-inner dark">
                       <img
                         decoding="async"
@@ -522,10 +511,7 @@ export function ServiceAdvantages({
             <div id={ids.photoCol} className="col medium-6 small-12 large-6">
               <div className="col-inner">
                 {photo && (
-                  <div
-                    className="img has-hover x md-x lg-x y md-y lg-y"
-                    id={ids.photoImg}
-                  >
+                  <div className="img has-hover x md-x lg-x y md-y lg-y" id={ids.photoImg}>
                     <div className="img-inner dark">
                       <img
                         decoding="async"
@@ -645,7 +631,9 @@ export function ServiceAdvantages({
                           </div>
                           <div className="icon-box-text last-reset">
                             <div id={cardIds?.titleText} className="text">
-                              <h3 style={{ fontSize: cardIds?.iconWidth ? 24 : idx === 0 ? 23 : 24 }}>
+                              <h3
+                                style={{ fontSize: cardIds?.iconWidth ? 24 : idx === 0 ? 23 : 24 }}
+                              >
                                 {benefit.title}
                               </h3>
                             </div>
@@ -671,4 +659,3 @@ export function ServiceAdvantages({
     </section>
   );
 }
-

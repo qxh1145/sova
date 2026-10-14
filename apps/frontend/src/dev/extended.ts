@@ -169,7 +169,7 @@ export function withRecords(
   };
 }
 
-// Built on demand so production, which ignores CONTENT_SCENARIO, never runs the merge.
+// Built on demand so a production build without NEXT_PUBLIC_E2E, which ignores CONTENT_SCENARIO, never runs the merge.
 export const buildExtendedFixtures = (): ContentData =>
   withRecords(defaultContentData, {
     projects: [mockProject],

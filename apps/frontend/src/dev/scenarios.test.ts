@@ -50,7 +50,13 @@ const queries: [
     'listPosts',
     'page',
     ['post-1'],
-    () => getRepository().listPosts({ locale: 'vi', category: 'fixture-category', page: 1, pageSize: 10 }),
+    () =>
+      getRepository().listPosts({
+        locale: 'vi',
+        category: 'fixture-category',
+        page: 1,
+        pageSize: 10,
+      }),
   ],
   ['getFAQs', 'list', ['faq-1'], () => getFAQs(['faq-1'], 'vi')],
   ['getFAQTopics', 'list', ['faq-topic-1'], () => getFAQTopics('vi')],
@@ -145,6 +151,7 @@ test('unknown scenario throws naming it', () => {
 
 test('production ignores CONTENT_SCENARIO', async () => {
   vi.stubEnv('NODE_ENV', 'production');
+  vi.stubEnv('NEXT_PUBLIC_E2E', '');
   for (const name of [...scenarioNames, 'foo']) {
     vi.stubEnv('CONTENT_SCENARIO', name);
     expect((await getSiteSettings('vi')).companyName).toBe('Sova');

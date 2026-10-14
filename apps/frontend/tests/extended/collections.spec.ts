@@ -98,28 +98,42 @@ test.describe('Extended scenario data-driven placement', () => {
     );
   });
 
-  test('Blog listing: /goc-nhin/page/5/ fills to 6 cards, and /goc-nhin/page/6/ renders overflow card', async ({
+  test('Blog listing: /goc-nhin/page/5/ fills with mock posts, and /goc-nhin/page/6/ renders the overflow', async ({
     page,
   }) => {
-    const totalViPosts = defaultContentData.posts.filter((p) => p.locale === 'vi').length + extendedMockPosts.length;
-    const postsOnPage5 = Math.min(6, totalViPosts - 24);
-    const postsOnPage6 = totalViPosts - 30;
+    // Listing keeps data order (6 per page): default VI posts, then the extended mock posts.
+    const viPosts = [
+      ...defaultContentData.posts.filter((p) => p.locale === 'vi'),
+      ...extendedMockPosts,
+    ];
+    const page5 = viPosts.slice(24, 30);
+    const page6 = viPosts.slice(30);
+    expect(page5).toHaveLength(6);
+    expect(page6.length).toBeGreaterThan(0);
 
-    // Page 5
+    const titlesOf = (articles: import('@playwright/test').Locator) =>
+      articles.locator('.title-post-archive').allInnerTexts();
+    const isMock = (p: (typeof viPosts)[number]) => extendedMockPosts.includes(p);
+
+    // Page 5: full, mock posts in their data slots
     await page.goto('/goc-nhin/page/5/');
     const page5Articles = page.locator('#post-list article');
-    await expect(page5Articles).toHaveCount(postsOnPage5);
+    await expect(page5Articles).toHaveCount(page5.length);
+    const page5Titles = await titlesOf(page5Articles);
+    page5.forEach((p, i) => {
+      if (isMock(p)) expect(page5Titles[i], `page 5 slot ${i}`).toBe(p.title);
+    });
+    expect(page5Titles).toContain(mockPost.title);
 
-    // Link to page 6 exists on page 5
+    // Page 5 links to page 6
     const nextLink = page.locator('.pagination a[href*="/goc-nhin/page/6/"]');
     await expect(nextLink.first()).toBeVisible();
 
-    // Page 6
+    // Page 6: exactly the overflow posts, in order
     await page.goto('/goc-nhin/page/6/');
     const page6Articles = page.locator('#post-list article');
-    await expect(page6Articles).toHaveCount(postsOnPage6);
-    const page6Title = await page6Articles.last().locator('.title-post-archive').innerText();
-    expect(page6Title).toContain('Mock Mở Rộng');
+    await expect(page6Articles).toHaveCount(page6.length);
+    expect(await titlesOf(page6Articles)).toEqual(page6.map((p) => p.title));
   });
 
   test('Blog category: /creative-branding/ has 2 cards incl. mock; sidebar count 2', async ({

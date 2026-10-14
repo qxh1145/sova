@@ -1231,6 +1231,8 @@ test.describe('Website Service Pages (Story 5.7)', () => {
         await expect(card.locator('.icon-box-img img')).toHaveCount(1);
         await expect(card.locator('.icon-box h3')).toHaveText(service.benefits[i].title);
         await expect(card.locator('.col-inner > .text')).not.toBeEmpty();
+        // Source sets 16px inline on the body <p>; Sova inherits it from a wrapper (A58).
+        await expect(card.locator('.col-inner > .text p').first()).toHaveCSS('font-size', '16px');
       }
 
       // Mobile benefits heading line breaks match source

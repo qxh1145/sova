@@ -180,7 +180,9 @@ test.describe('ConsultForm and drawer demo flow contract', () => {
 
       // Release gate
       await page.evaluate(() => {
-        const btn = document.querySelector('[data-testid="fixture-release"]') as HTMLButtonElement | null;
+        const btn = document.querySelector(
+          '[data-testid="fixture-release"]',
+        ) as HTMLButtonElement | null;
         btn?.click();
       });
 
@@ -204,7 +206,9 @@ test.describe('ConsultForm and drawer demo flow contract', () => {
 
       // Release second submit
       await page.evaluate(() => {
-        const btn = document.querySelector('[data-testid="fixture-release"]') as HTMLButtonElement | null;
+        const btn = document.querySelector(
+          '[data-testid="fixture-release"]',
+        ) as HTMLButtonElement | null;
         btn?.click();
       });
       await expect(form).toHaveClass(/failed/);
@@ -239,7 +243,9 @@ test.describe('ConsultForm and drawer demo flow contract', () => {
 
       // Release gate
       await page.evaluate(() => {
-        const btn = document.querySelector('[data-testid="fixture-release"]') as HTMLButtonElement | null;
+        const btn = document.querySelector(
+          '[data-testid="fixture-release"]',
+        ) as HTMLButtonElement | null;
         btn?.click();
       });
 

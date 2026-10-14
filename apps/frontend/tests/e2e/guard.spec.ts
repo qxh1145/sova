@@ -32,6 +32,39 @@ test('guard records the blocked URL', async ({ page, networkGuard }) => {
   networkGuard.length = 0; // cleared so teardown passes
 });
 
+// consoleGuard must fail the test at teardown on any console.error or uncaught error it does not allow.
+test('console guard fails a test that logs console.error', async ({ page }) => {
+  test.fail();
+  await page.goto('/');
+  await page.evaluate(() => console.error('console-guard-self-test'));
+});
+
+test('console guard fails a test that throws an uncaught error', async ({ page }) => {
+  test.fail();
+  await page.goto('/');
+  await page.evaluate(() => {
+    setTimeout(() => {
+      throw new Error('console-guard-self-test');
+    });
+  });
+  await page.waitForTimeout(100);
+});
+
+test.describe('console guard allowlist', () => {
+  test.use({ allowConsole: [/console-guard-self-test/] });
+
+  test('console guard passes an allowlisted error', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => console.error('console-guard-self-test'));
+  });
+
+  test('console guard still fails an error outside the allowlist', async ({ page }) => {
+    test.fail();
+    await page.goto('/');
+    await page.evaluate(() => console.error('not-allowlisted'));
+  });
+});
+
 test('staging allowlist allows exact staging host only', () => {
   const stagingHost = 'sova-landing-stage.vercel.app';
   expect(isAllowedUrl('https://sova-landing-stage.vercel.app/', stagingHost)).toBe(true);
