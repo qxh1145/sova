@@ -194,8 +194,15 @@ test('dangling service asset ids throw naming the service and ids', async () => 
     'service-website-vi references missing ids: asset-cta-gone',
   );
 
-  // plan icon, hard-coded website separator and fixed subtract icon
-  for (const id of ['asset-017f167e30', 'asset-400b882328', SUBTRACT_ICON_ID]) {
+  // plan icon, hard-coded website separator, fixed subtract icon and testimonial art
+  for (const id of [
+    'asset-017f167e30',
+    'asset-400b882328',
+    SUBTRACT_ICON_ID,
+    'asset-941f38ec1d',
+    'asset-1d227d7c9b',
+    'asset-5763f42849',
+  ]) {
     const repoWithout = repoWith({ assets: assets.filter((a) => a.id !== id) });
     await expect(getServiceAssets(page, repoWithout)).rejects.toThrow(
       `service-website-vi references missing ids: ${id}`,
@@ -239,4 +246,12 @@ test.each<[string, (p: ServicePage, id: string) => ServicePage]>([
   await expect(getServiceAssets(dangle(page, 'asset-gone'))).rejects.toThrow(
     'service-website-vi references missing ids: asset-gone',
   );
+});
+
+test('a dangling id referenced twice is named once', async () => {
+  repository = repoWith();
+  const page = (await getServicePage('website', 'vi'))!;
+  const [p] = page.projects;
+  const twice = { ...page, projects: [0, 1].map(() => ({ ...p, galleryIds: ['asset-gone'] })) };
+  await expect(getServiceAssets(twice)).rejects.toThrow(/references missing ids: asset-gone$/);
 });
