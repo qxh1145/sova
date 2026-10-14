@@ -1,8 +1,31 @@
-import { ALLOW_SERVER_ERROR, expect, STAGING, test } from './fixtures';
+import { ALLOW_SERVER_ERROR, expect, KNOWN_ABSENT_CSS_ASSETS, STAGING, test } from './fixtures';
 
 test.describe('error fixture', () => {
   test.use({
     allowConsole: [ALLOW_SERVER_ERROR],
+  });
+
+  // Same 404 collector as home-hero.spec.ts, which wrapped this describe before the split.
+  test.beforeEach(async ({ page }) => {
+    const missingResponses: string[] = [];
+    page.on('response', (res) => {
+      if (res.status() !== 404) return;
+      const url = new URL(res.url());
+      if (
+        url.pathname.startsWith('/dev-fixtures/') ||
+        url.pathname === '/fixture.png' ||
+        KNOWN_ABSENT_CSS_ASSETS.has(url.pathname) ||
+        url.searchParams.has('_rsc')
+      )
+        return;
+      missingResponses.push(`404 ${res.url()}`);
+    });
+    (page as unknown as { __missingResponses: string[] }).__missingResponses = missingResponses;
+  });
+
+  test.afterEach(async ({ page }) => {
+    const errors = (page as unknown as { __missingResponses?: string[] }).__missingResponses ?? [];
+    expect(errors, `Unexpected 404 responses:\n${errors.join('\n')}`).toEqual([]);
   });
 
   test('Given the error scenario, then the localized error renders with no error message or stack', async ({

@@ -243,11 +243,24 @@ test.describe('Custom cursor island', () => {
   test('Reduced motion on root route disables custom cursor updates', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');
+    const html = page.locator('html');
+    const dot = page.locator('.cursor-dot');
+    const dotLeft = () => dot.evaluate((el) => (el as HTMLElement).style.left);
     await page.mouse.move(100, 100);
-    await expect(page.locator('html')).not.toHaveClass(/has-custom-cursor/);
-    expect(await page.locator('.cursor-dot').evaluate((el) => (el as HTMLElement).style.left)).toBe(
-      '',
-    );
+    await expect(html).not.toHaveClass(/has-custom-cursor/);
+    expect(await dotLeft()).toBe('');
+
+    // Nothing marks the island mounted under reduce, so prove it listens, then re-check reduce once it has run.
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await expect(html).toHaveClass(/has-custom-cursor/);
+    await page.mouse.move(150, 150);
+    await expect(dot).toHaveCSS('left', '150px');
+
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await expect(html).not.toHaveClass(/has-custom-cursor/);
+    await page.mouse.move(200, 200);
+    await page.waitForTimeout(100);
+    expect(await dotLeft()).toBe('150px');
   });
 
   test('Navigation persistence: one cursor node and single RAF loop', async ({ page }) => {

@@ -29,18 +29,15 @@ import type { Service } from '@/types/content';
 import manifest from '../baseline/manifest.json';
 
 const WIDTHS = manifest.viewports;
-const ALLOWED_RSC_PATHNAMES = new Set<string>([]);
 
 function setupResponse404Collector(page: Page) {
   const missingResponses: string[] = [];
+  // The console 404 line carries no URL, so 404s are checked here. Every nav route now exists, so a
+  // missing asset, page document or RSC prefetch fails.
   page.on('response', (res) => {
     if (res.status() !== 404) return;
     const url = new URL(res.url());
-    if (
-      url.pathname.startsWith('/dev-fixtures/') ||
-      KNOWN_ABSENT_CSS_ASSETS.has(url.pathname) ||
-      (url.searchParams.has('_rsc') && ALLOWED_RSC_PATHNAMES.has(url.pathname))
-    )
+    if (url.pathname.startsWith('/dev-fixtures/') || KNOWN_ABSENT_CSS_ASSETS.has(url.pathname))
       return;
     missingResponses.push(`404 ${res.url()}`);
   });
