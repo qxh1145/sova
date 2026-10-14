@@ -12,12 +12,13 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    command: `npx next dev --port ${port}`,
+    command: `npm run build:e2e && npx next start --port ${port}`,
     url: `http://localhost:${port}/`,
     reuseExistingServer: false,
-    timeout: 120_000,
+    timeout: 180_000,
     env: {
       CONTENT_SCENARIO: 'extended',
+      NEXT_DIST_DIR: '.next-extended',
     },
   },
 });

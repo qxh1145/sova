@@ -100,6 +100,50 @@ const mockPostRoute: RouteEntry = {
   source: { file: 'mock/post.html', line: 1 },
 };
 
+const mockOverflowPosts: Post[] = [1, 2, 3, 4].map((i) => ({
+  ...mockPost,
+  id: `post-mock-extended-overflow-${i}`,
+  slug: `bai-viet-mock-mo-rong-overflow-${i}`,
+  path: `/bai-viet-mock-mo-rong-overflow-${i}/` as PublicPath,
+  title: `Bài viết Mock Mở Rộng Overflow ${i}`,
+  categoryIds: ['post-category-goc-nhin-website'],
+  excerpt: `Đoạn trích dẫn bài viết mock overflow ${i}.`,
+  body: {
+    format: 'sanitized-html',
+    html: `<p>Nội dung chi tiết bài viết mock overflow ${i}.</p>`,
+    assetIds: [],
+    sources: [{ file: 'mock/post.html', line: 1 }],
+  },
+  sources: [{ file: 'mock/post.html', line: 1, sourceId: `mock-post-overflow-${i}` }],
+  seo: {
+    ...mockPost.seo,
+    title: `Bài viết Mock Mở Rộng Overflow ${i} - Sova`,
+    description: `Mô tả bài viết mock overflow ${i}.`,
+    canonicalPath: `/bai-viet-mock-mo-rong-overflow-${i}/` as PublicPath,
+  },
+}));
+
+const mockOverflowRoutes: RouteEntry[] = mockOverflowPosts.map((p) => ({
+  id: `route-${p.slug}`,
+  locale: 'vi',
+  path: p.path,
+  kind: 'post-detail',
+  entityId: p.id,
+  aliases: [],
+  source: { file: 'mock/post.html', line: 1 },
+}));
+
+export const mockGocNhinPage6Route: RouteEntry = {
+  id: 'route-goc-nhin--page--6',
+  locale: 'vi',
+  path: '/goc-nhin/page/6/',
+  kind: 'post-list',
+  aliases: [],
+  source: { file: 'mock/extended.html', line: 1 },
+};
+
+export const extendedMockPosts = [mockPost, ...mockOverflowPosts];
+
 export function withRecords(
   base: ContentData,
   records: {
@@ -125,10 +169,10 @@ export function withRecords(
   };
 }
 
-// Built on demand so production, which ignores CONTENT_SCENARIO, never runs the merge.
+// Built on demand so a production build without NEXT_PUBLIC_E2E, which ignores CONTENT_SCENARIO, never runs the merge.
 export const buildExtendedFixtures = (): ContentData =>
   withRecords(defaultContentData, {
     projects: [mockProject],
-    posts: [mockPost],
-    routes: [mockProjectRoute, mockPostRoute],
+    posts: [mockPost, ...mockOverflowPosts],
+    routes: [mockProjectRoute, mockPostRoute, ...mockOverflowRoutes, mockGocNhinPage6Route],
   });

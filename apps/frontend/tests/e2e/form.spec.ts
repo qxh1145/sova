@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { FIXTURE_FORM_LABELS } from '../../src/app/(fixtures)/dev-fixtures/form/[variant]/constants';
-import { expect, test } from './fixtures';
+import { ALLOW_404, expect, test } from './fixtures';
 
 test.describe('FormField and deterministic SubmitAdapter fixture contract', () => {
   test('FormField source imports nothing from src/data or src/dev', () => {
@@ -149,8 +149,14 @@ test.describe('FormField and deterministic SubmitAdapter fixture contract', () =
     expect(cookies).toEqual([]);
   });
 
-  test('Unknown variant returns 404', async ({ page }) => {
-    const response = await page.goto('/dev-fixtures/form/unknown-variant');
-    expect(response?.status()).toBe(404);
+  test.describe('Unknown variant 404', () => {
+    test.use({
+      allowConsole: [ALLOW_404],
+    });
+
+    test('Unknown variant returns 404', async ({ page }) => {
+      const response = await page.goto('/dev-fixtures/form/unknown-variant');
+      expect(response?.status()).toBe(404);
+    });
   });
 });

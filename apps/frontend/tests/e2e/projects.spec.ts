@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { ALLOW_404, ALLOW_SERVER_ERROR, expect, test } from './fixtures';
 import { hasSource, missingSourceMessage, openSource } from '../baseline/source';
 
 test.describe('/du-an/ and /en/our-project/ project listing, filter and pagination', () => {
@@ -203,25 +203,31 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
     }
   });
 
-  test('Dev fixtures variants: loading, empty, error', async ({ page }) => {
-    // 1. Loading fixture
-    await page.goto('/dev-fixtures/projects/loading/');
-    const loadingMsg = page.locator('#portfolio-results p');
-    await expect(loadingMsg).toHaveText('Đang tải...');
+  test.describe('Dev fixtures variants', () => {
+    test.use({
+      allowConsole: [ALLOW_SERVER_ERROR],
+    });
 
-    // 2. Empty fixture
-    await page.goto('/dev-fixtures/projects/empty/');
-    const emptyMsg = page.locator('#portfolio-results p');
-    await expect(emptyMsg).toHaveText('Không có dự án nào.');
-    await expect(page.locator('#portfolio-pagination .pagination')).toHaveCount(0);
+    test('Dev fixtures variants: loading, empty, error', async ({ page }) => {
+      // 1. Loading fixture
+      await page.goto('/dev-fixtures/projects/loading/');
+      const loadingMsg = page.locator('#portfolio-results p');
+      await expect(loadingMsg).toHaveText('Đang tải...');
 
-    // 3. Error fixture (VI)
-    await page.goto('/dev-fixtures/projects/error/');
-    await expect(page.locator('.page-error-main')).toBeVisible();
+      // 2. Empty fixture
+      await page.goto('/dev-fixtures/projects/empty/');
+      const emptyMsg = page.locator('#portfolio-results p');
+      await expect(emptyMsg).toHaveText('Không có dự án nào.');
+      await expect(page.locator('#portfolio-pagination .pagination')).toHaveCount(0);
 
-    // 4. Error fixture (EN)
-    await page.goto('/dev-fixtures/projects/error/?locale=en');
-    await expect(page.locator('.page-error-main')).toBeVisible();
+      // 3. Error fixture (VI)
+      await page.goto('/dev-fixtures/projects/error/');
+      await expect(page.locator('.page-error-main')).toBeVisible();
+
+      // 4. Error fixture (EN)
+      await page.goto('/dev-fixtures/projects/error/?locale=en');
+      await expect(page.locator('.page-error-main')).toBeVisible();
+    });
   });
 
   test('Pagination wrapper markup and computed CSS matches eras-clone du-an', async ({ page }) => {
@@ -416,9 +422,15 @@ test.describe('/featured_item/ archive and /featured_item_category/* archives', 
     });
   }
 
-  test('Unknown category is a 404', async ({ page }) => {
-    const res = await page.goto('/featured_item_category/nope/');
-    expect(res?.status()).toBe(404);
+  test.describe('Unknown category 404', () => {
+    test.use({
+      allowConsole: [ALLOW_404],
+    });
+
+    test('Unknown category is a 404', async ({ page }) => {
+      const res = await page.goto('/featured_item_category/nope/');
+      expect(res?.status()).toBe(404);
+    });
   });
 
   test('No duplicate ids and no console errors on the four routes', async ({ page }) => {
@@ -618,7 +630,9 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
     await expect(xttSlides.nth(1)).toHaveClass(/is-selected/);
 
     // Click 2nd slide link -> lightbox opens at "2 of 4", scroll locked
-    await page.locator('#slider-duan .flickity-slider > .img.col:nth-child(2) a.lightbox-gallery').click();
+    await page
+      .locator('#slider-duan .flickity-slider > .img.col:nth-child(2) a.lightbox-gallery')
+      .click();
     const xttDialog = page.locator('[role="dialog"]');
     await expect(xttDialog).toBeVisible();
     await expect(xttDialog.locator('.mfp-counter')).toHaveText('2 of 4');
@@ -678,10 +692,17 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
     await page.goto('/featured_item/giao-dien-dsmart-giai-phap-dieu-khien-xe-hoi-tren-smartphone/');
     await expect(page.locator('.portfolio-bottom h4')).toHaveText('Dự án liên quan');
     await expect(page.locator('.portfolio-bottom .portfolio-related .col')).toHaveCount(0);
+  });
 
-    // 10. Unknown slug -> 404
-    const unknownRes = await page.goto('/featured_item/khong-ton-tai/');
-    expect(unknownRes?.status()).toBe(404);
+  test.describe('Unknown project slug 404', () => {
+    test.use({
+      allowConsole: [ALLOW_404],
+    });
+
+    test('Unknown slug -> 404', async ({ page }) => {
+      const unknownRes = await page.goto('/featured_item/khong-ton-tai/');
+      expect(unknownRes?.status()).toBe(404);
+    });
   });
 
   test('No duplicate ids and no console errors on THP and centro detail pages', async ({
