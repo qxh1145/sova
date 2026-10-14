@@ -14,6 +14,7 @@ export const shellContent: ShellContent[] = [
       pause: 'Tạm dừng trình chiếu',
       play: 'Tiếp tục trình chiếu',
     },
+    projectGalleryLabel: 'Thư viện ảnh dự án',
     footerCta: {
       headingLines: ['Hiện thực hoá', 'ý tưởng của bạn'],
       targetRouteId: 'route-lien-he',
@@ -74,6 +75,7 @@ export const shellContent: ShellContent[] = [
       pause: 'Pause slideshow',
       play: 'Play slideshow',
     },
+    projectGalleryLabel: 'Project gallery',
     footerCta: {
       headingLines: ['Realize your amazing digital experience!'],
       targetRouteId: 'route-en--contact-us',

@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { featuredItemOrder } from '@/data/projects';
 import { createMockRepository, defaultContentData } from '@/lib/repositories/mock';
-import { getProjectListingPage } from './projects';
+import { getProjectDetail, getProjectListingPage, listProjectCategorySlugs } from './projects';
 
 describe('getProjectListingPage', () => {
   const repository = createMockRepository(defaultContentData);
@@ -13,12 +13,10 @@ describe('getProjectListingPage', () => {
     expect(data).not.toBeNull();
     expect(data!.projects.length).toBeGreaterThan(0);
 
-    const orderMap = new Map(featuredItemOrder.map((id, idx) => [id, idx]));
     const projectIds = data!.projects.map((p) => p.id);
-    const expectedIds = [...projectIds].sort(
-      (a, b) => (orderMap.get(a) ?? 999) - (orderMap.get(b) ?? 999),
-    );
-    expect(projectIds).toEqual(expectedIds);
+    const ordered = featuredItemOrder.filter((id) => projectIds.includes(id));
+    expect(ordered.length).toBeGreaterThan(0);
+    expect(projectIds.slice(0, ordered.length)).toEqual(ordered);
   });
 
   test('filters projects by category and derives category counts', async () => {
@@ -27,7 +25,9 @@ describe('getProjectListingPage', () => {
       category: 'branding',
     });
     expect(data).not.toBeNull();
-    expect(data!.projects.every((p) => p.categoryIds.includes('project-category-branding'))).toBe(true);
+    expect(data!.projects.every((p) => p.categoryIds.includes('project-category-branding'))).toBe(
+      true,
+    );
   });
 
   test('returns null for an invalid category', async () => {
@@ -35,5 +35,19 @@ describe('getProjectListingPage', () => {
       category: 'non-existent-category',
     });
     expect(data).toBeNull();
+  });
+
+  test('project detail gallery labels name the carousel region', async () => {
+    const detail = await getProjectDetail('evc-athena-cong-ty-tnhh-evc-athena', repository);
+    expect(detail!.carouselLabels.region).toBe('Thư viện ảnh dự án');
+    expect(detail!.carouselLabels.pause).toBe('Tạm dừng trình chiếu');
+  });
+
+  test('category slugs cover every project category archive', async () => {
+    expect(await listProjectCategorySlugs(repository)).toEqual([
+      'website',
+      'branding',
+      'mobile-app',
+    ]);
   });
 });

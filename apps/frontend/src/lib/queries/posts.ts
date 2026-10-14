@@ -11,6 +11,9 @@ import type {
   PostCategoryWithCount,
 } from '@/types/content';
 
+/** Posts per blog listing page; static params and the 404 gate share it. */
+export const BLOG_PAGE_SIZE = 6;
+
 export interface BlogListingPageInput {
   routeId?: string;
   category?: string;
@@ -73,7 +76,7 @@ export async function getBlogListingPage(
   input: BlogListingPageInput = {},
   repository: ContentRepository = getRepository(),
 ): Promise<BlogListingPageData | null> {
-  const { page = 1, pageSize = 6, locale = 'vi', category } = input;
+  const { page = 1, pageSize = BLOG_PAGE_SIZE, locale = 'vi', category } = input;
 
   const routes = await repository.listRoutes();
 
@@ -133,11 +136,44 @@ export interface BlogSearchPageInput {
   pageSize?: number;
 }
 
+/** Page numbers past page 1 for a VI blog listing, derived from published counts. */
+async function pagedNumbers(repository: ContentRepository, category?: string): Promise<string[]> {
+  const { total } = await repository.listPosts({
+    locale: 'vi',
+    category,
+    page: 1,
+    pageSize: BLOG_PAGE_SIZE,
+  });
+  return Array.from({ length: Math.max(0, totalPages(total, BLOG_PAGE_SIZE) - 1) }, (_, i) =>
+    String(i + 2),
+  );
+}
+
+/** Static params for `/goc-nhin/page/[page]/`. */
+export async function getBlogPagedParams(
+  repository: ContentRepository = getRepository(),
+): Promise<{ page: string }[]> {
+  return (await pagedNumbers(repository)).map((page) => ({ page }));
+}
+
+/** Static params for `/[slug]/page/[page]/` across VI post categories. */
+export async function getBlogCategoryPagedParams(
+  repository: ContentRepository = getRepository(),
+): Promise<{ slug: string; page: string }[]> {
+  const categories = await repository.getPostCategories('vi');
+  const perCategory = await Promise.all(
+    categories.map(async (cat) =>
+      (await pagedNumbers(repository, cat.slug)).map((page) => ({ slug: cat.slug, page })),
+    ),
+  );
+  return perCategory.flat();
+}
+
 export async function getBlogSearchPage(
   input: BlogSearchPageInput,
   repository: ContentRepository = getRepository(),
 ): Promise<BlogListingPageData | null> {
-  const { query, page = 1, pageSize = 6 } = input;
+  const { query, page = 1, pageSize = BLOG_PAGE_SIZE } = input;
   const locale: Locale = 'vi';
 
   const [result, categories, routes] = await Promise.all([
@@ -165,20 +201,23 @@ export async function getBlogSearchPage(
 
 function applyMediaFallback(html: string, missingSrcs: Set<string>): string {
   if (missingSrcs.size === 0) return html;
-  const stripped = html.replace(/<(img|source|video)\b([^>]*?)(\/?)>/gi, (match, tag, attrs, selfClose) => {
-    const srcMatch = attrs.match(/\bsrc\s*=\s*(["'])(.*?)\1/i);
-    if (!srcMatch) return match;
-    const src = srcMatch[2];
-    if (missingSrcs.has(src)) {
-      const strippedAttrs = attrs
-        .replace(/\bsrc\s*=\s*(["']).*?\1/i, '')
-        .replace(/\s+/g, ' ')
-        .trim();
-      const closeSuffix = selfClose ? ' /' : '';
-      return `<${tag}${strippedAttrs ? ' ' + strippedAttrs : ''} data-media-status="missing"${closeSuffix}>`;
-    }
-    return match;
-  });
+  const stripped = html.replace(
+    /<(img|source|video)\b([^>]*?)(\/?)>/gi,
+    (match, tag, attrs, selfClose) => {
+      const srcMatch = attrs.match(/\bsrc\s*=\s*(["'])(.*?)\1/i);
+      if (!srcMatch) return match;
+      const src = srcMatch[2];
+      if (missingSrcs.has(src)) {
+        const strippedAttrs = attrs
+          .replace(/\bsrc\s*=\s*(["']).*?\1/i, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+        const closeSuffix = selfClose ? ' /' : '';
+        return `<${tag}${strippedAttrs ? ' ' + strippedAttrs : ''} data-media-status="missing"${closeSuffix}>`;
+      }
+      return match;
+    },
+  );
   // A video whose every <source> lost its src is itself missing: mark it so the empty-box CSS applies.
   return stripped.replace(/<video\b([^>]*)>([\s\S]*?)<\/video>/gi, (match, attrs, inner) =>
     /<source\b/i.test(inner) &&
@@ -225,7 +264,7 @@ export async function getPostDetail(
   const assets = neededAssetIds.length ? await repository.getAssets(neededAssetIds) : [];
   const assetMap = new Map(assets.map((a) => [a.id, a]));
 
-  const featuredAsset = assetId ? assetMap.get(assetId) ?? null : null;
+  const featuredAsset = assetId ? (assetMap.get(assetId) ?? null) : null;
 
   const missingSrcs = new Set(
     bodyAssetIds
@@ -245,7 +284,7 @@ export async function getPostDetail(
     const thumbId = relatedPost.thumbnailId ?? relatedPost.featuredImageId;
     return {
       post: relatedPost,
-      thumbnailAsset: thumbId ? assetMap.get(thumbId) ?? null : null,
+      thumbnailAsset: thumbId ? (assetMap.get(thumbId) ?? null) : null,
     };
   });
 

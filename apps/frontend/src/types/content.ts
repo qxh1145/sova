@@ -393,6 +393,8 @@ export interface ShellContent {
     routeId: EntityId;
   };
   carouselLabels: CarouselLabels;
+  /** Region name for the project-detail gallery carousel. */
+  projectGalleryLabel: string;
   footerCta: {
     headingLines: string[];
     targetRouteId: EntityId;

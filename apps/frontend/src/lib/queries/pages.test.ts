@@ -171,6 +171,7 @@ test('VI home query resolves all collections in record order', async () => {
   expect(page?.testimonialArt.photo.id).toBe(home.testimonialArtIds.photoId);
   expect(page?.testimonialArt.quoteIcon.id).toBe(home.testimonialArtIds.quoteIconId);
   expect(page?.testimonialArt.line.id).toBe(home.testimonialArtIds.lineId);
+  expect(page?.postListingHref).toBe('/goc-nhin/');
 });
 
 test('EN home query resolves services and empty lists', async () => {
@@ -189,6 +190,7 @@ test('EN home query resolves services and empty lists', async () => {
   expect(page?.posts).toEqual([]);
   expect(page?.partners).toHaveLength(30);
   expect(page?.testimonials).toHaveLength(3);
+  expect(page?.postListingHref).toBe('/en/insight/');
 });
 
 test('dangling testimonial id throws naming the page and id', async () => {
@@ -339,7 +341,9 @@ test('getHomeAssets throws on dangling asset id but passes through status: missi
     ],
   };
   const res = await getHomeAssets(missingStatusHome, repoWithMissing);
-  expect(res.partnerAssets.some((a) => a.id === 'asset-missing-status' && a.status === 'missing')).toBe(true);
+  expect(
+    res.partnerAssets.some((a) => a.id === 'asset-missing-status' && a.status === 'missing'),
+  ).toBe(true);
 });
 
 test('getAboutAssets resolves hero background, subtract icon and goal icons in goal order', async () => {

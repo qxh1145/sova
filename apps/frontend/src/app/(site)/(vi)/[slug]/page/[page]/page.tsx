@@ -1,29 +1,13 @@
 import type { Metadata } from 'next';
 import '@/styles/legacy/sections/route-goc-nhin.css';
 import { notFound } from 'next/navigation';
-import { parsePageParam, totalPages } from '@/lib/routes';
+import { parsePageParam } from '@/lib/routes';
 import { BRAND_TITLE_SUFFIX, routeAlternates } from '@/lib/queries/site';
-import { getBlogListingPage } from '@/lib/queries/posts';
-import { getRepository } from '@/lib/repositories';
+import { getBlogCategoryPagedParams, getBlogListingPage } from '@/lib/queries/posts';
 import { BlogListView } from '@/components/blog/BlogListView';
 
-export async function generateStaticParams() {
-  const repo = getRepository();
-  const categories = await repo.getPostCategories('vi');
-  const params: { slug: string; page: string }[] = [];
-  for (const cat of categories) {
-    const { total } = await repo.listPosts({
-      locale: 'vi',
-      category: cat.slug,
-      page: 1,
-      pageSize: 6,
-    });
-    const maxPages = totalPages(total, 6);
-    for (let p = 2; p <= maxPages; p++) {
-      params.push({ slug: cat.slug, page: String(p) });
-    }
-  }
-  return params;
+export function generateStaticParams() {
+  return getBlogCategoryPagedParams();
 }
 
 interface ViCategoryPagedPageProps {

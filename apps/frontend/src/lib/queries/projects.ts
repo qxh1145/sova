@@ -30,6 +30,13 @@ export interface ProjectListingPageData {
  * archive route. `category` (a category slug) keeps only that category's projects; category counts
  * always cover every locale project.
  */
+/** Project category slugs, for category-archive static params. */
+export async function listProjectCategorySlugs(
+  repository: ContentRepository = getRepository(),
+): Promise<string[]> {
+  return (await repository.getProjectCategories()).map((c) => c.slug);
+}
+
 export async function getProjectListingPage(
   locale: Locale,
   repository: ContentRepository = getRepository(),
@@ -64,7 +71,8 @@ export async function getProjectListingPage(
     count: localeProjects.filter((p) => p.categoryIds.includes(cat.id)).length,
   }));
 
-  const isFeaturedItem = routeId === 'route-featured_item' || targetRoute.path === '/featured_item/';
+  const isFeaturedItem =
+    routeId === 'route-featured_item' || targetRoute.path === '/featured_item/';
   const featuredOrderMap = new Map(featuredItemOrder.map((id, idx) => [id, idx]));
 
   const projects = category
@@ -166,6 +174,6 @@ export async function getProjectDetail(
     galleryAssets,
     terms,
     related,
-    carouselLabels: shell.carouselLabels,
+    carouselLabels: { ...shell.carouselLabels, region: shell.projectGalleryLabel },
   };
 }

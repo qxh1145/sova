@@ -2,9 +2,10 @@ import { expect, test, vi } from 'vitest';
 import { getRepository } from '@/lib/repositories';
 import { createMockRepository, defaultContentData } from '@/lib/repositories/mock';
 import { posts } from '@/data/posts';
-import { totalPages } from '@/lib/routes';
 import {
+  getBlogCategoryPagedParams,
   getBlogListingPage,
+  getBlogPagedParams,
   getBlogSearchPage,
   getPostDetail,
 } from './posts';
@@ -93,9 +94,30 @@ test('getPostDetail applies missing-media fallback to body media elements', asyn
     ...defaultContentData,
     posts: [testPost],
     assets: [
-      { id: 'asset-ok', src: '/img-present.png', alt: 'ok', kind: 'image', status: 'local', sources: [] },
-      { id: 'asset-miss', src: '/img-missing.png', alt: 'miss', kind: 'image', status: 'missing', sources: [] },
-      { id: 'asset-vid-miss', src: '/vid-missing.mp4', alt: 'vid', kind: 'video', status: 'missing', sources: [] },
+      {
+        id: 'asset-ok',
+        src: '/img-present.png',
+        alt: 'ok',
+        kind: 'image',
+        status: 'local',
+        sources: [],
+      },
+      {
+        id: 'asset-miss',
+        src: '/img-missing.png',
+        alt: 'miss',
+        kind: 'image',
+        status: 'missing',
+        sources: [],
+      },
+      {
+        id: 'asset-vid-miss',
+        src: '/vid-missing.mp4',
+        alt: 'vid',
+        kind: 'video',
+        status: 'missing',
+        sources: [],
+      },
     ],
   });
   const detail = await getPostDetail(testPost.slug, testRepo);
@@ -163,21 +185,12 @@ test('getBlogListingPage returns null for unknown route or unsourced page', asyn
 });
 
 test('registry paged rows match derived pages and 404 gates reject out-of-range pages', async () => {
-  const allPosts = await repository.listPosts({ locale: 'vi', page: 1, pageSize: 100 });
-  const gocNhinTotalPages = totalPages(allPosts.total, 6);
-  const derivedGocNhinPaths: string[] = [];
-  for (let p = 2; p <= gocNhinTotalPages; p++) {
-    derivedGocNhinPaths.push(`/goc-nhin/page/${p}/`);
-  }
-
-  const categories = await repository.getPostCategories('vi');
-  const derivedCategoryPaths: string[] = [];
-  for (const cat of categories) {
-    const pages = totalPages(cat.count, 6);
-    for (let p = 2; p <= pages; p++) {
-      derivedCategoryPaths.push(`/${cat.slug}/page/${p}/`);
-    }
-  }
+  const derivedGocNhinPaths = (await getBlogPagedParams(repository)).map(
+    ({ page }) => `/goc-nhin/page/${page}/`,
+  );
+  const derivedCategoryPaths = (await getBlogCategoryPagedParams(repository)).map(
+    ({ slug, page }) => `/${slug}/page/${page}/`,
+  );
 
   const expectedPaths = [...derivedGocNhinPaths, ...derivedCategoryPaths].sort();
   const registryPagedPaths = defaultContentData.routes
@@ -189,7 +202,9 @@ test('registry paged rows match derived pages and 404 gates reject out-of-range 
 
   expect(await getBlogListingPage({ page: 6 }, repository)).toBeNull();
   expect(await getBlogListingPage({ category: 'thu-thuat', page: 3 }, repository)).toBeNull();
-  expect(await getBlogListingPage({ category: 'creative-branding', page: 2 }, repository)).toBeNull();
+  expect(
+    await getBlogListingPage({ category: 'creative-branding', page: 2 }, repository),
+  ).toBeNull();
 
   vi.stubEnv('CONTENT_SCENARIO', 'extended');
   try {
@@ -299,9 +314,12 @@ test('searchPosts searches title, excerpt, and tag-stripped body HTML with accen
   }
 
   // Accent & case folding: "thu thuat" matches "Thủ thuật"
-  const accentResult = await repository.searchPosts(
-    { locale: 'vi', query: 'thu thuat', page: 1, pageSize: 50 },
-  );
+  const accentResult = await repository.searchPosts({
+    locale: 'vi',
+    query: 'thu thuat',
+    page: 1,
+    pageSize: 50,
+  });
   expect(accentResult.total).toBeGreaterThan(0);
   expect(
     accentResult.items.some(
@@ -327,14 +345,20 @@ test('searchPosts searches title, excerpt, and tag-stripped body HTML with accen
     ...defaultContentData,
     posts: [customPost],
   });
-  const attrMatch = await htmlRepo.searchPosts(
-    { locale: 'vi', query: 'secret-attr-only', page: 1, pageSize: 10 },
-  );
+  const attrMatch = await htmlRepo.searchPosts({
+    locale: 'vi',
+    query: 'secret-attr-only',
+    page: 1,
+    pageSize: 10,
+  });
   expect(attrMatch.total).toBe(0);
 
-  const bodyMatch = await htmlRepo.searchPosts(
-    { locale: 'vi', query: 'Visible Body Content', page: 1, pageSize: 10 },
-  );
+  const bodyMatch = await htmlRepo.searchPosts({
+    locale: 'vi',
+    query: 'Visible Body Content',
+    page: 1,
+    pageSize: 10,
+  });
   expect(bodyMatch.total).toBe(1);
 
   // One field each, case folding, đ→d folding, phrase across tag boundaries
@@ -351,9 +375,12 @@ test('searchPosts searches title, excerpt, and tag-stripped body HTML with accen
     ).toEqual(['post-html-test']);
   }
 
-  const noMatch = await repository.searchPosts(
-    { locale: 'vi', query: 'xyznonexistentterm123', page: 1, pageSize: 10 },
-  );
+  const noMatch = await repository.searchPosts({
+    locale: 'vi',
+    query: 'xyznonexistentterm123',
+    page: 1,
+    pageSize: 10,
+  });
   expect(noMatch.items).toEqual([]);
   expect(noMatch.total).toBe(0);
 });
@@ -477,4 +504,3 @@ test('getBlogSearchPage: pagination 6/page, null past end, empty result shape, d
   expect(draftSearch!.posts).toEqual([]);
   expect(draftSearch!.total).toBe(0);
 });
-

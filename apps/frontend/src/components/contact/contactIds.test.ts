@@ -30,19 +30,23 @@ export const UNSTYLED_CONTACT_KEYS: { path: string; reason: string }[] = [
   },
   {
     path: 'main.imageCards.zalo.colId',
-    reason: 'Grid column container for Zalo card; uses standard column classes without custom id rules',
+    reason:
+      'Grid column container for Zalo card; uses standard column classes without custom id rules',
   },
   {
     path: 'main.imageCards.hotline.colId',
-    reason: 'Grid column container for Hotline card; uses standard column classes without custom id rules',
+    reason:
+      'Grid column container for Hotline card; uses standard column classes without custom id rules',
   },
   {
     path: 'main.imageCards.messenger.colId',
-    reason: 'Grid column container for Messenger card; uses standard column classes without custom id rules',
+    reason:
+      'Grid column container for Messenger card; uses standard column classes without custom id rules',
   },
   {
     path: 'main.infoRowId',
-    reason: 'Grid row container splitting info column and form column; unstyled in route stylesheet',
+    reason:
+      'Grid row container splitting info column and form column; unstyled in route stylesheet',
   },
   {
     path: 'main.infoColId',
@@ -55,6 +59,9 @@ export const UNSTYLED_CONTACT_KEYS: { path: string; reason: string }[] = [
 ];
 
 const UNSTYLED_PATH_SET = new Set(UNSTYLED_CONTACT_KEYS.map((k) => k.path));
+
+// `#row-1` must not match inside `#row-12`.
+const hasIdSelector = (css: string, id: string) => new RegExp(`#${id}(?![\\w-])`).test(css);
 
 interface FlatIdEntry {
   path: string;
@@ -115,7 +122,7 @@ describe('ContactPreset ID verification against route CSS', () => {
         for (const entry of styledEntries) {
           const selector = `#${entry.id}`;
           expect(
-            cssContent.includes(selector),
+            hasIdSelector(cssContent, entry.id),
             `Expected ${entry.path} id "${entry.id}" (${selector}) to be present in ${CSS_FILES[locale]}`,
           ).toBe(true);
         }
@@ -128,7 +135,7 @@ describe('ContactPreset ID verification against route CSS', () => {
         for (const entry of unstyledEntries) {
           const selector = `#${entry.id}`;
           expect(
-            cssContent.includes(selector),
+            hasIdSelector(cssContent, entry.id),
             `Unstyled ${entry.path} id "${entry.id}" (${selector}) unexpectedly found in ${CSS_FILES[locale]}`,
           ).toBe(false);
         }

@@ -4,7 +4,7 @@ import '@/styles/legacy/sections/route-featured_item_category--website.css';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { BRAND_TITLE_SUFFIX, routeAlternates } from '@/lib/queries/site';
-import { getProjectListingPage } from '@/lib/queries/projects';
+import { getProjectListingPage, listProjectCategorySlugs } from '@/lib/queries/projects';
 import {
   ProjectArchiveView,
   type ProjectArchiveIds,
@@ -14,8 +14,6 @@ import {
   PROJECT_HERO_IDS_FEATURED_MOBILE_APP,
   PROJECT_HERO_IDS_FEATURED_WEBSITE,
 } from '@/components/projects/projectHeroIds';
-
-import { getRepository } from '@/lib/repositories';
 
 // Source element ids per category archive; legacy CSS targets them.
 const IDS: Record<string, ProjectArchiveIds> = {
@@ -37,8 +35,7 @@ const IDS: Record<string, ProjectArchiveIds> = {
 };
 
 export async function generateStaticParams() {
-  const categories = await getRepository().getProjectCategories();
-  return categories.map((c) => ({ category: c.slug }));
+  return (await listProjectCategorySlugs()).map((category) => ({ category }));
 }
 
 interface FeaturedItemCategoryProps {
