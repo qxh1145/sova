@@ -14,9 +14,16 @@ Tài liệu bàn giao tập trung (CAP-14) phục vụ chuyển tiếp từ Phas
     - **Ticket 4.14** (`backlog`): 8 ô `projects-featured-index` (mọi viewport). Lưới lưu trữ dự án thiếu layout masonry isotope của nguồn. Điều kiện đóng: baseline:sova khớp vị trí card của nguồn và Playwright kiểm tra bộ lọc vẫn hiện đúng card.
     - **Ticket 4.15** (`planned`): 8 ô `post-detail-table` và 8 ô `post-detail-video`. Heading trong thân bài render thành chữ thường và ảnh căn giữa bị lệch trái. Điều kiện đóng: heading và ảnh căn giữa khớp nguồn ở mọi width, có test bắt heading bị làm phẳng và ảnh căn giữa bị lệch, baseline:sova đạt.
   - **Tổng số ô baseline**: 466 ô được đo đạc và kiểm soát qua 8 viewport tiêu chuẩn (390, 549, 550, 768, 849, 850, 1280, 1440 px). Chi tiết xem tại [tests/baseline/](../apps/frontend/tests/baseline/).
-- **Trạng thái nghiệm thu Staging (Story 11 pending):**
-  - Việc deploy lên Vercel staging và thực hiện crawl / chạy bộ kiểm thử E2E staging (`STAGING_URL=... npm run test:e2e:staging`) đang chờ chủ dự án thực hiện (Human-in-the-loop - HITL).
-  - Toàn bộ các ô Kết quả Staging trong các bảng nghiệm thu (`tests/baseline/*_ACCEPTANCE.md`) hiện giữ trạng thái `PENDING` / `(chờ owner HITL)`. Hạng mục này thuộc phạm vi bàn giao cho story 11.
+- **Trạng thái nghiệm thu Staging (Story 11, 2026-10-15): BLOCKED.**
+  - Preview: `https://sova-landing-page-nekpv3o7c-qxh1145s-projects.vercel.app`, build `c6cb11913c6eabebff2afb819f4141a5fa8ccefd` (`develop`). Crawl `check:routes`: 159 URL đạt; `check:brand`: 2316 tệp sạch; baseline local: 467/467 test đạt.
+  - `test:e2e:staging`: 89 đạt, 6 thất bại. Trong 482 ô Staging (466 ô baseline ở mục trên + 16 hàng `SHELL_ACCEPTANCE.md`; 467 là số test baseline local, không phải số ô), 471 `PASS`, 11 `FAIL (<test id>)`, 0 đang chờ. Hàng có bước bị bỏ qua do test dừng giữa chừng cũng ghi `FAIL` theo test đó. 6 test thất bại:
+    - `acceptance.spec.ts:61` Header sticky 90→70 motion: `page.goto('/en/home/')` timeout 30s ở 1440px (bug shell: navigation timeout).
+    - `acceptance.spec.ts:228` Client navigation between locales: assertion `toHaveURL` sau khi bấm VI (`:262`) thất bại sau 5s (bug shell: locale navigation).
+    - `acceptance.spec.ts:350` home (vi) responsive widths: `page.goto('/')` timeout ở 850px; 1280/1440 không chạy (bug Home: viewport timeout).
+    - `acceptance.spec.ts:350` home (en) responsive widths: `page.goto('/en/home/')` timeout ở 1280px; 1440 không chạy (bug Home: viewport timeout).
+    - `acceptance.spec.ts:283` staging trả 404 cho `/dev-fixtures/shell/default/` nhưng console guard bắt lỗi 404 (lỗi harness, không gắn ô nào).
+    - `guard.spec.ts:102` self-test vercel.live khẳng định hành vi local khi chạy staging (lỗi harness, không gắn ô nào).
+  - Bug đã ghi trong ticket tree cục bộ (`_bmad-output/`, không commit) dưới epic sở hữu: shell (2), Home (1), fidelity-and-handoff (2). Phase A chưa đóng; không đưa Phase B vào cổng phát hành khi chưa xử lý và chạy lại staging.
 
 ## 2. Bảng bất thường (Anomaly register)
 

@@ -59,13 +59,13 @@ beforeEach(() => {
   override = null;
 });
 
-async function runCheckRoutes(url = baseUrl) {
+async function runCheckRoutes(url = baseUrl, secret?: string) {
   try {
     const { stdout, stderr } = await execFileAsync(
       process.execPath,
       ['--disable-warning=MODULE_TYPELESS_PACKAGE_JSON', SCRIPT],
       {
-        env: { ...process.env, STAGING_URL: url },
+        env: { ...process.env, STAGING_URL: url, VERCEL_AUTOMATION_BYPASS_SECRET: secret ?? '' },
         encoding: 'utf8',
       },
     );
@@ -354,4 +354,42 @@ test('relative href resolves against the page URL', async () => {
   const { status, stdout } = await runCheckRoutes();
   expect(status).toBe(0);
   expect(stdout).toContain(`check:routes: ${TOTAL} URLs ok`);
+});
+
+test('bypass header authenticates same-origin routes without leaking to redirects', async () => {
+  const secret = 'test-bypass-secret';
+  const externalServer = http.createServer((req, res) => {
+    if (req.headers['x-vercel-protection-bypass']) {
+      res.writeHead(418);
+    } else {
+      res.writeHead(200);
+    }
+    res.end('ok');
+  });
+  await new Promise<void>((resolve) => externalServer.listen(0, '127.0.0.1', () => resolve()));
+  const port = (externalServer.address() as { port: number }).port;
+  override = (req, res) => {
+    if (req.headers['x-vercel-protection-bypass'] !== secret) {
+      res.writeHead(302, { Location: '/login' });
+      res.end();
+      return true;
+    }
+    if (req.url === '/en/') {
+      res.writeHead(307, { Location: `http://127.0.0.1:${port}/en/home/` });
+      res.end();
+      return true;
+    }
+    return false;
+  };
+  try {
+    const { status, stderr } = await runCheckRoutes(baseUrl, secret);
+    expect(status).toBe(1);
+    expect(stderr).toContain('/en/: wrong target');
+    expect(stderr).toContain('check:routes found 1 failure(s)');
+    expect(stderr).not.toContain('got 302');
+    expect(stderr).not.toContain('got 418');
+    expect(stderr).not.toContain(secret);
+  } finally {
+    await new Promise<void>((resolve) => externalServer.close(() => resolve()));
+  }
 });
