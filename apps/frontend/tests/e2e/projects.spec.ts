@@ -685,15 +685,90 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
     await expect(htkDate).toContainText('Ngày 22 tháng 4 năm 2023');
     await expect(htkDate.locator('.entry-date')).toHaveCount(0);
 
-    // 8. Many related (evc-athena has 58 related ids, capped at first 4)
+    // 8. Many related (evc-athena lists 58 related projects, all in the slider as source)
     await page.goto('/featured_item/evc-athena-cong-ty-tnhh-evc-athena/');
     const athenaRelated = page.locator('.portfolio-bottom .portfolio-related .col');
-    await expect(athenaRelated).toHaveCount(4);
+    await expect(athenaRelated).toHaveCount(58);
 
     // 9. No related (dsmart): section and heading still render, as source
     await page.goto('/featured_item/giao-dien-dsmart-giai-phap-dieu-khien-xe-hoi-tren-smartphone/');
     await expect(page.locator('.portfolio-bottom h4')).toHaveText('Dự án liên quan');
     await expect(page.locator('.portfolio-bottom .portfolio-related .col')).toHaveCount(0);
+  });
+
+  test.describe('Related projects row slider', () => {
+    // Ticket 4.13 AC1 rests on these tests: baseline:sova masks the slider (SOVA_MASK).
+    const related = '.portfolio-bottom .row-slider';
+    // Hydration wait: Embla sets a translate on the track once it runs.
+    const hydrated = (page: import('@playwright/test').Page) =>
+      expect(page.locator(`${related} .flickity-slider`)).toHaveAttribute('style', /translate/);
+    const cardTops = (selector: string) =>
+      Array.from(document.querySelectorAll(`${selector} .flickity-slider > .col`)).map(
+        (el) => el.getBoundingClientRect().top,
+      );
+
+    for (const { width, perRow } of [
+      { width: 390, perRow: 2 },
+      { width: 549, perRow: 2 },
+      { width: 550, perRow: 3 },
+      { width: 768, perRow: 3 },
+      { width: 849, perRow: 3 },
+      { width: 850, perRow: 4 },
+      { width: 1280, perRow: 4 },
+      { width: 1440, perRow: 4 },
+    ]) {
+      test(`${width}px: one row of ${perRow} cells with arrows, no dots`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto('/featured_item/centro-noi-that-cao-cap-centro-chau-au/');
+        const slider = page.locator(related);
+        await hydrated(page);
+        await expect(slider.locator('.flickity-slider > .col')).toHaveCount(58);
+        const tops = await page.evaluate(cardTops, related);
+        expect(new Set(tops.map(Math.round)).size).toBe(1);
+        const viewport = await slider.locator('.flickity-viewport').boundingBox();
+        const firstCell = await slider.locator('.flickity-slider > .col').first().boundingBox();
+        expect(Math.round(viewport!.width / firstCell!.width)).toBe(perRow);
+        await expect(slider.locator('.flickity-prev-next-button')).toHaveCount(2);
+        await expect(slider.locator('.flickity-page-dots')).toHaveCount(0);
+      });
+    }
+
+    test('arrows reach a card after the fourth and wrap past the last', async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 900 });
+      await page.goto('/featured_item/centro-noi-that-cao-cap-centro-chau-au/');
+      const slider = page.locator(related);
+      const cells = slider.locator('.flickity-slider > .col');
+      const next = slider.locator('.flickity-prev-next-button.next');
+      const prev = slider.locator('.flickity-prev-next-button.previous');
+      await hydrated(page);
+      await expect(cells.nth(4)).not.toBeInViewport();
+      await next.click({ force: true });
+      await next.click({ force: true });
+      await expect(cells.nth(4)).toBeInViewport();
+      await expect(cells.nth(4)).toHaveClass(/is-selected/);
+      await page.goto('/featured_item/centro-noi-that-cao-cap-centro-chau-au/');
+      await hydrated(page);
+      await prev.click({ force: true });
+      await expect(cells.last()).toBeInViewport();
+      await next.click({ force: true });
+      await expect(cells.first()).toBeInViewport();
+    });
+
+    test('nothing slides on its own', async ({ page }) => {
+      await page.goto('/featured_item/centro-noi-that-cao-cap-centro-chau-au/');
+      const first = page.locator(`${related} .flickity-slider > .col`).first();
+      await expect(first).toHaveClass(/is-selected/);
+      await page.waitForTimeout(4000);
+      await expect(first).toHaveClass(/is-selected/);
+    });
+
+    test('one related project renders one cell with no arrows (THP)', async ({ page }) => {
+      await page.goto('/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/');
+      const slider = page.locator(related);
+      await expect(slider.locator('.flickity-slider > .col')).toHaveCount(1);
+      await expect(slider.locator('.flickity-slider > .col')).toBeVisible();
+      await expect(slider.locator('.flickity-prev-next-button')).toHaveCount(0);
+    });
   });
 
   test.describe('Unknown project slug 404', () => {
@@ -735,8 +810,13 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
   });
 
   const detailSignature = () => {
+    // A carousel cell's `is-selected` is runtime state; the source mirror's related cell has none.
     const sig = (el: Element | null | undefined) =>
-      el ? `${el.tagName.toLowerCase()}.${[...el.classList].join('.')}` : null;
+      el
+        ? `${el.tagName.toLowerCase()}.${[...el.classList]
+            .filter((c) => c !== 'is-selected' || !el.parentElement?.matches('.flickity-slider'))
+            .join('.')}`
+        : null;
     const getTree = (rootEl: Element | null | undefined) =>
       rootEl ? [rootEl, ...rootEl.querySelectorAll('*')].map(sig) : null;
 

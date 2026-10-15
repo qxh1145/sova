@@ -74,7 +74,10 @@ export default async function ViProjectDetailPage({ params }: ProjectDetailPageP
           displayDateMarkup={project.displayDateMarkup}
         />
       </ProjectBodyLayout>
-      <RelatedProjects related={related} />
+      <RelatedProjects
+        related={related}
+        labels={{ ...detail.carouselLabels, region: 'Dự án liên quan' }} // business-text-ok: source related heading
+      />
     </div>
   );
 }

@@ -262,9 +262,7 @@ test('getProjectDetail returns project, assets, terms, related cards or null for
   expect(centro!.project.slug).toBe('centro-noi-that-cao-cap-centro-chau-au');
   expect(centro!.galleryAssets).toHaveLength(0);
   expect(centro!.terms?.id).toBe('project-terms-1');
-  expect(centro!.related.map((r) => r.project.id)).toEqual(
-    centro!.project.relatedProjectIds.slice(0, 4),
-  );
+  expect(centro!.related.map((r) => r.project.id)).toEqual(centro!.project.relatedProjectIds);
 });
 
 test('getProjectDetail omits unresolved terms and hero asset without throwing', async () => {

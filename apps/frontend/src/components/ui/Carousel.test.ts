@@ -56,6 +56,11 @@ describe('toEmblaOptions', () => {
     const opts = toEmblaOptions({ containScroll: false }, 2);
     expect(opts.containScroll).toBe(false);
   });
+
+  it('maps slidesToScroll when provided', () => {
+    expect(toEmblaOptions({ slidesToScroll: 'auto' }, 3).slidesToScroll).toBe('auto');
+    expect(toEmblaOptions({}, 3).slidesToScroll).toBeUndefined();
+  });
 });
 
 describe('getCarouselPlugins', () => {
