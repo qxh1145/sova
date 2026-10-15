@@ -35,10 +35,13 @@ const EXPECTED_POSTS = 27;
 
 export const POST_ALLOWED: ReadonlySet<string> = new Set([
   ...ALLOWED,
-  ...'h2 h3 h4 h5 h6 blockquote hr table thead tbody tr th td figure figcaption img video source'.split(
+  ...'h1 h2 h3 h4 h5 h6 blockquote hr table thead tbody tr th td figure figcaption img video source'.split(
     ' ',
   ),
 ]);
+
+/** Body class names kept on import: WordPress image alignment and size/id markers. */
+export const POST_CLASS = /^(?:align(?:center|left|right)|size-[\w-]+|wp-image-\d+)$/;
 
 export type PostCategoryRecord = PostCategory & { sources: SourceRef[] };
 
@@ -221,6 +224,7 @@ export function importPosts(erasDir: string, registry: AssetRegistry, stats: Sta
           if (found && !bodyAssetIds.includes(found.id)) bodyAssetIds.push(found.id);
           return found;
         },
+        keepClass: POST_CLASS,
       },
       POST_ALLOWED,
     );

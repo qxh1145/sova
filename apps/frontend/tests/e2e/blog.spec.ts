@@ -233,6 +233,66 @@ test.describe('Blog listing and post detail', () => {
     expect(totals).toEqual({ table: 1, figure: 9, blockquote: 8, video: 5 });
   });
 
+  test('Post body h1 headings keep source size and weight and aligncenter images stay centred', async ({
+    page,
+  }) => {
+    // Source body h1 and img.aligncenter counts (ticket 4.15); flattened or unclassed imports fail here.
+    const cases = [
+      { path: '/hieu-tu-a-z-ve-thiet-ke-website-responsive/', h1: 1, centred: 5 },
+      {
+        path: '/phat-trien-ung-dung-di-dong-cho-doanh-nghiep-huong-dan-chi-tiet/',
+        h1: 7,
+        centred: 6,
+      },
+    ];
+    for (const width of [390, 549, 550, 768, 849, 850, 1280, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      for (const { path, h1, centred } of cases) {
+        await page.goto(path);
+        const body = await page.locator('.blog-single .col.large-12').evaluate((col) => {
+          return {
+            headings: [...col.querySelectorAll('h1')].map((h) => {
+              const { fontSize, fontWeight, lineHeight, marginTop, marginBottom } =
+                getComputedStyle(h);
+              return { fontSize, fontWeight, lineHeight, marginTop, marginBottom };
+            }),
+            images: [...col.querySelectorAll('img.aligncenter')].map((img) => {
+              const box = img.getBoundingClientRect();
+              const parent = img.parentElement!.getBoundingClientRect();
+              return { left: box.left - parent.left, right: parent.right - box.right };
+            }),
+          };
+        });
+        const at = `${path} @${width}`;
+        // Source computed h1 style: legacy flatsome 1.4em below 550px, 1.7em from 550px, bold.
+        const sourceH1 =
+          width < 550
+            ? {
+                fontSize: '22.4px',
+                fontWeight: '700',
+                lineHeight: '29.12px',
+                marginTop: '0px',
+                marginBottom: '11.2px',
+              }
+            : {
+                fontSize: '27.2px',
+                fontWeight: '700',
+                lineHeight: '35.36px',
+                marginTop: '0px',
+                marginBottom: '13.6px',
+              };
+        expect(body.headings, `body h1 ${at}`).toEqual(Array(h1).fill(sourceH1));
+        expect(body.images, `aligncenter count ${at}`).toHaveLength(centred);
+        // Below 850px the source's legacy rules render these images inline at the left, as Sova does.
+        if (width >= 850)
+          for (const img of body.images)
+            expect(Math.abs(img.left - img.right), `centred image gaps ${at}`).toBeLessThanOrEqual(
+              1,
+            );
+      }
+    }
+  });
+
   test('Pages 2 to 5 render expected cards and pagination links', async ({ page }) => {
     let renderedThumbs = 0;
     for (let p = 2; p <= 5; p++) {
