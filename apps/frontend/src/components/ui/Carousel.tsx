@@ -34,6 +34,8 @@ export interface CarouselOptionsInput {
   dragThreshold?: number;
   duration?: number;
   containScroll?: false | 'trimSnaps' | 'keepSnaps';
+  /** `'auto'` moves one full view per arrow (Flickity `groupCells: '100%'`). */
+  slidesToScroll?: number | 'auto';
 }
 
 export interface CarouselPluginInput {
@@ -67,6 +69,9 @@ export function toEmblaOptions(input: CarouselOptionsInput, slideCount: number):
   }
   if (input.containScroll !== undefined) {
     options.containScroll = input.containScroll;
+  }
+  if (input.slidesToScroll !== undefined) {
+    options.slidesToScroll = input.slidesToScroll;
   }
   return options;
 }
@@ -114,6 +119,7 @@ export function Carousel({
   dragThreshold,
   duration,
   containScroll,
+  slidesToScroll,
   labels,
   children,
 }: CarouselProps) {
@@ -124,8 +130,12 @@ export function Carousel({
   const isSingle = slideCount <= 1;
 
   const emblaOptions = useMemo(
-    () => toEmblaOptions({ align, loop, dragThreshold, duration, containScroll }, slideCount),
-    [align, loop, dragThreshold, duration, containScroll, slideCount],
+    () =>
+      toEmblaOptions(
+        { align, loop, dragThreshold, duration, containScroll, slidesToScroll },
+        slideCount,
+      ),
+    [align, loop, dragThreshold, duration, containScroll, slidesToScroll, slideCount],
   );
 
   const reducedMotion = useSyncExternalStore(
@@ -175,6 +185,20 @@ export function Carousel({
     () => wrapArrows || (emblaApi ? emblaApi.canScrollNext() : !isSingle),
     () => !isSingle,
   );
+
+  // With grouped scroll a snap holds several slides; Flickity marks every cell of the group.
+  // Read as a string so a reInit that regroups slides re-renders even when the snap index stays.
+  const selectedGroup = useSyncExternalStore(
+    subscribe,
+    () => {
+      if (!emblaApi) return '0';
+      const snap = emblaApi.selectedScrollSnap();
+      if (slidesToScroll === undefined) return String(snap);
+      return (emblaApi.internalEngine().slideRegistry[snap] ?? [snap]).join(',');
+    },
+    () => '0',
+  );
+  const selectedSlides = useMemo(() => selectedGroup.split(',').map(Number), [selectedGroup]);
 
   const defaultSnaps = useMemo(() => Array.from({ length: slideCount }, (_, i) => i), [slideCount]);
 
@@ -281,7 +305,7 @@ export function Carousel({
         <div className="flickity-slider">
           {/* Flickity parity: the child itself is the cell, so legacy `.flickity-slider > .row/.col` rules match. */}
           {validChildren.map((child, index) =>
-            selectedIndex === index
+            selectedSlides.includes(index)
               ? cloneElement(child, {
                   className: [child.props.className, 'is-selected'].filter(Boolean).join(' '),
                 })

@@ -140,12 +140,10 @@ export async function getProjectDetail(
     repository.getShellContent(project.locale),
   ]);
 
-  const relatedCards = relatedProjects.slice(0, 4);
-
   const neededAssetIds = [
     project.heroImageId,
     ...project.galleryIds,
-    ...relatedCards.map((p) => p.thumbnailId),
+    ...relatedProjects.map((p) => p.thumbnailId),
   ].filter((id): id is string => Boolean(id));
 
   const assets = neededAssetIds.length ? await repository.getAssets(neededAssetIds) : [];
@@ -157,7 +155,7 @@ export async function getProjectDetail(
     .map((id) => assetMap.get(id))
     .filter((a): a is AssetRef => Boolean(a));
 
-  const related: RelatedProjectCard[] = relatedCards.map((relProject) => {
+  const related: RelatedProjectCard[] = relatedProjects.map((relProject) => {
     const thumb = relProject.thumbnailId ? (assetMap.get(relProject.thumbnailId) ?? null) : null;
     const catId = relProject.categoryIds[0];
     const cat = catId ? (categoryMap.get(catId) ?? null) : null;

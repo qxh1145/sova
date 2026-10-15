@@ -38,7 +38,15 @@ export function ProjectGallerySlider({ galleryAssets, labels }: ProjectGallerySl
                   setLightboxIndex(index);
                 }}
               >
-                <img style={{ borderRadius: '12px' }} src={img.src} alt={img.alt ?? ''} />
+                <img
+                  style={{ borderRadius: '12px' }}
+                  src={img.src}
+                  alt={img.alt ?? ''}
+                  width={img.width}
+                  height={img.height}
+                  loading={index === 0 ? undefined : 'lazy'}
+                  decoding="async"
+                />
               </a>
             </div>
           </div>
@@ -78,7 +86,15 @@ export function ProjectGallerySingle({ asset }: ProjectGallerySingleProps) {
                 setIsOpen(true);
               }}
             >
-              <img style={{ borderRadius: '12px' }} src={asset.src} alt={asset.alt ?? ''} />
+              <img
+                style={{ borderRadius: '12px' }}
+                src={asset.src}
+                alt={asset.alt ?? ''}
+                width={asset.width}
+                height={asset.height}
+                loading="lazy"
+                decoding="async"
+              />
             </a>
           </div>
         </div>
