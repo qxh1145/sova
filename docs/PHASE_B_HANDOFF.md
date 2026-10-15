@@ -7,12 +7,12 @@ Tài liệu bàn giao tập trung (CAP-14) phục vụ chuyển tiếp từ Phas
 ## 1. Phạm vi và trạng thái của Phase A
 
 - **Kết quả đo đạc baseline và phân loại (Story 7.9, commit `830e103` / merge `ef7878b`):**
-  - **434 ô accepted** (420 từ Story 7.9, cộng 6 ô `project-detail-no-gallery` 390–850 phân loại lại sau ticket 4.13 và 8 ô `projects-featured-index` sau ticket 4.14): Độ lệch thị giác so với nguồn đã được chấp nhận, đi kèm lý do và căn cứ dẫn chứng cụ thể trên từng viewport.
+  - **442 ô accepted** (420 từ Story 7.9, cộng 6 ô `project-detail-no-gallery` 390–850 phân loại lại sau ticket 4.13 và 16 ô `post-detail-table`/`post-detail-video` sau ticket 4.15): Độ lệch thị giác so với nguồn đã được chấp nhận, đi kèm lý do và căn cứ dẫn chứng cụ thể trên từng viewport.
   - **16 ô source-missing**: 8 ô `projects-vi` (`/du-an/`) và 8 ô `search-vi`, nguồn thiếu hoặc lỗi nên đối chiếu với snapshot tự chụp của Sova (`baseline-sova/`).
   - **Ticket 4.13 đã sửa**: 6 ô `project-detail-no-gallery` (390–850) trước đây là regression vì khối Dự án liên quan render lưới tĩnh. Khối này giờ là slider một hàng như nguồn, các ô đã đo lại và chuyển sang `accepted` trong `PROJECT_DETAIL_ACCEPTANCE.md`.
-  - **Ticket 4.14 đã sửa**: 8 ô `projects-featured-index` (mọi viewport) trước đây là regression vì lưới lưu trữ dự án xếp theo hàng. Lưới giờ chạy masonry như isotope nguồn (card absolute vào cột ngắn nhất), các ô đã đo lại và chuyển sang `accepted` trong `COLLECTIONS_ACCEPTANCE.md`.
-  - **16 ô regression, mỗi nhóm có ticket mở trong `epic-collections`** (chặn việc đóng Phase A cho các ô này):
-    - **Ticket 4.15** (`planned`): 8 ô `post-detail-table` và 8 ô `post-detail-video`. Heading trong thân bài render thành chữ thường và ảnh căn giữa bị lệch trái. Điều kiện đóng: heading và ảnh căn giữa khớp nguồn ở mọi width, có test bắt heading bị làm phẳng và ảnh căn giữa bị lệch, baseline:sova đạt.
+  - **Ticket 4.15 đã sửa**: 8 ô `post-detail-table` và 8 ô `post-detail-video` trước đây là regression vì importer làm phẳng `h1` trong thân bài và bỏ class `aligncenter`. Importer giờ giữ `h1` và chỉ các class căn ảnh/kích thước/id ảnh, 27 bài đã import lại; các ô đã đo lại và chuyển sang `accepted` trong `COLLECTIONS_ACCEPTANCE.md`.
+  - **8 ô regression, mỗi nhóm có ticket mở trong `epic-collections`** (chặn việc đóng Phase A cho các ô này):
+    - **Ticket 4.14** (`backlog`): 8 ô `projects-featured-index` (mọi viewport). Lưới lưu trữ dự án thiếu layout masonry isotope của nguồn. Điều kiện đóng: baseline:sova khớp vị trí card của nguồn và Playwright kiểm tra bộ lọc vẫn hiện đúng card.
   - **Tổng số ô baseline**: 466 ô được đo đạc và kiểm soát qua 8 viewport tiêu chuẩn (390, 549, 550, 768, 849, 850, 1280, 1440 px). Chi tiết xem tại [tests/baseline/](../apps/frontend/tests/baseline/).
 - **Trạng thái nghiệm thu Staging (Story 11, 2026-10-15): BLOCKED.**
   - Preview: `https://sova-landing-page-nekpv3o7c-qxh1145s-projects.vercel.app`, build `c6cb11913c6eabebff2afb819f4141a5fa8ccefd` (`develop`). Crawl `check:routes`: 159 URL đạt; `check:brand`: 2316 tệp sạch; baseline local: 467/467 test đạt.
