@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test';
 import {
+  ALLOW_404,
   expect,
   expectNoDuplicateIds,
   getBodyOverflow,
@@ -280,10 +281,14 @@ test.describe('Acceptance: Site shell on real routes', () => {
     expect(await getBodyOverflow(page)).not.toBe('hidden');
   });
 
-  test('In staging mode, /dev-fixtures/shell/default/ returns 404', async ({ page }) => {
-    test.skip(!STAGING, 'Staging check only runs when STAGING_URL is set');
-    const response = await page.goto('/dev-fixtures/shell/default/');
-    expect(response?.status()).toBe(404);
+  test.describe('staging dev-fixture 404', () => {
+    test.use({ allowConsole: [ALLOW_404] });
+
+    test('In staging mode, /dev-fixtures/shell/default/ returns 404', async ({ page }) => {
+      test.skip(!STAGING, 'Staging check only runs when STAGING_URL is set');
+      const response = await page.goto('/dev-fixtures/shell/default/');
+      expect(response?.status()).toBe(404);
+    });
   });
 });
 
