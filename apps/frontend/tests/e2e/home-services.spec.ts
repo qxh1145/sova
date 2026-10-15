@@ -17,6 +17,37 @@ const HOME_SERVICES = [
 ];
 
 test.describe('Services list, accordion and marquee', () => {
+  test('Home accordion button matches source anchor metrics at 390px', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.goto('/');
+    const metrics = await page
+      .locator('#text-2320367842 .accordion-title')
+      .first()
+      .evaluate((el) => {
+        const css = getComputedStyle(el);
+        return [
+          css.fontSize,
+          css.fontWeight,
+          css.lineHeight,
+          css.letterSpacing,
+          css.padding,
+          css.margin,
+          css.minHeight,
+          css.textTransform,
+        ];
+      });
+    expect(metrics).toEqual([
+      '16px',
+      '600',
+      '25.6px',
+      'normal',
+      '9.6px 15px 0px',
+      '0px',
+      '0px',
+      'none',
+    ]);
+  });
+
   test('Six services and accordion items render in order with matching titles, summaries and arrow hrefs', async ({
     page,
   }) => {

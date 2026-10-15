@@ -97,6 +97,38 @@ test.describe('Mobile App Service Pages Tracer (Story 5.1)', () => {
       }
     });
 
+    for (const width of [390, 1280]) {
+      test(`Benefit titles are blue and FAQ matches source styling at ${width}px on ${config.path}`, async ({
+        page,
+      }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(config.path);
+
+        // Source: <h3><span style="color:#0065df">…</span></h3>
+        const titles = page.locator(`#${config.benefitsId} .row_ptien h3 > span`);
+        await expect(titles).toHaveCount(4);
+        for (const color of await titles.evaluateAll((els) =>
+          els.map((e) => getComputedStyle(e).color),
+        )) {
+          expect(color).toBe('rgb(0, 101, 223)');
+        }
+
+        const faq = page.locator(`#${config.faqId}`);
+        const accordion = faq.locator('.accordion.ac-luutru');
+        await expect(accordion).toHaveCount(1);
+        const title = accordion.locator('.accordion-title').first();
+        await expect(title).toHaveCSS('border-radius', '8px');
+        await expect(title).toHaveCSS('background-color', 'rgb(0, 0, 0)');
+
+        await expect(faq.locator('h2').first()).toHaveCSS('text-align', 'center');
+        const m = await faq.locator('.is-divider').evaluate((el) => {
+          const r = el.getBoundingClientRect();
+          return { w: r.width, off: Math.round(r.left + r.width / 2 - window.innerWidth / 2) };
+        });
+        expect(m).toEqual({ w: 133, off: 0 });
+      });
+    }
+
     test(`Hero, benefits and why-choose-us assets render on ${config.path}`, async ({ page }) => {
       await page.goto(config.path);
 
@@ -1817,5 +1849,21 @@ test.describe('Featured Projects on Service Pages (Story 5.9)', () => {
         .poll(async () => Math.abs((await translateX()) - -distance))
         .toBeLessThanOrEqual(25);
     });
+  }
+});
+
+test('Service hero lines keep source 40px boxes and 54.2px pitch below 550px', async ({ page }) => {
+  for (const width of [390, 549]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/thiet-ke-app-mobile/');
+    const boxes = await page.locator('.service-hero-heading .typewriter').evaluateAll((lines) =>
+      lines.map((line) => {
+        const { top, height } = line.getBoundingClientRect();
+        return { top, height };
+      }),
+    );
+    expect(boxes).toHaveLength(2);
+    boxes.forEach((box) => expect(box.height).toBeCloseTo(40, 0));
+    expect(boxes[1].top - boxes[0].top).toBeCloseTo(54.2, 0);
   }
 });

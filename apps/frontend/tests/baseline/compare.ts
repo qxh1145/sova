@@ -63,11 +63,16 @@ export async function compareToBaseline(page: Page, key: string, viewport: numbe
  * Share of differing pixels between two PNGs. Unlike toHaveScreenshot it tolerates a size
  * mismatch: both images are padded to the larger size, so the padding counts as different.
  */
-async function diffRatio(page: Page, actual: Buffer, expected: Buffer): Promise<number> {
+async function diffRatio(
+  page: Page,
+  actual: Buffer,
+  expected: Buffer,
+  output?: string,
+): Promise<number> {
   const scratch = await page.context().newPage();
   try {
-    return await scratch.evaluate(
-      async ([a, b]) => {
+    const result = await scratch.evaluate(
+      async ([a, b, wantsImage]) => {
         const imgs = await Promise.all(
           [a, b].map((src) => {
             const img = new Image();
@@ -85,6 +90,11 @@ async function diffRatio(page: Page, actual: Buffer, expected: Buffer): Promise<
           ctx.drawImage(img, 0, 0);
           return ctx.getImageData(0, 0, w, h).data;
         });
+        const diffCanvas = wantsImage ? document.createElement('canvas') : null;
+        const diffContext = diffCanvas
+          ? Object.assign(diffCanvas, { width: w, height: h }).getContext('2d')!
+          : null;
+        const diffPixels = diffContext?.createImageData(w, h);
         // Per-channel tolerance of 20%, close to toHaveScreenshot's default threshold (0.2).
         let diff = 0;
         for (let i = 0; i < pa.length; i += 4) {
@@ -93,22 +103,39 @@ async function diffRatio(page: Page, actual: Buffer, expected: Buffer): Promise<
             Math.abs(pa[i] - pb[i]) > 51 ||
             Math.abs(pa[i + 1] - pb[i + 1]) > 51 ||
             Math.abs(pa[i + 2] - pb[i + 2]) > 51
-          )
+          ) {
             diff++;
+            if (diffPixels) diffPixels.data.set([255, 0, 0, 255], i);
+          } else if (diffPixels) diffPixels.data.set([pb[i], pb[i + 1], pb[i + 2], 255], i);
         }
-        return diff / (w * h);
+        if (diffContext && diffPixels) diffContext.putImageData(diffPixels, 0, 0);
+        return { ratio: diff / (w * h), image: diffCanvas?.toDataURL('image/png').split(',')[1] };
       },
-      [actual.toString('base64'), expected.toString('base64')],
+      [actual.toString('base64'), expected.toString('base64'), Boolean(output)] as const,
     );
+    if (output && result.image) {
+      fs.mkdirSync(path.dirname(output), { recursive: true });
+      fs.writeFileSync(output, Buffer.from(result.image, 'base64'));
+    }
+    return result.ratio;
   } finally {
     await scratch.close();
   }
 }
 
+/** BASELINE_DIFF_OUT=<dir>: where the red-pixel diff image of a cell is written. */
+const diffOut = (key: string, viewport: number) =>
+  process.env.BASELINE_DIFF_OUT && path.join(process.env.BASELINE_DIFF_OUT, key, `${viewport}.png`);
+
 /** Freeze a Sova `page` (at its baseline viewport and URL) and return its diff ratio vs baseline/<key>/<viewport>.png. */
 export async function baselineDiffRatio(page: Page, key: string, viewport: number) {
   const actual = await sovaShot(page);
-  return diffRatio(page, actual, fs.readFileSync(test.info().snapshotPath(key, `${viewport}.png`)));
+  return diffRatio(
+    page,
+    actual,
+    fs.readFileSync(test.info().snapshotPath(key, `${viewport}.png`)),
+    diffOut(key, viewport),
+  );
 }
 
 /**
@@ -126,7 +153,7 @@ export async function selfSnapshot(page: Page, key: string, viewport: number) {
   if (!fs.existsSync(file)) {
     throw new Error(`Missing Sova self-snapshot ${file}: run with BASELINE_SOVA_UPDATE=1`);
   }
-  const ratio = await diffRatio(page, actual, fs.readFileSync(file));
+  const ratio = await diffRatio(page, actual, fs.readFileSync(file), diffOut(key, viewport));
   expect(ratio, `${key}@${viewport} differs from its Sova self-snapshot`).toBeLessThanOrEqual(0.01);
 }
 

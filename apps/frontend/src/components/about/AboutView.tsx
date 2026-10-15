@@ -37,7 +37,8 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
   return (
     <div id="content" role="main">
       {/* 1. PageHero */}
-      <PageHero hero={page.hero} bgImage={assets.heroBgImage} ids={heroIds} />
+      {/* Source About banner is plain `banner has-hover` (no `banner-service`). */}
+      <PageHero hero={page.hero} bgImage={assets.heroBgImage} ids={heroIds} bannerClass="" />
 
       {/* 2. Section ss-target (Stats + Goals) */}
       <section className="section ss-target" id={ids.targetSection}>
@@ -171,7 +172,14 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
               const numStr = String(idx + 1).padStart(2, '0');
               return (
                 <div key={goal.id} className="col medium-3 small-12 large-3">
-                  <div className="col-inner" style={{ backgroundColor: 'rgb(24, 24, 24)' }}>
+                  <div
+                    className="col-inner"
+                    // Source per-id `#col-* > .col-inner` padding (route CSS ids are not on these cards).
+                    style={{
+                      backgroundColor: 'rgb(24, 24, 24)',
+                      padding: idx === 1 ? '45px 25px 25px' : '25px',
+                    }}
+                  >
                     <div
                       className="is-border"
                       style={{
@@ -264,7 +272,14 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                 return (
                   <div key={goal.id} className="row">
                     <div className="col medium-3 small-12 large-3">
-                      <div className="col-inner" style={{ backgroundColor: 'rgb(24, 24, 24)' }}>
+                      <div
+                        className="col-inner"
+                        // Source per-id `#col-* > .col-inner` padding (route CSS ids are not on these cards).
+                        style={{
+                          backgroundColor: 'rgb(24, 24, 24)',
+                          padding: idx === 1 ? '45px 25px 25px' : '25px',
+                        }}
+                      >
                         <div
                           className="is-border"
                           style={{
@@ -394,7 +409,10 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                     <div key={idx} className="col col-line-top medium-6 small-12 large-6">
                       <div
                         className="col-inner"
-                        style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}
+                        style={{
+                          backgroundColor: 'rgba(66, 66, 66, 0.3)',
+                          padding: '25px 25px 15px',
+                        }}
                       >
                         <div
                           className="is-border"
@@ -583,7 +601,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
                     <div className="col col-logo medium-4 small-12 large-4">
                       <div
                         className="col-inner"
-                        style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}
+                        style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)', padding: 30 }}
                       >
                         <div className="text">
                           <h3>{cap.title}</h3>
@@ -646,7 +664,10 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
 
               return (
                 <div key={cap.id} className="col col-logo medium-4 small-12 large-4">
-                  <div className="col-inner" style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}>
+                  <div
+                    className="col-inner"
+                    style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)', padding: 30 }}
+                  >
                     <div className="text">
                       <h3>{cap.title}</h3>
                     </div>

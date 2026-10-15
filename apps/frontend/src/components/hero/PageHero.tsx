@@ -41,6 +41,10 @@ export interface PageHeroIds {
   bottomGap?: string;
   /** Classes on bottomGap element; defaults to `gap-element clearfix`. */
   bottomGapClass?: string;
+  /** Inner `<span style="font-size: …">` on each heading line (About: 80%). */
+  headingLineSize?: string;
+  /** Breadcrumb and CTA as bare text, no `<p>` (project heroes). */
+  bareText?: true;
 }
 
 export interface PageHeroProps {
@@ -67,10 +71,13 @@ export function PageHero({
   ctaIcon,
 }: PageHeroProps) {
   const { breadcrumb } = hero;
+  // Source service heroes wrap breadcrumb/CTA in `<p>…<br />`; project heroes print them bare.
+  const Line = ids.bareText ? Fragment : 'p';
+  const lineEnd = ids.bareText ? null : <br />;
 
   return (
     <>
-      <div className={`banner has-hover ${bannerClass}`} id={ids.banner}>
+      <div className={`banner has-hover ${bannerClass}`.trim()} id={ids.banner}>
         <div className="banner-inner fill">
           <div className="banner-bg fill">
             {bgImage && (
@@ -100,7 +107,7 @@ export function PageHero({
                         <Gap id={ids.topGap} className={ids.topGapClass} />
                         {breadcrumb && ids.breadcrumbText && (
                           <div id={ids.breadcrumbText} className="text">
-                            <p>
+                            <Line>
                               <span style={{ color: '#808080' }}>
                                 {breadcrumb.slice(0, -1).map((crumb, idx) => (
                                   <Fragment key={idx}>
@@ -115,8 +122,8 @@ export function PageHero({
                               </span>
                               {breadcrumb.length > 0 &&
                                 ` ${breadcrumb[breadcrumb.length - 1].label}`}
-                              <br />
-                            </p>
+                              {lineEnd}
+                            </Line>
                           </div>
                         )}
                         <Gap
@@ -130,7 +137,11 @@ export function PageHero({
                           <h1 className="service-hero-heading">
                             {hero.headingLines.map((line, idx) => (
                               <span key={idx} className="typewriter">
-                                {line}
+                                {ids.headingLineSize ? (
+                                  <span style={{ fontSize: ids.headingLineSize }}>{line}</span>
+                                ) : (
+                                  line
+                                )}
                               </span>
                             ))}
                           </h1>
@@ -147,7 +158,7 @@ export function PageHero({
                         <Gap id={ids.gap2b} className="gap-element clearfix hide-for-small" />
                         {hero.cta && ids.ctaText && (
                           <div id={ids.ctaText} className="text">
-                            <p>
+                            <Line>
                               <Link className="but-lh" href={hero.cta.href}>
                                 {hero.cta.label}
                                 {ctaIcon && (
@@ -165,8 +176,8 @@ export function PageHero({
                                   </>
                                 )}
                               </Link>
-                              <br />
-                            </p>
+                              {lineEnd}
+                            </Line>
                           </div>
                         )}
                       </div>

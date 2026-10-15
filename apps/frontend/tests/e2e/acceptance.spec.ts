@@ -609,7 +609,7 @@ test.describe('Acceptance: Collections', () => {
 
   const COLLECTION_ROUTES = [
     { name: 'Projects listing (VI)', path: '/du-an/', landmark: '#portfolio-results' },
-    { name: 'Projects listing (EN)', path: '/en/our-project/', landmark: '.banner-project' },
+    { name: 'Projects listing (EN)', path: '/en/our-project/', landmark: '#banner-2108105581' },
     { name: 'Projects archive (VI)', path: '/featured_item/', landmark: '#portfolio-1541637127' },
     {
       name: 'Project category archive',

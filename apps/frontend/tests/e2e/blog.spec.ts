@@ -334,8 +334,13 @@ test.describe('Blog listing and post detail', () => {
         await expect(pagination).toHaveCount(0);
       }
 
-      // Sidebar exists
+      // Sidebar exists; the listed category is the source `current-cat` (bold via Flatsome)
       await expect(page.locator('#secondary.widget-area')).toBeVisible();
+      const current = page.locator('#secondary li.current-cat');
+      await expect(current).toHaveCount(1);
+      await expect(current.locator('a')).toHaveAttribute('aria-current', 'page');
+      await expect(current.locator('a')).toHaveText(cat.title);
+      await expect(current.locator('a')).toHaveCSS('font-weight', '700');
     }
   });
 

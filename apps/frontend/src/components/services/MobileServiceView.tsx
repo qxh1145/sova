@@ -112,33 +112,30 @@ export function MobileServiceView({ page, assets, locale }: MobileServiceViewPro
                       </p>
                     </div>
                   )}
-                  <div id={isEn ? 'text-4015396145' : 'text-1185368481'} className="text">
+                  <div id={isEn ? 'text-4015396145' : 'text-839598275'} className="text">
                     <h2>{copy.faq.title}</h2>
+                  </div>
+                  <div className="text-center">
+                    <div
+                      className="is-divider divider clearfix"
+                      style={{ maxWidth: 133, height: 2, backgroundColor: 'rgb(0, 101, 223)' }}
+                    />
                   </div>
                 </div>
               </div>
             </div>
 
-            <div
-              className="row row-collapse align-middle"
-              id={isEn ? 'row-706714345' : 'row-1772652157'}
-            >
+            <div className="row" id={isEn ? 'row-706714345' : 'row-2113543268'}>
               <div
-                id={isEn ? 'col-1281441634' : 'col-1339185125'}
-                className="col medium-12 small-12 large-12"
+                id={isEn ? 'col-1281441634' : 'col-1367502865'}
+                className="col small-12 large-12"
               >
                 <div className="col-inner">
-                  {!isEn && (
-                    <div
-                      id="gap-1601755106"
-                      className="gap-element clearfix"
-                      style={{ display: 'block', height: 'auto' }}
-                    />
-                  )}
                   <FAQList
                     faqs={faqs}
                     type="single"
                     defaultOpen="first"
+                    className="ac-luutru"
                     labels={{ toggle: faqToggleLabel(locale) }}
                   />
                 </div>

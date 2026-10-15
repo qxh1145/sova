@@ -217,7 +217,9 @@ export function ServiceBenefits({ copy, benefits, video, icons = [], ids }: Serv
                           </div>
                           <div className="icon-box-text last-reset">
                             <div id={cardIds?.text1} className="text">
-                              <h3>{benefit.title}</h3>
+                              <h3>
+                                <span style={{ color: '#0065df' }}>{benefit.title}</span>
+                              </h3>
                             </div>
                             <div
                               id={cardIds?.gap}

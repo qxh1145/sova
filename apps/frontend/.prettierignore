@@ -10,4 +10,5 @@ tsconfig.json
 /baseline/
 src/styles/legacy/
 src/app/(utility)/login-eras/bootstrap-subset.css
-tests/baseline/*_ACCEPTANCE.md
+tests/baseline/vendor/bootstrap-5.0.2.min.css
+/baseline-diff/
