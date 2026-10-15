@@ -159,7 +159,9 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
     await expect(heroTitle).toContainText('Projects Partnered');
     await expect(heroTitle).toContainText('with Sova');
     await expect(
-      page.locator('.banner.banner-project #text-1484206156 + #gap-1176636974.gap-element'),
+      page.locator(
+        '#banner-2108105581:not(.banner-project) #text-1484206156 + #gap-1176636974.gap-element',
+      ),
     ).toHaveCount(1);
 
     // Only "All" filter

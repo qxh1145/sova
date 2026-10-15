@@ -6779,4 +6779,17 @@ export const assets: AssetRef[] = [
     width: 25,
     height: 24,
   },
+  {
+    id: 'asset-9c752b361a',
+    src: '/wp-content/uploads/2024/02/8b7867237f3d84a4414a09ba3e720c8d.webp',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'index.html', line: 2938 },
+      { file: 'en/home/index.html', line: 2765 },
+    ],
+    width: 2000,
+    height: 1125,
+  },
 ];

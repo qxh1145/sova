@@ -94,7 +94,12 @@ export function BlogListView({
           )}
         </div>
         <div className="large-4 col">
-          <BlogSidebar categories={categories} copy={copy} searchQuery={searchQuery} />
+          <BlogSidebar
+            categories={categories}
+            copy={copy}
+            searchQuery={searchQuery}
+            currentPath={isCategory ? basePath : undefined}
+          />
         </div>
       </div>
     </main>

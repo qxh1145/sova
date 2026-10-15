@@ -82,6 +82,14 @@ async function serveSource(
       evidence.missing.push(url);
       return route.fulfill({ status: 404, contentType: 'text/plain', body: 'Not in mirror' });
     }
+    if (url === 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css') {
+      evidence.local.push(url);
+      return route.fulfill({
+        path: path.join(__dirname, 'vendor/bootstrap-5.0.2.min.css'),
+        contentType: 'text/css',
+        headers: { 'access-control-allow-origin': '*' },
+      });
+    }
     if (LOCAL_COPIES[url]) {
       evidence.local.push(url);
       return route.fulfill({ path: path.join(ERAS_CLONE_DIR, LOCAL_COPIES[url]) });

@@ -153,44 +153,36 @@ test.describe('Home query, hero and stats', () => {
   });
 
   for (const width of WIDTHS) {
-    test(`Typewriter lines are not clipped at width ${width}px`, async ({ page }) => {
+    test(`Hero heading matches source font size at width ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
-
       for (const path of ['/', '/en/home/']) {
         await page.goto(path);
-
-        await page.evaluate(() => {
-          document.querySelectorAll('h1 .typewriter').forEach((el) => {
-            el.getAnimations().forEach((anim) => {
-              try {
-                anim.finish();
-              } catch {
-                // ignore infinite animations
-              }
-            });
-          });
-        });
-
-        const lines = page.locator('h1 .typewriter');
-        await expect(lines).toHaveCount(3);
-
-        const clipping = await page.evaluate(() => {
-          const spans = Array.from(document.querySelectorAll('h1 .typewriter'));
-          return spans.map((span) => ({
-            text: span.textContent,
-            scrollWidth: span.scrollWidth,
-            clientWidth: span.clientWidth,
-            isClipped: span.scrollWidth > span.clientWidth,
-          }));
-        });
-
-        for (const line of clipping) {
-          expect(
-            line.isClipped,
-            `Line "${line.text}" is clipped at ${width}px on ${path}: scrollWidth (${line.scrollWidth}) > clientWidth (${line.clientWidth})`,
-          ).toBe(false);
-        }
+        const sizes = await page.locator('.home-hero-heading').evaluate((heading) => ({
+          heading: getComputedStyle(heading).fontSize,
+          line: getComputedStyle(heading.querySelector('.typewriter')!).fontSize,
+        }));
+        expect(sizes.heading).toBe(width < 550 ? '40px' : '67.2px');
+        expect(sizes.line).toBe(width < 550 ? '34px' : '67.2px');
       }
+    });
+  }
+
+  for (const width of [390, 549]) {
+    test(`Hero lines keep source 40px boxes and 49.1px pitch at width ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/');
+      const boxes = await page.locator('.home-hero-heading .typewriter').evaluateAll((lines) =>
+        lines.map((line) => {
+          const { top, height } = line.getBoundingClientRect();
+          return { top, height };
+        }),
+      );
+      expect(boxes).toHaveLength(3);
+      boxes.forEach((box) => expect(box.height).toBeCloseTo(40, 0));
+      expect(boxes[1].top - boxes[0].top).toBeCloseTo(49.1, 0);
+      expect(boxes[2].top - boxes[1].top).toBeCloseTo(49.1, 0);
     });
   }
 

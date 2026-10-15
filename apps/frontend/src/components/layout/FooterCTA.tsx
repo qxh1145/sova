@@ -20,7 +20,7 @@ export function FooterCTA({ headingLines, targetHref, locale }: FooterCTAProps) 
         <div
           id={ids.gap}
           className="gap-element clearfix"
-          style={{ display: 'block', height: 'auto', paddingTop: 78 }}
+          style={{ display: 'block', height: 'auto' }}
         />
         <div className="row align-middle align-center" id={ids.row}>
           <div id={ids.colLeft} className="col medium-9 small-9 large-9">
@@ -43,7 +43,14 @@ export function FooterCTA({ headingLines, targetHref, locale }: FooterCTAProps) 
           <div id={ids.colRight} className="col medium-3 small-3 large-3">
             <div className="col-inner text-right">
               <Link className="plain" href={targetHref}>
-                <div className="icon-box featured-box icon-box-footer icon-box-right text-right">
+                <div
+                  className={
+                    // Source EN arrow box differs from VI (en/home/index.html:2718).
+                    locale === 'en'
+                      ? 'icon-box featured-box icon-box-top text-left'
+                      : 'icon-box featured-box icon-box-footer icon-box-right text-right'
+                  }
+                >
                   <div className="icon-box-img" style={{ width: 60 }}>
                     <div className="icon">
                       <div className="icon-inner">

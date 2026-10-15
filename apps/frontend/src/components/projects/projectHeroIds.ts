@@ -1,6 +1,7 @@
 import type { PageHeroIds } from '@/components/hero/PageHero';
 
 export const PROJECT_HERO_IDS_VI: PageHeroIds = {
+  bareText: true,
   banner: 'banner-2058171634',
   textBox: 'text-box-680836231',
   textBoxY: 'y10',
@@ -18,6 +19,7 @@ export const PROJECT_HERO_IDS_VI: PageHeroIds = {
 };
 
 export const PROJECT_HERO_IDS_EN: PageHeroIds = {
+  bareText: true,
   banner: 'banner-2108105581',
   textBox: 'text-box-1406319782',
   textBoxY: 'y10',
@@ -36,6 +38,7 @@ export const PROJECT_HERO_IDS_EN: PageHeroIds = {
 
 /** Source: `featured_item/index.html` hero. */
 export const PROJECT_HERO_IDS_FEATURED: PageHeroIds = {
+  bareText: true,
   banner: 'banner-1513224978',
   textBox: 'text-box-933037456',
   textBoxY: 'y10',
@@ -54,6 +57,7 @@ export const PROJECT_HERO_IDS_FEATURED: PageHeroIds = {
 
 /** Source: `featured_item_category/branding/index.html` hero. */
 export const PROJECT_HERO_IDS_FEATURED_BRANDING: PageHeroIds = {
+  bareText: true,
   banner: 'banner-1437243260',
   textBox: 'text-box-2054480237',
   textBoxY: 'y10',
@@ -72,6 +76,7 @@ export const PROJECT_HERO_IDS_FEATURED_BRANDING: PageHeroIds = {
 
 /** Source: `featured_item_category/mobile-app/index.html` hero. */
 export const PROJECT_HERO_IDS_FEATURED_MOBILE_APP: PageHeroIds = {
+  bareText: true,
   banner: 'banner-819223527',
   textBox: 'text-box-1797028337',
   textBoxY: 'y10',
@@ -90,6 +95,7 @@ export const PROJECT_HERO_IDS_FEATURED_MOBILE_APP: PageHeroIds = {
 
 /** Source: `featured_item_category/website/index.html` hero. */
 export const PROJECT_HERO_IDS_FEATURED_WEBSITE: PageHeroIds = {
+  bareText: true,
   banner: 'banner-669224451',
   textBox: 'text-box-1637600246',
   textBoxY: 'y10',

@@ -11,6 +11,7 @@ export const aboutPages: AboutPageRecord[] = [
     translationKey: 'about',
     hero: {
       headingLines: ['Strategically Building', 'Elevating Brand Value'],
+      breadcrumb: [{ label: 'Home', href: '/en/home/' }, { label: 'About Us' }],
       description: {
         format: 'sanitized-html',
         html: '<p>Sova Technology Solutions Co., Ltd. – A top-tier web design company, committed to delivering exceptional digital products, innovative services, and an unparalleled user experience</p>',
@@ -331,6 +332,7 @@ export const aboutPages: AboutPageRecord[] = [
     translationKey: 'about',
     hero: {
       headingLines: ['Kiến tạo & Nâng tầm', 'thương hiệu'],
+      breadcrumb: [{ label: 'Trang chủ', href: '/' }, { label: 'Giới thiệu' }],
       description: {
         format: 'sanitized-html',
         html: '<p>Công ty TNHH Giải Pháp Công Nghệ Sova – Một trong những đơn vị thiết kế website hàng đầu hiện nay, tự hào mang đến cho khách hàng những sản phẩm, dịch vụ và trải nghiệm xuất sắc nhất.</p>',

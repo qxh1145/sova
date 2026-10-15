@@ -227,6 +227,13 @@
       "reason": "exception: THP A11, 2 items"
     },
     {
+      "key": "projects-category-mobile-app",
+      "url": "/featured_item_category/mobile-app/",
+      "family": "projects",
+      "locale": "vi",
+      "reason": "category archive: mobile-app, 1 item"
+    },
+    {
       "key": "blog-vi",
       "url": "/goc-nhin/",
       "family": "blog",

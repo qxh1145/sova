@@ -90,6 +90,8 @@ test.describe('FAQ Pages (Story FAQ Topics Page)', () => {
       // First accordion item in the first panel is open by default
       const firstAccordionTitle = firstPanel.locator('.accordion-title').first();
       await expect(firstAccordionTitle).toHaveAttribute('aria-expanded', 'true');
+      // Open title keeps Flatsome `.accordion-title.active` weight (source computed 700)
+      await expect(firstAccordionTitle).toHaveCSS('font-weight', '700');
 
       // Keyboard navigation between tabs: ArrowDown, ArrowUp, End, Home
       await tabTriggers.first().focus();
