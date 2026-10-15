@@ -62,6 +62,8 @@ test.describe('Acceptance: Site shell on real routes', () => {
   test('Header sticky 90→70 motion at 1440px and stuck behavior at 390px on real routes', async ({
     page,
   }) => {
+    // Home's autoplay hero video holds back `load` for 30s+ on a cold preview; 4 Home loads here.
+    test.setTimeout(180_000);
     for (const path of ['/', '/en/home/']) {
       await page.setViewportSize({ width: 1440, height: 900 });
       await page.goto(path);
@@ -355,6 +357,8 @@ test.describe('Acceptance: 8 responsive widths viewport checks', () => {
     test(`${kind} (${locale}) responsive widths: no overflow, no duplicate IDs`, async ({
       page,
     }, testInfo) => {
+      // Home's autoplay hero video holds back `load` for 30s+ on a cold preview; 8 loads here.
+      if (kind === 'home') test.setTimeout(180_000);
       const knownIssue = KNOWN_ISSUES.get(path);
 
       for (const width of WIDTHS) {
