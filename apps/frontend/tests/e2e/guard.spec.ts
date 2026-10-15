@@ -1,4 +1,4 @@
-import { expect, isAllowedUrl, STAGING, test } from './fixtures';
+import { ALLOW_404, expect, isAllowedUrl, STAGING, test } from './fixtures';
 
 test('guard allows local and Maps embed hosts', () => {
   expect(isAllowedUrl('http://localhost:3100/', null)).toBe(true);
@@ -62,6 +62,22 @@ test.describe('console guard allowlist', () => {
     test.fail();
     await page.goto('/');
     await page.evaluate(() => console.error('not-allowlisted'));
+  });
+});
+
+// A 404 resource error fails the console guard unless the test declares it with ALLOW_404.
+test('console guard fails a test that hits an undeclared 404', async ({ page }) => {
+  test.fail();
+  const response = await page.goto('/console-guard-404-self-test/');
+  expect(response?.status()).toBe(404);
+});
+
+test.describe('console guard declared 404', () => {
+  test.use({ allowConsole: [ALLOW_404] });
+
+  test('console guard passes a declared 404', async ({ page }) => {
+    const response = await page.goto('/console-guard-404-self-test/');
+    expect(response?.status()).toBe(404);
   });
 });
 
