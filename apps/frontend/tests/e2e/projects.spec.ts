@@ -730,6 +730,12 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
         expect(Math.round(viewport!.width / firstCell!.width)).toBe(perRow);
         await expect(slider.locator('.flickity-prev-next-button')).toHaveCount(2);
         await expect(slider.locator('.flickity-page-dots')).toHaveCount(0);
+        // One arrow click moves one full row.
+        const cells = slider.locator('.flickity-slider > .col');
+        await slider.locator('.flickity-prev-next-button.next').click({ force: true });
+        await expect(cells.nth(perRow)).toHaveClass(/is-selected/);
+        await expect(cells.nth(perRow)).toBeInViewport();
+        await expect(cells.nth(perRow - 1)).not.toHaveClass(/is-selected/);
       });
     }
 
@@ -746,6 +752,8 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
       await next.click({ force: true });
       await expect(cells.nth(4)).toBeInViewport();
       await expect(cells.nth(4)).toHaveClass(/is-selected/);
+      await expect(cells.nth(5)).toHaveClass(/is-selected/);
+      await expect(cells.nth(3)).not.toHaveClass(/is-selected/);
       await page.goto('/featured_item/centro-noi-that-cao-cap-centro-chau-au/');
       await hydrated(page);
       await prev.click({ force: true });
@@ -757,6 +765,7 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
     test('nothing slides on its own', async ({ page }) => {
       await page.goto('/featured_item/centro-noi-that-cao-cap-centro-chau-au/');
       const first = page.locator(`${related} .flickity-slider > .col`).first();
+      await hydrated(page);
       await expect(first).toHaveClass(/is-selected/);
       await page.waitForTimeout(4000);
       await expect(first).toHaveClass(/is-selected/);
@@ -768,6 +777,8 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
       await expect(slider.locator('.flickity-slider > .col')).toHaveCount(1);
       await expect(slider.locator('.flickity-slider > .col')).toBeVisible();
       await expect(slider.locator('.flickity-prev-next-button')).toHaveCount(0);
+      await expect(slider).toHaveAttribute('role', 'region');
+      await expect(slider).toHaveAttribute('aria-label', 'Dự án liên quan');
     });
   });
 
