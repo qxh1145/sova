@@ -74,7 +74,8 @@ export function ProjectArchiveView({
               loadingMessage={copy.loadingMessage}
               filterAllLabel={copy.filterAll}
               wrapperId={ids.portfolio}
-              grid={COLUMNS}
+              // Source starts isotope masonry on this grid after its images load.
+              grid={{ ...COLUMNS, masonry: true }}
             />
           ) : (
             <div id={ids.portfolio} className="portfolio-element-wrapper has-filtering">

@@ -406,6 +406,56 @@ test.describe('/featured_item/ archive and /featured_item_category/* archives', 
     }
   });
 
+  test('Archive masonry: cards sit absolutely in the shortest column, after load and after filtering', async ({
+    page,
+  }) => {
+    test.setTimeout(90_000);
+    // Replays the isotope masonry rule over the rendered cards; plain row flow fails it.
+    const masonryErrors = () =>
+      page.locator(`${ARCHIVE} .row`).evaluate((grid) => {
+        const top = grid.getBoundingClientRect().top;
+        const cards = [...grid.querySelectorAll<HTMLElement>(':scope > .col')].map((c) => {
+          const r = c.getBoundingClientRect();
+          return { position: getComputedStyle(c).position, x: r.left, y: r.top - top, h: r.height };
+        });
+        if (cards.some((c) => c.position !== 'absolute'))
+          return ['cards are not absolutely placed'];
+        const lefts = [...new Set(cards.map((c) => Math.round(c.x)))].sort((a, b) => a - b);
+        const bottoms = lefts.map(() => 0);
+        const errors: string[] = [];
+        cards.forEach((c, i) => {
+          const min = Math.min(...bottoms);
+          const col = lefts.indexOf(Math.round(c.x));
+          // Subpixel rects: any column within 1px of the shortest counts as the shortest.
+          if (Math.abs(c.y - min) > 1 || bottoms[col] - min > 1)
+            errors.push(
+              `card ${i} at column ${col}, y ${c.y.toFixed(1)}; shortest is ${min.toFixed(1)}`,
+            );
+          bottoms[col] = c.y + c.h;
+        });
+        if (Math.abs(grid.getBoundingClientRect().height - Math.max(...bottoms)) > 1)
+          errors.push('grid height is not the tallest column');
+        return errors;
+      });
+
+    // 549/550 and 849/850 straddle the column-count breakpoints.
+    for (const width of [390, 549, 550, 849, 850, 1280]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/featured_item/');
+      await expect.poll(masonryErrors, { message: `${width}px` }).toEqual([]);
+      for (const [term, count] of [
+        ['website', 59],
+        ['branding', 2],
+        ['', 62],
+      ] as const) {
+        // The hero overlaps the tabs at 550px, as on the source; dispatch skips the hit test.
+        await page.locator(`.filter-nav a[data-term="${term}"]`).dispatchEvent('click');
+        await expect(page.locator(`${ARCHIVE} .col`)).toHaveCount(count);
+        await expect.poll(masonryErrors, { message: `${width}px, filter "${term}"` }).toEqual([]);
+      }
+    }
+  });
+
   for (const { slug, title, count, portfolio } of CATEGORIES) {
     test(`Category ${slug}: H1 "${title}", ${count} cards, no filter nav, no pagination`, async ({
       page,
