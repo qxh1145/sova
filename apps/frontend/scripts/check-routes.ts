@@ -6,6 +6,13 @@ const BASE_URL = (
   process.env.STAGING_URL || `http://localhost:${process.env.PORT || 3000}`
 ).replace(/\/+$/, '');
 const BASE_ORIGIN = new URL(BASE_URL).origin;
+const BYPASS_SECRET = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+
+function requestHeaders(url: string): HeadersInit | undefined {
+  return BYPASS_SECRET && new URL(url).origin === BASE_ORIGIN
+    ? { 'x-vercel-protection-bypass': BYPASS_SECRET }
+    : undefined;
+}
 
 const CONCURRENCY = 8;
 const MAX_HOPS = 5;
@@ -56,6 +63,7 @@ async function checkKeptRoute(path: string, failures: string[]): Promise<void> {
   try {
     const res = await fetch(url, {
       redirect: 'manual',
+      headers: requestHeaders(url),
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
     if (res.status !== 200) {
@@ -88,6 +96,7 @@ async function checkAlias(alias: string, canonical: string, failures: string[]):
     while (true) {
       const res = await fetch(currentUrl, {
         redirect: 'manual',
+        headers: requestHeaders(currentUrl),
         signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
       });
       if (REDIRECT_STATUSES.has(res.status)) {
@@ -136,6 +145,7 @@ async function checkUnknownSlug(slug: string, failures: string[]): Promise<void>
   try {
     const res = await fetch(url, {
       redirect: 'manual',
+      headers: requestHeaders(url),
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
     if (res.status !== 404) {
@@ -152,6 +162,7 @@ async function checkRemovedRoute(route: string, failures: string[]): Promise<voi
   try {
     const res = await fetch(url, {
       redirect: 'manual',
+      headers: requestHeaders(url),
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
     if (res.status !== 404) {

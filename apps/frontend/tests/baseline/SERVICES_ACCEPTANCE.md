@@ -151,7 +151,7 @@ Sau khi deploy lên Vercel:
    STAGING_URL=https://<your-preview>.vercel.app npm run test:e2e:staging
    ```
    (Thêm `VERCEL_AUTOMATION_BYPASS_SECRET=<secret>` nếu project bật SSO / Deployment Protection).
-2. Khi toàn bộ 84 test E2E staging đều PASS (bao gồm acceptance Home, Collections, Services/About, và Utility cho cả `vi` và `en`): điền `PASS` vào cột **Kết quả Staging** cho toàn bộ 134 hàng ở trên.
+2. Điền cột **Kết quả Staging** cho từng hàng: `PASS` khi mọi test `test:e2e:staging` phủ hàng đó đạt; `FAIL (<test id>)` khi một test phủ hàng đó thất bại, kể cả khi test dừng trước bước của hàng.
 
 ## Phụ lục: Quyết định bất thường (Anomaly decisions)
 
