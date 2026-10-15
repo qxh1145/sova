@@ -232,11 +232,11 @@ test.describe('Acceptance: Site shell on real routes', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');
 
-    // Client-nav from VI (/) to EN (/en/home/)
+    // Full document load from VI (/) to EN (/en/home/) across root layouts
     const enLink = page.locator('.header-nav-main .lang-switcher-inline a');
     await expect(enLink).toHaveText('EN');
     await enLink.click();
-    await expect(page).toHaveURL(/\/en\/home\/?$/);
+    await page.waitForURL(/\/en\/home\/?$/, { waitUntil: 'commit' });
 
     // Desktop menu overlay on EN
     const enTrigger = page.locator('.flex-col.hide-for-medium a[aria-controls="main-menu"]');
@@ -256,11 +256,11 @@ test.describe('Acceptance: Site shell on real routes', () => {
     await expect(page.locator('body')).not.toHaveAttribute('data-scroll-locked');
     expect(await getBodyOverflow(page)).not.toBe('hidden');
 
-    // Client-nav back to VI (/)
+    // Full document load back to VI (/) across root layouts
     const viLink = page.locator('.header-nav-main .lang-switcher-inline a');
     await expect(viLink).toHaveText('VI');
     await viLink.click();
-    await expect(page).toHaveURL((url) => url.pathname === '/');
+    await page.waitForURL((url) => url.pathname === '/', { waitUntil: 'commit' });
     await expect(page.locator('.header-nav-main .lang-switcher-inline a')).toHaveText('EN');
 
     // Desktop menu overlay on VI
