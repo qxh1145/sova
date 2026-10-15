@@ -1,9 +1,9 @@
-import { expect, isAllowedUrl, test } from './fixtures';
+import { expect, isAllowedUrl, STAGING, test } from './fixtures';
 
 test('guard allows local and Maps embed hosts', () => {
-  expect(isAllowedUrl('http://localhost:3100/')).toBe(true);
-  expect(isAllowedUrl('https://www.google.com/maps/embed?pb=x')).toBe(true);
-  expect(isAllowedUrl('https://maps.gstatic.com/x.png')).toBe(true);
+  expect(isAllowedUrl('http://localhost:3100/', null)).toBe(true);
+  expect(isAllowedUrl('https://www.google.com/maps/embed?pb=x', null)).toBe(true);
+  expect(isAllowedUrl('https://maps.gstatic.com/x.png', null)).toBe(true);
 });
 
 test('guard blocks other external hosts', () => {
@@ -14,7 +14,7 @@ test('guard blocks other external hosts', () => {
     'https://connect.facebook.net/en_US/fbevents.js',
     'https://analytics.tiktok.com/i18n/pixel/events.js',
   ]) {
-    expect(isAllowedUrl(url), url).toBe(false);
+    expect(isAllowedUrl(url, null), url).toBe(false);
   }
 });
 
@@ -104,9 +104,12 @@ test('staging allowlist allows vercel.live toolbar and blocks it locally', () =>
   expect(isAllowedUrl('https://vercel.live/', stagingHost)).toBe(true);
   expect(isAllowedUrl('https://vercel.live/script.js', stagingHost)).toBe(true);
 
-  // blocked in local mode (no staging host)
-  expect(isAllowedUrl('https://vercel.live/')).toBe(false);
-  expect(isAllowedUrl('https://vercel.live/script.js')).toBe(false);
+  // blocked in local mode; explicit null so STAGING_URL cannot switch the default to staging mode
+  expect(isAllowedUrl('https://vercel.live/', null)).toBe(false);
+  expect(isAllowedUrl('https://vercel.live/script.js', null)).toBe(false);
+
+  // default (no override) path the real guard uses: staging mode only when STAGING_URL is set
+  expect(isAllowedUrl('https://vercel.live/')).toBe(STAGING);
 
   // lookalikes blocked in staging mode
   expect(isAllowedUrl('https://vercel.live.evil.com/', stagingHost)).toBe(false);
