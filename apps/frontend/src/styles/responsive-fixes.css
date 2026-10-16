@@ -13,6 +13,7 @@
     flex-basis: 100%;
   }
 
+  /* 8.2: About stats columns stack (EN #row-998052860, VI #row-1472759901) */
   #row-998052860 #col-1078161984,
   #row-998052860 #col-178856789,
   #row-1472759901 #col-2041784750,
@@ -178,7 +179,9 @@
     line-height: 1;
   }
 
-  /* 8.2: Testimonial right-col negative margin reset on about and service pages */
+  /* 8.2: Testimonial right-col negative margin reset on about and service pages.
+     Pairs in order (VI then EN each): about, seo, website, mobile, branding, email,
+     hosting, vps, storage (IDs from testimonialsIds.ts). */
   #row-417662834 #col-62393978 > .col-inner,
   #row-845168979 #col-1874560149 > .col-inner,
   #row-1970142633 #col-1780721471 > .col-inner,
