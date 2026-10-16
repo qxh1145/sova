@@ -742,6 +742,7 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
       {/* 6. Testimonials Section (No partner section) */}
       <Testimonials
         testimonials={page.testimonials}
+        avatars={assets.testimonialAvatars}
         copy={page.sectionCopy.testimonials}
         art={page.testimonialArt}
         ids={testimonialIds}

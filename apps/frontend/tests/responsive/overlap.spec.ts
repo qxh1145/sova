@@ -1,14 +1,29 @@
 import { test, expect, type Page } from '@playwright/test';
 import manifest from '../baseline/manifest.json';
 import expectedFailures from './expected-failures.json';
+import { TESTIMONIALS_IDS } from '@/components/testimonials/testimonialsIds';
 
-const WIDTHS = [1440, 1199, 1024, 992, 850, 849, 768, 640, 575, 550, 549, 480, 414, 390, 360, 320];
-const ALLOWLIST: { pair: RegExp; route?: RegExp; reason: string }[] = [
+const WIDTHS = [
+  1440, 1280, 1279, 1199, 1024, 992, 850, 849, 768, 640, 575, 550, 549, 480, 414, 390, 360, 320,
+];
+
+const testimonialImageWrappers = Array.from(
+  new Set(
+    Object.values(TESTIMONIALS_IDS).flatMap((locales) => [
+      locales.vi.imageWrapper,
+      locales.en.imageWrapper,
+    ]),
+  ),
+);
+
+const ALLOWLIST: { pair: RegExp; route?: RegExp; minWidth?: number; reason: string }[] = [
   {
-    pair: /div#image_(?:1870701100|1238961925)\.img\.has-hover>div\.img-inner\.dark>img\.attachment-original\.size-original/,
-    route: /^home-(?:vi|en)$/,
+    pair: new RegExp(
+      `(?:div#(?:${testimonialImageWrappers.join('|')})\\.img\\.has-hover>div\\.img-inner\\.dark>img\\.attachment-original\\.size-original VS (?:div#text-\\d+\\.text>h4>strong|div#col-\\d+\\.col\\.small-12>div\\.col-inner>div#text-\\d+\\.text\\.nd-kh))|(?:(?:div#text-\\d+\\.text>h4>strong|div#col-\\d+\\.col\\.small-12>div\\.col-inner>div#text-\\d+\\.text\\.nd-kh) VS div#(?:${testimonialImageWrappers.join('|')})\\.img\\.has-hover>div\\.img-inner\\.dark>img\\.attachment-original\\.size-original)`,
+    ),
+    minWidth: 1280,
     reason:
-      'Decorative testimonial image intentionally layers over quote, including at desktop source parity.',
+      'Decorative testimonial image intentionally layers over quote or eyebrow at desktop source parity.',
   },
 ];
 const EXPECTED_FAILURES: Record<string, string[]> = expectedFailures;
@@ -209,7 +224,10 @@ for (const row of manifest.rows) {
         const pair = hit.sb ? [hit.sa, hit.sb].sort().join(' VS ') : hit.sa;
         if (
           ALLOWLIST.some(
-            (rule) => rule.pair.test(pair) && (!rule.route || rule.route.test(row.key)),
+            (rule) =>
+              rule.pair.test(pair) &&
+              (!rule.route || rule.route.test(row.key)) &&
+              (rule.minWidth === undefined || width >= rule.minWidth),
           )
         )
           continue;

@@ -249,9 +249,10 @@ export interface AboutAssets {
   heroBgImage: AssetRef;
   subtractIcon: AssetRef;
   goalIcons: AssetRef[];
+  testimonialAvatars: AssetRef[];
 }
 
-/** Hero background, capability bullet icon and goal icons (goal order); throws on dangling ids. */
+/** Hero background, capability bullet icon, goal icons and testimonial avatars (placement order); throws on dangling ids. */
 export async function getAboutAssets(
   page: AboutPageContent,
   repository: ContentRepository = getRepository(),
@@ -259,7 +260,10 @@ export async function getAboutAssets(
   // An unset id is named by its field so the error points at it.
   const heroId = page.hero.imageId ?? 'hero.imageId';
   const goalIconIds = page.goals.map((g) => g.iconId ?? `${g.id}.iconId`);
-  const wanted = [heroId, SUBTRACT_ICON_ID, ...goalIconIds];
+  const avatarIds = page.testimonials
+    .map((t) => t.avatarId)
+    .filter((id): id is string => Boolean(id));
+  const wanted = [heroId, SUBTRACT_ICON_ID, ...goalIconIds, ...avatarIds];
   const assets = await repository.getAssets(wanted);
   assertResolved(page.id, missingIds(wanted, assets));
   const byId = (id: EntityId) => assets.find((a) => a.id === id)!;
@@ -267,6 +271,7 @@ export async function getAboutAssets(
     heroBgImage: byId(heroId),
     subtractIcon: byId(SUBTRACT_ICON_ID),
     goalIcons: goalIconIds.map(byId),
+    testimonialAvatars: avatarIds.map(byId),
   };
 }
 
