@@ -16,6 +16,16 @@
 @import './carousel.css';
 @import './mobile-menu.css';
 
+#portfolio-pagination .pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#portfolio-pagination .pagination button.page-numbers {
+  margin-bottom: 0;
+}
+
 body {
   cursor: auto;
 }

@@ -29,6 +29,33 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
     expect(lastPageText?.trim()).toBe('11');
   });
 
+  test('Pagination numbers stay aligned after selection', async ({ page }) => {
+    await page.goto('/du-an');
+    const pagination = page.locator('#portfolio-pagination .pagination');
+    const current = pagination.locator('.page-numbers.current');
+    const page2 = pagination.locator('button.page-numbers', { hasText: '2' });
+    const aligned = async () => {
+      const currentBox = await current.boundingBox();
+      const nextBox = await page2.boundingBox();
+      expect(currentBox).not.toBeNull();
+      expect(nextBox).not.toBeNull();
+      expect(
+        Math.abs(currentBox!.y + currentBox!.height / 2 - nextBox!.y - nextBox!.height / 2),
+      ).toBeLessThan(2);
+    };
+    await aligned();
+    await page2.click();
+    await expect(current).toHaveText('2');
+    const page1 = pagination.getByRole('button', { name: '1', exact: true });
+    const currentBox = await current.boundingBox();
+    const page1Box = await page1.boundingBox();
+    expect(currentBox).not.toBeNull();
+    expect(page1Box).not.toBeNull();
+    expect(
+      Math.abs(currentBox!.y + currentBox!.height / 2 - page1Box!.y - page1Box!.height / 2),
+    ).toBeLessThan(2);
+  });
+
   test('VI /du-an/ hero renders imported description, CTA, breadcrumb and images', async ({
     page,
   }) => {
