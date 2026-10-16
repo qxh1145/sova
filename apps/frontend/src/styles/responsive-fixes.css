@@ -12,6 +12,20 @@
     max-width: 100%;
     flex-basis: 100%;
   }
+
+  #row-998052860 #col-1078161984,
+  #row-998052860 #col-178856789,
+  #row-1472759901 #col-2041784750,
+  #row-1472759901 #col-1961182997 {
+    max-width: 100%;
+    flex-basis: 100%;
+  }
+
+  #row-998052860 #col-1078161984 > .col-inner,
+  #row-1472759901 #col-2041784750 > .col-inner {
+    margin-bottom: 20px;
+    padding-right: 0;
+  }
 }
 
 @media (min-width: 550px) and (max-width: 1199px) {
@@ -68,5 +82,121 @@
   #row-34630575 .row-num p {
     margin-top: 0 !important;
     margin-bottom: 0 !important;
+  }
+
+  /* 8.2: Service list on home */
+  #text-76027534 .dich_vu,
+  #text-363933116 .dich_vu {
+    flex-wrap: wrap;
+    row-gap: 16px;
+    column-gap: 20px;
+  }
+
+  #text-76027534 .dich_vu .num_dv,
+  #text-363933116 .dich_vu .num_dv {
+    width: auto;
+    flex: 0 0 auto;
+  }
+
+  #text-76027534 .dich_vu .num_dv span,
+  #text-363933116 .dich_vu .num_dv span {
+    font-size: clamp(64px, 8vw, 100px);
+    margin-right: 0;
+  }
+
+  #text-76027534 .dich_vu .num_dv span:after,
+  #text-363933116 .dich_vu .num_dv span:after {
+    font-size: clamp(54px, 7vw, 84px);
+    margin-left: 6px;
+  }
+
+  #text-76027534 .dich_vu .name_dv,
+  #text-363933116 .dich_vu .name_dv {
+    width: auto;
+    flex: 1 1 200px;
+    font-size: clamp(24px, 3vw, 34px);
+    margin-bottom: 0;
+  }
+
+  #text-76027534 .dich_vu .mta_dv,
+  #text-363933116 .dich_vu .mta_dv {
+    width: 100%;
+    flex: 1 1 100%;
+    order: 3;
+    font-size: clamp(15px, 1.6vw, 18px);
+  }
+
+  #text-76027534 .dich_vu .nut_xthem,
+  #text-363933116 .dich_vu .nut_xthem {
+    width: auto;
+    flex: 0 0 auto;
+    order: 2;
+  }
+
+  #text-76027534 .dich_vu .nut_xthem a,
+  #text-363933116 .dich_vu .nut_xthem a {
+    font-size: clamp(48px, 6vw, 72px);
+    margin-left: 0;
+  }
+
+  /* 8.2: About stats & hero text flow */
+  #content #banner-588612431,
+  #content #banner-1388775398 {
+    min-height: 480px;
+    padding-top: 0;
+  }
+
+  #banner-588612431 .banner-layers,
+  #banner-1388775398 .banner-layers {
+    position: relative;
+    padding-top: 50px;
+    padding-bottom: 60px;
+  }
+
+  #banner-588612431 .banner-layers > .text-box,
+  #banner-1388775398 .banner-layers > .text-box {
+    position: relative !important;
+    top: auto;
+    left: auto;
+    transform: none !important;
+    width: 100%;
+  }
+
+  #banner-588612431 .page_text_go,
+  #banner-1388775398 .page_text_go {
+    height: auto;
+  }
+
+  #row-1696242377 #col-188830866 > .col-inner,
+  #row-1366495858 #col-766178260 > .col-inner {
+    margin-top: 0;
+  }
+
+  #row-1192570169 .count-num .mb-0,
+  #row-1084136091 .count-num .mb-0 {
+    font-size: clamp(28px, 3.5vw, 48px);
+    line-height: 1;
+  }
+
+  /* 8.2: Testimonial right-col negative margin reset on about and service pages */
+  #row-417662834 #col-62393978 > .col-inner,
+  #row-845168979 #col-1874560149 > .col-inner,
+  #row-1970142633 #col-1780721471 > .col-inner,
+  #row-1264708032 #col-100487888 > .col-inner,
+  #row-1287644938 #col-1669334910 > .col-inner,
+  #row-1827612760 #col-46726236 > .col-inner,
+  #row-1744614563 #col-747664916 > .col-inner,
+  #row-920490087 #col-975785863 > .col-inner,
+  #row-892214119 #col-1087438141 > .col-inner,
+  #row-1555165122 #col-1431510694 > .col-inner,
+  #row-114143651 #col-901618470 > .col-inner,
+  #row-103329289 #col-901269700 > .col-inner,
+  #row-1720812725 #col-2099560627 > .col-inner,
+  #row-1540336113 #col-913191646 > .col-inner,
+  #row-222827155 #col-1978814024 > .col-inner,
+  #row-713008911 #col-204491766 > .col-inner,
+  #row-25758408 #col-1996022406 > .col-inner,
+  #row-2111227539 #col-1460778604 > .col-inner {
+    margin-left: 0;
   }
 }
