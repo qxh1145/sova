@@ -231,8 +231,6 @@ test.describe('Acceptance: Site shell on real routes', () => {
   test('Client navigation between locales preserves overlay operation and restores body overflow', async ({
     page,
   }) => {
-    // A full Home load (up to 38s cold) plus two locale switches and drawer polling.
-    test.setTimeout(180_000);
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');
 
@@ -359,8 +357,6 @@ test.describe('Acceptance: 8 responsive widths viewport checks', () => {
     test(`${kind} (${locale}) responsive widths: no overflow, no duplicate IDs`, async ({
       page,
     }, testInfo) => {
-      // 8 loads here; a cold preview takes 8-38s per load (Home's hero video the slowest).
-      test.setTimeout(180_000);
       const knownIssue = KNOWN_ISSUES.get(path);
 
       for (const width of WIDTHS) {
