@@ -3,21 +3,20 @@
    in a clearly marked parity block outside these media queries. */
 @media (min-width: 550px) and (max-width: 640px) {
   #row-34630575 #col-497116769 {
-    max-width: 100% !important;
-    flex-basis: 100% !important;
+    max-width: 100%;
+    flex-basis: 100%;
     margin-bottom: 20px;
   }
 
   #row-34630575 #col-1096890536 {
-    max-width: 100% !important;
-    flex-basis: 100% !important;
+    max-width: 100%;
+    flex-basis: 100%;
   }
 }
 
-@media (min-width: 550px) and (max-width: 1279px) {
+@media (min-width: 550px) and (max-width: 1199px) {
   #banner-1767683074,
   #banner-1274327306 {
-    padding-top: 0;
     min-height: 420px;
   }
 
@@ -31,9 +30,9 @@
   #banner-1767683074 .banner-layers > .text-box,
   #banner-1274327306 .banner-layers > .text-box {
     position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    transform: none !important;
+    top: auto;
+    left: auto;
+    transform: none;
     width: 100%;
   }
 
@@ -49,8 +48,8 @@
 
   #row-560000867 .count-num .mb-0,
   #row-34630575 .count-num .mb-0 {
-    font-size: clamp(24px, 3.2vw, 42px) !important;
-    line-height: 1 !important;
+    font-size: clamp(24px, 3.2vw, 42px);
+    line-height: 1;
   }
 
   #row-560000867 .row-num,
@@ -69,10 +68,5 @@
   #row-34630575 .row-num p {
     margin-top: 0 !important;
     margin-bottom: 0 !important;
-  }
-
-  #col-90889590 > .col-inner,
-  #col-95430941 > .col-inner {
-    margin-top: 0;
   }
 }

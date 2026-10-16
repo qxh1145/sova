@@ -125,6 +125,7 @@
     "overflow:div>div.icon-box.featured-box>div.icon-box-text.last-reset"
   ],
   "mobile-vi": [
+    "a.item-link>div.box-text>h3.item-title VS div.box-text>div.item-categories>span.item-term",
     "div#col-818589815.col.small-12>div.col-inner>div#text-2744278447.text.nd-kh VS div#image_537706431.img.has-hover>div.img-inner.dark>img.attachment-original.size-original",
     "div#image_537706431.img.has-hover>div.img-inner.dark>img.attachment-original.size-original VS div.col-inner>div#text-1488968211.text>h2"
   ],
@@ -324,8 +325,5 @@
     "div#content>div>p VS li.menu-item.menu-item-type-custom>a.nav-top-link>span",
     "div#content>div>p VS ul.header-nav.header-nav-main>li.menu-item.menu-item-design-default>a.nav-top-link"
   ],
-  "login-vi": [
-    "overflow:div#login.row.justify-content-center",
-    "overflow:document"
-  ]
+  "login-vi": ["overflow:div#login.row.justify-content-center", "overflow:document"]
 }

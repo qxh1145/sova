@@ -41,9 +41,7 @@ async function settle(page: Page) {
         update: () => void;
       };
     };
-    win.gsap?.globalTimeline
-      .getChildren(true, true, true)
-      .forEach((t) => t.progress(1));
+    win.gsap?.globalTimeline.getChildren(true, true, true).forEach((t) => t.progress(1));
     win.ScrollTrigger?.update();
   });
   if (process.env.RESPONSIVE_INJECT_CSS)
