@@ -14,16 +14,13 @@ Tài liệu bàn giao tập trung (CAP-14) phục vụ chuyển tiếp từ Phas
   - **Ticket 4.14 đã sửa**: 8 ô `projects-featured-index` (mọi viewport) trước đây là regression vì lưới lưu trữ dự án xếp theo hàng. Lưới giờ chạy masonry như isotope nguồn (card absolute vào cột ngắn nhất), các ô đã đo lại và chuyển sang `accepted` trong `COLLECTIONS_ACCEPTANCE.md`.
   - **0 ô regression**: mọi regression trong baseline đã được sửa và phân loại lại (ticket 4.13, 4.14, 4.15).
   - **Tổng số ô baseline**: 466 ô được đo đạc và kiểm soát qua 8 viewport tiêu chuẩn (390, 549, 550, 768, 849, 850, 1280, 1440 px). Chi tiết xem tại [tests/baseline/](../apps/frontend/tests/baseline/).
-- **Trạng thái nghiệm thu Staging (Story 11, 2026-10-15): BLOCKED.**
-  - Preview: `https://sova-landing-page-nekpv3o7c-qxh1145s-projects.vercel.app`, build `c6cb11913c6eabebff2afb819f4141a5fa8ccefd` (`develop`). Crawl `check:routes`: 159 URL đạt; `check:brand`: 2316 tệp sạch; baseline local: 467/467 test đạt.
-  - `test:e2e:staging`: 89 đạt, 6 thất bại. Trong 482 ô Staging (466 ô baseline ở mục trên + 16 hàng `SHELL_ACCEPTANCE.md`; 467 là số test baseline local, không phải số ô), 471 `PASS`, 11 `FAIL (<test id>)`, 0 đang chờ. Hàng có bước bị bỏ qua do test dừng giữa chừng cũng ghi `FAIL` theo test đó. 6 test thất bại:
-    - `acceptance.spec.ts:61` Header sticky 90→70 motion: `page.goto('/en/home/')` timeout 30s ở 1440px (bug shell: navigation timeout).
-    - `acceptance.spec.ts:228` Client navigation between locales: assertion `toHaveURL` sau khi bấm VI (`:262`) thất bại sau 5s (bug shell: locale navigation).
-    - `acceptance.spec.ts:350` home (vi) responsive widths: `page.goto('/')` timeout ở 850px; 1280/1440 không chạy (bug Home: viewport timeout).
-    - `acceptance.spec.ts:350` home (en) responsive widths: `page.goto('/en/home/')` timeout ở 1280px; 1440 không chạy (bug Home: viewport timeout).
-    - `acceptance.spec.ts:283` staging trả 404 cho `/dev-fixtures/shell/default/` nhưng console guard bắt lỗi 404 (lỗi harness, không gắn ô nào).
-    - `guard.spec.ts:102` self-test vercel.live khẳng định hành vi local khi chạy staging (lỗi harness, không gắn ô nào).
-  - Bug đã ghi trong ticket tree cục bộ (`_bmad-output/`, không commit) dưới epic sở hữu: shell (2), Home (1), fidelity-and-handoff (2). Phase A chưa đóng; không đưa Phase B vào cổng phát hành khi chưa xử lý và chạy lại staging.
+- **Trạng thái nghiệm thu Staging (Story 11, chạy lại 2026-10-15): BLOCKED.**
+  - Staging: alias `https://sova-landing-page-git-develop-qxh1145s-projects.vercel.app`, phục vụ deployment `https://sova-landing-page-rak81r175-qxh1145s-projects.vercel.app`, build `4d2cffa85f8b4371dc4b4b9d84568bffd66ba252` (`develop`, đã xác nhận qua Vercel API trước khi chạy). Crawl `check:routes`: 159 URL đạt; `check:brand`: 2314 tệp sạch; baseline local `baseline:sova` tại `4d2cffa`: 467/467 test đạt.
+  - `test:e2e:staging`: 94 đạt, 3 thất bại (97 test). Trong 482 ô Staging (466 ô baseline ở mục trên + 16 hàng `SHELL_ACCEPTANCE.md`; số test baseline local không phải số ô), 475 `PASS`, 7 `FAIL (<test id>)`, 0 đang chờ. Hàng có bước bị bỏ qua do test dừng giữa chừng cũng ghi `FAIL` theo test đó. 3 test thất bại:
+    - `acceptance.spec.ts:231` Client navigation between locales: `page.waitForURL` (`:265`) sau khi bấm VI vượt timeout 30s; ô SHELL `vi 1440`. Chạy lại riêng test này thì đạt (bug shell 14: chuyển ngôn ngữ chập chờn).
+    - `acceptance.spec.ts:357` service (en) responsive widths: `page.goto('/en/app-mobile-development/')` timeout ở 550px; 768–1440 không chạy; 6 ô SERVICES `mobile-en` 550–1440. Chạy lại riêng: timeout ở 849px (bug services-and-about 13).
+    - `acceptance.spec.ts:357` project-detail (vi) responsive widths: `page.goto` trên `/featured_item/an-phat-cong-ty-co-phan-cong-nghe-thuong-mai-an-phat/` timeout ở 1280px; 1440 không chạy. Route này không có hàng trong `PROJECT_DETAIL_ACCEPTANCE.md` nên không gắn ô nào. Chạy lại riêng: lại timeout ở 1280px (bug collections 16).
+  - Cả 3 lỗi cùng loại với ticket 7.14 (Home): trang nặng trên preview nguội, 8 lần tải trong ngân sách 30s của một test. 6 lỗi của lần chạy đầu trên `c6cb119` (7.14, 7.15, 7.16, 2.13) không tái hiện. Bug ghi trong ticket tree cục bộ (`_bmad-output/`, không commit). Phase A chưa đóng; không đưa Phase B vào cổng phát hành khi chưa xử lý và chạy lại staging.
 
 ## 2. Bảng bất thường (Anomaly register)
 
