@@ -9,6 +9,8 @@ if (process.env.npm_lifecycle_event === 'test:e2e:staging' && !stagingUrl) {
 
 export default defineConfig({
   testDir: './tests/e2e',
+  // Staging loads go over the network to a cold preview; 30s does not hold a full page load there.
+  timeout: stagingUrl ? 180_000 : 30_000,
   forbidOnly: !!process.env.CI,
   reporter: process.env.CI ? 'github' : 'list',
   use: {

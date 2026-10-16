@@ -357,8 +357,6 @@ test.describe('Acceptance: 8 responsive widths viewport checks', () => {
     test(`${kind} (${locale}) responsive widths: no overflow, no duplicate IDs`, async ({
       page,
     }, testInfo) => {
-      // Home's autoplay hero video holds back `load` for 30s+ on a cold preview; 8 loads here.
-      if (kind === 'home') test.setTimeout(180_000);
       const knownIssue = KNOWN_ISSUES.get(path);
 
       for (const width of WIDTHS) {
