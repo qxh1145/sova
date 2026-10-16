@@ -58,7 +58,6 @@ export function NavDropdown({
         }}
       >
         <span>{label}</span>
-        <i className="icon-angle-down" aria-hidden="true" />
       </a>
       {children}
     </li>
