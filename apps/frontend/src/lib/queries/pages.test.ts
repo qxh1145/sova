@@ -346,13 +346,16 @@ test('getHomeAssets throws on dangling asset id but passes through status: missi
   ).toBe(true);
 });
 
-test('getAboutAssets resolves hero background, subtract icon and goal icons in goal order', async () => {
+test('getAboutAssets resolves hero background, subtract icon, goal icons, and testimonial avatars in order', async () => {
   repository = repoWith();
   const about = await getAboutPage('vi');
   const result = await getAboutAssets(about!);
   expect(result.heroBgImage.id).toBe(about!.hero.imageId);
   expect(result.subtractIcon.src).toBe('/wp-content/uploads/2024/02/Subtract.svg');
   expect(result.goalIcons.map((a) => a.id)).toEqual(about!.goals.map((g) => g.iconId));
+  expect(result.testimonialAvatars.map((a) => a.id)).toEqual(
+    about!.testimonials.map((t) => t.avatarId).filter(Boolean),
+  );
 });
 
 test('getAboutAssets rejects on a dangling goal icon id', async () => {
@@ -361,6 +364,17 @@ test('getAboutAssets rejects on a dangling goal icon id', async () => {
   const goals = about!.goals.map((g, i) => (i === 2 ? { ...g, iconId: 'asset-nope' } : g));
   await expect(getAboutAssets({ ...about!, goals })).rejects.toThrow(
     'about-vi references missing ids: asset-nope',
+  );
+});
+
+test('getAboutAssets rejects on a dangling testimonial avatar id', async () => {
+  repository = repoWith();
+  const about = await getAboutPage('vi');
+  const testimonials = about!.testimonials.map((t, i) =>
+    i === 0 ? { ...t, avatarId: 'asset-dangling-avatar' } : t,
+  );
+  await expect(getAboutAssets({ ...about!, testimonials })).rejects.toThrow(
+    'about-vi references missing ids: asset-dangling-avatar',
   );
 });
 

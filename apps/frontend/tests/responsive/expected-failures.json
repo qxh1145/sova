@@ -4,22 +4,21 @@
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
   ],
   "about-en": [
-    "div#image_2128992176.img.has-hover>div.img-inner.dark>img.attachment-original.size-original VS div#text-3654490439.text>h4>strong",
-    "div#image_2128992176.img.has-hover>div.img-inner.dark>img.attachment-original.size-original VS div#text-3970224626.text>h3>strong",
-    "div#image_2128992176.img.has-hover>div.img-inner.dark>img.attachment-original.size-original VS div.icon-box-text.last-reset>div#text-3970224626.text>p",
     "overflow:div#col-1915624184.col.col-no-hover>div.col-inner>div#text-3919715460.text.text-target1",
     "overflow:div.col-inner>div#text-3919715460.text.text-target1>p",
     "overflow:div.text>h3>span",
     "overflow:div.ux-menu-link.flex>a.ux-menu-link__link.flex>span.ux-menu-link__text",
-    "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
+    "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex",
+    "overflow:div.text-box-content.text>div.text-inner.text-center>div#row-705326161.row.align-middle",
+    "overflow:div.text-inner.text-center>div#row-705326161.row.align-middle>div#col-817038947.col.medium-6",
+    "overflow:div.text-inner.text-center>div#row-705326161.row.align-middle>div#col-839642777.col.medium-6"
   ],
   "about-vi": [
-    "div#col-1677345672.col.small-12>div.col-inner>div#text-1992447592.text.nd-kh VS div#image_38454166.img.has-hover>div.img-inner.dark>img.attachment-original.size-original",
-    "div#image_38454166.img.has-hover>div.img-inner.dark>img.attachment-original.size-original VS div#text-1047436997.text>h3>strong",
-    "div#image_38454166.img.has-hover>div.img-inner.dark>img.attachment-original.size-original VS div#text-348727923.text>h4>strong",
-    "div#image_38454166.img.has-hover>div.img-inner.dark>img.attachment-original.size-original VS div.icon-box-text.last-reset>div#text-1047436997.text>p",
     "overflow:div#col-564521486.col.col-no-hover>div.col-inner>div#text-860603892.text.text-target1",
-    "overflow:div.col-inner>div#text-860603892.text.text-target1>p"
+    "overflow:div.col-inner>div#text-860603892.text.text-target1>p",
+    "overflow:div.text-box-content.text>div.text-inner.text-center>div#row-387512971.row.align-middle",
+    "overflow:div.text-inner.text-center>div#row-387512971.row.align-middle>div#col-1855465827.col.medium-6",
+    "overflow:div.text-inner.text-center>div#row-387512971.row.align-middle>div#col-2131364799.col.medium-6"
   ],
   "home-vi": [
     "a.item-link>div.box-text>h3.item-title VS div.box-text>div.item-categories>span.item-term"
@@ -33,7 +32,6 @@
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
   ],
   "seo-en": [
-    "div#image_774589482.img.has-hover>div.img-inner.dark>img.attachment-original.size-original VS div#text-4052832496.text>h4>strong",
     "div.col-inner>div#text-1253327573.text>h2 VS div.col-inner>div#text-2790902154.text>h2",
     "overflow:div.icon-box.featured-box>div.icon-box-text.last-reset>h5",
     "overflow:div.ux-menu-link.flex>a.ux-menu-link__link.flex>span.ux-menu-link__text",
@@ -41,7 +39,6 @@
     "overflow:div>div.icon-box.featured-box>div.icon-box-text.last-reset"
   ],
   "website-en": [
-    "div#image_884520639.img.has-hover>div.img-inner.dark>img.attachment-original.size-original VS div#text-2759206197.text>h4>strong",
     "overflow:div#text-247861760.text>h3>span",
     "overflow:div.col-inner>div.icon-box.featured-box>div.icon-box-text.last-reset",
     "overflow:div.icon-box-text.last-reset>div#text-247861760.text>h3",
@@ -50,17 +47,14 @@
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
   ],
   "seo-vi": [
-    "a.item-link>div.box-text>h3.item-title VS div.box-text>div.item-categories>span.item-term",
-    "div#col-1422218239.col.small-12>div.col-inner>div#text-1500989031.text.nd-kh VS div#image_226410370.img.has-hover>div.img-inner.dark>img.attachment-original.size-original"
+    "a.item-link>div.box-text>h3.item-title VS div.box-text>div.item-categories>span.item-term"
   ],
   "website-vi": [
     "a.item-link>div.box-text>h3.item-title VS div.box-text>div.item-categories>span.item-term",
-    "div#col-580135037.col.small-12>div.col-inner>div#text-2400365812.text.nd-kh VS div#image_1900833344.img.has-hover>div.img-inner.dark>img.attachment-original.size-original",
     "div.custom-contact-form>p>span.form-label VS div.icon-box-text.last-reset>div#text-188971599.text>h3",
     "div.icon-box-text.last-reset>div#text-188971599.text>h3 VS p>span>label"
   ],
   "mobile-en": [
-    "div#image_1284626495.img.has-hover>div.img-inner.dark>img.attachment-original.size-original VS div#text-970536821.text>h4>strong",
     "overflow:div#text-2811376062.text>div>p",
     "overflow:div#text-3159529508.text>div>p",
     "overflow:div#text-4092833135.text>h3>span",
@@ -80,7 +74,6 @@
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
   ],
   "branding-en": [
-    "div#image_1092981218.img.has-hover>div.img-inner.dark>img.attachment-original.size-original VS div#text-2111398339.text>h4>strong",
     "div.col-inner>p>a.but-lh VS div.icon-box.featured-box>div.icon-box-text.last-reset>h5",
     "overflow:div.icon-box.featured-box>div.icon-box-text.last-reset>h5",
     "overflow:div.ux-menu-link.flex>a.ux-menu-link__link.flex>span.ux-menu-link__text",
@@ -88,16 +81,13 @@
     "overflow:div>div.icon-box.featured-box>div.icon-box-text.last-reset"
   ],
   "mobile-vi": [
-    "a.item-link>div.box-text>h3.item-title VS div.box-text>div.item-categories>span.item-term",
-    "div#col-818589815.col.small-12>div.col-inner>div#text-2744278447.text.nd-kh VS div#image_537706431.img.has-hover>div.img-inner.dark>img.attachment-original.size-original"
+    "a.item-link>div.box-text>h3.item-title VS div.box-text>div.item-categories>span.item-term"
   ],
   "branding-vi": [
     "a.item-link>div.box-text>h3.item-title VS div.box-text>div.item-categories>span.item-term",
-    "div#col-3641444.col.small-12>div.col-inner>div#text-4199205319.text.nd-kh VS div#image_1640056916.img.has-hover>div.img-inner.dark>img.attachment-original.size-original",
     "div.col-inner>p>a.but-lh VS div.icon-box.featured-box>div.icon-box-text.last-reset>h5"
   ],
   "email-vi": [
-    "div#col-794361294.col.small-12>div.col-inner>div#text-1628036239.text.nd-kh VS div#image_331740629.img.has-hover>div.img-inner.dark>img.attachment-original.size-original",
     "overflow:div#text-708914999.text>div>p",
     "overflow:div.col-inner>div.icon-box.featured-box>div.icon-box-text.last-reset",
     "overflow:div.icon-box-text.last-reset>div#text-30817619.text>h3",
@@ -107,7 +97,6 @@
     "overflow:div.icon-box.featured-box>div.icon-box-text.last-reset>div#text-708914999.text"
   ],
   "email-en": [
-    "div#image_412222799.img.has-hover>div.img-inner.dark>img.attachment-original.size-original VS div#text-3202874702.text>h4>strong",
     "overflow:div#text-2257666443.text>div>p",
     "overflow:div.col-inner>div.icon-box.featured-box>div.icon-box-text.last-reset",
     "overflow:div.icon-box-text.last-reset>div#text-1294996525.text>h3",
@@ -118,30 +107,22 @@
     "overflow:div.ux-menu-link.flex>a.ux-menu-link__link.flex>span.ux-menu-link__text",
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
   ],
-  "hosting-vi": [
-    "div#col-834795930.col.small-12>div.col-inner>div#text-299155815.text.nd-kh VS div#image_491749075.img.has-hover>div.img-inner.dark>img.attachment-original.size-original"
-  ],
+  "hosting-vi": [],
   "hosting-en": [
-    "div#image_562855796.img.has-hover>div.img-inner.dark>img.attachment-original.size-original VS div#text-2549990629.text>h4>strong",
     "overflow:div.ux-menu-link.flex>a.ux-menu-link__link.flex>span.ux-menu-link__text",
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
   ],
-  "vps-vi": [
-    "div#col-274249864.col.small-12>div.col-inner>div#text-2056376816.text.nd-kh VS div#image_633170927.img.has-hover>div.img-inner.dark>img.attachment-original.size-original"
-  ],
+  "vps-vi": [],
   "vps-en": [
-    "div#image_1147461546.img.has-hover>div.img-inner.dark>img.attachment-original.size-original VS div#text-2611397371.text>h4>strong",
     "overflow:div.ux-menu-link.flex>a.ux-menu-link__link.flex>span.ux-menu-link__text",
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
   ],
   "storage-en": [
-    "div#image_1214714786.img.has-hover>div.img-inner.dark>img.attachment-original.size-original VS div#text-3882111148.text>h4>strong",
     "overflow:div.ux-menu-link.flex>a.ux-menu-link__link.flex>span.ux-menu-link__text",
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
   ],
   "storage-vi": [
     "a.item-link>div.box-text>h3.item-title VS div.box-text>div.item-categories>span.item-term",
-    "div#col-392856623.col.small-12>div.col-inner>div#text-127529271.text.nd-kh VS div#image_1272530354.img.has-hover>div.img-inner.dark>img.attachment-original.size-original",
     "div.col-inner>p>a.but-lh VS div.icon-box.featured-box>div.icon-box-text.last-reset>h5"
   ],
   "profile-vi": [

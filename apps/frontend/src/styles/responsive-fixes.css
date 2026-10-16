@@ -178,10 +178,14 @@
     font-size: clamp(28px, 3.5vw, 48px);
     line-height: 1;
   }
+}
 
-  /* 8.2: Testimonial right-col negative margin reset on about and service pages.
-     Pairs in order (VI then EN each): about, seo, website, mobile, branding, email,
-     hosting, vps, storage (IDs from testimonialsIds.ts). */
+/* 8.3: Testimonial right-col negative margin reset on home, about and service pages.
+   Pairs in order (VI then EN each): home, about, seo, website, mobile, branding, email,
+   hosting, vps, storage (IDs from testimonialsIds.ts). */
+@media (min-width: 550px) and (max-width: 1279px) {
+  #row-1068036605 #col-55011168 > .col-inner,
+  #row-437563557 #col-863261912 > .col-inner,
   #row-417662834 #col-62393978 > .col-inner,
   #row-845168979 #col-1874560149 > .col-inner,
   #row-1970142633 #col-1780721471 > .col-inner,
