@@ -4,7 +4,7 @@ import expectedFailures from './expected-failures.json';
 import { TESTIMONIALS_IDS } from '@/components/testimonials/testimonialsIds';
 
 const WIDTHS = [
-  1440, 1279, 1199, 1024, 992, 850, 849, 768, 640, 575, 550, 549, 480, 414, 390, 360, 320,
+  1440, 1280, 1279, 1199, 1024, 992, 850, 849, 768, 640, 575, 550, 549, 480, 414, 390, 360, 320,
 ];
 
 const testimonialImageWrappers = Array.from(

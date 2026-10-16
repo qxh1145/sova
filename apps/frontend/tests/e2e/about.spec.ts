@@ -1,6 +1,11 @@
 import { expect, expectNoDuplicateIds, test } from './fixtures';
 import { aboutPages } from '../../src/data/pages/about';
 import { stats } from '../../src/data/stats';
+import { testimonials } from '../../src/data/testimonials';
+import { assets } from '../../src/data/assets';
+
+const testimonialMap = new Map(testimonials.map((t) => [`${t.locale}:${t.id}`, t]));
+const assetMap = new Map(assets.map((a) => [a.id, a]));
 
 const ABOUT_ROUTES = [
   {
@@ -261,6 +266,11 @@ test.describe('About Pages (Story 5.10)', () => {
         const expected = config.expectedTestimonials[i];
         await expect(slide.locator('h3 strong')).toHaveText(expected.person);
         await expect(slide.locator('.nd-kh')).toContainText(expected.quoteSnippet);
+        const item = testimonialMap.get(`${config.locale}:${record.testimonialIds[i]}`)!;
+        await expect(slide.locator('.icon-box-img img')).toHaveAttribute(
+          'src',
+          assetMap.get(item.avatarId!)!.src,
+        );
       }
 
       // Verify no partner section
