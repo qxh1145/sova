@@ -68,6 +68,8 @@ Baseline evidence: `apps/frontend/baseline/<route-key>/<viewport>.png|json` (`np
 | A61 | EN home omits the empty "INSIGHT / Get the Latest Updates" posts shell and its "Explore More" button: the EN source renders the heading with no cards; Sova omits a section whose resolved list is empty (epic-home decision 2026-10-06, same rule as A22(e) for EN projects). Registered in story 7.9, which found the omission had no register row. | `en/home/index.html` latest-posts block; `_bmad-output/initiative-sova-landing-page/epic-home/epic-home.md:50`; baseline `home-en` | epic-home | accepted (story 7.9) |
 | A62 | Footer rebrand scrub: the source footer shows the ERAS logo, the Eras company name, address, hotline and email, and a bottom bar with Facebook / Instagram / Tiktok / X links on every page; Sova renders the SiteSettings wordmark and placeholder contacts ("Địa chỉ đang cập nhật", 0000 000 000, hello@example.com) and a copyright bar without social links, because SiteSettings holds no Sova contacts or social accounts (same cause as the dropped Fanpage link in A59). Decision (owner, 2026-10-15, story 7.9): accepted; add the row when Sova social accounts exist. | source footer on every route; `Footer.tsx`; every baseline key | epic-fidelity-and-handoff | accepted (story 7.9) |
 
+| A63 | Responsive defects below 1280px: overlaps on 30/56 routes and login 12px overflow; staged fixes in `responsive-fixes.css`. | responsive audit `evidence/results.json`; `tests/responsive/overlap.spec.ts` | epic-responsive-fix | open (epic 8, story 8.1 gate) |
+
 ## Known baseline capture differences
 
 The harness never touches the network, so the baseline differs from the live site in known ways. These are not Sova defects.
