@@ -136,12 +136,6 @@
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
   ],
   "projects-en": [
-    "div#col-1494034684.col.medium-6>div.col-inner>div#text-4030475959.text VS div#logo.flex-col.logo>a>span.header-wordmark",
-    "div#logo.flex-col.logo>a>span.header-wordmark VS div#text-1484206156.text.kanit-font>h1.service-hero-heading>span.typewriter",
-    "div#logo.flex-col.logo>a>span.header-wordmark VS div#text-4030475959.text>span>a",
-    "div#portfolio-wrapper.portfolio-element-wrapper.has-filtering>div#portfolio-results.row.row-isotope>p VS div.col-inner>div#text-1022183224.text>a.but-lh",
-    "div#text-1484206156.text.kanit-font>h1.service-hero-heading>span.typewriter VS ul.header-nav.header-nav-main>li.menu-item.menu-item-design-default>a.nav-top-link",
-    "div.col-inner>div#text-1289522904.text>div VS ul.nav.nav-left>li.active>a",
     "overflow:div.text-box-content.text>div.text-inner.text-center>div#row-559783735.row.align-middle",
     "overflow:div.text-inner.text-center>div#row-559783735.row.align-middle>div#col-1322618720.col.medium-6",
     "overflow:div.text-inner.text-center>div#row-559783735.row.align-middle>div#col-1494034684.col.medium-6",
@@ -149,66 +143,29 @@
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
   ],
   "projects-vi": [
-    "div#col-617069775.col.medium-6>div.col-inner>div#text-1849014574.text VS div#logo.flex-col.logo>a>span.header-wordmark",
-    "div#logo.flex-col.logo>a>span.header-wordmark VS div#text-1849014574.text>span>a",
-    "div#logo.flex-col.logo>a>span.header-wordmark VS div#text-754739457.text.kanit-font>h1.service-hero-heading>span.typewriter",
-    "div#text-754739457.text.kanit-font>h1.service-hero-heading>span.typewriter VS li.menu-item.menu-item-type-custom>a.nav-top-link>span",
-    "div#text-754739457.text.kanit-font>h1.service-hero-heading>span.typewriter VS ul.header-nav.header-nav-main>li.menu-item.menu-item-design-default>a.nav-top-link",
-    "div.box-image>div>img.attachment-original.size-original VS div.col-inner>div#text-4066416834.text>a.but-lh",
-    "div.col-inner>div#text-4091887209.text>div VS ul.nav.nav-left>li.active>a",
-    "div.col-inner>div#text-4091887209.text>div VS ul.nav.nav-left>li>a",
     "overflow:div.text-box-content.text>div.text-inner.text-center>div#row-393023394.row.align-middle",
     "overflow:div.text-inner.text-center>div#row-393023394.row.align-middle>div#col-1446619441.col.medium-6",
     "overflow:div.text-inner.text-center>div#row-393023394.row.align-middle>div#col-617069775.col.medium-6"
   ],
   "projects-category-branding": [
-    "div#col-1858177944.col.medium-6>div.col-inner>div#text-1312901196.text VS div#logo.flex-col.logo>a>span.header-wordmark",
-    "div#logo.flex-col.logo>a>span.header-wordmark VS div#text-1312901196.text>span>a",
-    "div#logo.flex-col.logo>a>span.header-wordmark VS div#text-3643032278.text.kanit-font>h1.service-hero-heading>span.typewriter",
-    "div#text-3643032278.text.kanit-font>h1.service-hero-heading>span.typewriter VS li.menu-item.menu-item-type-custom>a.nav-top-link>span",
-    "div#text-3643032278.text.kanit-font>h1.service-hero-heading>span.typewriter VS ul.header-nav.header-nav-main>li.menu-item.menu-item-design-default>a.nav-top-link",
-    "div.box-image>div>img.attachment-original.size-original VS div.col-inner>div#text-2918825896.text>a.but-lh",
-    "div.box-image>div>img.attachment-original.size-original VS div.col-inner>div#text-3606226640.text>div",
     "div.box-text-inner>p.uppercase.portfolio-box-category>span.show-on-hover VS div.box-text.text-center>div.box-text-inner>h6.uppercase.portfolio-box-title",
     "overflow:div.text-box-content.text>div.text-inner.text-center>div#row-1965149933.row.align-middle",
     "overflow:div.text-inner.text-center>div#row-1965149933.row.align-middle>div#col-1858177944.col.medium-6",
     "overflow:div.text-inner.text-center>div#row-1965149933.row.align-middle>div#col-762608738.col.medium-6"
   ],
   "projects-category-mobile-app": [
-    "div#col-1040171774.col.medium-6>div.col-inner>div#text-802611617.text VS div#logo.flex-col.logo>a>span.header-wordmark",
-    "div#logo.flex-col.logo>a>span.header-wordmark VS div#text-4093867166.text.kanit-font>h1.service-hero-heading>span.typewriter",
-    "div#logo.flex-col.logo>a>span.header-wordmark VS div#text-802611617.text>span>a",
-    "div#text-4093867166.text.kanit-font>h1.service-hero-heading>span.typewriter VS li.menu-item.menu-item-type-custom>a.nav-top-link>span",
-    "div#text-4093867166.text.kanit-font>h1.service-hero-heading>span.typewriter VS ul.header-nav.header-nav-main>li.menu-item.menu-item-design-default>a.nav-top-link",
-    "div.box-image>div>img.attachment-original.size-original VS div.col-inner>div#text-2172446531.text>div",
-    "div.box-image>div>img.attachment-original.size-original VS div.col-inner>div#text-4736212.text>a.but-lh",
     "div.box-text-inner>p.uppercase.portfolio-box-category>span.show-on-hover VS div.box-text.text-center>div.box-text-inner>h6.uppercase.portfolio-box-title",
     "overflow:div.text-box-content.text>div.text-inner.text-center>div#row-1716046406.row.align-middle",
     "overflow:div.text-inner.text-center>div#row-1716046406.row.align-middle>div#col-1040171774.col.medium-6",
     "overflow:div.text-inner.text-center>div#row-1716046406.row.align-middle>div#col-1536317594.col.medium-6"
   ],
   "projects-featured-index": [
-    "div#col-1371196074.col.medium-6>div.col-inner>div#text-4132634771.text VS div#logo.flex-col.logo>a>span.header-wordmark",
-    "div#logo.flex-col.logo>a>span.header-wordmark VS div#text-1186201538.text.kanit-font>h1.service-hero-heading>span.typewriter",
-    "div#logo.flex-col.logo>a>span.header-wordmark VS div#text-4132634771.text>span>a",
-    "div#text-1186201538.text.kanit-font>h1.service-hero-heading>span.typewriter VS li.menu-item.menu-item-type-custom>a.nav-top-link>span",
-    "div#text-1186201538.text.kanit-font>h1.service-hero-heading>span.typewriter VS ul.header-nav.header-nav-main>li.menu-item.menu-item-design-default>a.nav-top-link",
     "div.box-text-inner>p.uppercase.portfolio-box-category>span.show-on-hover VS div.box-text.text-center>div.box-text-inner>h6.uppercase.portfolio-box-title",
-    "div.col-inner>div#text-1287495552.text>div VS ul.nav.nav-left>li.active>a",
-    "div.col-inner>div#text-942492924.text>a.but-lh VS ul.nav.nav-left>li.active>a",
-    "div.col-inner>div#text-942492924.text>a.but-lh VS ul.nav.nav-left>li>a",
     "overflow:div.text-box-content.text>div.text-inner.text-center>div#row-770104952.row.align-middle",
     "overflow:div.text-inner.text-center>div#row-770104952.row.align-middle>div#col-1371196074.col.medium-6",
     "overflow:div.text-inner.text-center>div#row-770104952.row.align-middle>div#col-801607298.col.medium-6"
   ],
   "projects-category-website": [
-    "div#col-1898983928.col.medium-6>div.col-inner>div#text-1129091476.text VS div#logo.flex-col.logo>a>span.header-wordmark",
-    "div#logo.flex-col.logo>a>span.header-wordmark VS div#text-1129091476.text>span>a",
-    "div#logo.flex-col.logo>a>span.header-wordmark VS div#text-1283775997.text.kanit-font>h1.service-hero-heading>span.typewriter",
-    "div#text-1283775997.text.kanit-font>h1.service-hero-heading>span.typewriter VS li.menu-item.menu-item-type-custom>a.nav-top-link>span",
-    "div#text-1283775997.text.kanit-font>h1.service-hero-heading>span.typewriter VS ul.header-nav.header-nav-main>li.menu-item.menu-item-design-default>a.nav-top-link",
-    "div.box-image>div>img.attachment-original.size-original VS div.col-inner>div#text-3601946220.text>div",
-    "div.box-image>div>img.attachment-original.size-original VS div.col-inner>div#text-3645802221.text>a.but-lh",
     "div.box-text-inner>p.uppercase.portfolio-box-category>span.show-on-hover VS div.box-text.text-center>div.box-text-inner>h6.uppercase.portfolio-box-title",
     "overflow:div.text-box-content.text>div.text-inner.text-center>div#row-817686983.row.align-middle",
     "overflow:div.text-inner.text-center>div#row-817686983.row.align-middle>div#col-1550218319.col.medium-6",
@@ -235,9 +192,7 @@
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
   ],
   "project-detail-thp": [
-    "div#logo.flex-col.logo>a>span.header-wordmark VS div.col-inner>div#text-2719039642.text.kanit-font>h1.current-post-title",
     "div.box-text-inner>p.uppercase.portfolio-box-category>span.show-on-hover VS div.box-text.text-center>div.box-text-inner>h6.uppercase.portfolio-box-title",
-    "div.col-inner>div#text-2719039642.text.kanit-font>h1.current-post-title VS ul.header-nav.header-nav-main>li.menu-item.menu-item-design-default>a.nav-top-link",
     "overflow:div.text-box-content.text>div.text-inner.text-center>div#row-814428364.row",
     "overflow:div.text-inner.text-center>div#row-814428364.row>div#col-345468821.col.medium-11"
   ],
@@ -246,9 +201,7 @@
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
   ],
   "project-detail-no-gallery": [
-    "div#logo.flex-col.logo>a>span.header-wordmark VS div.col-inner>div#text-2719039642.text.kanit-font>h1.current-post-title",
     "div.box-text-inner>p.uppercase.portfolio-box-category>span.show-on-hover VS div.box-text.text-center>div.box-text-inner>h6.uppercase.portfolio-box-title",
-    "div.col-inner>div#text-2719039642.text.kanit-font>h1.current-post-title VS ul.header-nav.header-nav-main>li.menu-item.menu-item-design-default>a.nav-top-link",
     "overflow:div.text-box-content.text>div.text-inner.text-center>div#row-814428364.row",
     "overflow:div.text-inner.text-center>div#row-814428364.row>div#col-345468821.col.medium-11"
   ],
