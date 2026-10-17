@@ -113,7 +113,8 @@ function measure() {
   };
   const boxes: Box[] = [];
   const push = (el: Element, r: DOMRect, kind: string, text: string) => {
-    const c = clipOf(el.parentElement);
+    // overflow clips an element's content, so text is clipped by its own parent too (e.g. line-clamp)
+    const c = kind === 'text' ? clipOf(el) : clipOf(el.parentElement);
     const l = Math.max(r.left, c.l),
       t = Math.max(r.top, c.t),
       rr = Math.min(r.right, c.r),
