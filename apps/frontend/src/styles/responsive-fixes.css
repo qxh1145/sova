@@ -207,3 +207,92 @@
     margin-left: 0;
   }
 }
+
+/* 8.4: Project archive heroes top padding below 550 to clear 90px absolute header */
+@media (max-width: 549px) {
+  #banner-2058171634 .banner-layers,
+  #banner-2108105581 .banner-layers,
+  #banner-1513224978 .banner-layers,
+  #banner-1437243260 .banner-layers,
+  #banner-819223527 .banner-layers,
+  #banner-669224451 .banner-layers {
+    padding-top: 100px;
+  }
+}
+
+/* 8.4: Project archive & detail heroes flow below 1280.
+   Banners: VI (2058171634), EN (2108105581), featured index (1513224978),
+   branding (1437243260), mobile-app (819223527), website (669224451),
+   detail (1027010616). Normal flow + top padding clears 90px header and keeps
+   description/CTA from spilling onto portfolio filter below. */
+@media (min-width: 550px) and (max-width: 1279px) {
+  #wrapper #banner-2058171634,
+  #wrapper #banner-2108105581,
+  #wrapper #banner-1513224978,
+  #wrapper #banner-1437243260,
+  #wrapper #banner-819223527,
+  #wrapper #banner-669224451 {
+    min-height: 400px;
+    padding-top: 0;
+    height: auto;
+  }
+
+  #wrapper #banner-1027010616 {
+    min-height: 260px;
+    padding-top: 0;
+    height: auto;
+  }
+
+  #banner-2058171634 .banner-inner,
+  #banner-2108105581 .banner-inner,
+  #banner-1513224978 .banner-inner,
+  #banner-1437243260 .banner-inner,
+  #banner-819223527 .banner-inner,
+  #banner-669224451 .banner-inner,
+  #banner-1027010616 .banner-inner {
+    position: relative;
+    height: auto;
+  }
+
+  #banner-2058171634 .banner-layers,
+  #banner-2108105581 .banner-layers,
+  #banner-1513224978 .banner-layers,
+  #banner-1437243260 .banner-layers,
+  #banner-819223527 .banner-layers,
+  #banner-669224451 .banner-layers {
+    position: relative;
+    height: auto;
+    padding-top: 100px;
+    padding-bottom: 60px;
+  }
+
+  #banner-1027010616 .banner-layers {
+    position: relative;
+    height: auto;
+    padding-top: 100px;
+    padding-bottom: 40px;
+  }
+
+  #banner-2058171634 .banner-layers > .text-box,
+  #banner-2108105581 .banner-layers > .text-box,
+  #banner-1513224978 .banner-layers > .text-box,
+  #banner-1437243260 .banner-layers > .text-box,
+  #banner-819223527 .banner-layers > .text-box,
+  #banner-669224451 .banner-layers > .text-box,
+  #banner-1027010616 .banner-layers > .text-box {
+    position: relative !important;
+    top: auto;
+    left: auto;
+    transform: none !important;
+    width: 100%;
+  }
+
+  #banner-2058171634 .page_text_go,
+  #banner-2108105581 .page_text_go,
+  #banner-1513224978 .page_text_go,
+  #banner-1437243260 .page_text_go,
+  #banner-819223527 .page_text_go,
+  #banner-669224451 .page_text_go {
+    height: auto;
+  }
+}
