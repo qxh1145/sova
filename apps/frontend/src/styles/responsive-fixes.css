@@ -379,7 +379,7 @@
 
 /* 8.6: Icon boxes 550–849.
    Stack cards 100% on benefits/advantages/about/icons rows; 50% on package card grids;
-   drop banner padding-top to 800px on website-vi form to prevent heading/form overlap. */
+   raise banner padding-top from 700px to 800px on website-vi form to prevent heading/form overlap. */
 @media (min-width: 550px) and (max-width: 849px) {
   #row-1686488490 > .col,
   #row-850357972 > .col,
@@ -450,9 +450,12 @@
   }
 }
 
-/* 8.6: Parity block — login page (at all viewports including >=1280).
-   Prevent horizontal scrollbar overflow from Bootstrap -12px gutters while preserving painted desktop geometry. */
-html:has(body.login),
-body.login {
-  overflow-x: hidden;
+/* 8.6: Parity block — login page >=1280.
+   Prevent horizontal scrollbar overflow from Bootstrap -12px gutters while preserving painted desktop geometry.
+   Scoped to >=1280 and #login so the ≤1279 fix above stays visible to the overflow gates. */
+@media (min-width: 1280px) {
+  html:has(#login),
+  body:has(#login) {
+    overflow-x: hidden;
+  }
 }
