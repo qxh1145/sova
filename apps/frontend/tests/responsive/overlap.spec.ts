@@ -113,7 +113,8 @@ function measure() {
   };
   const boxes: Box[] = [];
   const push = (el: Element, r: DOMRect, kind: string, text: string) => {
-    const c = clipOf(el.parentElement);
+    // overflow clips an element's content, so text is clipped by its own parent too (e.g. line-clamp)
+    const c = kind === 'text' ? clipOf(el) : clipOf(el.parentElement);
     const l = Math.max(r.left, c.l),
       t = Math.max(r.top, c.t),
       rr = Math.min(r.right, c.r),
@@ -259,3 +260,26 @@ for (const row of manifest.rows) {
     expect(stale, `remove from expected-failures: ${row.key}: ${stale.join(', ')}`).toEqual([]);
   });
 }
+
+// The gate clips clamped title lines, so it cannot see the 550–1279 flex-row squeeze (8.5).
+test('Portfolio card category sits below title at 550–1279', async ({ page }) => {
+  for (const width of [550, 850, 1024, 1279]) {
+    await page.setViewportSize({ width, height: 900 });
+    const response = await page.goto('/featured_item_category/branding/', { waitUntil: 'load' });
+    expect(response?.ok()).toBe(true);
+    if (process.env.RESPONSIVE_INJECT_CSS)
+      await page.addStyleTag({ content: process.env.RESPONSIVE_INJECT_CSS });
+    const gaps = await page.$$eval('.col-inner .portfolio-box .box-text-inner', (cards) =>
+      cards.map((card) => {
+        const title = card.querySelector('.portfolio-box-title')!.getBoundingClientRect();
+        const category = card.querySelector('.portfolio-box-category')!.getBoundingClientRect();
+        return Math.round(category.top - title.bottom);
+      }),
+    );
+    expect(gaps.length, `${width}: no portfolio cards`).toBeGreaterThan(0);
+    expect(
+      gaps.filter((gap) => gap < 0),
+      `${width}: category above title bottom`,
+    ).toEqual([]);
+  }
+});

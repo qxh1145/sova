@@ -20,9 +20,7 @@
     "overflow:div.text-inner.text-center>div#row-387512971.row.align-middle>div#col-1855465827.col.medium-6",
     "overflow:div.text-inner.text-center>div#row-387512971.row.align-middle>div#col-2131364799.col.medium-6"
   ],
-  "home-vi": [
-    "a.item-link>div.box-text>h3.item-title VS div.box-text>div.item-categories>span.item-term"
-  ],
+  "home-vi": [],
   "contact-en": [
     "overflow:div.ux-menu-link.flex>a.ux-menu-link__link.flex>span.ux-menu-link__text",
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
@@ -46,13 +44,9 @@
     "overflow:div.ux-menu-link.flex>a.ux-menu-link__link.flex>span.ux-menu-link__text",
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
   ],
-  "seo-vi": [
-    "a.item-link>div.box-text>h3.item-title VS div.box-text>div.item-categories>span.item-term"
-  ],
+  "seo-vi": [],
   "website-vi": [
-    "a.item-link>div.box-text>h3.item-title VS div.box-text>div.item-categories>span.item-term",
-    "div.custom-contact-form>p>span.form-label VS div.icon-box-text.last-reset>div#text-188971599.text>h3",
-    "div.icon-box-text.last-reset>div#text-188971599.text>h3 VS p>span>label"
+    "div.custom-contact-form>p>span.form-label VS div.icon-box-text.last-reset>div#text-188971599.text>h3"
   ],
   "mobile-en": [
     "overflow:div#text-2811376062.text>div>p",
@@ -74,19 +68,13 @@
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
   ],
   "branding-en": [
-    "div.col-inner>p>a.but-lh VS div.icon-box.featured-box>div.icon-box-text.last-reset>h5",
     "overflow:div.icon-box.featured-box>div.icon-box-text.last-reset>h5",
     "overflow:div.ux-menu-link.flex>a.ux-menu-link__link.flex>span.ux-menu-link__text",
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex",
     "overflow:div>div.icon-box.featured-box>div.icon-box-text.last-reset"
   ],
-  "mobile-vi": [
-    "a.item-link>div.box-text>h3.item-title VS div.box-text>div.item-categories>span.item-term"
-  ],
-  "branding-vi": [
-    "a.item-link>div.box-text>h3.item-title VS div.box-text>div.item-categories>span.item-term",
-    "div.col-inner>p>a.but-lh VS div.icon-box.featured-box>div.icon-box-text.last-reset>h5"
-  ],
+  "mobile-vi": [],
+  "branding-vi": [],
   "email-vi": [
     "overflow:div#text-708914999.text>div>p",
     "overflow:div.col-inner>div.icon-box.featured-box>div.icon-box-text.last-reset",
@@ -121,10 +109,7 @@
     "overflow:div.ux-menu-link.flex>a.ux-menu-link__link.flex>span.ux-menu-link__text",
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
   ],
-  "storage-vi": [
-    "a.item-link>div.box-text>h3.item-title VS div.box-text>div.item-categories>span.item-term",
-    "div.col-inner>p>a.but-lh VS div.icon-box.featured-box>div.icon-box-text.last-reset>h5"
-  ],
+  "storage-vi": [],
   "profile-vi": [
     "overflow:div.text-box-content.text>div.text-inner.text-center>div#row-143567771.row.align-middle",
     "overflow:div.text-inner.text-center>div#row-143567771.row.align-middle>div#col-1684974797.col.medium-7"
@@ -148,25 +133,21 @@
     "overflow:div.text-inner.text-center>div#row-393023394.row.align-middle>div#col-617069775.col.medium-6"
   ],
   "projects-category-branding": [
-    "div.box-text-inner>p.uppercase.portfolio-box-category>span.show-on-hover VS div.box-text.text-center>div.box-text-inner>h6.uppercase.portfolio-box-title",
     "overflow:div.text-box-content.text>div.text-inner.text-center>div#row-1965149933.row.align-middle",
     "overflow:div.text-inner.text-center>div#row-1965149933.row.align-middle>div#col-1858177944.col.medium-6",
     "overflow:div.text-inner.text-center>div#row-1965149933.row.align-middle>div#col-762608738.col.medium-6"
   ],
   "projects-category-mobile-app": [
-    "div.box-text-inner>p.uppercase.portfolio-box-category>span.show-on-hover VS div.box-text.text-center>div.box-text-inner>h6.uppercase.portfolio-box-title",
     "overflow:div.text-box-content.text>div.text-inner.text-center>div#row-1716046406.row.align-middle",
     "overflow:div.text-inner.text-center>div#row-1716046406.row.align-middle>div#col-1040171774.col.medium-6",
     "overflow:div.text-inner.text-center>div#row-1716046406.row.align-middle>div#col-1536317594.col.medium-6"
   ],
   "projects-featured-index": [
-    "div.box-text-inner>p.uppercase.portfolio-box-category>span.show-on-hover VS div.box-text.text-center>div.box-text-inner>h6.uppercase.portfolio-box-title",
     "overflow:div.text-box-content.text>div.text-inner.text-center>div#row-770104952.row.align-middle",
     "overflow:div.text-inner.text-center>div#row-770104952.row.align-middle>div#col-1371196074.col.medium-6",
     "overflow:div.text-inner.text-center>div#row-770104952.row.align-middle>div#col-801607298.col.medium-6"
   ],
   "projects-category-website": [
-    "div.box-text-inner>p.uppercase.portfolio-box-category>span.show-on-hover VS div.box-text.text-center>div.box-text-inner>h6.uppercase.portfolio-box-title",
     "overflow:div.text-box-content.text>div.text-inner.text-center>div#row-817686983.row.align-middle",
     "overflow:div.text-inner.text-center>div#row-817686983.row.align-middle>div#col-1550218319.col.medium-6",
     "overflow:div.text-inner.text-center>div#row-817686983.row.align-middle>div#col-1898983928.col.medium-6"
@@ -192,7 +173,6 @@
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
   ],
   "project-detail-thp": [
-    "div.box-text-inner>p.uppercase.portfolio-box-category>span.show-on-hover VS div.box-text.text-center>div.box-text-inner>h6.uppercase.portfolio-box-title",
     "overflow:div.text-box-content.text>div.text-inner.text-center>div#row-814428364.row",
     "overflow:div.text-inner.text-center>div#row-814428364.row>div#col-345468821.col.medium-11"
   ],
@@ -201,7 +181,6 @@
     "overflow:div.ux-menu.stack>div.ux-menu-link.flex>a.ux-menu-link__link.flex"
   ],
   "project-detail-no-gallery": [
-    "div.box-text-inner>p.uppercase.portfolio-box-category>span.show-on-hover VS div.box-text.text-center>div.box-text-inner>h6.uppercase.portfolio-box-title",
     "overflow:div.text-box-content.text>div.text-inner.text-center>div#row-814428364.row",
     "overflow:div.text-inner.text-center>div#row-814428364.row>div#col-345468821.col.medium-11"
   ],
