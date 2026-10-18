@@ -20,12 +20,13 @@ Tài liệu bàn giao tập trung (CAP-14) phục vụ chuyển tiếp từ Phas
   - Lần chạy trước trên `4d2cffa` (2026-10-15) có 3 test thất bại do vượt ngân sách 30s của một test trên preview nguội: `acceptance.spec.ts:231` (chuyển ngôn ngữ, bug shell 14), `acceptance.spec.ts:357` service (en) (bug services-and-about 14) và project-detail (vi) (bug collections 16). Số dòng test tính tại `4d2cffa`. Cả 3 cùng loại với ticket 7.14 (Home). Khi chạy với `STAGING_URL`, harness giờ dùng ngân sách 180s cho mỗi test (`playwright.config.ts`); chạy local vẫn giữ 30s. Deployment được kiểm thử không đổi. Ba bug trên đã đóng sau lần chạy này.
   - Lần chạy đầu trên `c6cb119` (2026-10-15): 89 đạt, 6 thất bại (shell, Home và 2 lỗi harness), đã sửa trong ticket 7.14, 7.15, 7.16, 2.13 và không tái hiện trên `4d2cffa`.
   - Phase A đã đóng; Phase B có thể bắt đầu.
+- **Responsive dưới 1280px (epic 8, A63):** Parity với nguồn chỉ áp dụng từ 1280px trở lên. Dưới 1280px, [`apps/frontend/src/styles/responsive-fixes.css`](../apps/frontend/src/styles/responsive-fixes.css) là nguồn sự thật: Sova sửa chồng lấn và tràn ngang mà nguồn vẫn có, kiểm soát bằng `npm run test:responsive` (320–1440px, danh sách expected failure rỗng). Các file trong `styles/legacy/` giữ nguyên.
 
 ## 2. Bảng bất thường (Anomaly register)
 
-Toàn bộ 61 dòng bất thường trong [ANOMALY_REGISTER.md](ANOMALY_REGISTER.md) (từ A01 đến A62), xếp theo mã ID. Cột Status chép nguyên văn từ register; tóm tắt rút gọn, chi tiết và dẫn chứng xem tại register.
+Toàn bộ 62 dòng bất thường trong [ANOMALY_REGISTER.md](ANOMALY_REGISTER.md) (từ A01 đến A63), xếp theo mã ID. Cột Status chép nguyên văn từ register; tóm tắt rút gọn, chi tiết và dẫn chứng xem tại register.
 
-Tổng hợp trạng thái cuối: 29 `resolved`, 31 `accepted`, 1 `not-applicable` (A09).
+Tổng hợp trạng thái cuối: 30 `resolved`, 31 `accepted`, 1 `not-applicable` (A09).
 
 > **Ghi chú về khoảng trống mã A33:**
 > Register nhảy từ A32 (trang Email, `epic-services-and-about`) sang A34 (lightbox gallery dự án, `epic-collections`). Bản register đầu tiên được commit vào git (`09dd609`) đã không có A33, nên không có dòng hay khiếm khuyết nào mang mã này. Trạng thái cuối: không tồn tại trong register. Epic phụ trách: không có.
@@ -93,6 +94,7 @@ Tổng hợp trạng thái cuối: 29 `resolved`, 31 `accepted`, 1 `not-applicab
 | A60 | Dấu check trang cảm ơn khác do capture reduced motion.                           | epic-fidelity-and-handoff                      | accepted (story 7.9)                                                                                                                                         |
 | A61 | Home EN bỏ khối INSIGHT rỗng.                                                    | epic-home                                      | accepted (story 7.9)                                                                                                                                         |
 | A62 | Footer gỡ thương hiệu Eras.                                                      | epic-fidelity-and-handoff                      | accepted (story 7.9)                                                                                                                                         |
+| A63 | Chồng lấn, tràn ngang dưới 1280px; sửa trong `responsive-fixes.css`.             | epic-responsive-fix                            | resolved (epic 8, stories 8.1–8.7)                                                                                                                           |
 
 ## 3. Các kịch bản mock (Mock scenarios)
 
