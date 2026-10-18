@@ -25,6 +25,26 @@ const ALLOWLIST: { pair: RegExp; route?: RegExp; minWidth?: number; reason: stri
     reason:
       'Decorative testimonial image intentionally layers over quote or eyebrow at desktop source parity.',
   },
+  {
+    pair: /^overflow:div\.(text-box-content\.text>div\.text-inner\.text-center>div#row-\d+\.row(\.align-middle)?|text-inner\.text-center>div#row-\d+\.row(\.align-middle)?>div#col-\d+\.col\.medium-\d+)$/,
+    route: /^(about|profile|projects|project-detail)-/,
+    minWidth: 1280,
+    reason: 'source parity: Flatsome hero row gutters overflow container at desktop widths.',
+  },
+  {
+    pair: /^overflow:div(?:\.col-inner>div#text-\d+\.text\.text-target1>p|#col-\d+\.col\.col-no-hover>div\.col-inner>div#text-\d+\.text\.text-target1)$/,
+    route: /^about-/,
+    minWidth: 1280,
+    reason:
+      'source parity: About goals text-target1 negative margin overflows column at desktop widths.',
+  },
+  {
+    pair: /^div#content>div>p VS (?:div#logo|ul\.header-nav|li\.menu-item|li\.html\.custom|div\.header-button)/,
+    route: /^sample-/,
+    minWidth: 1280,
+    reason:
+      'source parity: sample page transparent header sits on top of first paragraph at desktop widths.',
+  },
 ];
 const EXPECTED_FAILURES: Record<string, string[]> = expectedFailures;
 
@@ -281,5 +301,52 @@ test('Portfolio card category sits below title at 550–1279', async ({ page }) 
       gaps.filter((gap) => gap < 0),
       `${width}: category above title bottom`,
     ).toEqual([]);
+  }
+});
+
+// Hero `.text-inner { overflow: hidden }` (8.6) mutes the gate for anything it clips,
+// so assert hero text and links still paint inside the clip box.
+test('Hero content stays inside clipped .text-inner', async ({ page }) => {
+  const cases: { url: string; banner: string; widths: number[] }[] = [
+    {
+      url: '/ho-so-nang-luc-eras-vietnam/',
+      banner: '#banner-1559052784',
+      widths: [320, 390, 549, 768, 1279],
+    },
+    {
+      url: '/en/porfolio-eras-vietnam/',
+      banner: '#banner-151127649',
+      widths: [320, 390, 549, 768, 1279],
+    },
+    {
+      url: '/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/',
+      banner: '#banner-1027010616',
+      widths: [320, 390, 549, 768, 1279],
+    },
+    { url: '/gioi-thieu/', banner: '#banner-588612431', widths: [1200, 1279] },
+    { url: '/en/about-us/', banner: '#banner-1388775398', widths: [1200, 1279] },
+  ];
+  for (const { url, banner, widths } of cases) {
+    for (const width of widths) {
+      await page.setViewportSize({ width, height: 900 });
+      const response = await page.goto(url, { waitUntil: 'load' });
+      expect(response?.ok()).toBe(true);
+      const clipped = await page.$eval(`${banner} .text-inner`, (inner) => {
+        const box = inner.getBoundingClientRect();
+        return Array.from(inner.querySelectorAll('h1, h2, h3, h4, p, a, li'))
+          .filter((el) => {
+            const r = el.getBoundingClientRect();
+            if (r.width < 1 || r.height < 1) return false;
+            return (
+              r.left < box.left - 1 ||
+              r.right > box.right + 1 ||
+              r.top < box.top - 1 ||
+              r.bottom > box.bottom + 1
+            );
+          })
+          .map((el) => `${el.tagName.toLowerCase()} "${el.textContent?.trim().slice(0, 30)}"`);
+      });
+      expect(clipped, `${url} @ ${width}: hero content clipped`).toEqual([]);
+    }
   }
 });

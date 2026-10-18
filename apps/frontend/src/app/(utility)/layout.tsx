@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import '@/styles/responsive-fixes.css';
 import { RootDocument } from '@/components/layout/RootDocument';
 import { getSiteUrl } from '@/lib/site-url';
 
