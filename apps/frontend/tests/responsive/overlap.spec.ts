@@ -23,7 +23,9 @@ const quoteSelector = `(?:div#text-\\d+\\.text>h4>strong|div#col-\\d+\\.col\\.sm
 
 const ALLOWLIST: { pair: RegExp; route?: RegExp; minWidth?: number; reason: string }[] = [
   {
-    pair: new RegExp(`(?:${imgSelector} VS ${quoteSelector})|(?:${quoteSelector} VS ${imgSelector})`),
+    pair: new RegExp(
+      `(?:${imgSelector} VS ${quoteSelector})|(?:${quoteSelector} VS ${imgSelector})`,
+    ),
     minWidth: 1280,
     reason:
       'Decorative testimonial image intentionally layers over quote or eyebrow at desktop source parity.',
@@ -62,11 +64,13 @@ async function open(page: Page, url: string, width?: number) {
   if (width !== undefined) await page.setViewportSize({ width, height: 900 });
   const response = await page.goto(url, { waitUntil: 'load' });
   expect(response?.ok()).toBe(true);
+}
+
+async function freeze(page: Page) {
   await page.addStyleTag({
     content:
       '*,*::before,*::after{transition:none!important;animation-duration:0s!important;animation-delay:0s!important;scroll-behavior:auto!important}',
   });
-  await injectCss(page);
 }
 
 async function settle(page: Page) {
@@ -268,13 +272,18 @@ for (const row of manifest.rows) {
           pairs.add(`${row.key}, ${width}, ${mode}, ${pair}`);
       }
     }
-    await open(page, row.url);
+    async function load(width?: number) {
+      await open(page, row.url, width);
+      await freeze(page);
+      await injectCss(page);
+    }
+    await load();
     for (const width of WIDTHS) {
       await page.setViewportSize({ width, height: 900 });
       await check(width, 'resize');
     }
     for (const width of WIDTHS) {
-      await open(page, row.url, width);
+      await load(width);
       await check(width, 'fresh');
     }
     const stale = (EXPECTED_FAILURES[row.key] ?? []).filter((pair) => !seen.has(pair));
@@ -291,6 +300,7 @@ for (const row of manifest.rows) {
 test('Portfolio card category sits below title at 550–1279', async ({ page }) => {
   for (const width of [550, 850, 1024, 1279]) {
     await open(page, '/featured_item_category/branding/', width);
+    await injectCss(page);
     const gaps = await page.$$eval('.col-inner .portfolio-box .box-text-inner', (cards) =>
       cards.map((card) => {
         const title = card.querySelector('.portfolio-box-title')!.getBoundingClientRect();

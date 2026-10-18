@@ -3,10 +3,6 @@
    in a clearly marked parity block outside these media queries. */
 
 /* 8.1: Home stats columns stack */
-/* 8.2: About stats columns stack (EN #row-998052860, VI #row-1472759901) */
-/* 8.6: Footer quick links column sizing at 550–640.
-   Footer.tsx:172 quick links medium-2 (16.67%), EN word "Instructions" cannot shrink (+25px @550).
-   Give quick links 25%, medium-3 37.5%, and company info 100% full width. */
 @media (min-width: 550px) and (max-width: 640px) {
   #row-34630575 #col-497116769 {
     max-width: 100%;
@@ -19,6 +15,7 @@
     flex-basis: 100%;
   }
 
+  /* 8.2: About stats columns stack (EN #row-998052860, VI #row-1472759901) */
   #row-998052860 #col-1078161984,
   #row-998052860 #col-178856789,
   #row-1472759901 #col-2041784750,
@@ -33,6 +30,9 @@
     padding-right: 0;
   }
 
+  /* 8.6: Footer quick links column sizing at 550–640.
+     Footer.tsx:172 quick links medium-2 (16.67%), EN word "Instructions" cannot shrink (+25px @550).
+     Give quick links 25%, medium-3 37.5%, and company info 100% full width. */
   #row-1158304944 > #col-846792399 {
     max-width: 100%;
     flex-basis: 100%;
@@ -182,15 +182,6 @@
 /* 8.3: Testimonial right-col negative margin reset on home, about and service pages.
    Pairs in order (VI then EN each): home, about, seo, website, mobile, branding, email,
    hosting, vps, storage (IDs from testimonialsIds.ts). */
-/* 8.4: Project archive & detail heroes flow below 1280.
-   Banners: VI (2058171634), EN (2108105581), featured index (1513224978),
-   branding (1437243260), mobile-app (819223527), website (669224451),
-   detail (1027010616). Normal flow + top padding clears 90px header and keeps
-   description/CTA from spilling onto portfolio filter below. */
-/* 8.5: Portfolio card title stacks above category at 550–1279 (source flex row squeezes title;
-   source already stacks them at ≤549) */
-/* 8.6: About goals box 550–1279.
-   Flatsome 130% / -37% margins put text box off-screen. */
 @media (min-width: 550px) and (max-width: 1279px) {
   #row-1068036605 #col-55011168 > .col-inner,
   #row-437563557 #col-863261912 > .col-inner,
@@ -215,6 +206,11 @@
     margin-left: 0;
   }
 
+  /* 8.4: Project archive & detail heroes flow below 1280.
+     Banners: VI (2058171634), EN (2108105581), featured index (1513224978),
+     branding (1437243260), mobile-app (819223527), website (669224451),
+     detail (1027010616). Normal flow + top padding clears 90px header and keeps
+     description/CTA from spilling onto portfolio filter below. */
   #wrapper
     :is(
       #banner-2058171634,
@@ -301,24 +297,22 @@
     height: auto;
   }
 
+  /* 8.5: Portfolio card title stacks above category at 550–1279 (source flex row squeezes title;
+     source already stacks them at ≤549) */
   .col-inner .portfolio-box .box-text-inner {
     display: block;
   }
 
+  /* 8.6: About goals box 550–1279.
+     Flatsome 130% / -37% margins put text box off-screen. */
   :is(#text-860603892, #text-3919715460) {
     width: calc(93% + 15px);
     margin-left: -15px;
   }
 }
 
-/* 8.4: Project archive heroes top padding below 550 to clear 90px absolute header */
-/* 8.5: Service slider cards grow below 550 so the CTA clears the feature list.
-   Source heights stay as min-height; CTA leaves absolute positioning and margin-top:auto
-   keeps it at the card bottom. inline-block lets the CTA padding size the line box, so
-   20px card padding + 20px margin = source bottom 40px.
-   Track stretches every slide to the tallest card (AutoHeight inline height overridden),
-   so the carousel keeps one height across autoplay steps. */
 @media (max-width: 549px) {
+  /* 8.4: Project archive heroes top padding below 550 to clear 90px absolute header */
   :is(
       #banner-2058171634,
       #banner-2108105581,
@@ -331,6 +325,12 @@
     padding-top: 100px;
   }
 
+  /* 8.5: Service slider cards grow below 550 so the CTA clears the feature list.
+     Source heights stay as min-height; CTA leaves absolute positioning and margin-top:auto
+     keeps it at the card bottom. inline-block lets the CTA padding size the line box, so
+     20px card padding + 20px margin = source bottom 40px.
+     Track stretches every slide to the tallest card (AutoHeight inline height overridden),
+     so the carousel keeps one height across autoplay steps. */
   .slider-wrapper.slide_ui .flickity-slider,
   .slider-wrapper.slide_gplt .flickity-slider {
     align-items: stretch;
@@ -400,24 +400,23 @@
   }
 }
 
-/* 8.6: Hero rows overflow clip ≤1279.
-   Flatsome .row -15px gutters in full-width text-box trigger horizontal overflow and
-   .banner-layers overflow:auto scroller below 550.
-   About heroes clip only at 1200–1279 to avoid clipping title at smaller viewports. */
-/* 8.6: Sample page ≤1279.
-   Add top padding to clear absolute transparent header (0–91px). */
-/* 8.6: Login page ≤1279.
-   Bootstrap -12px negative margins on #login.row cause 12px overflow.
-   Reset margins and adjust padding to preserve painted geometry below 1280. */
 @media (max-width: 1279px) {
+  /* 8.6: Hero rows overflow clip ≤1279.
+     Flatsome .row -15px gutters in full-width text-box trigger horizontal overflow and
+     .banner-layers overflow:auto scroller below 550. */
   :is(#banner-1559052784, #banner-151127649, #banner-1027010616) .text-inner {
     overflow: hidden;
   }
 
+  /* 8.6: Sample page ≤1279.
+     Add top padding to clear absolute transparent header (0–91px). */
   #content[role='main'] > div:not([class]):first-child {
     padding-top: 90px;
   }
 
+  /* 8.6: Login page ≤1279.
+     Bootstrap -12px negative margins on #login.row cause 12px overflow.
+     Reset margins and adjust padding to preserve painted geometry below 1280. */
   #login.row {
     margin-left: 0;
     margin-right: 0;
@@ -426,6 +425,7 @@
   }
 }
 
+/* 8.6: About heroes clip only at 1200–1279 to avoid clipping title at smaller viewports. */
 @media (min-width: 1200px) and (max-width: 1279px) {
   :is(#banner-588612431, #banner-1388775398) .text-inner {
     overflow: hidden;
