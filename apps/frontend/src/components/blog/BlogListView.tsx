@@ -14,13 +14,14 @@ export function BlogListView({
   basePath,
   copy,
   searchQuery,
+  blogBasePath,
 }: BlogListingPageData) {
   const assetMap = new Map(thumbnailAssets.map((asset) => [asset.id, asset]));
   const isSearch = searchQuery !== undefined;
   const heroH1 = isSearch
     ? `${copy.searchResultsTitle}${searchQuery.trim()}`
     : settings?.hero?.headingLines?.[0] || copy.title;
-  const isCategory = !isSearch && basePath !== '/goc-nhin/' && basePath !== '/en/insight/';
+  const isCategory = !isSearch && basePath !== blogBasePath;
   const categoryTitle = isCategory ? settings?.heading?.title : undefined;
   const homeHref = basePath.startsWith('/en/') ? '/en/home/' : '/';
 
@@ -93,7 +94,12 @@ export function BlogListView({
           )}
         </div>
         <div className="large-4 col">
-          <BlogSidebar categories={categories} copy={copy} searchQuery={searchQuery} />
+          <BlogSidebar
+            categories={categories}
+            copy={copy}
+            searchQuery={searchQuery}
+            currentPath={isCategory ? basePath : undefined}
+          />
         </div>
       </div>
     </main>

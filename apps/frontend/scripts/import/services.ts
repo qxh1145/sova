@@ -318,7 +318,8 @@ function readHomeCards(erasDir: string, locale: Locale, stats: Stats): HomeCardD
     });
     const arrowEl = card.querySelector('.nut_xthem a');
     const arrowHref = arrowEl
-      ? (processHref(arrowEl.getAttribute('href') ?? '', file, lineOf(arrowEl.range[0]), stats) ?? '')
+      ? (processHref(arrowEl.getAttribute('href') ?? '', file, lineOf(arrowEl.range[0]), stats) ??
+        '')
       : '';
     const mtaEl = card.querySelector('.mta_dv');
     const homeSummary = mtaEl ? processText(mtaEl.text.trim(), stats) : '';

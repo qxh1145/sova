@@ -1,6 +1,7 @@
 import { getRepository } from '@/lib/repositories';
 import type {
   AssetRef,
+  CarouselLabels,
   EntityId,
   FAQ,
   Locale,
@@ -11,6 +12,7 @@ import type {
   ServiceKey,
   Testimonial,
 } from '@/types/content';
+import { assertResolved, missingIds } from './assets';
 import { applyFAQPlacements, getFAQs } from './faq';
 
 export function getService(key: ServiceKey, locale: Locale): Promise<Service | null> {
@@ -28,6 +30,7 @@ export interface ServicePage {
   testimonials: Testimonial[];
   projects: Project[];
   pricing: Pricing | null;
+  carouselLabels: CarouselLabels;
 }
 
 export interface ServiceAssets {
@@ -102,13 +105,16 @@ export async function getServiceAssets(
   const offeringMediaIds = service.offerings
     .map((o) => o.mediaId)
     .filter((id): id is string => Boolean(id));
-  const avatarIds = testimonials
-    .map((t) => t.avatarId)
-    .filter((id): id is string => Boolean(id));
+  const avatarIds = testimonials.map((t) => t.avatarId).filter((id): id is string => Boolean(id));
 
   const projectAssetIds = projects
     .map((p) => p.galleryIds[0])
     .filter((id): id is string => Boolean(id));
+
+  const websiteAssetIds =
+    service.key === 'website'
+      ? ['asset-017f167e30', 'asset-0284853c00', 'asset-4314679580', 'asset-400b882328']
+      : [];
 
   const [
     heroImages,
@@ -145,17 +151,50 @@ export async function getServiceAssets(
       TESTIMONIAL_ART_IDS.quoteIconId,
       TESTIMONIAL_ART_IDS.lineId,
     ]),
-    service.key === 'website'
-      ? repository.getAssets([
-          'asset-017f167e30',
-          'asset-0284853c00',
-          'asset-4314679580',
-          'asset-400b882328',
-        ])
-      : Promise.resolve([]),
+    websiteAssetIds.length ? repository.getAssets(websiteAssetIds) : Promise.resolve([]),
     projectAssetIds.length ? repository.getAssets(projectAssetIds) : Promise.resolve([]),
     projects.length ? repository.getProjectCategories() : Promise.resolve([]),
   ]);
+
+  const wanted = [
+    ...(heroImageId ? [heroImageId] : []),
+    ...(heroBgImageId ? [heroBgImageId] : []),
+    ...(benefitsBgImageId ? [benefitsBgImageId] : []),
+    ...(advantagesPhotoId ? [advantagesPhotoId] : []),
+    ...(advantagesDecoId ? [advantagesDecoId] : []),
+    ...(offeringsBgImageId ? [offeringsBgImageId] : []),
+    ...(heroCtaIconId ? [heroCtaIconId] : []),
+    ...(videoId ? [videoId] : []),
+    ...benefitIconIds,
+    ...offeringMediaIds,
+    SUBTRACT_ICON_ID,
+    ...avatarIds,
+    TESTIMONIAL_ART_IDS.photoId,
+    TESTIMONIAL_ART_IDS.quoteIconId,
+    TESTIMONIAL_ART_IDS.lineId,
+    ...websiteAssetIds,
+    ...projectAssetIds,
+  ];
+
+  const allResolved = [
+    ...heroImages,
+    ...heroBgImages,
+    ...benefitsBgImages,
+    ...advantagesPhotos,
+    ...advantagesDecos,
+    ...offeringsBgImages,
+    ...ctaIcons,
+    ...videoAssets,
+    ...benefitIcons,
+    ...offeringMedia,
+    ...subtractAssets,
+    ...testimonialAvatars,
+    ...artAssets,
+    ...extraAssets,
+    ...projectAssets,
+  ];
+
+  assertResolved(service.id, missingIds(wanted, allResolved));
 
   const testimonialArt = resolveTestimonialArt(artAssets);
 
@@ -193,7 +232,7 @@ export async function getServicePage(key: ServiceKey, locale: Locale): Promise<S
   const service = await repository.getService(key, locale);
   if (!service) return null;
   const placements = [...service.faqs].sort((a, b) => a.order - b.order);
-  const [faqs, testimonials, allProjects, pricing] = await Promise.all([
+  const [faqs, testimonials, allProjects, pricing, shell] = await Promise.all([
     getFAQs(
       placements.map((p) => p.faqId),
       locale,
@@ -204,23 +243,27 @@ export async function getServicePage(key: ServiceKey, locale: Locale): Promise<S
       ? repository.listProjects({ page: 1, pageSize: Number.MAX_SAFE_INTEGER })
       : null,
     service.pricingId ? repository.getPricing(service.pricingId, locale) : null,
+    repository.getShellContent(locale),
   ]);
   const projects = service.featuredProjectIds.flatMap(
     (id) => allProjects?.items.find((p) => p.id === id) ?? [],
   );
   const missing = [
-    ...placements.map((p) => p.faqId).filter((id) => !faqs.some((f) => f.id === id)),
-    ...service.testimonialIds.filter((id) => !testimonials.some((t) => t.id === id)),
-    ...service.featuredProjectIds.filter((id) => !projects.some((p) => p.id === id)),
+    ...missingIds(
+      placements.map((p) => p.faqId),
+      faqs,
+    ),
+    ...missingIds(service.testimonialIds, testimonials),
+    ...missingIds(service.featuredProjectIds, projects),
     ...(service.pricingId && !pricing ? [service.pricingId] : []),
   ];
-  if (missing.length)
-    throw new Error(`${service.id} references missing ids: ${missing.join(', ')}`);
+  assertResolved(service.id, missing);
   return {
     service,
     faqs: applyFAQPlacements(faqs, placements),
     testimonials,
     projects,
     pricing,
+    carouselLabels: shell.carouselLabels,
   };
 }

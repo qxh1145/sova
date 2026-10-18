@@ -1,8 +1,9 @@
 import '@/styles/legacy/sections/route-goc-nhin.css';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { categorySlugs } from '@/lib/routes';
-import { listRoutes } from '@/lib/queries/site';
+import { categorySlugs, pathForRouteId } from '@/lib/routes';
+import type { Metadata } from 'next';
+import { BRAND_TITLE_SUFFIX, listRoutes, routeAlternates, seoMetadata } from '@/lib/queries/site';
 import { getBlogListingPage, getPostDetail } from '@/lib/queries/posts';
 import { BlogListView } from '@/components/blog/BlogListView';
 import { ArticleHeroImage } from './_components/ArticleHeroImage';
@@ -17,8 +18,7 @@ export async function generateStaticParams() {
     .filter(
       (r) =>
         r.locale === 'vi' &&
-        (r.kind === 'post-detail' ||
-          (r.kind === 'post-list' && catSlugs.has(r.path.slice(1, -1)))),
+        (r.kind === 'post-detail' || (r.kind === 'post-list' && catSlugs.has(r.path.slice(1, -1)))),
     )
     .map((r) => ({
       slug: r.path.replace(/^\/|\/$/g, ''),
@@ -27,6 +27,39 @@ export async function generateStaticParams() {
 
 interface PostDetailPageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: PostDetailPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const routes = await listRoutes();
+  const targetPath = `/${slug}/`;
+  const routeEntry = routes.find((r) => r.locale === 'vi' && r.path === targetPath);
+  if (!routeEntry) return {};
+
+  if (routeEntry.kind === 'post-detail') {
+    const detail = await getPostDetail(slug);
+    if (!detail) return {};
+    return seoMetadata(detail.post.seo);
+  }
+
+  const catSlugs = new Set(categorySlugs(routes));
+  if (routeEntry.kind === 'post-list' && catSlugs.has(slug)) {
+    const data = await getBlogListingPage({
+      routeId: routeEntry.id,
+      category: slug,
+      page: 1,
+      locale: 'vi',
+    });
+    if (!data) return {};
+    const title = `${data.settings?.heading.title ?? data.copy.title}${BRAND_TITLE_SUFFIX}`;
+    const alternates = await routeAlternates(routeEntry.path);
+    return {
+      title,
+      alternates,
+    };
+  }
+
+  return {};
 }
 
 export default async function ViPostDetailPage({ params }: PostDetailPageProps) {
@@ -46,6 +79,7 @@ export default async function ViPostDetailPage({ params }: PostDetailPageProps) 
     }
 
     const { post, featuredAsset, related, copy } = detail;
+    const blogHref = pathForRouteId(routes, 'route-goc-nhin') ?? '/goc-nhin/';
 
     return (
       <main id="main">
@@ -68,7 +102,7 @@ export default async function ViPostDetailPage({ params }: PostDetailPageProps) 
                   {copy.breadcrumbHome}
                 </Link>
                 {' | '}
-                <Link href="/goc-nhin/" style={{ color: '#808080', textDecoration: 'none' }}>
+                <Link href={blogHref} style={{ color: '#808080', textDecoration: 'none' }}>
                   {copy.breadcrumbBlog}
                 </Link>
                 {' | '}

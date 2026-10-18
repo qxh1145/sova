@@ -1,29 +1,6 @@
 import { expect, expectNoDuplicateIds, getBodyOverflow, test } from './fixtures';
 
 test.describe('Mobile menu drawer and accordion navigation', () => {
-  test.beforeEach(async ({ page }) => {
-    const consoleErrors: string[] = [];
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') {
-        const text = msg.text();
-        if (
-          !text.startsWith('Failed to load resource: the server responded with a status of 404')
-        ) {
-          consoleErrors.push(text);
-        }
-      }
-    });
-    page.on('pageerror', (err) => {
-      consoleErrors.push(err.message);
-    });
-    (page as unknown as { __consoleErrors: string[] }).__consoleErrors = consoleErrors;
-  });
-
-  test.afterEach(async ({ page }) => {
-    const errors = (page as unknown as { __consoleErrors?: string[] }).__consoleErrors ?? [];
-    expect(errors, `Unexpected console/page errors:\n${errors.join('\n')}`).toEqual([]);
-  });
-
   test('Matrix 1: Keyboard open on mobile (390px) — Enter opens drawer, focus inside, scroll locked', async ({
     page,
   }) => {
@@ -108,7 +85,9 @@ test.describe('Mobile menu drawer and accordion navigation', () => {
     expect(await getBodyOverflow(page)).not.toBe('hidden');
   });
 
-  test('Controlled mobile menu link close keeps mfp-removing phase before unmount', async ({ page }) => {
+  test('Controlled mobile menu link close keeps mfp-removing phase before unmount', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
 
@@ -122,8 +101,18 @@ test.describe('Mobile menu drawer and accordion navigation', () => {
         if (wrap?.classList.contains('mfp-removing')) state.menuClosePhase = true;
       }).observe(wrap!, { attributes: true, attributeFilter: ['class'] });
     });
-    await page.locator('#main-menu .sidebar-menu a[href]').filter({ hasText: 'Trang chủ' }).first().click();
-    await expect.poll(() => page.evaluate(() => !!(window as typeof window & { menuClosePhase?: boolean }).menuClosePhase)).toBe(true);
+    await page
+      .locator('#main-menu .sidebar-menu a[href]')
+      .filter({ hasText: 'Trang chủ' })
+      .first()
+      .click();
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () => !!(window as typeof window & { menuClosePhase?: boolean }).menuClosePhase,
+        ),
+      )
+      .toBe(true);
     await expect(page.locator('#main-menu')).toHaveCount(0);
   });
 

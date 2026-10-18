@@ -179,7 +179,7 @@ interface Stat { id: EntityId; value: number; suffix?: string; label: string }
 
 1. IDs ổn định từ WP ID hoặc canonical slug; không title, array index hay filename ảnh làm ID nghiệp vụ. `translationKey` nối record VI/EN khi mapping đã xác minh.
 2. FAQ bỏ số thứ tự khỏi **ID so khớp**, render thứ tự qua FAQPlacement; giữ nguyên nội dung câu hỏi. So normalized question/visible answer, không so style tag chứa auto IDs. 65 items trên FAQ VI thuộc 7 topics; storage FAQ 4 câu là domain riêng (nội dung đang copy nhầm từ SEO — A13), không ép thành topic thứ tám chưa tồn tại trong global FAQ.
-3. A05: service SEO answer có literal `</p`; giữ revision khác nhau trong **cùng FAQ record**, không hai bản FAQ độc lập. Việc chuẩn hóa lỗi nội dung cần quyết định ghi vào anomaly log trước áp dụng.
+3. A05: service SEO answer có literal `</p`; giữ revision khác nhau trong **cùng FAQ record**, không hai bản FAQ độc lập. Quyết định owner (2026-10-13, story 7.7): giữ nguyên source parity, đóng accepted source anomaly.
 4. FeaturedProjects lưu ordered IDs cho 6 dự án nguồn, không lấy `projects.slice(0, 6)`. Dùng canonical project data khi khớp; nếu teaser image/copy khác, collection placement chỉ giữ override được ghi nguồn, không nhân bản Project.
 5. Giữ listings/pagination snapshot theo trang. Mirror chỉ có 27 bài nhưng sidebar hoặc category counts có thể phản ánh site đầy đủ; lưu sourceDisplayCount và available-count riêng, không lặng lẽ “sửa” số.
 6. Project delivery text phổ biến được đối chiếu/hash rồi trỏ `deliveryTermsId`; metadata/gallery khác nhau vẫn thuộc project. Duplicate thumbnails/resized images là AssetRef variants, không Project mới.

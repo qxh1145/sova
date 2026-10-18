@@ -1,18 +1,14 @@
 import { expect, test, vi } from 'vitest';
 import type { ContentData, ContentRepository } from '@/lib/repositories/contracts';
-import { createMockRepository } from '@/lib/repositories/mock';
+import { createMockRepository, defaultContentData } from '@/lib/repositories/mock';
 import { assets } from '@/data/assets';
 import { faqs } from '@/data/faq';
-import { navigation } from '@/data/navigation';
 import { aboutPages } from '@/data/pages/about';
 import { contactPages } from '@/data/pages/contact';
 import { homePages } from '@/data/pages/home';
 import { legalPages, paymentGuides } from '@/data/pages/legal';
-import { faqPages } from '@/data/pages/faq';
-import { partners } from '@/data/partners';
 import { posts } from '@/data/posts';
 import { projectCategories } from '@/data/project-categories';
-import { projects } from '@/data/projects';
 import { websitePricing } from '@/data/pricing/website';
 import { brandingServices } from '@/data/services/branding';
 import { emailServices } from '@/data/services/email';
@@ -21,9 +17,7 @@ import { seoServices } from '@/data/services/seo';
 import { storageServices } from '@/data/services/storage';
 import { websiteServices } from '@/data/services/website';
 import { siteSettings } from '@/data/site';
-import { stats } from '@/data/stats';
-import { testimonials } from '@/data/testimonials';
-import type { ContactPageContent, SiteSettings } from '@/types/content';
+import type { ContactPageContent, HomePageContent, SiteSettings } from '@/types/content';
 import { getFAQs } from './faq';
 import {
   getAboutAssets,
@@ -60,31 +54,17 @@ const websiteWithPhone = { ...website, summary: `${website.summary} {{site.phone
 // The committed import output, with optional overrides of one domain.
 const repoWith = (data: Partial<ContentData> = {}) =>
   createMockRepository({
-    siteSettings,
-    navigation,
+    ...defaultContentData,
     services: [
       websiteWithPhone,
       ...websiteServices.filter((s) => s.locale !== 'vi'),
       ...[mobileServices, seoServices, brandingServices, storageServices, emailServices].flat(),
     ],
-    faqs,
-    testimonials,
-    partners,
-    projects,
-    projectCategories: [],
-    posts,
-    postCategories: [],
-    stats,
-    pricing: websitePricing,
-    assets,
-    homePages,
-    aboutPages,
     contactPages: [contactWithPhone],
-    legalPages,
-    paymentGuides,
-    faqPages,
+    projectCategories: [],
+    postCategories: [],
     ...data,
-  } as unknown as ContentData);
+  });
 
 test('phone change: contact, legal warranty, FAQs and service page all show the new phone', async () => {
   const phone = '1111 222 333';
@@ -191,6 +171,7 @@ test('VI home query resolves all collections in record order', async () => {
   expect(page?.testimonialArt.photo.id).toBe(home.testimonialArtIds.photoId);
   expect(page?.testimonialArt.quoteIcon.id).toBe(home.testimonialArtIds.quoteIconId);
   expect(page?.testimonialArt.line.id).toBe(home.testimonialArtIds.lineId);
+  expect(page?.postListingHref).toBe('/goc-nhin/');
 });
 
 test('EN home query resolves services and empty lists', async () => {
@@ -209,6 +190,7 @@ test('EN home query resolves services and empty lists', async () => {
   expect(page?.posts).toEqual([]);
   expect(page?.partners).toHaveLength(30);
   expect(page?.testimonials).toHaveLength(3);
+  expect(page?.postListingHref).toBe('/en/insight/');
 });
 
 test('dangling testimonial id throws naming the page and id', async () => {
@@ -320,13 +302,60 @@ test('getHomeAssets reads assets from the repository it is given', async () => {
   expect(getCategoriesSpy).toHaveBeenCalledOnce();
 });
 
-test('getAboutAssets resolves hero background, subtract icon and goal icons in goal order', async () => {
+test('getHomeAssets throws on dangling asset id but passes through status: missing', async () => {
+  repository = repoWith({ projectCategories });
+  const home = await getHomePage('vi');
+  expect(home).not.toBeNull();
+
+  // Dangling asset id throws
+  const danglingHome: HomePageContent = {
+    ...home!,
+    partners: [
+      ...home!.partners,
+      { id: 'partner-dangling', name: 'Dangling', logoId: 'asset-does-not-exist', sources: [] },
+    ],
+  };
+  await expect(getHomeAssets(danglingHome, repository)).rejects.toThrow(
+    `${home!.id} references missing ids: asset-does-not-exist`,
+  );
+
+  // Missing status asset resolves without throwing
+  const repoWithMissing = repoWith({
+    assets: [
+      ...assets,
+      {
+        id: 'asset-missing-status',
+        src: '/missing.png',
+        alt: '',
+        kind: 'image',
+        status: 'missing',
+        sources: [],
+      },
+    ],
+  });
+  const missingStatusHome: HomePageContent = {
+    ...home!,
+    partners: [
+      ...home!.partners,
+      { id: 'partner-missing', name: 'Missing', logoId: 'asset-missing-status', sources: [] },
+    ],
+  };
+  const res = await getHomeAssets(missingStatusHome, repoWithMissing);
+  expect(
+    res.partnerAssets.some((a) => a.id === 'asset-missing-status' && a.status === 'missing'),
+  ).toBe(true);
+});
+
+test('getAboutAssets resolves hero background, subtract icon, goal icons, and testimonial avatars in order', async () => {
   repository = repoWith();
   const about = await getAboutPage('vi');
   const result = await getAboutAssets(about!);
   expect(result.heroBgImage.id).toBe(about!.hero.imageId);
   expect(result.subtractIcon.src).toBe('/wp-content/uploads/2024/02/Subtract.svg');
   expect(result.goalIcons.map((a) => a.id)).toEqual(about!.goals.map((g) => g.iconId));
+  expect(result.testimonialAvatars.map((a) => a.id)).toEqual(
+    about!.testimonials.map((t) => t.avatarId).filter(Boolean),
+  );
 });
 
 test('getAboutAssets rejects on a dangling goal icon id', async () => {
@@ -335,6 +364,17 @@ test('getAboutAssets rejects on a dangling goal icon id', async () => {
   const goals = about!.goals.map((g, i) => (i === 2 ? { ...g, iconId: 'asset-nope' } : g));
   await expect(getAboutAssets({ ...about!, goals })).rejects.toThrow(
     'about-vi references missing ids: asset-nope',
+  );
+});
+
+test('getAboutAssets rejects on a dangling testimonial avatar id', async () => {
+  repository = repoWith();
+  const about = await getAboutPage('vi');
+  const testimonials = about!.testimonials.map((t, i) =>
+    i === 0 ? { ...t, avatarId: 'asset-dangling-avatar' } : t,
+  );
+  await expect(getAboutAssets({ ...about!, testimonials })).rejects.toThrow(
+    'about-vi references missing ids: asset-dangling-avatar',
   );
 });
 

@@ -107,14 +107,17 @@ export interface SanitizeHooks {
   href(raw: string): string | null;
   /** img / video source -> its AssetRef src and id, or null to drop the element. */
   asset?(el: HTMLElement): { src: string; id: string } | null;
-  /** Keep the source `class` attribute on br and on allowed elements (layout-bearing wrappers). */
-  keepClass?: boolean;
+  /**
+   * Keep the source `class` attribute on br, img and allowed elements (layout-bearing wrappers):
+   * `true` keeps it whole, a RegExp keeps only the class names it matches.
+   */
+  keepClass?: boolean | RegExp;
 }
 
 /**
  * Allowlist (default): p br ul ol li a[href] strong b em. Other elements are unwrapped (span, div,
  * ...), style/script & co. dropped with their content, and every attribute but a[href] removed
- * (`hooks.keepClass` also keeps `class`).
+ * (`hooks.keepClass` also keeps `class`, or only its matching class names).
  * A wider `allowed` set may add img[src alt width height], video[controls width height] (its
  * fallback content dropped) and source[src type]; img/source src comes from `hooks.asset`.
  */
@@ -129,16 +132,17 @@ export function sanitize(
     if (!(node instanceof HTMLElement)) return '';
     const tag = node.rawTagName?.toLowerCase() ?? '';
     if (DROPPED.has(tag)) return '';
-    const cls = hooks.keepClass
-      ? attr('class', node.getAttribute('class')?.trim() || undefined)
-      : '';
+    const keep = hooks.keepClass;
+    const names = keep ? (node.getAttribute('class') ?? '').trim().split(/\s+/) : [];
+    const kept = keep instanceof RegExp ? names.filter((n) => keep.test(n)) : names;
+    const cls = attr('class', kept.join(' ') || undefined);
     if (tag === 'br') return `<br${cls}>`;
     if (tag === 'hr' && allowed.has(tag)) return '<hr>';
     if (allowed.has(tag) && (tag === 'img' || tag === 'source')) {
       const asset = hooks.asset?.(node);
       if (!asset) return '';
       return tag === 'img'
-        ? `<img${attr('src', asset.src)}${attr('alt', hooks.text(node.getAttribute('alt') ?? ''))}` +
+        ? `<img${cls}${attr('src', asset.src)}${attr('alt', hooks.text(node.getAttribute('alt') ?? ''))}` +
             `${attr('width', node.getAttribute('width'))}${attr('height', node.getAttribute('height'))}>`
         : `<source${attr('src', asset.src)}${attr('type', node.getAttribute('type'))}>`;
     }

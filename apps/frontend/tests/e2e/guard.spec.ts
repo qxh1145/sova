@@ -1,9 +1,9 @@
-import { expect, isAllowedUrl, test } from './fixtures';
+import { ALLOW_404, expect, isAllowedUrl, STAGING, test } from './fixtures';
 
 test('guard allows local and Maps embed hosts', () => {
-  expect(isAllowedUrl('http://localhost:3100/')).toBe(true);
-  expect(isAllowedUrl('https://www.google.com/maps/embed?pb=x')).toBe(true);
-  expect(isAllowedUrl('https://maps.gstatic.com/x.png')).toBe(true);
+  expect(isAllowedUrl('http://localhost:3100/', null)).toBe(true);
+  expect(isAllowedUrl('https://www.google.com/maps/embed?pb=x', null)).toBe(true);
+  expect(isAllowedUrl('https://maps.gstatic.com/x.png', null)).toBe(true);
 });
 
 test('guard blocks other external hosts', () => {
@@ -14,7 +14,7 @@ test('guard blocks other external hosts', () => {
     'https://connect.facebook.net/en_US/fbevents.js',
     'https://analytics.tiktok.com/i18n/pixel/events.js',
   ]) {
-    expect(isAllowedUrl(url), url).toBe(false);
+    expect(isAllowedUrl(url, null), url).toBe(false);
   }
 });
 
@@ -30,6 +30,55 @@ test('guard records the blocked URL', async ({ page, networkGuard }) => {
   await page.evaluate(() => fetch('https://www.googletagmanager.com/gtm.js').catch(() => {}));
   expect(networkGuard).toEqual(['https://www.googletagmanager.com/gtm.js']);
   networkGuard.length = 0; // cleared so teardown passes
+});
+
+// consoleGuard must fail the test at teardown on any console.error or uncaught error it does not allow.
+test('console guard fails a test that logs console.error', async ({ page }) => {
+  test.fail();
+  await page.goto('/');
+  await page.evaluate(() => console.error('console-guard-self-test'));
+});
+
+test('console guard fails a test that throws an uncaught error', async ({ page }) => {
+  test.fail();
+  await page.goto('/');
+  await page.evaluate(() => {
+    setTimeout(() => {
+      throw new Error('console-guard-self-test');
+    });
+  });
+  await page.waitForTimeout(100);
+});
+
+test.describe('console guard allowlist', () => {
+  test.use({ allowConsole: [/console-guard-self-test/] });
+
+  test('console guard passes an allowlisted error', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => console.error('console-guard-self-test'));
+  });
+
+  test('console guard still fails an error outside the allowlist', async ({ page }) => {
+    test.fail();
+    await page.goto('/');
+    await page.evaluate(() => console.error('not-allowlisted'));
+  });
+});
+
+// A 404 resource error fails the console guard unless the test declares it with ALLOW_404.
+test('console guard fails a test that hits an undeclared 404', async ({ page }) => {
+  test.fail();
+  const response = await page.goto('/console-guard-404-self-test/');
+  expect(response?.status()).toBe(404);
+});
+
+test.describe('console guard declared 404', () => {
+  test.use({ allowConsole: [ALLOW_404] });
+
+  test('console guard passes a declared 404', async ({ page }) => {
+    const response = await page.goto('/console-guard-404-self-test/');
+    expect(response?.status()).toBe(404);
+  });
 });
 
 test('staging allowlist allows exact staging host only', () => {
@@ -71,9 +120,12 @@ test('staging allowlist allows vercel.live toolbar and blocks it locally', () =>
   expect(isAllowedUrl('https://vercel.live/', stagingHost)).toBe(true);
   expect(isAllowedUrl('https://vercel.live/script.js', stagingHost)).toBe(true);
 
-  // blocked in local mode (no staging host)
-  expect(isAllowedUrl('https://vercel.live/')).toBe(false);
-  expect(isAllowedUrl('https://vercel.live/script.js')).toBe(false);
+  // blocked in local mode; explicit null so STAGING_URL cannot switch the default to staging mode
+  expect(isAllowedUrl('https://vercel.live/', null)).toBe(false);
+  expect(isAllowedUrl('https://vercel.live/script.js', null)).toBe(false);
+
+  // default (no override) path the real guard uses: staging mode only when STAGING_URL is set
+  expect(isAllowedUrl('https://vercel.live/')).toBe(STAGING);
 
   // lookalikes blocked in staging mode
   expect(isAllowedUrl('https://vercel.live.evil.com/', stagingHost)).toBe(false);

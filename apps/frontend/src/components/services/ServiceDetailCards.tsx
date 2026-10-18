@@ -1,4 +1,4 @@
-import type { AssetRef, Locale, OfferingPanel, SectionCopy } from '@/types/content';
+import type { AssetRef, OfferingPanel, SectionCopy } from '@/types/content';
 import { Carousel, type CarouselLabels } from '@/components/ui/Carousel';
 
 export interface ServiceDetailCardsIds {
@@ -24,7 +24,6 @@ export interface ServiceDetailCardsIds {
     itemTexts: string[];
   }[];
 }
-
 
 export const SERVICE_DETAIL_CARDS_IDS_MOBILE_VI: ServiceDetailCardsIds = {
   section: 'section_1129413203',
@@ -432,24 +431,6 @@ export const SERVICE_DETAIL_CARDS_IDS_WEBSITE_EN: ServiceDetailCardsIds = {
   ],
 };
 
-
-export const SERVICE_CAROUSEL_LABELS: Record<Locale, CarouselLabels> = {
-  vi: {
-    prev: 'Trước',
-    next: 'Tiếp theo',
-    goTo: 'Chuyển tới slide {index}',
-    pause: 'Tạm dừng trình chiếu',
-    play: 'Tiếp tục trình chiếu',
-  },
-  en: {
-    prev: 'Previous',
-    next: 'Next',
-    goTo: 'Go to slide {index}',
-    pause: 'Pause slideshow',
-    play: 'Play slideshow',
-  },
-};
-
 export interface ServiceDetailCardsProps {
   copy?: SectionCopy;
   offerings: OfferingPanel[];
@@ -486,16 +467,14 @@ export function ServiceDetailCards({
                 )}
                 <div id={ids.headingTitle} className="text">
                   <h2 style={{ textAlign: 'center' }}>
-                    {copy.titleLines && copy.titleLines.length > 1 ? (
-                      copy.titleLines.map((line, idx) => (
-                        <span key={idx}>
-                          {line}
-                          {idx < copy.titleLines!.length - 1 && <br />}
-                        </span>
-                      ))
-                    ) : (
-                      copy.title
-                    )}
+                    {copy.titleLines && copy.titleLines.length > 1
+                      ? copy.titleLines.map((line, idx) => (
+                          <span key={idx}>
+                            {line}
+                            {idx < copy.titleLines!.length - 1 && <br />}
+                          </span>
+                        ))
+                      : copy.title}
                   </h2>
                 </div>
                 <div className="text-center">
@@ -527,10 +506,7 @@ export function ServiceDetailCards({
                 id={cardIds?.col}
                 className="col col-logo medium-4 small-12 large-4"
               >
-                <div
-                  className="col-inner"
-                  style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}
-                >
+                <div className="col-inner" style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}>
                   <div id={cardIds?.titleText} className="text">
                     <h3>{offering.title}</h3>
                   </div>
@@ -599,14 +575,8 @@ export function ServiceDetailCards({
               const items = offering.items ?? [];
               return (
                 <div className="row" id={cardIds?.row} key={offering.id}>
-                  <div
-                    id={cardIds?.col}
-                    className="col col-logo medium-4 small-12 large-4"
-                  >
-                    <div
-                      className="col-inner"
-                      style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}
-                    >
+                  <div id={cardIds?.col} className="col col-logo medium-4 small-12 large-4">
+                    <div className="col-inner" style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}>
                       <div id={cardIds?.titleText} className="text">
                         <h3>{offering.title}</h3>
                       </div>

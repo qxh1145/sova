@@ -50,7 +50,13 @@ const queries: [
     'listPosts',
     'page',
     ['post-1'],
-    () => getRepository().listPosts({ locale: 'vi', category: 'fixture-category', page: 1, pageSize: 10 }),
+    () =>
+      getRepository().listPosts({
+        locale: 'vi',
+        category: 'fixture-category',
+        page: 1,
+        pageSize: 10,
+      }),
   ],
   ['getFAQs', 'list', ['faq-1'], () => getFAQs(['faq-1'], 'vi')],
   ['getFAQTopics', 'list', ['faq-topic-1'], () => getFAQTopics('vi')],
@@ -145,10 +151,20 @@ test('unknown scenario throws naming it', () => {
 
 test('production ignores CONTENT_SCENARIO', async () => {
   vi.stubEnv('NODE_ENV', 'production');
+  vi.stubEnv('NEXT_PUBLIC_E2E', '');
   for (const name of [...scenarioNames, 'foo']) {
     vi.stubEnv('CONTENT_SCENARIO', name);
     expect((await getSiteSettings('vi')).companyName).toBe('Sova');
   }
+});
+
+test('production honors CONTENT_SCENARIO when NEXT_PUBLIC_E2E is 1', async () => {
+  vi.stubEnv('NODE_ENV', 'production');
+  vi.stubEnv('NEXT_PUBLIC_E2E', '1');
+  vi.stubEnv('CONTENT_SCENARIO', 'extended');
+  const repo = getRepository();
+  const projects = await repo.listProjects({ page: 1, pageSize: 100 });
+  expect(projects.items.some((p) => p.slug === 'du-an-mock-mo-rong')).toBe(true);
 });
 
 test('src/dev is imported only by lib/repositories/index.ts', () => {

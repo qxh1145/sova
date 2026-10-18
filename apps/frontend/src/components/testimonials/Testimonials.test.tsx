@@ -1,12 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { parse } from 'node-html-parser';
-import {
-  Testimonials,
-  TESTIMONIALS_IDS,
-  TESTIMONIALS_LABELS,
-} from './Testimonials';
-import type { AssetRef, SectionCopy, Testimonial } from '@/types/content';
+import { Testimonials, TESTIMONIALS_IDS } from './Testimonials';
+import type { AssetRef, CarouselLabels, SectionCopy, Testimonial } from '@/types/content';
+
+const TEST_LABELS: Record<'vi' | 'en', CarouselLabels> = {
+  vi: {
+    prev: 'Trước',
+    next: 'Tiếp theo',
+    goTo: 'Chuyển tới slide {index}',
+    pause: 'Tạm dừng',
+    play: 'Tiếp tục',
+  },
+  en: { prev: 'Previous', next: 'Next', goTo: 'Go to slide {index}', pause: 'Pause', play: 'Play' },
+};
 
 describe('Testimonials component', () => {
   const mockTestimonials: Testimonial[] = [
@@ -133,7 +140,7 @@ describe('Testimonials component', () => {
         copy={mockCopy}
         art={mockArt}
         ids={TESTIMONIALS_IDS.home.vi}
-        labels={TESTIMONIALS_LABELS.vi}
+        labels={TEST_LABELS.vi}
       />,
     );
     const root = parse(html);
@@ -198,7 +205,7 @@ describe('Testimonials component', () => {
         copy={{ ...mockCopy, titleLines: ['Khách hàng nhận xét', 'về chúng tôi'] }}
         art={mockArt}
         ids={TESTIMONIALS_IDS.home.vi}
-        labels={TESTIMONIALS_LABELS.vi}
+        labels={TEST_LABELS.vi}
       />,
     );
     const root = parse(html);
@@ -219,7 +226,7 @@ describe('Testimonials component', () => {
         copy={{ eyebrow: 'Sova', title: 'Customer Reviews' }}
         art={mockArt}
         ids={TESTIMONIALS_IDS.home.en}
-        labels={TESTIMONIALS_LABELS.en}
+        labels={TEST_LABELS.en}
       />,
     );
     const root = parse(html);
@@ -246,7 +253,7 @@ describe('Testimonials component', () => {
         copy={mockCopy}
         art={mockArt}
         ids={TESTIMONIALS_IDS.home.vi}
-        labels={TESTIMONIALS_LABELS.vi}
+        labels={TEST_LABELS.vi}
       />,
     );
     const root = parse(html);
@@ -263,7 +270,7 @@ describe('Testimonials component', () => {
         copy={mockCopy}
         art={mockArt}
         ids={TESTIMONIALS_IDS.home.vi}
-        labels={TESTIMONIALS_LABELS.vi}
+        labels={TEST_LABELS.vi}
       />,
     );
     expect(html).toBe('');

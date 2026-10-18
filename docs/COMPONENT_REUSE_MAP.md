@@ -70,11 +70,11 @@ Không thêm `background` hoặc `social` variant chỉ để đáp ứng tên t
 | A02 | Doc cũ gợi ý bỏ featured_item/sample/login | Không làm theo; chỉ Digital Media/Recruitment được loại |
 | A03 | Doc cũ đề xuất data-driven giant ServiceTemplate | Dùng composition rõ từng page, data không chứa mọi layout boolean |
 | A04 | “TabbedFeatureList” không có tabbed-content ở service | ServiceDetailCards + mobile Carousel; tabs thật ở FAQ |
-| A05 | SEO FAQ #7 có literal `</p` ở cuối đáp án (`seo-tu-khoa-website:3935`); FAQ global 1300 không có | Lưu một FAQ với answer revision/source override tạm thời; chưa tự sửa lỗi văn bản |
+| A05 | SEO FAQ #7 có literal `</p` ở cuối đáp án (`seo-tu-khoa-website:3935`); FAQ global 1300 không có | Giữ source parity theo quyết định owner (2026-10-13, story 7.7); SEO revision với literal `</p` được giữ lại, đóng accepted source anomaly. |
 | A06 | Home H1 desktop/mobile và Website form bị lặp | Ghi rõ trước; đề xuất một data source, responsive markup giữ visual/behavior, loại duplicate IDs chỉ khi có baseline (Home H1 resolved story 3.1) |
 | A07 | EN profile slug `porfolio`; EN UIUX alias về VI | Giữ URL theo manifest, không tự sửa tiếng Anh |
 | A08 | `en/our-project` page-blank nhưng vẫn có Header/Footer | Dùng SiteShell bình thường, đo riêng layout |
-| A09 | Social footer kép | Trang đã loại; không xây variant để sửa trang ngoài scope |
+| A09 | Social footer kép | Trang đã loại; không xây variant để sửa trang ngoài scope; đóng not-applicable theo quyết định owner (2026-10-13, story 7.7). |
 | A10 | Original AJAX pagination bị server mirror giản lược | Không tuyên bố parity pagination khi chỉ dựa serve.py; cần capture behavior nguồn trước phase projects |
 | A12 | `/featured_item/index.html:609` có heading tên THP trước hero chung; THP detail có H1 lặp ở 655/748 | Ghi anomaly heading, giữ baseline trước khi chỉnh semantic hierarchy |
 | A13 | Storage service FAQ ×4 là bản copy nhầm từ SEO FAQ (theo cây component chủ dự án) | Mock giữ nội dung nguồn; quyết định sửa ghi anomaly log trước khi áp dụng |

@@ -14,7 +14,9 @@ export function createDeferred<T = void>() {
   return { promise, resolve, reject };
 }
 
-export function useGatedMockAdapter<T = unknown>(scenario: FormScenario): {
+export function useGatedMockAdapter<T = unknown>(
+  scenario: FormScenario,
+): {
   adapter: SubmitAdapter<T>;
   release: () => void;
 } {

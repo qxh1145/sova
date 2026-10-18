@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test';
-import { expect, test } from './fixtures';
+import { ALLOW_404, dragSlider, expect, test } from './fixtures';
 
 const TESTIMONIALS = '#slider-1717467276';
 
@@ -63,7 +63,13 @@ test.describe('Real route autoplay controls', () => {
     ['about goals', '/gioi-thieu/', 390, '#slider-512312949', VI],
     ['pricing cards', '/thiet-ke-website/', 390, '.slide_tke1 .flickity-enabled', VI],
     ['service cards', '/thiet-ke-app-mobile/', 390, '.slide_tkap .flickity-enabled', VI],
-    ['project gallery', '/featured_item/xanhthienthanh-cong-ty-co-phan-dau-tu-va-phat-trien-xanh-thien-thanh/', 1280, '#slider-duan .flickity-enabled', VI],
+    [
+      'project gallery',
+      '/featured_item/xanhthienthanh-cong-ty-co-phan-dau-tu-va-phat-trien-xanh-thien-thanh/',
+      1280,
+      '#slider-duan .flickity-enabled',
+      VI,
+    ],
   ] as const) {
     test(`${name}: keyboard pauses real autoplay`, async ({ page }) => {
       await page.setViewportSize({ width, height: 800 });
@@ -90,7 +96,8 @@ test.describe('Real route autoplay controls', () => {
       await pause.evaluate((element: HTMLElement) => element.blur());
       // Stop at the first advance: a long single tick can wrap a short gallery back to stoppedAt.
       let advanced = false;
-      for (let waited = 0; waited < 12000 && !advanced; waited += 500) advanced = (await tick(page, slides, 500)) !== stoppedAt;
+      for (let waited = 0; waited < 12000 && !advanced; waited += 500)
+        advanced = (await tick(page, slides, 500)) !== stoppedAt;
       expect(advanced, 'resumed carousel did not advance').toBe(true);
     });
   }
@@ -189,7 +196,9 @@ test.describe('Carousel contract checks', () => {
     expect(await tick(page, slides, 500)).toBe(1);
   });
 
-  test('Keyboard pause control toggles, focus pauses, and blur resumes only after play', async ({ page }) => {
+  test('Keyboard pause control toggles, focus pauses, and blur resumes only after play', async ({
+    page,
+  }) => {
     await openPaused(page, '/dev-fixtures/carousel/testimonials');
     const slides = page.locator(`${TESTIMONIALS} .flickity-slider > *`);
     const region = page.getByRole('region', { name: 'Carousel' });
@@ -206,6 +215,11 @@ test.describe('Carousel contract checks', () => {
 
     await play.evaluate((element: HTMLElement) => element.blur());
     expect(await tick(page, slides, 6000)).toBe(0);
+    // Resize re-inits Embla (Autoplay playOnInit); the user pause must survive it.
+    const { width, height } = page.viewportSize()!;
+    await page.setViewportSize({ width: width - 100, height });
+    await page.waitForTimeout(200); // real time for ResizeObserver -> reInit
+    expect(await tick(page, slides, 12000), 'resize restarted paused autoplay').toBe(0);
     await play.focus();
     await page.keyboard.press('Enter');
     await expect(pause).toBeFocused();
@@ -214,10 +228,14 @@ test.describe('Carousel contract checks', () => {
     expect(await tick(page, slides, 6000)).toBe(1);
   });
 
-  test('Focus and hover guards: mouse leave keeps focus pause, blur keeps hover pause', async ({ page }) => {
+  test('Focus and hover guards: mouse leave keeps focus pause, blur keeps hover pause', async ({
+    page,
+  }) => {
     await openPaused(page, '/dev-fixtures/carousel/testimonials');
     const slides = page.locator(`${TESTIMONIALS} .flickity-slider > *`);
-    const pause = page.getByRole('region', { name: 'Carousel' }).getByRole('button', { name: 'Pause slideshow' });
+    const pause = page
+      .getByRole('region', { name: 'Carousel' })
+      .getByRole('button', { name: 'Pause slideshow' });
 
     await pause.focus();
     await page.locator(TESTIMONIALS).hover();
@@ -271,22 +289,12 @@ test.describe('Carousel contract checks', () => {
     const slides = page.locator(`${TESTIMONIALS} .flickity-slider > *`);
     await expect(slides.nth(0)).toHaveClass(/is-selected/);
 
-    const box = (await viewport.boundingBox())!;
-    const startX = box.x + box.width * 0.4;
-    const startY = box.y + box.height / 2;
-
     // 5px is under dragThreshold:10
-    await page.mouse.move(startX, startY);
-    await page.mouse.down();
-    await page.mouse.move(startX - 5, startY, { steps: 5 });
-    await page.mouse.up();
+    await dragSlider(page, viewport, 5, 5);
     await expect(slides.nth(0)).toHaveClass(/is-selected/);
 
     // 35% of the viewport width: past the threshold and far enough to snap to the next slide
-    await page.mouse.move(startX, startY);
-    await page.mouse.down();
-    await page.mouse.move(startX - Math.round(box.width * 0.35), startY, { steps: 15 });
-    await page.mouse.up();
+    await dragSlider(page, viewport, 0.35);
     await expect(slides.nth(1)).toHaveClass(/is-selected/);
 
     await leaveSlider(page);
@@ -308,12 +316,6 @@ test.describe('Carousel contract checks', () => {
   test('Navigation away: client-side unmount leaves no running carousel or console errors', async ({
     page,
   }) => {
-    const consoleErrors: string[] = [];
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') consoleErrors.push(msg.text());
-    });
-    page.on('pageerror', (err) => consoleErrors.push(err.message));
-
     await openPaused(page, '/dev-fixtures/carousel/testimonials');
     await page.clock.runFor(1000);
 
@@ -335,12 +337,22 @@ test.describe('Carousel contract checks', () => {
     await expect(slides.nth(0)).toHaveClass(/is-selected/);
     await page.clock.fastForward(6500);
     await expect(slides.nth(1)).toHaveClass(/is-selected/);
-
-    expect(consoleErrors).toEqual([]);
   });
 
-  test('Unknown variant returns 404', async ({ page }) => {
-    const response = await page.goto('/dev-fixtures/carousel/nope');
-    expect(response?.status()).toBe(404);
+  test.describe('unknown variant', () => {
+    test.use({ allowConsole: [ALLOW_404] });
+    test('Unknown variant returns 404', async ({ page }) => {
+      const response = await page.goto('/dev-fixtures/carousel/nope');
+      expect(response?.status()).toBe(404);
+    });
   });
+});
+
+test('project gallery carousel is a named region landmark', async ({ page }) => {
+  await page.goto(
+    '/featured_item/xanhthienthanh-cong-ty-co-phan-dau-tu-va-phat-trien-xanh-thien-thanh/',
+  );
+  const slider = page.locator('#slider-duan .flickity-enabled');
+  await expect(slider).toHaveAttribute('role', 'region');
+  await expect(slider).toHaveAttribute('aria-label', 'Thư viện ảnh dự án');
 });

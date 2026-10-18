@@ -37,6 +37,7 @@ temp/
 baseline/
 !apps/frontend/tests/baseline/
 apps/frontend/baseline-sova/
+apps/frontend/baseline-diff/
 
 # Testing and Coverage
 coverage/

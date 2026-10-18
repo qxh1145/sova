@@ -1,4 +1,4 @@
-import { test as base, expect, type Page } from '@playwright/test';
+import { test as base, expect, type Locator, type Page } from '@playwright/test';
 
 // Fail-closed: any non-local host is a violation unless listed here.
 export const MAPS_EMBED_ALLOWLIST = [
@@ -100,14 +100,19 @@ export async function installListenerCounter(page: Page) {
   await page.addInitScript(() => {
     // Composite map: target (Window | Document) -> type -> Set<listener_capture_key>
     // or Map keyed by listener with Set/Map of contexts to preserve exact object identity
-    const windowListeners = new Map<string, Map<EventListenerOrEventListenerObject, Set<boolean>>>();
+    const windowListeners = new Map<
+      string,
+      Map<EventListenerOrEventListenerObject, Set<boolean>>
+    >();
     const docListeners = new Map<string, Map<EventListenerOrEventListenerObject, Set<boolean>>>();
 
     function getRegistry(target: EventTarget) {
       return target === window ? windowListeners : docListeners;
     }
 
-    function normalizeCapture(options?: boolean | AddEventListenerOptions | EventListenerOptions): boolean {
+    function normalizeCapture(
+      options?: boolean | AddEventListenerOptions | EventListenerOptions,
+    ): boolean {
       if (typeof options === 'boolean') return options;
       return Boolean(options?.capture);
     }
@@ -163,21 +168,22 @@ export async function installListenerCounter(page: Page) {
       return origRemove.call(this, type, listener as EventListenerOrEventListenerObject, options);
     };
 
-    (window as unknown as { __liveListeners: () => Record<string, number> }).__liveListeners = () => {
-      const counts: Record<string, number> = {};
-      for (const registry of [windowListeners, docListeners]) {
-        for (const [type, typeMap] of registry.entries()) {
-          let count = 0;
-          for (const captureSet of typeMap.values()) {
-            count += captureSet.size;
-          }
-          if (count > 0) {
-            counts[type] = (counts[type] || 0) + count;
+    (window as unknown as { __liveListeners: () => Record<string, number> }).__liveListeners =
+      () => {
+        const counts: Record<string, number> = {};
+        for (const registry of [windowListeners, docListeners]) {
+          for (const [type, typeMap] of registry.entries()) {
+            let count = 0;
+            for (const captureSet of typeMap.values()) {
+              count += captureSet.size;
+            }
+            if (count > 0) {
+              counts[type] = (counts[type] || 0) + count;
+            }
           }
         }
-      }
-      return counts;
-    };
+        return counts;
+      };
   });
 }
 
@@ -195,7 +201,68 @@ function isMapFrameRequest(request: import('@playwright/test').Request): boolean
   return false;
 }
 
-export const test = base.extend<{ networkGuard: string[] }>({
+export const GLOBAL_CONSOLE_ALLOW: RegExp[] = [
+  // Network guard deliberate abort on un-allowlisted outbound requests
+  /net::ERR_BLOCKED_BY_CLIENT/,
+  ...(STAGING
+    ? [
+        // Vercel toolbar injection on staging
+        /vercel\.live/,
+        /_vercel\/insights/,
+      ]
+    : []),
+];
+
+/** Intentional 404 navigations: the browser logs the document's resource-load failure. */
+export const ALLOW_404 = /^Failed to load resource: the server responded with a status of 404/;
+
+/** Error fixtures: the thrown render returns a 500 and React logs redacted Server Components error #441. */
+export const ALLOW_SERVER_ERROR =
+  /^Failed to load resource: the server responded with a status of 500|react\.dev\/errors\/441/;
+
+export interface FixtureOptions {
+  allowConsole: RegExp[];
+}
+
+export const test = base.extend<
+  FixtureOptions & {
+    networkGuard: string[];
+    consoleGuard: void;
+  }
+>({
+  allowConsole: [[], { option: true }],
+
+  consoleGuard: [
+    async ({ page, allowConsole }, use) => {
+      const errors: string[] = [];
+      page.on('console', (m) => {
+        if (m.type() === 'error') {
+          // Ignore errors originating while browsing the external eras-clone source mirror
+          if (page.url().startsWith('https://erasvietnam.vn')) return;
+          const loc = m.location();
+          if (loc?.url) {
+            try {
+              const url = new URL(loc.url);
+              if (url.hostname === 'erasvietnam.vn') return;
+              if (url.pathname.startsWith('/fixture')) return;
+              if (KNOWN_ABSENT_CSS_ASSETS.has(url.pathname)) return;
+            } catch {}
+          }
+          errors.push(m.text());
+        }
+      });
+      page.on('pageerror', (e) => {
+        if (page.url().startsWith('https://erasvietnam.vn')) return;
+        errors.push(e.message);
+      });
+      await use();
+      const allow = [...GLOBAL_CONSOLE_ALLOW, ...allowConsole];
+      const unexpected = errors.filter((t) => !allow.some((r) => r.test(t)));
+      expect(unexpected, `Unexpected console/page errors:\n${unexpected.join('\n')}`).toEqual([]);
+    },
+    { auto: true },
+  ],
+
   networkGuard: [
     async ({ context }, use) => {
       const blocked: string[] = [];
@@ -219,3 +286,14 @@ export const test = base.extend<{ networkGuard: string[] }>({
 });
 
 export { expect };
+
+export async function dragSlider(page: Page, viewport: Locator, distance: number, steps = 15) {
+  const box = (await viewport.boundingBox())!;
+  const startX = box.x + box.width * 0.4;
+  const startY = box.y + box.height / 2;
+  const deltaX = Math.abs(distance) <= 1 ? Math.round(box.width * distance) : distance;
+  await page.mouse.move(startX, startY);
+  await page.mouse.down();
+  await page.mouse.move(startX - deltaX, startY, { steps });
+  await page.mouse.up();
+}

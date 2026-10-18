@@ -69,12 +69,7 @@ export default async function FixtureFAQPage({
         className="section-topic-faqs"
         style={{ marginTop: 40 }}
       >
-        <FAQList
-          faqs={topicFaqs}
-          type="multiple"
-          defaultOpen="none"
-          labels={FIXTURE_FAQ_LABELS}
-        />
+        <FAQList faqs={topicFaqs} type="multiple" defaultOpen="none" labels={FIXTURE_FAQ_LABELS} />
       </section>
     </main>
   );

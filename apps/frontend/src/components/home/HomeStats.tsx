@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import type { Locale, SectionCopy, Stat } from '@/types/content';
-import { StatCounter } from './StatCounter';
+import { StatCounter } from '@/components/ui/StatCounter';
 
 export interface HomeStatsProps {
   stats: Stat[];

@@ -12,11 +12,7 @@ import {
   PRICING_TABLE_IDS_EMAIL_EN,
   PRICING_TABLE_IDS_EMAIL_VI,
 } from '@/components/pricing/PricingTable';
-import {
-  Testimonials,
-  TESTIMONIALS_IDS,
-  TESTIMONIALS_LABELS,
-} from '@/components/testimonials/Testimonials';
+import { Testimonials, TESTIMONIALS_IDS } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
 
 export interface EmailServiceViewProps {
@@ -87,7 +83,7 @@ export function EmailServiceView({ page, assets, locale }: EmailServiceViewProps
           copy={copy.testimonials}
           art={assets.testimonialArt}
           ids={TESTIMONIALS_IDS.email[locale]}
-          labels={TESTIMONIALS_LABELS[locale]}
+          labels={page.carouselLabels}
         />
       )}
 

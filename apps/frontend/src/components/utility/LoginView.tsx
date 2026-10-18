@@ -27,17 +27,11 @@ export function LoginView({ content, wordmark, demoNotice }: LoginViewProps) {
       </div>
 
       <div className="logo d-block d-md-none mb-4">
-        <div className="d-flex justify-content-center text-white">
-          {wordmark}
-        </div>
+        <div className="d-flex justify-content-center text-white">{wordmark}</div>
       </div>
 
       <div className="privacy-policy-page-link">
-        <a
-          className="privacy-policy-link"
-          href={content.login.privacyHref}
-          rel="privacy-policy"
-        >
+        <a className="privacy-policy-link" href={content.login.privacyHref} rel="privacy-policy">
           {content.login.privacyText}
         </a>
       </div>

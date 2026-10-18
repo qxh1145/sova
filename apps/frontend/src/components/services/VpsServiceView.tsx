@@ -12,11 +12,7 @@ import {
   PRICING_TABLE_IDS_VPS_EN,
   PRICING_TABLE_IDS_VPS_VI,
 } from '@/components/pricing/PricingTable';
-import {
-  Testimonials,
-  TESTIMONIALS_IDS,
-  TESTIMONIALS_LABELS,
-} from '@/components/testimonials/Testimonials';
+import { Testimonials, TESTIMONIALS_IDS } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
 
 export interface VpsServiceViewProps {
@@ -87,7 +83,7 @@ export function VpsServiceView({ page, assets, locale }: VpsServiceViewProps) {
           copy={copy.testimonials}
           art={assets.testimonialArt}
           ids={TESTIMONIALS_IDS.vps[locale]}
-          labels={TESTIMONIALS_LABELS[locale]}
+          labels={page.carouselLabels}
         />
       )}
 

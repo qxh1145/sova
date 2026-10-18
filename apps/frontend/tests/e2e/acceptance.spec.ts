@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test';
 import {
+  ALLOW_404,
   expect,
   expectNoDuplicateIds,
   getBodyOverflow,
@@ -26,56 +27,43 @@ import { getLegalPreset } from '../../src/components/legal/legalIds';
 import { getPaymentPreset } from '../../src/components/legal/paymentIds';
 import { routes } from '@/data/routes';
 import type { Service } from '@/types/content';
+import manifest from '../baseline/manifest.json';
 
-const WIDTHS = [390, 549, 550, 768, 849, 850, 1280, 1440];
+const WIDTHS = manifest.viewports;
 
-function setupConsoleCollector(page: Page) {
-  const consoleErrors: string[] = [];
-  page.on('console', (msg) => {
-    if (msg.type() === 'error') {
-      const text = msg.text();
-      if (!text.startsWith('Failed to load resource: the server responded with a status of 404')) {
-        consoleErrors.push(text);
-      }
-    }
-  });
-  page.on('pageerror', (err) => {
-    consoleErrors.push(err.message);
-  });
-  // The console 404 line carries no URL, so 404s are checked here. Only RSC prefetches of nav
-  // routes that later epics build are expected; a missing asset or page document still fails.
-  // ponytail: blanket _rsc allowance; drop it once every nav route exists (epic-fidelity).
+function setupResponse404Collector(page: Page) {
+  const missingResponses: string[] = [];
+  // The console 404 line carries no URL, so 404s are checked here. Every nav route now exists, so a
+  // missing asset, page document or RSC prefetch fails.
   page.on('response', (res) => {
     if (res.status() !== 404) return;
     const url = new URL(res.url());
-    if (
-      url.pathname.startsWith('/dev-fixtures/') ||
-      KNOWN_ABSENT_CSS_ASSETS.has(url.pathname) ||
-      url.searchParams.has('_rsc')
-    )
+    if (url.pathname.startsWith('/dev-fixtures/') || KNOWN_ABSENT_CSS_ASSETS.has(url.pathname))
       return;
-    consoleErrors.push(`404 ${res.url()}`);
+    missingResponses.push(`404 ${res.url()}`);
   });
-  (page as unknown as { __consoleErrors: string[] }).__consoleErrors = consoleErrors;
+  (page as unknown as { __missingResponses: string[] }).__missingResponses = missingResponses;
 }
 
-function verifyConsoleCollector(page: Page) {
-  const errors = (page as unknown as { __consoleErrors?: string[] }).__consoleErrors ?? [];
-  expect(errors, `Unexpected console/page errors:\n${errors.join('\n')}`).toEqual([]);
+function verifyResponse404Collector(page: Page) {
+  const errors = (page as unknown as { __missingResponses?: string[] }).__missingResponses ?? [];
+  expect(errors, `Unexpected 404 responses:\n${errors.join('\n')}`).toEqual([]);
 }
 
 test.describe('Acceptance: Site shell on real routes', () => {
   test.beforeEach(async ({ page }) => {
-    setupConsoleCollector(page);
+    setupResponse404Collector(page);
   });
 
   test.afterEach(async ({ page }) => {
-    verifyConsoleCollector(page);
+    verifyResponse404Collector(page);
   });
 
   test('Header sticky 90→70 motion at 1440px and stuck behavior at 390px on real routes', async ({
     page,
   }) => {
+    // Home's autoplay hero video holds back `load` for 30s+ on a cold preview; 4 Home loads here.
+    test.setTimeout(180_000);
     for (const path of ['/', '/en/home/']) {
       await page.setViewportSize({ width: 1440, height: 900 });
       await page.goto(path);
@@ -246,11 +234,11 @@ test.describe('Acceptance: Site shell on real routes', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');
 
-    // Client-nav from VI (/) to EN (/en/home/)
+    // Full document load from VI (/) to EN (/en/home/) across root layouts
     const enLink = page.locator('.header-nav-main .lang-switcher-inline a');
     await expect(enLink).toHaveText('EN');
     await enLink.click();
-    await expect(page).toHaveURL(/\/en\/home\/?$/);
+    await page.waitForURL(/\/en\/home\/?$/, { waitUntil: 'commit' });
 
     // Desktop menu overlay on EN
     const enTrigger = page.locator('.flex-col.hide-for-medium a[aria-controls="main-menu"]');
@@ -270,11 +258,11 @@ test.describe('Acceptance: Site shell on real routes', () => {
     await expect(page.locator('body')).not.toHaveAttribute('data-scroll-locked');
     expect(await getBodyOverflow(page)).not.toBe('hidden');
 
-    // Client-nav back to VI (/)
+    // Full document load back to VI (/) across root layouts
     const viLink = page.locator('.header-nav-main .lang-switcher-inline a');
     await expect(viLink).toHaveText('VI');
     await viLink.click();
-    await expect(page).toHaveURL((url) => url.pathname === '/');
+    await page.waitForURL((url) => url.pathname === '/', { waitUntil: 'commit' });
     await expect(page.locator('.header-nav-main .lang-switcher-inline a')).toHaveText('EN');
 
     // Desktop menu overlay on VI
@@ -295,10 +283,14 @@ test.describe('Acceptance: Site shell on real routes', () => {
     expect(await getBodyOverflow(page)).not.toBe('hidden');
   });
 
-  test('In staging mode, /dev-fixtures/shell/default/ returns 404', async ({ page }) => {
-    test.skip(!STAGING, 'Staging check only runs when STAGING_URL is set');
-    const response = await page.goto('/dev-fixtures/shell/default/');
-    expect(response?.status()).toBe(404);
+  test.describe('staging dev-fixture 404', () => {
+    test.use({ allowConsole: [ALLOW_404] });
+
+    test('In staging mode, /dev-fixtures/shell/default/ returns 404', async ({ page }) => {
+      test.skip(!STAGING, 'Staging check only runs when STAGING_URL is set');
+      const response = await page.goto('/dev-fixtures/shell/default/');
+      expect(response?.status()).toBe(404);
+    });
   });
 });
 
@@ -323,28 +315,32 @@ test.describe('Acceptance: 8 responsive widths viewport checks', () => {
       '/login-eras/',
       {
         widths: FROM_768,
-        reason: 'Login form markup (.row) overflows viewport at widths >= 768px due to bootstrap negative margins on #login',
+        reason:
+          'Login form markup (.row) overflows viewport at widths >= 768px due to bootstrap negative margins on #login',
       },
     ],
     [
       '/en/porfolio-eras-vietnam/',
       {
         widths: BELOW_550,
-        reason: 'Flatsome banner markup (.banner-layers) has overflow:auto with scrollWidth > clientWidth at widths < 550px',
+        reason:
+          'Flatsome banner markup (.banner-layers) has overflow:auto with scrollWidth > clientWidth at widths < 550px',
       },
     ],
     [
       '/ho-so-nang-luc-eras-vietnam/',
       {
         widths: BELOW_550,
-        reason: 'Flatsome banner markup (.banner-layers) has overflow:auto with scrollWidth > clientWidth at widths < 550px',
+        reason:
+          'Flatsome banner markup (.banner-layers) has overflow:auto with scrollWidth > clientWidth at widths < 550px',
       },
     ],
     [
       '/featured_item/an-phat-cong-ty-co-phan-cong-nghe-thuong-mai-an-phat/',
       {
         widths: BELOW_550,
-        reason: 'Flatsome banner markup (.banner-layers) has overflow:auto with scrollWidth > clientWidth at widths < 550px',
+        reason:
+          'Flatsome banner markup (.banner-layers) has overflow:auto with scrollWidth > clientWidth at widths < 550px',
       },
     ],
   ]);
@@ -369,7 +365,10 @@ test.describe('Acceptance: 8 responsive widths viewport checks', () => {
           await page.goto(path);
 
           if (knownIssue?.widths.includes(width)) {
-            testInfo.annotations.push({ type: 'known-issue', description: `${path} @ ${width}px: ${knownIssue.reason}` });
+            testInfo.annotations.push({
+              type: 'known-issue',
+              description: `${path} @ ${width}px: ${knownIssue.reason}`,
+            });
           } else {
             const overflowOffenders = await page.evaluate(() => {
               const root = document.documentElement;
@@ -378,9 +377,16 @@ test.describe('Acceptance: 8 responsive widths viewport checks', () => {
               for (const el of Array.from(document.body.querySelectorAll('*'))) {
                 if (el.getBoundingClientRect().right <= root.clientWidth) continue;
                 // Report only the outermost offender of each overflowing subtree.
-                if (el.parentElement && el.parentElement.getBoundingClientRect().right > root.clientWidth) continue;
+                if (
+                  el.parentElement &&
+                  el.parentElement.getBoundingClientRect().right > root.clientWidth
+                )
+                  continue;
                 const id = el.id ? `#${el.id}` : '';
-                const cls = typeof el.className === 'string' && el.className.trim() ? `.${el.className.trim().split(/\s+/).join('.')}` : '';
+                const cls =
+                  typeof el.className === 'string' && el.className.trim()
+                    ? `.${el.className.trim().split(/\s+/).join('.')}`
+                    : '';
                 offenders.push(`${el.tagName.toLowerCase()}${id}${cls}`);
               }
               return offenders;
@@ -400,7 +406,10 @@ test.describe('Acceptance: 8 responsive widths viewport checks', () => {
                   if (!allowedSelectors.some((sel) => el.matches(sel))) {
                     const tag = el.tagName.toLowerCase();
                     const id = el.id ? `#${el.id}` : '';
-                    const cls = el.className && typeof el.className === 'string' ? `.${el.className.trim().split(/\s+/).join('.')}` : '';
+                    const cls =
+                      el.className && typeof el.className === 'string'
+                        ? `.${el.className.trim().split(/\s+/).join('.')}`
+                        : '';
                     offenders.push(`${tag}${id}${cls}`);
                   }
                 }
@@ -552,11 +561,11 @@ const HOME_LOCALES = [
 for (const { locale, route, sections, absent } of HOME_LOCALES) {
   test.describe(`Acceptance: Home sections (${locale})`, () => {
     test.beforeEach(async ({ page }) => {
-      setupConsoleCollector(page);
+      setupResponse404Collector(page);
     });
 
     test.afterEach(async ({ page }) => {
-      verifyConsoleCollector(page);
+      verifyResponse404Collector(page);
     });
 
     test(`${locale.toUpperCase()} home sections are visible with source headings in source order`, async ({
@@ -598,16 +607,16 @@ for (const { locale, route, sections, absent } of HOME_LOCALES) {
 
 test.describe('Acceptance: Collections', () => {
   test.beforeEach(async ({ page }) => {
-    setupConsoleCollector(page);
+    setupResponse404Collector(page);
   });
 
   test.afterEach(async ({ page }) => {
-    verifyConsoleCollector(page);
+    verifyResponse404Collector(page);
   });
 
   const COLLECTION_ROUTES = [
     { name: 'Projects listing (VI)', path: '/du-an/', landmark: '#portfolio-results' },
-    { name: 'Projects listing (EN)', path: '/en/our-project/', landmark: '.banner-project' },
+    { name: 'Projects listing (EN)', path: '/en/our-project/', landmark: '#banner-2108105581' },
     { name: 'Projects archive (VI)', path: '/featured_item/', landmark: '#portfolio-1541637127' },
     {
       name: 'Project category archive',
@@ -641,17 +650,43 @@ test.describe('Acceptance: Collections', () => {
         page.locator(landmark).first(),
         `Landmark ${landmark} visible on ${routePath}`,
       ).toBeVisible();
+
+      if (routePath === '/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/') {
+        await expect(page.locator('h1.current-post-title')).toHaveText(
+          'Công ty Cổ phần Phát triển Công nghệ THP',
+        );
+        await expect(page.locator('#slider-duan .img.col')).toHaveCount(2);
+      }
     });
   }
 });
 
+const EXPECTED_SERVICE_FAQ_COUNTS: Record<string, number> = {
+  '/thiet-ke-website/': 8,
+  '/en/website-development/': 8,
+  '/thiet-ke-app-mobile/': 8,
+  '/en/app-mobile-development/': 9,
+  '/seo-tu-khoa-website/': 8,
+  '/en/website-keyword-seo/': 8,
+  '/ui-ux-branding-design/': 10,
+  '/en/ui-ux-branding-design-2/': 10,
+  '/giai-phap-luu-tru/': 4,
+  '/en/storage-solution/': 4,
+  '/e-mail-doanh-nghiep/': 9,
+  '/en/business-e-mail/': 9,
+  '/hosting-doanh-nghiep/': 10,
+  '/en/business-hosting/': 10,
+  '/vps-doanh-nghiep/': 12,
+  '/en/business-vps/': 12,
+};
+
 test.describe('Acceptance: Services and About', () => {
   test.beforeEach(async ({ page }) => {
-    setupConsoleCollector(page);
+    setupResponse404Collector(page);
   });
 
   test.afterEach(async ({ page }) => {
-    verifyConsoleCollector(page);
+    verifyResponse404Collector(page);
   });
 
   const allServices: Service[] = [
@@ -675,7 +710,7 @@ test.describe('Acceptance: Services and About', () => {
       );
       await expect(page.locator('main h1').first()).toBeVisible();
 
-      const expectedFaqCount = service.faqs?.length ?? 0;
+      const expectedFaqCount = EXPECTED_SERVICE_FAQ_COUNTS[service.path] ?? 0;
       await expect(page.locator('.accordion-item')).toHaveCount(expectedFaqCount);
 
       if ((service.testimonialIds?.length ?? 0) > 0) {
@@ -683,9 +718,10 @@ test.describe('Acceptance: Services and About', () => {
       }
 
       if (service.pricingId) {
-        await expect(
-          page.locator('.eras-table-price, main table, .vps-table-wrapper').first(),
-        ).toBeVisible();
+        const selector = ['email', 'hosting', 'vps'].includes(service.key)
+          ? '.vps-table-wrapper'
+          : '.eras-table-price';
+        await expect(page.locator(selector).first()).toBeVisible();
       }
     });
   }
@@ -709,11 +745,11 @@ test.describe('Acceptance: Services and About', () => {
 
 test.describe('Acceptance: Utility', () => {
   test.beforeEach(async ({ page }) => {
-    setupConsoleCollector(page);
+    setupResponse404Collector(page);
   });
 
   test.afterEach(async ({ page }) => {
-    verifyConsoleCollector(page);
+    verifyResponse404Collector(page);
   });
 
   for (const pageRecord of legalPages) {
@@ -753,9 +789,7 @@ test.describe('Acceptance: Utility', () => {
       page,
     }) => {
       const response = await page.goto(faq.path);
-      expect(response?.ok(), `Route ${faq.path} returned status ${response?.status()}`).toBe(
-        true,
-      );
+      expect(response?.ok(), `Route ${faq.path} returned status ${response?.status()}`).toBe(true);
       await expect(page.locator('header#header')).toBeVisible();
       await expect(page.locator('footer#footer')).toBeVisible();
       const preset = getFAQPreset(faq.locale);
@@ -808,7 +842,10 @@ test.describe('Acceptance: Utility', () => {
     await expect(page.locator('header#header')).toBeVisible();
     await expect(page.locator('footer#footer')).toBeVisible();
     await expect(page.locator('#section_430522107 h1')).toHaveText('Gửi thông tin thành công!');
-    await expect(page.locator('.wpcf7-demo-badge'), 'Expected no demo badge on plain route').toHaveCount(0);
+    await expect(
+      page.locator('.wpcf7-demo-badge'),
+      'Expected no demo badge on plain route',
+    ).toHaveCount(0);
   });
 
   test('Thank-you (demo=1) on /eras-xin-chan-thanh-cam-on-quy-khach/?demo=1 returns 200, heading, demo badge, and clean console', async ({
@@ -831,9 +868,7 @@ test.describe('Acceptance: Utility', () => {
     page,
   }) => {
     const response = await page.goto('/sample-page/');
-    expect(response?.ok(), `Route /sample-page/ returned status ${response?.status()}`).toBe(
-      true,
-    );
+    expect(response?.ok(), `Route /sample-page/ returned status ${response?.status()}`).toBe(true);
     await expect(page.locator('header#header')).toBeVisible();
     await expect(page.locator('footer#footer')).toBeVisible();
     await expect(page.locator('#content')).toBeVisible();
@@ -844,9 +879,7 @@ test.describe('Acceptance: Utility', () => {
     page,
   }) => {
     const response = await page.goto('/login-eras/');
-    expect(response?.ok(), `Route /login-eras/ returned status ${response?.status()}`).toBe(
-      true,
-    );
+    expect(response?.ok(), `Route /login-eras/ returned status ${response?.status()}`).toBe(true);
     await expect(page.locator('body')).toHaveClass(/\blogin\b/);
     await expect(page.locator('body')).toHaveClass(/\bwp-core-ui\b/);
     await expect(page.locator('#login')).toBeVisible();
@@ -875,15 +908,12 @@ test.describe('Acceptance: Utility', () => {
     page,
   }) => {
     const response = await page.goto('/dang-ky-nghi-phep/');
-    expect(
-      response?.ok(),
-      `Route /dang-ky-nghi-phep/ returned status ${response?.status()}`,
-    ).toBe(true);
-    expect(
-      page.url(),
-      `Expected landed URL to match /login-eras/, got ${page.url()}`,
-    ).toMatch(/\/login-eras\/$/);
+    expect(response?.ok(), `Route /dang-ky-nghi-phep/ returned status ${response?.status()}`).toBe(
+      true,
+    );
+    expect(page.url(), `Expected landed URL to match /login-eras/, got ${page.url()}`).toMatch(
+      /\/login-eras\/$/,
+    );
     await expect(page.locator('#login')).toBeVisible();
   });
 });
-

@@ -30,16 +30,11 @@ const AccordionContext = createContext<AccordionContextValue>({
   openValues: new Set(),
 });
 
-export function useAccordionContext() {
+function useAccordionContext() {
   return useContext(AccordionContext);
 }
 
-export function Accordion({
-  type,
-  defaultValue,
-  className,
-  children,
-}: AccordionProps) {
+export function Accordion({ type, defaultValue, className, children }: AccordionProps) {
   if (type === 'single') {
     return (
       <SingleAccordion defaultValue={defaultValue} className={className}>
@@ -108,13 +103,7 @@ function MultipleAccordion({
   );
 }
 
-export function AccordionItem({
-  value,
-  title,
-  labels,
-  children,
-  className,
-}: AccordionItemProps) {
+export function AccordionItem({ value, title, labels, children, className }: AccordionItemProps) {
   const { openValues } = useAccordionContext();
   const isOpen = openValues.has(value);
 

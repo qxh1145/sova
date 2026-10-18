@@ -43,8 +43,7 @@ export function FormField({
 }: FormFieldProps) {
   const generatedId = useId();
   const childElement = isValidElement(children) ? children : null;
-  const fieldId =
-    id ?? (childElement?.props as { id?: string } | undefined)?.id ?? generatedId;
+  const fieldId = id ?? (childElement?.props as { id?: string } | undefined)?.id ?? generatedId;
   const tipId = `${fieldId}-not-valid-tip`;
 
   const existingDescribedBy = (
@@ -52,17 +51,13 @@ export function FormField({
   )?.['aria-describedby'];
 
   const describedBy =
-    [existingDescribedBy, error ? tipId : undefined]
-      .filter(Boolean)
-      .join(' ') || undefined;
+    [existingDescribedBy, error ? tipId : undefined].filter(Boolean).join(' ') || undefined;
 
   const controlProps: FormFieldControlProps = {
     id: fieldId,
     'aria-invalid': error
       ? true
-      : (childElement?.props as { 'aria-invalid'?: boolean } | undefined)?.[
-          'aria-invalid'
-        ],
+      : (childElement?.props as { 'aria-invalid'?: boolean } | undefined)?.['aria-invalid'],
     'aria-describedby': describedBy,
   };
 
@@ -75,11 +70,7 @@ export function FormField({
     renderedControl = children;
   }
 
-  const controlWrapClasses = [
-    'wpcf7-form-control-wrap',
-    name,
-    wrapClassName,
-  ]
+  const controlWrapClasses = ['wpcf7-form-control-wrap', name, wrapClassName]
     .filter(Boolean)
     .join(' ');
 
@@ -87,11 +78,7 @@ export function FormField({
     <span className={controlWrapClasses} data-name={name}>
       {renderedControl}
       {error ? (
-        <span
-          className="wpcf7-not-valid-tip"
-          id={tipId}
-          role="alert"
-        >
+        <span className="wpcf7-not-valid-tip" id={tipId} role="alert">
           {error}
         </span>
       ) : null}

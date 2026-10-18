@@ -15,6 +15,17 @@
 /* port:css end */
 @import './carousel.css';
 @import './mobile-menu.css';
+@import './responsive-fixes.css';
+
+#portfolio-pagination .pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#portfolio-pagination .pagination button.page-numbers {
+  margin-bottom: 0;
+}
 
 body {
   cursor: auto;
@@ -50,39 +61,49 @@ html.has-custom-cursor .cursor-ring {
   display: block;
 }
 
+/* Source mobile CSS `h1.typewriter{font-size:40px!important}` (11-custom.css, max-width 549px); Sova
+   renders the lines as spans in one h1, so apply it to that h1. */
+@media (max-width: 549px) {
+  .banner h1.service-hero-heading,
+  .service-hero-heading {
+    font-size: 40px !important;
+    line-height: 1 !important;
+    row-gap: 6.2px;
+    padding-bottom: 6.2px;
+  }
+
+  /* Source lines are 40px inline-block h1s (margin-top 8px) in a block parent; measured pitch 54.2px.
+     Legacy `.typewriter{line-height:1.2!important}` also hits these spans, so repeat it here. */
+  .service-hero-heading .typewriter {
+    margin-top: 8px;
+    line-height: 1 !important;
+  }
+}
+
 @media (max-width: 549px) {
   .banner h1.home-hero-heading,
   .home-hero-heading {
     align-items: center;
     text-align: center;
-    font-size: clamp(16px, 4.2vw, 22px) !important;
+    font-size: 40px !important;
+    line-height: 40px !important;
+    row-gap: 1.1px; /* source line pitch 49.1px */
+    padding-bottom: 1.1px;
+  }
+
+  .home-hero-heading .typewriter {
+    font-size: 85%;
+    margin-top: 8px;
+    line-height: 40px !important;
   }
 }
 
-@media (min-width: 550px) and (max-width: 767px) {
+@media (min-width: 550px) {
   .banner h1.home-hero-heading,
   .home-hero-heading {
     align-items: flex-start;
     text-align: left;
-    font-size: clamp(16px, 3vw, 22px) !important;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1199px) {
-  .banner h1.home-hero-heading,
-  .home-hero-heading {
-    align-items: flex-start;
-    text-align: left;
-    font-size: clamp(22px, 2.9vw, 34px) !important;
-  }
-}
-
-@media (min-width: 1200px) {
-  .banner h1.home-hero-heading,
-  .home-hero-heading {
-    align-items: flex-start;
-    text-align: left;
-    font-size: clamp(32px, 2.5vw, 36px) !important;
+    font-size: 3.5em !important;
   }
 }
 
@@ -159,7 +180,17 @@ html.has-custom-cursor .cursor-ring {
   margin-bottom: 0.5em;
 }
 
-/* VI Footer CTA: source index.html:2870,2921. Made shell-wide so non-home VI routes get CTA rules. */
+/* VI Footer CTA: source index.html:2844,2870,2921. Made shell-wide so non-home VI routes get CTA rules. */
+#gap-701964121,
+#gap-864777220 {
+  padding-top: 29px;
+}
+@media (min-width: 550px) {
+  #gap-701964121,
+  #gap-864777220 {
+    padding-top: 78px;
+  }
+}
 #text-43480091 {
   font-size: 1.2rem;
   text-align: left;
@@ -208,13 +239,13 @@ html.has-custom-cursor .cursor-ring {
   color: rgb(255, 255, 255);
 }
 
-/* SEO and FAQ titles: source `a.accordion-title`; the shared Accordion renders a <button>, which picks up
-   Flatsome button metrics (2.4em line-height, 1em margins, bold, letter-spacing). Reset to the anchor's.
-   ponytail: scoped to SEO and FAQ; drop once Accordion stops inheriting button styles everywhere. */
-#col-161830420 .ac-luutru .accordion-title,
-#col-1084451967 .ac-luutru .accordion-title,
-#col-564510526 .ac-luutru .accordion-title,
-#col-751981030 .ac-luutru .accordion-title {
+/* Home services and every FAQ (`.ac-luutru`: service pages and the FAQ page) titles: source
+   `a.accordion-title`; the accessible Accordion renders a <button>, which picks up Flatsome button
+   metrics. Reset to the anchor's values.
+   ponytail: scoped to these accordions; drop once Accordion stops inheriting button styles everywhere. */
+#text-2320367842 .acc_dvu .accordion-title,
+#text-699740449 .acc_dvu .accordion-title,
+.ac-luutru .accordion-title {
   margin: 0;
   min-height: 0;
   font-weight: 400;
@@ -224,11 +255,27 @@ html.has-custom-cursor .cursor-ring {
   text-rendering: auto;
 }
 
+#text-2320367842 .acc_dvu .accordion-title,
+#text-699740449 .acc_dvu .accordion-title {
+  text-transform: none;
+}
+
+/* Source `.acc_dvu .accordion-title{font-weight:600}` is inside @media (max-width: 549px); above that
+   Flatsome's 400 / `.active` 700 apply. */
+@media (max-width: 549px) {
+  #text-2320367842 .acc_dvu .accordion-title,
+  #text-699740449 .acc_dvu .accordion-title {
+    font-weight: 600;
+  }
+}
+
+/* Reset above sets 400 and would beat Flatsome `.accordion-title.active{font-weight:700}` by order. */
+.ac-luutru .accordion-title.active {
+  font-weight: 700;
+}
+
 /* Its toggle is a <span> here but a Flatsome <button> in source: give it the button box. */
-#col-161830420 .ac-luutru .accordion-title .toggle,
-#col-1084451967 .ac-luutru .accordion-title .toggle,
-#col-564510526 .ac-luutru .accordion-title .toggle,
-#col-751981030 .ac-luutru .accordion-title .toggle {
+.ac-luutru .accordion-title .toggle {
   border: 1px solid transparent;
   padding-right: 0;
   min-width: 24px;
@@ -375,4 +422,55 @@ html.has-custom-cursor .cursor-ring {
   max-height: inherit;
   opacity: 1;
   visibility: visible;
+}
+
+/* Source opens nested columns (Hosting/VPS) on hover only; mirror it for keyboard focus. */
+#masthead .nav-dropdown .menu-item-has-children:focus-within .nav-dropdown-simple {
+  display: block !important;
+}
+
+/* Footer: the source repeats these rules on every page under page-specific ids; Footer.tsx uses the
+   home ids, whose rules ship only in route-root.css (home). Copied from route-root.css so every route
+   gets the source footer spacing, colours and alignment. */
+#gap-1662174138 {
+  padding-top: 50px;
+}
+#gap-401654536,
+#gap-926295735 {
+  padding-top: 15px;
+}
+#gap-985536192 {
+  padding-top: 10px;
+}
+#text-2143498589,
+#text-2143498589 > *,
+#text-3629506328,
+#text-3629506328 > *,
+#text-500523698,
+#text-500523698 > *,
+#text-1252042670 > * {
+  color: rgb(255, 255, 255);
+}
+#text-1252042670 {
+  text-align: center;
+  color: rgb(255, 255, 255);
+}
+@media (min-width: 550px) {
+  #text-1252042670 {
+    text-align: left;
+  }
+}
+#col-79686154 > .col-inner {
+  margin: 0 0 -30px;
+}
+#col-1807555465 > .col-inner {
+  padding: 0;
+  margin: 0 0 -30px;
+}
+#section_3912539 {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+#section_3912539 .section-bg-overlay {
+  background-color: rgba(0, 0, 0, 0);
 }

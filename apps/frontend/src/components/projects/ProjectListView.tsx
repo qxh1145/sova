@@ -1,9 +1,6 @@
 import type { ProjectListingPageData } from '@/lib/queries/projects';
 import { PageHero } from '@/components/hero/PageHero';
-import {
-  PROJECT_HERO_IDS_VI,
-  PROJECT_HERO_IDS_EN,
-} from './projectHeroIds';
+import { PROJECT_HERO_IDS_VI, PROJECT_HERO_IDS_EN } from './projectHeroIds';
 import { ProjectFilters } from './ProjectFilters';
 import { toCardData } from './ProjectCard';
 
@@ -27,9 +24,7 @@ export function ProjectListView({
   const sectionId = isEn ? 'section_2024589567' : 'section_2137536464';
 
   const defaultHero = {
-    headingLines: isEn
-      ? ['Projects Partnered', 'with Sova']
-      : ['Dự án đồng hành', 'cùng Sova'],
+    headingLines: isEn ? ['Projects Partnered', 'with Sova'] : ['Dự án đồng hành', 'cùng Sova'],
     breadcrumb: [
       { label: isEn ? 'Home' : 'Trang chủ', href: isEn ? '/en/home/' : '/' },
       { label: isEn ? 'Projects' : 'Dự án' },
@@ -48,7 +43,8 @@ export function ProjectListView({
             heroImage={heroImage}
             bgImage={bgImage}
             ids={heroIds}
-            bannerClass="banner-project"
+            // Source EN `/en/our-project/` banner has no `banner-project` class.
+            bannerClass={isEn ? '' : 'banner-project'}
           />
         </div>
       </section>
@@ -56,7 +52,8 @@ export function ProjectListView({
       <ProjectFilters
         projects={projects.map(toCardData)}
         listingPath={isEn ? '/en/our-project/' : '/du-an/'}
-        categories={categories}
+        // Source filter nav lists terms by name: Branding, Mobile App, Website.
+        categories={[...categories].sort((x, y) => x.label.localeCompare(y.label))}
         thumbnailAssets={thumbnailAssets}
         locale={locale}
         loading={loading}

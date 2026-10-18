@@ -107,7 +107,11 @@ export function HorizontalProjects({ children }: HorizontalProjectsProps) {
       });
 
       let observer: ResizeObserver | null = null;
-      if (typeof ResizeObserver !== 'undefined' && typeof document !== 'undefined' && document.body) {
+      if (
+        typeof ResizeObserver !== 'undefined' &&
+        typeof document !== 'undefined' &&
+        document.body
+      ) {
         observer = new ResizeObserver(scheduleRefresh);
         observer.observe(document.body);
       }

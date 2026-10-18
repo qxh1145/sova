@@ -4,7 +4,7 @@ import path from 'node:path';
 import { expect, test } from 'vitest';
 import { parseHtml, sanitize } from './html';
 import { classifyAsset, createAssetRegistry } from './assets';
-import { importPosts, POST_ALLOWED } from './posts';
+import { importPosts, POST_ALLOWED, POST_CLASS } from './posts';
 
 const mirror = mkdtempSync(path.join(tmpdir(), 'posts-mirror-'));
 mkdirSync(path.join(mirror, 'wp-content/uploads'), { recursive: true });
@@ -52,10 +52,26 @@ const fixture = parseHtml(
 );
 
 test('post allowlist keeps structure and media, drops attributes and fallback', () => {
-  expect(sanitize(fixture, hooks, POST_ALLOWED)).toBe(
+  expect(sanitize(fixture, { ...hooks, keepClass: POST_CLASS }, POST_ALLOWED)).toBe(
     '<h2>T</h2><hr><p>a b</p><img src="/x/i.png" alt="A" width="10" height="20">' +
       '<table><tbody><tr><td>c</td></tr></tbody></table>' +
       '<video controls width="5" height="6"><source src="/x/v.mp4" type="video/mp4"></video>',
+  );
+});
+
+test('post bodies keep h1 and only alignment, size and wp-image class names', () => {
+  const body = parseHtml(
+    '<h1 class="text-align-justify" style="c" onclick="x()">H</h1>' +
+      '<p class="aligncenter foo" id="p">a</p>' +
+      '<img class="aligncenter wp-image-877 size-full lazy" src="i.png" onerror="x()" style="c" width="1">' +
+      '<img class="alignnone foo" src="j.png"><br class="clear">' +
+      '<a class="alignleft" href="javascript:x()" onmouseover="x()">l</a>' +
+      '<script class="aligncenter">x()</script>',
+  );
+  expect(sanitize(body, { ...hooks, keepClass: POST_CLASS }, POST_ALLOWED)).toBe(
+    '<h1>H</h1><p class="aligncenter">a</p>' +
+      '<img class="aligncenter wp-image-877 size-full" src="/x/i.png" alt="" width="1">' +
+      '<img src="/x/j.png" alt=""><br>l',
   );
 });
 

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { parse } from 'node-html-parser';
 import { LatestPosts } from './LatestPosts';
-import type { AssetRef, Post, SectionCopy } from '@/types/content';
+import type { AssetRef, CarouselLabels, Post, SectionCopy } from '@/types/content';
 
 describe('LatestPosts component', () => {
   const mockCopy: SectionCopy = {
@@ -11,7 +11,20 @@ describe('LatestPosts component', () => {
     description: 'Khám phá thêm →',
   };
 
-  const createPost = (id: string, path: `/${string}`, title: string, thumbnailId?: string): Post => ({
+  const mockLabels: CarouselLabels = {
+    prev: 'Trước',
+    next: 'Tiếp theo',
+    goTo: 'Chuyển tới slide {index}',
+    pause: 'Tạm dừng',
+    play: 'Tiếp tục',
+  };
+
+  const createPost = (
+    id: string,
+    path: `/${string}`,
+    title: string,
+    thumbnailId?: string,
+  ): Post => ({
     id,
     locale: 'vi',
     path,
@@ -59,7 +72,13 @@ describe('LatestPosts component', () => {
     ];
 
     const html = renderToStaticMarkup(
-      <LatestPosts posts={posts} copy={mockCopy} assets={mockAssets} />,
+      <LatestPosts
+        posts={posts}
+        copy={mockCopy}
+        assets={mockAssets}
+        href="/goc-nhin/"
+        labels={mockLabels}
+      />,
     );
     const root = parse(html);
 
@@ -98,6 +117,8 @@ describe('LatestPosts component', () => {
         <LatestPosts
           posts={posts}
           copy={{ ...mockCopy, titleLines: ['Theo dõi', 'tin tức mới nhất'] }}
+          href="/goc-nhin/"
+          labels={mockLabels}
         />,
       ),
     );
@@ -118,7 +139,9 @@ describe('LatestPosts component', () => {
       createPost('post-2', '/bai-viet-2/', 'Bài viết 2'),
     ];
 
-    const html = renderToStaticMarkup(<LatestPosts posts={posts} copy={mockCopy} />);
+    const html = renderToStaticMarkup(
+      <LatestPosts posts={posts} copy={mockCopy} href="/goc-nhin/" labels={mockLabels} />,
+    );
     const root = parse(html);
 
     const gridCards = root.querySelectorAll('#text-386464690 .post .post-item-cus');
@@ -129,19 +152,32 @@ describe('LatestPosts component', () => {
   });
 
   it('renders null when posts array is empty', () => {
-    const html = renderToStaticMarkup(<LatestPosts posts={[]} copy={mockCopy} />);
+    const html = renderToStaticMarkup(
+      <LatestPosts posts={[]} copy={mockCopy} href="/goc-nhin/" labels={mockLabels} />,
+    );
     expect(html).toBe('');
   });
 
   it('handles missing media fallback: keeps .image-cover, title and link, omits img', () => {
     const posts: Post[] = [
-      createPost('post-missing-status', '/bai-viet-missing/', 'Missing Status Post', 'asset-missing'),
+      createPost(
+        'post-missing-status',
+        '/bai-viet-missing/',
+        'Missing Status Post',
+        'asset-missing',
+      ),
       createPost('post-no-asset', '/bai-viet-no-asset/', 'No Asset Post', 'asset-not-found'),
       createPost('post-no-thumb', '/bai-viet-no-thumb/', 'No Thumbnail ID Post'),
     ];
 
     const html = renderToStaticMarkup(
-      <LatestPosts posts={posts} copy={mockCopy} assets={mockAssets} />,
+      <LatestPosts
+        posts={posts}
+        copy={mockCopy}
+        assets={mockAssets}
+        href="/goc-nhin/"
+        labels={mockLabels}
+      />,
     );
     const root = parse(html);
 

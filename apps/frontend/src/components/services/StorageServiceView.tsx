@@ -8,14 +8,9 @@ import {
   STORAGE_OFFERINGS_IDS_EN,
   STORAGE_OFFERINGS_IDS_VI,
 } from './StorageOfferings';
-import {
-  Testimonials,
-  TESTIMONIALS_IDS,
-  TESTIMONIALS_LABELS,
-} from '@/components/testimonials/Testimonials';
+import { Testimonials, TESTIMONIALS_IDS } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
 import { FeaturedProjects, type FeaturedProjectsIds } from '@/components/projects/FeaturedProjects';
-import { SERVICE_CAROUSEL_LABELS } from './ServiceDetailCards';
 
 const FEATURED_PROJECTS_IDS_STORAGE: FeaturedProjectsIds = {
   row: 'row-1255166091',
@@ -52,12 +47,7 @@ const FAQ_IDS = {
   },
 };
 
-export function StorageServiceView({
-  page,
-  assets,
-  routes,
-  locale,
-}: StorageServiceViewProps) {
+export function StorageServiceView({ page, assets, routes, locale }: StorageServiceViewProps) {
   const isEn = locale === 'en';
   const { service, faqs, testimonials } = page;
   const copy = service.sectionCopy;
@@ -78,6 +68,7 @@ export function StorageServiceView({
   }
 
   const mediaMap = Object.fromEntries(assets.offeringMedia.map((m) => [m.id, m]));
+  const labels = page.carouselLabels;
 
   return (
     <main id="main">
@@ -98,7 +89,7 @@ export function StorageServiceView({
         decoIcon={assets.advantagesDeco}
         resolvedHrefs={resolvedHrefs}
         ids={isEn ? STORAGE_OFFERINGS_IDS_EN : STORAGE_OFFERINGS_IDS_VI}
-        labels={SERVICE_CAROUSEL_LABELS[locale]}
+        labels={labels}
       />
 
       {/* 3. Story 9: Featured projects */}
@@ -125,7 +116,7 @@ export function StorageServiceView({
           copy={copy.testimonials}
           art={assets.testimonialArt}
           ids={TESTIMONIALS_IDS.storage[locale]}
-          labels={TESTIMONIALS_LABELS[locale]}
+          labels={labels}
         />
       )}
 

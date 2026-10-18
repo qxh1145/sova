@@ -57,12 +57,21 @@ const mockRoutes: RouteEntry[] = [
   },
 ];
 
+const mockLabels = {
+  prev: 'Trước',
+  next: 'Tiếp theo',
+  goTo: 'Chuyển tới slide {index}',
+  pause: 'Tạm dừng',
+  play: 'Tiếp tục',
+};
+
 const mockPage = (service = storageServices[0]): ServicePage => ({
   service,
   faqs: [],
   testimonials: [],
   projects: [],
   pricing: null,
+  carouselLabels: mockLabels,
 });
 
 const mockAssets: ServiceAssets = {

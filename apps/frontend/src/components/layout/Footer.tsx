@@ -48,6 +48,15 @@ export function Footer({
 
       <section className="section ss-footer" id="section_3912539">
         <div className="section-bg fill">
+          <img
+            width={2000}
+            height={1125}
+            src="/wp-content/uploads/2024/02/8b7867237f3d84a4414a09ba3e720c8d.webp"
+            className="bg attachment-original size-original"
+            alt=""
+            decoding="async"
+            loading="lazy"
+          />
           <div className="section-bg-overlay absolute fill" />
         </div>
 

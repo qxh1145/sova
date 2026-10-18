@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { ALLOW_404, ALLOW_SERVER_ERROR, expect, test } from './fixtures';
 import { hasSource, missingSourceMessage, openSource } from '../baseline/source';
 
 test.describe('/du-an/ and /en/our-project/ project listing, filter and pagination', () => {
@@ -27,6 +27,33 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
     const pageButtons = pagination.locator('button.page-numbers:not(.next):not(.prev)');
     const lastPageText = await pageButtons.last().textContent();
     expect(lastPageText?.trim()).toBe('11');
+  });
+
+  test('Pagination numbers stay aligned after selection', async ({ page }) => {
+    await page.goto('/du-an');
+    const pagination = page.locator('#portfolio-pagination .pagination');
+    const current = pagination.locator('.page-numbers.current');
+    const page2 = pagination.locator('button.page-numbers', { hasText: '2' });
+    const aligned = async () => {
+      const currentBox = await current.boundingBox();
+      const nextBox = await page2.boundingBox();
+      expect(currentBox).not.toBeNull();
+      expect(nextBox).not.toBeNull();
+      expect(
+        Math.abs(currentBox!.y + currentBox!.height / 2 - nextBox!.y - nextBox!.height / 2),
+      ).toBeLessThan(2);
+    };
+    await aligned();
+    await page2.click();
+    await expect(current).toHaveText('2');
+    const page1 = pagination.getByRole('button', { name: '1', exact: true });
+    const currentBox = await current.boundingBox();
+    const page1Box = await page1.boundingBox();
+    expect(currentBox).not.toBeNull();
+    expect(page1Box).not.toBeNull();
+    expect(
+      Math.abs(currentBox!.y + currentBox!.height / 2 - page1Box!.y - page1Box!.height / 2),
+    ).toBeLessThan(2);
   });
 
   test('VI /du-an/ hero renders imported description, CTA, breadcrumb and images', async ({
@@ -159,7 +186,9 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
     await expect(heroTitle).toContainText('Projects Partnered');
     await expect(heroTitle).toContainText('with Sova');
     await expect(
-      page.locator('.banner.banner-project #text-1484206156 + #gap-1176636974.gap-element'),
+      page.locator(
+        '#banner-2108105581:not(.banner-project) #text-1484206156 + #gap-1176636974.gap-element',
+      ),
     ).toHaveCount(1);
 
     // Only "All" filter
@@ -203,25 +232,31 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
     }
   });
 
-  test('Dev fixtures variants: loading, empty, error', async ({ page }) => {
-    // 1. Loading fixture
-    await page.goto('/dev-fixtures/projects/loading/');
-    const loadingMsg = page.locator('#portfolio-results p');
-    await expect(loadingMsg).toHaveText('Đang tải...');
+  test.describe('Dev fixtures variants', () => {
+    test.use({
+      allowConsole: [ALLOW_SERVER_ERROR],
+    });
 
-    // 2. Empty fixture
-    await page.goto('/dev-fixtures/projects/empty/');
-    const emptyMsg = page.locator('#portfolio-results p');
-    await expect(emptyMsg).toHaveText('Không có dự án nào.');
-    await expect(page.locator('#portfolio-pagination .pagination')).toHaveCount(0);
+    test('Dev fixtures variants: loading, empty, error', async ({ page }) => {
+      // 1. Loading fixture
+      await page.goto('/dev-fixtures/projects/loading/');
+      const loadingMsg = page.locator('#portfolio-results p');
+      await expect(loadingMsg).toHaveText('Đang tải...');
 
-    // 3. Error fixture (VI)
-    await page.goto('/dev-fixtures/projects/error/');
-    await expect(page.locator('.page-error-main')).toBeVisible();
+      // 2. Empty fixture
+      await page.goto('/dev-fixtures/projects/empty/');
+      const emptyMsg = page.locator('#portfolio-results p');
+      await expect(emptyMsg).toHaveText('Không có dự án nào.');
+      await expect(page.locator('#portfolio-pagination .pagination')).toHaveCount(0);
 
-    // 4. Error fixture (EN)
-    await page.goto('/dev-fixtures/projects/error/?locale=en');
-    await expect(page.locator('.page-error-main')).toBeVisible();
+      // 3. Error fixture (VI)
+      await page.goto('/dev-fixtures/projects/error/');
+      await expect(page.locator('.page-error-main')).toBeVisible();
+
+      // 4. Error fixture (EN)
+      await page.goto('/dev-fixtures/projects/error/?locale=en');
+      await expect(page.locator('.page-error-main')).toBeVisible();
+    });
   });
 
   test('Pagination wrapper markup and computed CSS matches eras-clone du-an', async ({ page }) => {
@@ -398,6 +433,56 @@ test.describe('/featured_item/ archive and /featured_item_category/* archives', 
     }
   });
 
+  test('Archive masonry: cards sit absolutely in the shortest column, after load and after filtering', async ({
+    page,
+  }) => {
+    test.setTimeout(90_000);
+    // Replays the isotope masonry rule over the rendered cards; plain row flow fails it.
+    const masonryErrors = () =>
+      page.locator(`${ARCHIVE} .row`).evaluate((grid) => {
+        const top = grid.getBoundingClientRect().top;
+        const cards = [...grid.querySelectorAll<HTMLElement>(':scope > .col')].map((c) => {
+          const r = c.getBoundingClientRect();
+          return { position: getComputedStyle(c).position, x: r.left, y: r.top - top, h: r.height };
+        });
+        if (cards.some((c) => c.position !== 'absolute'))
+          return ['cards are not absolutely placed'];
+        const lefts = [...new Set(cards.map((c) => Math.round(c.x)))].sort((a, b) => a - b);
+        const bottoms = lefts.map(() => 0);
+        const errors: string[] = [];
+        cards.forEach((c, i) => {
+          const min = Math.min(...bottoms);
+          const col = lefts.indexOf(Math.round(c.x));
+          // Subpixel rects: any column within 1px of the shortest counts as the shortest.
+          if (Math.abs(c.y - min) > 1 || bottoms[col] - min > 1)
+            errors.push(
+              `card ${i} at column ${col}, y ${c.y.toFixed(1)}; shortest is ${min.toFixed(1)}`,
+            );
+          bottoms[col] = c.y + c.h;
+        });
+        if (Math.abs(grid.getBoundingClientRect().height - Math.max(...bottoms)) > 1)
+          errors.push('grid height is not the tallest column');
+        return errors;
+      });
+
+    // 549/550 and 849/850 straddle the column-count breakpoints.
+    for (const width of [390, 549, 550, 849, 850, 1280]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/featured_item/');
+      await expect.poll(masonryErrors, { message: `${width}px` }).toEqual([]);
+      for (const [term, count] of [
+        ['website', 59],
+        ['branding', 2],
+        ['', 62],
+      ] as const) {
+        // The hero overlaps the tabs at 550px, as on the source; dispatch skips the hit test.
+        await page.locator(`.filter-nav a[data-term="${term}"]`).dispatchEvent('click');
+        await expect(page.locator(`${ARCHIVE} .col`)).toHaveCount(count);
+        await expect.poll(masonryErrors, { message: `${width}px, filter "${term}"` }).toEqual([]);
+      }
+    }
+  });
+
   for (const { slug, title, count, portfolio } of CATEGORIES) {
     test(`Category ${slug}: H1 "${title}", ${count} cards, no filter nav, no pagination`, async ({
       page,
@@ -416,9 +501,15 @@ test.describe('/featured_item/ archive and /featured_item_category/* archives', 
     });
   }
 
-  test('Unknown category is a 404', async ({ page }) => {
-    const res = await page.goto('/featured_item_category/nope/');
-    expect(res?.status()).toBe(404);
+  test.describe('Unknown category 404', () => {
+    test.use({
+      allowConsole: [ALLOW_404],
+    });
+
+    test('Unknown category is a 404', async ({ page }) => {
+      const res = await page.goto('/featured_item_category/nope/');
+      expect(res?.status()).toBe(404);
+    });
   });
 
   test('No duplicate ids and no console errors on the four routes', async ({ page }) => {
@@ -618,7 +709,9 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
     await expect(xttSlides.nth(1)).toHaveClass(/is-selected/);
 
     // Click 2nd slide link -> lightbox opens at "2 of 4", scroll locked
-    await page.locator('#slider-duan .flickity-slider > .img.col:nth-child(2) a.lightbox-gallery').click();
+    await page
+      .locator('#slider-duan .flickity-slider > .img.col:nth-child(2) a.lightbox-gallery')
+      .click();
     const xttDialog = page.locator('[role="dialog"]');
     await expect(xttDialog).toBeVisible();
     await expect(xttDialog.locator('.mfp-counter')).toHaveText('2 of 4');
@@ -669,19 +762,112 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
     await expect(htkDate).toContainText('Ngày 22 tháng 4 năm 2023');
     await expect(htkDate.locator('.entry-date')).toHaveCount(0);
 
-    // 8. Many related (evc-athena has 58 related ids, capped at first 4)
+    // 8. Many related (evc-athena lists 58 related projects, all in the slider as source)
     await page.goto('/featured_item/evc-athena-cong-ty-tnhh-evc-athena/');
     const athenaRelated = page.locator('.portfolio-bottom .portfolio-related .col');
-    await expect(athenaRelated).toHaveCount(4);
+    await expect(athenaRelated).toHaveCount(58);
 
     // 9. No related (dsmart): section and heading still render, as source
     await page.goto('/featured_item/giao-dien-dsmart-giai-phap-dieu-khien-xe-hoi-tren-smartphone/');
     await expect(page.locator('.portfolio-bottom h4')).toHaveText('Dự án liên quan');
     await expect(page.locator('.portfolio-bottom .portfolio-related .col')).toHaveCount(0);
+  });
 
-    // 10. Unknown slug -> 404
-    const unknownRes = await page.goto('/featured_item/khong-ton-tai/');
-    expect(unknownRes?.status()).toBe(404);
+  test.describe('Related projects row slider', () => {
+    // Ticket 4.13 AC1 rests on these tests: baseline:sova masks the slider (SOVA_MASK).
+    const related = '.portfolio-bottom .row-slider';
+    // Hydration wait: Embla sets a translate on the track once it runs.
+    const hydrated = (page: import('@playwright/test').Page) =>
+      expect(page.locator(`${related} .flickity-slider`)).toHaveAttribute('style', /translate/);
+    const cardTops = (selector: string) =>
+      Array.from(document.querySelectorAll(`${selector} .flickity-slider > .col`)).map(
+        (el) => el.getBoundingClientRect().top,
+      );
+
+    for (const { width, perRow } of [
+      { width: 390, perRow: 2 },
+      { width: 549, perRow: 2 },
+      { width: 550, perRow: 3 },
+      { width: 768, perRow: 3 },
+      { width: 849, perRow: 3 },
+      { width: 850, perRow: 4 },
+      { width: 1280, perRow: 4 },
+      { width: 1440, perRow: 4 },
+    ]) {
+      test(`${width}px: one row of ${perRow} cells with arrows, no dots`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto('/featured_item/centro-noi-that-cao-cap-centro-chau-au/');
+        const slider = page.locator(related);
+        await hydrated(page);
+        await expect(slider.locator('.flickity-slider > .col')).toHaveCount(58);
+        const tops = await page.evaluate(cardTops, related);
+        expect(new Set(tops.map(Math.round)).size).toBe(1);
+        const viewport = await slider.locator('.flickity-viewport').boundingBox();
+        const firstCell = await slider.locator('.flickity-slider > .col').first().boundingBox();
+        expect(Math.round(viewport!.width / firstCell!.width)).toBe(perRow);
+        await expect(slider.locator('.flickity-prev-next-button')).toHaveCount(2);
+        await expect(slider.locator('.flickity-page-dots')).toHaveCount(0);
+        // One arrow click moves one full row.
+        const cells = slider.locator('.flickity-slider > .col');
+        await slider.locator('.flickity-prev-next-button.next').click({ force: true });
+        await expect(cells.nth(perRow)).toHaveClass(/is-selected/);
+        await expect(cells.nth(perRow)).toBeInViewport();
+        await expect(cells.nth(perRow - 1)).not.toHaveClass(/is-selected/);
+      });
+    }
+
+    test('arrows reach a card after the fourth and wrap past the last', async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 900 });
+      await page.goto('/featured_item/centro-noi-that-cao-cap-centro-chau-au/');
+      const slider = page.locator(related);
+      const cells = slider.locator('.flickity-slider > .col');
+      const next = slider.locator('.flickity-prev-next-button.next');
+      const prev = slider.locator('.flickity-prev-next-button.previous');
+      await hydrated(page);
+      await expect(cells.nth(4)).not.toBeInViewport();
+      await next.click({ force: true });
+      await next.click({ force: true });
+      await expect(cells.nth(4)).toBeInViewport();
+      await expect(cells.nth(4)).toHaveClass(/is-selected/);
+      await expect(cells.nth(5)).toHaveClass(/is-selected/);
+      await expect(cells.nth(3)).not.toHaveClass(/is-selected/);
+      await page.goto('/featured_item/centro-noi-that-cao-cap-centro-chau-au/');
+      await hydrated(page);
+      await prev.click({ force: true });
+      await expect(cells.last()).toBeInViewport();
+      await next.click({ force: true });
+      await expect(cells.first()).toBeInViewport();
+    });
+
+    test('nothing slides on its own', async ({ page }) => {
+      await page.goto('/featured_item/centro-noi-that-cao-cap-centro-chau-au/');
+      const first = page.locator(`${related} .flickity-slider > .col`).first();
+      await hydrated(page);
+      await expect(first).toHaveClass(/is-selected/);
+      await page.waitForTimeout(4000);
+      await expect(first).toHaveClass(/is-selected/);
+    });
+
+    test('one related project renders one cell with no arrows (THP)', async ({ page }) => {
+      await page.goto('/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/');
+      const slider = page.locator(related);
+      await expect(slider.locator('.flickity-slider > .col')).toHaveCount(1);
+      await expect(slider.locator('.flickity-slider > .col')).toBeVisible();
+      await expect(slider.locator('.flickity-prev-next-button')).toHaveCount(0);
+      await expect(slider).toHaveAttribute('role', 'region');
+      await expect(slider).toHaveAttribute('aria-label', 'Dự án liên quan');
+    });
+  });
+
+  test.describe('Unknown project slug 404', () => {
+    test.use({
+      allowConsole: [ALLOW_404],
+    });
+
+    test('Unknown slug -> 404', async ({ page }) => {
+      const unknownRes = await page.goto('/featured_item/khong-ton-tai/');
+      expect(unknownRes?.status()).toBe(404);
+    });
   });
 
   test('No duplicate ids and no console errors on THP and centro detail pages', async ({
@@ -712,8 +898,13 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
   });
 
   const detailSignature = () => {
+    // A carousel cell's `is-selected` is runtime state; the source mirror's related cell has none.
     const sig = (el: Element | null | undefined) =>
-      el ? `${el.tagName.toLowerCase()}.${[...el.classList].join('.')}` : null;
+      el
+        ? `${el.tagName.toLowerCase()}.${[...el.classList]
+            .filter((c) => c !== 'is-selected' || !el.parentElement?.matches('.flickity-slider'))
+            .join('.')}`
+        : null;
     const getTree = (rootEl: Element | null | undefined) =>
       rootEl ? [rootEl, ...rootEl.querySelectorAll('*')].map(sig) : null;
 

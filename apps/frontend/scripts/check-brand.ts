@@ -1,7 +1,7 @@
 // Post-build guard (CI, after `next build`): no Eras string or scrubbed Eras contact value in the
 // built output. Matches listed in scripts/brand-exceptions.json ({file?, match, within?, reason})
 // pass; `within` limits an exception to a match inside that string (e.g. a kept source slug).
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { BRAND_LEAK_RE } from '../src/lib/content/brand.ts';
 import { SCRUB_RULES } from '../src/lib/content/scrub.ts';
@@ -37,8 +37,10 @@ let scanned = 0;
 for (const root of roots) {
   for (const rel of readdirSync(root, { recursive: true, encoding: 'utf8' })) {
     if (!TEXT_EXT.test(rel)) continue;
-    const file = path.relative(NEXT_DIR, path.join(root, rel)).split(path.sep).join('/');
-    const text = readFileSync(path.join(root, rel), 'utf8');
+    const fullPath = path.join(root, rel);
+    if (!statSync(fullPath).isFile()) continue;
+    const file = path.relative(NEXT_DIR, fullPath).split(path.sep).join('/');
+    const text = readFileSync(fullPath, 'utf8');
     scanned++;
     for (const pattern of PATTERNS) {
       for (const { 0: match, index } of text.matchAll(pattern)) {

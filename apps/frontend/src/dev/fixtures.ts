@@ -75,7 +75,11 @@ export const fixtures: ContentData = {
       mobile: [],
       footerGroups: [],
       serviceOptions: [
-        { id: 'nav-en-2', label: 'Fixture', destination: { kind: 'internal', routeId: 'route-en-1' } },
+        {
+          id: 'nav-en-2',
+          label: 'Fixture',
+          destination: { kind: 'internal', routeId: 'route-en-1' },
+        },
       ],
     },
   ],
@@ -83,6 +87,14 @@ export const fixtures: ContentData = {
     {
       locale: 'vi',
       headerCta: { label: 'Fixture CTA', routeId: 'route-1' },
+      carouselLabels: {
+        prev: 'Trước',
+        next: 'Tiếp theo',
+        goTo: 'Chuyển tới slide {index}',
+        pause: 'Tạm dừng trình chiếu',
+        play: 'Tiếp tục trình chiếu',
+      },
+      projectGalleryLabel: 'Thư viện ảnh dự án',
       footerCta: { headingLines: ['Fixture Heading'], targetRouteId: 'route-1' },
       copyright: 'Copyright © 2026 {{site.companyName}} | All Rights Reserved.',
       themeCredit: 'Flatsome Theme',
@@ -127,6 +139,14 @@ export const fixtures: ContentData = {
     {
       locale: 'en',
       headerCta: { label: 'Fixture CTA EN', routeId: 'route-en-1' },
+      carouselLabels: {
+        prev: 'Previous',
+        next: 'Next',
+        goTo: 'Go to slide {index}',
+        pause: 'Pause slideshow',
+        play: 'Play slideshow',
+      },
+      projectGalleryLabel: 'Project gallery',
       footerCta: { headingLines: ['Fixture Heading EN'], targetRouteId: 'route-en-1' },
       copyright: 'Copyright © 2026 {{site.companyName}} | All Rights Reserved.',
       themeCredit: 'Flatsome Theme',
@@ -170,9 +190,32 @@ export const fixtures: ContentData = {
     },
   ],
   routes: [
-    { id: 'route-1', locale: 'vi', path: '/', kind: 'home', counterpartId: 'route-en-1', aliases: [], source: sources[0] },
-    { id: 'route-en-1', locale: 'en', path: '/en/home/', kind: 'home', counterpartId: 'route-1', aliases: [], source: sources[0] },
-    { id: 'route-no-counterpart', locale: 'vi', path: '/fixture-no-counterpart/', kind: 'about', aliases: [], source: sources[0] },
+    {
+      id: 'route-1',
+      locale: 'vi',
+      path: '/',
+      kind: 'home',
+      counterpartId: 'route-en-1',
+      aliases: [],
+      source: sources[0],
+    },
+    {
+      id: 'route-en-1',
+      locale: 'en',
+      path: '/en/home/',
+      kind: 'home',
+      counterpartId: 'route-1',
+      aliases: [],
+      source: sources[0],
+    },
+    {
+      id: 'route-no-counterpart',
+      locale: 'vi',
+      path: '/fixture-no-counterpart/',
+      kind: 'about',
+      aliases: [],
+      source: sources[0],
+    },
   ],
   services: [
     {

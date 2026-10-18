@@ -32,6 +32,7 @@ import { siteSettings } from '@/data/site';
 import { stats } from '@/data/stats';
 import { testimonials } from '@/data/testimonials';
 import { resolveDeep } from '@/lib/queries/tokens';
+import { categoryIdBySlug } from '@/lib/routes';
 import type { EntityId, Locale, PageResult, Post } from '@/types/content';
 import type { ContentData, ContentRepository } from './contracts';
 
@@ -80,7 +81,7 @@ function withSiteTokens(repository: ContentRepository, data: ContentData): Conte
       if (!JSON.stringify(result ?? null).includes('{{site.')) return result;
       const locale =
         args.find(isLocale) ?? args.map(localeOf).find(Boolean) ?? localeOf(result) ?? 'vi';
-      const settings = data.siteSettings.find((s) => s.locale === locale);
+      const settings = (data.siteSettings ?? siteSettings).find((s) => s.locale === locale);
       return settings ? resolveDeep(result, settings) : result;
     };
   return Object.fromEntries(
@@ -125,8 +126,9 @@ function createRawRepository(data: ContentData): ContentRepository {
       );
     },
     async getShellContent(locale) {
+      const list = data.shellContent ?? shellContent;
       return required(
-        data.shellContent.find((s) => s.locale === locale),
+        list.find((s) => s.locale === locale),
         `ShellContent for locale "${locale}"`,
       );
     },
@@ -140,11 +142,9 @@ function createRawRepository(data: ContentData): ContentRepository {
       return data.projectCategories;
     },
     async listProjects({ category, page, pageSize }) {
-      const categoryIds = data.projectCategories
-        .filter((c) => c.slug === category)
-        .map((c) => c.id);
+      const categoryId = category ? categoryIdBySlug(data.projectCategories, category) : undefined;
       const items = category
-        ? data.projects.filter((p) => p.categoryIds.some((id) => categoryIds.includes(id)))
+        ? data.projects.filter((p) => categoryId && p.categoryIds.includes(categoryId))
         : data.projects;
       return paginate(items, page, pageSize);
     },
@@ -153,14 +153,13 @@ function createRawRepository(data: ContentData): ContentRepository {
       return post && isPublished(post) ? post : null;
     },
     async listPosts({ locale, category, page, pageSize }) {
-      const categoryIds = data.postCategories
-        .filter((c) => c.slug === category && c.locale === locale)
-        .map((c) => c.id);
+      const localeCategories = data.postCategories.filter((c) => c.locale === locale);
+      const categoryId = category ? categoryIdBySlug(localeCategories, category) : undefined;
       const items = data.posts.filter(
         (p) =>
           p.locale === locale &&
           isPublished(p) &&
-          (!category || p.categoryIds.some((id) => categoryIds.includes(id))),
+          (!category || (categoryId && p.categoryIds.includes(categoryId))),
       );
       return paginate(items, page, pageSize);
     },
@@ -248,7 +247,7 @@ function createRawRepository(data: ContentData): ContentRepository {
       return data.utilityContent.find((c) => c.id === id) ?? null;
     },
     async listRoutes() {
-      return data.routes;
+      return data.routes ?? routes;
     },
   };
 }

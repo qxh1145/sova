@@ -12,6 +12,7 @@ import { createScenarioRepository } from '@/dev/scenarios';
 import { createMockRepository } from '@/lib/repositories/mock';
 import { fixtures } from '@/dev/fixtures';
 import { BlogListView } from '@/components/blog/BlogListView';
+import { parsePageParam } from '@/lib/routes';
 import type { Locale, Post } from '@/types/content';
 
 export const dynamic = 'force-dynamic';
@@ -65,7 +66,7 @@ export default async function DevFixtureBlogPage({
       posts: [...fixtures.posts, draftPost],
     });
 
-    const pageNum = pageStr && /^[1-9]\d*$/.test(pageStr) ? parseInt(pageStr, 10) : 1;
+    const pageNum = pageStr ? (parsePageParam(pageStr, 1) ?? 1) : 1;
     const [shell, searchData] = await Promise.all([
       getShellProps(locale, repo),
       getBlogSearchPage({ query, page: pageNum }, repo),

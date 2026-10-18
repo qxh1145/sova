@@ -6,11 +6,7 @@ import { ServicesAccordion } from '@/components/services/ServicesAccordion';
 import { Marquee } from '@/components/motion/Marquee';
 import { FeaturedProjects } from '@/components/projects/FeaturedProjects';
 import { PartnerLogos } from '@/components/partners/PartnerLogos';
-import {
-  Testimonials,
-  TESTIMONIALS_IDS,
-  TESTIMONIALS_LABELS,
-} from '@/components/testimonials/Testimonials';
+import { Testimonials, TESTIMONIALS_IDS } from '@/components/testimonials/Testimonials';
 import { LatestPosts } from '@/components/blog/LatestPosts';
 
 export interface HomeViewProps {
@@ -52,15 +48,9 @@ export function HomeView({
               className="row row-large row-full-width"
               id={isEn ? 'row-1752206630' : 'row-1518221527'}
             >
-              <div
-                id={isEn ? 'col-1171642283' : 'col-602084510'}
-                className="col small-12 large-12"
-              >
+              <div id={isEn ? 'col-1171642283' : 'col-602084510'} className="col small-12 large-12">
                 <div className="col-inner">
-                  <div
-                    id={isEn ? 'text-1345580034' : 'text-1534689410'}
-                    className="text tt_dvu"
-                  >
+                  <div id={isEn ? 'text-1345580034' : 'text-1534689410'} className="text tt_dvu">
                     <p>
                       {content.sectionCopy.services.eyebrow}
                       <br />
@@ -111,10 +101,7 @@ export function HomeView({
       />
       {content.partners.length > 0 && (
         <>
-          <section
-            className="section"
-            id={isEn ? 'section_841675174' : 'section_62935602'}
-          >
+          <section className="section" id={isEn ? 'section_841675174' : 'section_62935602'}>
             <div className="section-bg fill">
               <div className="section-bg-overlay absolute fill" />
             </div>
@@ -134,17 +121,11 @@ export function HomeView({
                 >
                   <div className="col-inner">
                     {content.sectionCopy.partners.eyebrow && (
-                      <div
-                        id={isEn ? 'text-3114286333' : 'text-2149017180'}
-                        className="text"
-                      >
+                      <div id={isEn ? 'text-3114286333' : 'text-2149017180'} className="text">
                         <h4>{content.sectionCopy.partners.eyebrow}</h4>
                       </div>
                     )}
-                    <div
-                      id={isEn ? 'text-3018448185' : 'text-1007250049'}
-                      className="text"
-                    >
+                    <div id={isEn ? 'text-3018448185' : 'text-1007250049'} className="text">
                       <h2>{content.sectionCopy.partners.title}</h2>
                     </div>
                     <div
@@ -167,10 +148,7 @@ export function HomeView({
                   className="col medium-9 small-12 large-9"
                 >
                   <div className="col-inner">
-                    <PartnerLogos
-                      partners={content.partners}
-                      assets={partnerAssets ?? []}
-                    />
+                    <PartnerLogos partners={content.partners} assets={partnerAssets ?? []} />
                   </div>
                 </div>
               </div>
@@ -189,13 +167,14 @@ export function HomeView({
         copy={content.sectionCopy.testimonials}
         art={content.testimonialArt}
         ids={TESTIMONIALS_IDS.home[locale]}
-        labels={TESTIMONIALS_LABELS[locale]}
+        labels={content.carouselLabels}
       />
       <LatestPosts
         posts={content.posts}
         copy={content.sectionCopy.posts}
         assets={postAssets}
-        href={isEn ? '/en/insight/' : '/goc-nhin/'}
+        href={content.postListingHref}
+        labels={content.carouselLabels}
       />
     </main>
   );

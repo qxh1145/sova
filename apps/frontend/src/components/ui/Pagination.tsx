@@ -37,10 +37,7 @@ export function Pagination(props: PaginationProps) {
   const isLinkMode = 'hrefForPage' in props && typeof props.hrefForPage === 'function';
 
   return (
-    <nav
-      className="pagination"
-      aria-label={labels.nav}
-    >
+    <nav className="pagination" aria-label={labels.nav}>
       {isLinkMode ? (
         <>
           {clampedCurrent > 1 && (
@@ -68,11 +65,7 @@ export function Pagination(props: PaginationProps) {
               );
             }
             return (
-              <Link
-                key={item}
-                className="page-numbers"
-                href={props.hrefForPage(item)}
-              >
+              <Link key={item} className="page-numbers" href={props.hrefForPage(item)}>
                 {item}
               </Link>
             );

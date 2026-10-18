@@ -1,4 +1,4 @@
-import { expect, expectNoClientStorage, test } from './fixtures';
+import { ALLOW_404, expect, expectNoClientStorage, test } from './fixtures';
 import { shellContent } from '../../src/data/shell';
 
 test.describe('Contact Form (Story Contact form with demo submit)', () => {
@@ -42,7 +42,10 @@ test.describe('Contact Form (Story Contact form with demo submit)', () => {
 
       // Verify all 5 controls have aria-invalid="true"
       await expect(form.locator('input[name="your-name"]')).toHaveAttribute('aria-invalid', 'true');
-      await expect(form.locator('input[name="your-email"]')).toHaveAttribute('aria-invalid', 'true');
+      await expect(form.locator('input[name="your-email"]')).toHaveAttribute(
+        'aria-invalid',
+        'true',
+      );
       await expect(form.locator(`select[name="${c.selectName}"]`)).toHaveAttribute(
         'aria-invalid',
         'true',
@@ -55,16 +58,16 @@ test.describe('Contact Form (Story Contact form with demo submit)', () => {
     });
   }
 
-  test('Bad email retains other field values and shows email tip only', async ({
-    page,
-  }) => {
+  test('Bad email retains other field values and shows email tip only', async ({ page }) => {
     await page.goto('/lien-he/');
     const form = page.locator('form.wpcf7-form');
     await expect(form).toBeVisible();
 
     await form.locator('input[name="your-name"]').fill('Nguyễn Văn A');
     await form.locator('input[name="your-email"]').fill('abc');
-    await form.locator('select[name="dynamic_select-682"]').selectOption('Dịch Vụ Thiết Kế Website');
+    await form
+      .locator('select[name="dynamic_select-682"]')
+      .selectOption('Dịch Vụ Thiết Kế Website');
     await form.locator('input[name="tel-584"]').fill('0988606539');
     await form.locator('textarea[name="your-message"]').fill('Mô tả dự án');
 
@@ -77,21 +80,23 @@ test.describe('Contact Form (Story Contact form with demo submit)', () => {
 
     await expect(form.locator('input[name="your-name"]')).toHaveValue('Nguyễn Văn A');
     await expect(form.locator('input[name="your-email"]')).toHaveValue('abc');
-    await expect(form.locator('select[name="dynamic_select-682"]')).toHaveValue('Dịch Vụ Thiết Kế Website');
+    await expect(form.locator('select[name="dynamic_select-682"]')).toHaveValue(
+      'Dịch Vụ Thiết Kế Website',
+    );
     await expect(form.locator('input[name="tel-584"]')).toHaveValue('0988606539');
     await expect(form.locator('textarea[name="your-message"]')).toHaveValue('Mô tả dự án');
   });
 
-  test('Bad phone retains other field values and shows phone tip only', async ({
-    page,
-  }) => {
+  test('Bad phone retains other field values and shows phone tip only', async ({ page }) => {
     await page.goto('/lien-he/');
     const form = page.locator('form.wpcf7-form');
     await expect(form).toBeVisible();
 
     await form.locator('input[name="your-name"]').fill('Nguyễn Văn A');
     await form.locator('input[name="your-email"]').fill('vana@example.com');
-    await form.locator('select[name="dynamic_select-682"]').selectOption('Dịch Vụ Thiết Kế Website');
+    await form
+      .locator('select[name="dynamic_select-682"]')
+      .selectOption('Dịch Vụ Thiết Kế Website');
     await form.locator('input[name="tel-584"]').fill('12');
     await form.locator('textarea[name="your-message"]').fill('Mô tả dự án');
 
@@ -104,60 +109,104 @@ test.describe('Contact Form (Story Contact form with demo submit)', () => {
 
     await expect(form.locator('input[name="your-name"]')).toHaveValue('Nguyễn Văn A');
     await expect(form.locator('input[name="your-email"]')).toHaveValue('vana@example.com');
-    await expect(form.locator('select[name="dynamic_select-682"]')).toHaveValue('Dịch Vụ Thiết Kế Website');
+    await expect(form.locator('select[name="dynamic_select-682"]')).toHaveValue(
+      'Dịch Vụ Thiết Kế Website',
+    );
     await expect(form.locator('input[name="tel-584"]')).toHaveValue('12');
     await expect(form.locator('textarea[name="your-message"]')).toHaveValue('Mô tả dự án');
   });
 
-  test('Fixture error variant retains all 5 values, displays demo error, and keeps URL', async ({
+  const errorFixtureCases = [
+    {
+      locale: 'vi',
+      shell: shellContent.find((s) => s.locale === 'vi')!,
+      selectName: 'dynamic_select-682',
+      selectOption: 'Dịch Vụ Thiết Kế Website',
+      name: 'Nguyễn Văn A',
+      message: 'Mô tả dự án đầy đủ',
+    },
+    {
+      locale: 'en',
+      shell: shellContent.find((s) => s.locale === 'en')!,
+      selectName: 'dynamic_select-6827',
+      selectOption: 'Website Development',
+      name: 'John Doe',
+      message: 'Full project description in English',
+    },
+  ] as const;
+
+  for (const c of errorFixtureCases) {
+    test(`Fixture error variant (${c.locale}) retains all 5 values, displays demo error, and keeps URL`, async ({
+      page,
+    }) => {
+      await page.goto(`/dev-fixtures/contact-form/error?locale=${c.locale}`);
+      const form = page.locator('form.wpcf7-form');
+      await expect(form).toBeVisible();
+
+      const nameInput = form.locator('input[name="your-name"]');
+      const emailInput = form.locator('input[name="your-email"]');
+      const selectInput = form.locator(`select[name="${c.selectName}"]`);
+      const phoneInput = form.locator('input[name="tel-584"]');
+      const messageInput = form.locator('textarea[name="your-message"]');
+      const submitBtn = form.locator('input.wpcf7-submit');
+      const releaseBtn = page.locator('[data-testid="fixture-release"]');
+
+      await nameInput.fill(c.name);
+      await emailInput.fill('user@example.com');
+      await selectInput.selectOption(c.selectOption);
+      await phoneInput.fill('0988606539');
+      await messageInput.fill(c.message);
+
+      await submitBtn.click();
+
+      // Submitting state before release
+      await expect(submitBtn).toBeDisabled();
+      await expect(submitBtn).toHaveAttribute('aria-busy', 'true');
+      await expect(submitBtn).toHaveValue(c.shell.consult.submitting);
+      await expect(form).toHaveClass(/submitting/);
+
+      // Release gate
+      await releaseBtn.click();
+
+      // Demo error state
+      await expect(form).toHaveClass(/failed/);
+      const responseOutput = form.locator('.wpcf7-response-output');
+      await expect(responseOutput).toBeVisible();
+      await expect(responseOutput).toHaveClass(/failed/);
+      await expect(responseOutput).toContainText(c.shell.consult.error);
+      await expect(responseOutput).toContainText(c.shell.consult.demoBadge);
+
+      // All 5 values kept
+      await expect(nameInput).toHaveValue(c.name);
+      await expect(emailInput).toHaveValue('user@example.com');
+      await expect(selectInput).toHaveValue(c.selectOption);
+      await expect(phoneInput).toHaveValue('0988606539');
+      await expect(messageInput).toHaveValue(c.message);
+
+      // URL unchanged
+      expect(page.url()).toContain('/dev-fixtures/contact-form/error');
+    });
+  }
+
+  test('Fixture success variant with EN redirects to thank-you with demo badge', async ({
     page,
   }) => {
-    await page.goto('/dev-fixtures/contact-form/error?locale=vi');
+    await page.goto('/dev-fixtures/contact-form/success?locale=en');
     const form = page.locator('form.wpcf7-form');
     await expect(form).toBeVisible();
 
-    const nameInput = form.locator('input[name="your-name"]');
-    const emailInput = form.locator('input[name="your-email"]');
-    const selectInput = form.locator('select[name="dynamic_select-682"]');
-    const phoneInput = form.locator('input[name="tel-584"]');
-    const messageInput = form.locator('textarea[name="your-message"]');
-    const submitBtn = form.locator('input.wpcf7-submit');
-    const releaseBtn = page.locator('[data-testid="fixture-release"]');
+    await form.locator('input[name="your-name"]').fill('John Doe');
+    await form.locator('input[name="your-email"]').fill('john@example.com');
+    await form.locator('select[name="dynamic_select-6827"]').selectOption('Website Development');
+    await form.locator('input[name="tel-584"]').fill('0988606539');
+    await form.locator('textarea[name="your-message"]').fill('Project details');
 
-    await nameInput.fill('Nguyễn Văn A');
-    await emailInput.fill('vana@example.com');
-    await selectInput.selectOption('Dịch Vụ Thiết Kế Website');
-    await phoneInput.fill('0988606539');
-    await messageInput.fill('Mô tả dự án đầy đủ');
+    await form.locator('input.wpcf7-submit').click();
+    await page.locator('[data-testid="fixture-release"]').click();
 
-    await submitBtn.click();
-
-    // Submitting state before release
-    await expect(submitBtn).toBeDisabled();
-    await expect(submitBtn).toHaveAttribute('aria-busy', 'true');
-    await expect(submitBtn).toHaveValue(viShell.consult.submitting);
-    await expect(form).toHaveClass(/submitting/);
-
-    // Release gate
-    await releaseBtn.click();
-
-    // Demo error state
-    await expect(form).toHaveClass(/failed/);
-    const responseOutput = form.locator('.wpcf7-response-output');
-    await expect(responseOutput).toBeVisible();
-    await expect(responseOutput).toHaveClass(/failed/);
-    await expect(responseOutput).toContainText(viShell.consult.error);
-    await expect(responseOutput).toContainText(viShell.consult.demoBadge);
-
-    // All 5 values kept
-    await expect(nameInput).toHaveValue('Nguyễn Văn A');
-    await expect(emailInput).toHaveValue('vana@example.com');
-    await expect(selectInput).toHaveValue('Dịch Vụ Thiết Kế Website');
-    await expect(phoneInput).toHaveValue('0988606539');
-    await expect(messageInput).toHaveValue('Mô tả dự án đầy đủ');
-
-    // URL unchanged
-    expect(page.url()).toContain('/dev-fixtures/contact-form/error');
+    await page.waitForURL('**/eras-xin-chan-thanh-cam-on-quy-khach/?demo=1');
+    const badge = page.locator('.wpcf7-demo-badge');
+    await expect(badge).toBeVisible();
   });
 
   const validSubmitCases = [
@@ -216,7 +265,9 @@ test.describe('Contact Form (Story Contact form with demo submit)', () => {
 
     await form.locator('input[name="your-name"]').fill('Test Privacy');
     await form.locator('input[name="your-email"]').fill('privacy@example.com');
-    await form.locator('select[name="dynamic_select-682"]').selectOption('Dịch Vụ SEO Từ Khoá Website');
+    await form
+      .locator('select[name="dynamic_select-682"]')
+      .selectOption('Dịch Vụ SEO Từ Khoá Website');
     await form.locator('input[name="tel-584"]').fill('0988606539');
     await form.locator('textarea[name="your-message"]').fill('Privacy check message');
 
@@ -227,8 +278,14 @@ test.describe('Contact Form (Story Contact form with demo submit)', () => {
     await expectNoClientStorage(page);
   });
 
-  test('Unknown fixture variant returns 404', async ({ page }) => {
-    const response = await page.goto('/dev-fixtures/contact-form/unknown-variant');
-    expect(response?.status()).toBe(404);
+  test.describe('Unknown fixture variant 404', () => {
+    test.use({
+      allowConsole: [ALLOW_404],
+    });
+
+    test('Unknown fixture variant returns 404', async ({ page }) => {
+      const response = await page.goto('/dev-fixtures/contact-form/unknown-variant');
+      expect(response?.status()).toBe(404);
+    });
   });
 });

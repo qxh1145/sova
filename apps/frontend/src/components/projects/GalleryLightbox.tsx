@@ -84,16 +84,10 @@ export function GalleryLightbox({
     >
       <div className="mfp-figure">
         <figure>
-          <img
-            className="mfp-img"
-            src={currentAsset.src}
-            alt={currentAsset.alt ?? ''}
-          />
+          <img className="mfp-img" src={currentAsset.src} alt={currentAsset.alt ?? ''} />
           <figcaption>
             <div className="mfp-bottom-bar">
-              <div className="mfp-counter">
-                {`${currentIndex + 1} of ${count}`}
-              </div>
+              <div className="mfp-counter">{`${currentIndex + 1} of ${count}`}</div>
             </div>
           </figcaption>
         </figure>

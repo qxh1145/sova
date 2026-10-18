@@ -16,17 +16,9 @@ export interface TestimonialCardProps {
   ids?: TestimonialSlideIds;
 }
 
-export function TestimonialCard({
-  testimonial,
-  avatar,
-  lineArt,
-  ids,
-}: TestimonialCardProps) {
+export function TestimonialCard({ testimonial, avatar, lineArt, ids }: TestimonialCardProps) {
   return (
-    <div
-      className="row row-collapse row-full-width"
-      id={ids?.row ?? `row-${testimonial.id}`}
-    >
+    <div className="row row-collapse row-full-width" id={ids?.row ?? `row-${testimonial.id}`}>
       <div id={ids?.col} className="col small-12 large-12">
         <div className="col-inner">
           <div
@@ -70,9 +62,7 @@ export function TestimonialCard({
                 <h3>
                   <strong>{testimonial.person}</strong>
                 </h3>
-                {testimonial.role && (
-                  <p style={{ color: '#9e9e9e' }}>{testimonial.role}</p>
-                )}
+                {testimonial.role && <p style={{ color: '#9e9e9e' }}>{testimonial.role}</p>}
               </div>
             </div>
           </div>

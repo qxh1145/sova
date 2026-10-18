@@ -1,9 +1,7 @@
-import { expect, test } from './fixtures';
+import { ALLOW_404, expect, test } from './fixtures';
 
 test.describe('Site shell and primitives', () => {
-  test('VI root renders one shell with VI labels and switcher linking to EN', async ({
-    page,
-  }) => {
+  test('VI root renders one shell with VI labels and switcher linking to EN', async ({ page }) => {
     await page.goto('/');
 
     await expect(page.locator('#header')).toHaveCount(1);
@@ -39,14 +37,10 @@ test.describe('Site shell and primitives', () => {
     await expect(page.locator('#text-1252042670')).toContainText('Copyright © 2026');
     await expect(page.locator('#text-1252042670 a')).toHaveText('Sova');
     await expect(page.locator('#text-1252042670')).toContainText('All Rights Reserved.');
-    await expect(page.locator('.copyright-footer')).toHaveText(
-      'Copyright 2026 © Flatsome Theme',
-    );
+    await expect(page.locator('.copyright-footer')).toHaveText('Copyright 2026 © Flatsome Theme');
   });
 
-  test('EN root renders one shell with EN labels and switcher linking to VI', async ({
-    page,
-  }) => {
+  test('EN root renders one shell with EN labels and switcher linking to VI', async ({ page }) => {
     await page.goto('/en/home/');
 
     await expect(page.locator('#header')).toHaveCount(1);
@@ -70,9 +64,7 @@ test.describe('Site shell and primitives', () => {
     const footerCta = page.locator('footer#footer section.ss-last');
     await expect(footerCta).toBeVisible();
     await expect(footerCta.locator('h1 a')).toHaveAttribute('href', '/en/contact-us/');
-    await expect(footerCta.locator('h1')).toContainText(
-      'Realize your amazing digital experience!',
-    );
+    await expect(footerCta.locator('h1')).toContainText('Realize your amazing digital experience!');
   });
 
   test('Switcher with no counterpart shows current-locale label only', async ({ page }) => {
@@ -105,14 +97,25 @@ test.describe('Site shell and primitives', () => {
 
   test('Header and footer nav items link to their registry paths', async ({ page }) => {
     const cases = [
-      { path: '/', top: ['Giới thiệu', '/gioi-thieu/'], child: ['Thiết kế website', '/thiet-ke-website/'] },
-      { path: '/en/home/', top: ['About Us', '/en/about-us/'], child: ['Website Development', '/en/website-development/'] },
+      {
+        path: '/',
+        top: ['Giới thiệu', '/gioi-thieu/'],
+        child: ['Thiết kế website', '/thiet-ke-website/'],
+      },
+      {
+        path: '/en/home/',
+        top: ['About Us', '/en/about-us/'],
+        child: ['Website Development', '/en/website-development/'],
+      },
     ];
     for (const { path, top, child } of cases) {
       await page.goto(path);
       const nav = page.locator('#masthead .header-nav-main');
       await expect(nav.locator('> li > a', { hasText: top[0] })).toHaveAttribute('href', top[1]);
-      await expect(nav.locator('.sub-menu a', { hasText: child[0] }).first()).toHaveAttribute('href', child[1]);
+      await expect(nav.locator('.sub-menu a', { hasText: child[0] }).first()).toHaveAttribute(
+        'href',
+        child[1],
+      );
       await expect(
         page.locator('footer#footer .ux-menu-link__link', { hasText: top[0] }).first(),
       ).toHaveAttribute('href', top[1]);
@@ -127,9 +130,9 @@ test.describe('Site shell and primitives', () => {
   test('Excluded routes are never linked in the shell', async ({ page }) => {
     for (const path of ['/', '/en/home/']) {
       await page.goto(path);
-      const links = await page.locator('a[href]').evaluateAll((els) =>
-        els.map((e) => (e as HTMLAnchorElement).href),
-      );
+      const links = await page
+        .locator('a[href]')
+        .evaluateAll((els) => els.map((e) => (e as HTMLAnchorElement).href));
 
       for (const link of links) {
         expect(link).not.toContain('/tuyen-dung/');
@@ -204,8 +207,14 @@ test.describe('Site shell and primitives', () => {
     await expect(page.locator('#logo .header-wordmark')).toHaveText('Fixture');
   });
 
-  test('Unknown fixture variant returns 404', async ({ page }) => {
-    const res = await page.goto('/dev-fixtures/shell/non-existent-variant/');
-    expect(res?.status()).toBe(404);
+  test.describe('Unknown fixture variant 404', () => {
+    test.use({
+      allowConsole: [ALLOW_404],
+    });
+
+    test('Unknown fixture variant returns 404', async ({ page }) => {
+      const res = await page.goto('/dev-fixtures/shell/non-existent-variant/');
+      expect(res?.status()).toBe(404);
+    });
   });
 });

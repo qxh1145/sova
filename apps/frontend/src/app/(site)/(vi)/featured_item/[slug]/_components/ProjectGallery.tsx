@@ -1,15 +1,13 @@
-import type { AssetRef, Project } from '@/types/content';
-import {
-  ProjectGallerySingle,
-  ProjectGallerySlider,
-} from './ProjectGallerySlider';
+import type { AssetRef, CarouselLabels, Project } from '@/types/content';
+import { ProjectGallerySingle, ProjectGallerySlider } from './ProjectGallerySlider';
 
 export interface ProjectGalleryProps {
   galleryAssets: AssetRef[];
   galleryLayout?: Project['galleryLayout'];
+  labels: CarouselLabels;
 }
 
-export function ProjectGallery({ galleryAssets, galleryLayout }: ProjectGalleryProps) {
+export function ProjectGallery({ galleryAssets, galleryLayout, labels }: ProjectGalleryProps) {
   if (galleryAssets.length === 0) {
     if (galleryLayout === 'row') {
       return (
@@ -40,7 +38,7 @@ export function ProjectGallery({ galleryAssets, galleryLayout }: ProjectGalleryP
 
   return (
     <div className="slider-wrapper relative" id="slider-duan">
-      <ProjectGallerySlider galleryAssets={galleryAssets} />
+      <ProjectGallerySlider galleryAssets={galleryAssets} labels={labels} />
     </div>
   );
 }

@@ -1,27 +1,6 @@
 import { expect, test } from './fixtures';
 
 test.describe('Tabs and Pagination primitives', () => {
-  test.beforeEach(async ({ page }) => {
-    const consoleErrors: string[] = [];
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') {
-        const text = msg.text();
-        if (!text.startsWith('Failed to load resource: the server responded with a status of 404')) {
-          consoleErrors.push(text);
-        }
-      }
-    });
-    page.on('pageerror', (err) => {
-      consoleErrors.push(err.message);
-    });
-    (page as unknown as { __consoleErrors: string[] }).__consoleErrors = consoleErrors;
-  });
-
-  test.afterEach(async ({ page }) => {
-    const errors = (page as unknown as { __consoleErrors?: string[] }).__consoleErrors ?? [];
-    expect(errors, `Unexpected console/page errors:\n${errors.join('\n')}`).toEqual([]);
-  });
-
   const tabLocales = [
     { name: 'VI', url: '/dev-fixtures/primitives/tabs' },
     { name: 'EN', url: '/dev-fixtures/primitives/tabs?locale=en' },
@@ -33,7 +12,9 @@ test.describe('Tabs and Pagination primitives', () => {
 
       const tablist = page.locator('.tabbed-content ul[role="tablist"]');
       await expect(tablist).toHaveCount(1);
-      await expect(tablist).toHaveClass(/nav nav-pills nav-vertical nav-normal nav-size-large nav-left/);
+      await expect(tablist).toHaveClass(
+        /nav nav-pills nav-vertical nav-normal nav-size-large nav-left/,
+      );
 
       const tabItems = tablist.locator('> li');
       const count = await tabItems.count();
@@ -174,7 +155,9 @@ test.describe('Tabs and Pagination primitives', () => {
   ];
 
   for (const { name, query, nav, prev, next } of paginationLabelCases) {
-    test(`Pagination ${name}: accessible names come from labels in both modes`, async ({ page }) => {
+    test(`Pagination ${name}: accessible names come from labels in both modes`, async ({
+      page,
+    }) => {
       await page.goto(`/dev-fixtures/primitives/pagination?${query}`);
 
       const linkRoot = page.locator('[data-testid="link-pagination-section"] nav.pagination');
@@ -278,7 +261,9 @@ test.describe('Tabs and Pagination primitives', () => {
     await linkToPage2.click();
 
     await page.waitForURL(/page=2/);
-    const current = page.locator('[data-testid="link-pagination-section"] span.page-numbers.current');
+    const current = page.locator(
+      '[data-testid="link-pagination-section"] span.page-numbers.current',
+    );
     await expect(current).toHaveText('2');
     await expect(current).toHaveAttribute('aria-current', 'page');
   });
@@ -328,7 +313,9 @@ test.describe('Tabs and Pagination primitives', () => {
     await expect(lastPageDisplay).toHaveText('5');
   });
 
-  test('Responsive: 375px viewport has no horizontal overflow for both variants', async ({ page }) => {
+  test('Responsive: 375px viewport has no horizontal overflow for both variants', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 375, height: 667 });
 
     for (const url of ['/dev-fixtures/primitives/tabs', '/dev-fixtures/primitives/pagination']) {

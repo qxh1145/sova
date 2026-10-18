@@ -1,0 +1,358 @@
+/* Responsive overrides: scope with route IDs to beat later per-route CSS and inline globals.
+   Use !important only against important source rules. Parity corrections at >=1280 belong
+   in a clearly marked parity block outside these media queries. */
+@media (min-width: 550px) and (max-width: 640px) {
+  #row-34630575 #col-497116769 {
+    max-width: 100%;
+    flex-basis: 100%;
+    margin-bottom: 20px;
+  }
+
+  #row-34630575 #col-1096890536 {
+    max-width: 100%;
+    flex-basis: 100%;
+  }
+
+  /* 8.2: About stats columns stack (EN #row-998052860, VI #row-1472759901) */
+  #row-998052860 #col-1078161984,
+  #row-998052860 #col-178856789,
+  #row-1472759901 #col-2041784750,
+  #row-1472759901 #col-1961182997 {
+    max-width: 100%;
+    flex-basis: 100%;
+  }
+
+  #row-998052860 #col-1078161984 > .col-inner,
+  #row-1472759901 #col-2041784750 > .col-inner {
+    margin-bottom: 20px;
+    padding-right: 0;
+  }
+}
+
+@media (min-width: 550px) and (max-width: 1199px) {
+  #banner-1767683074,
+  #banner-1274327306 {
+    min-height: 420px;
+  }
+
+  #banner-1767683074 .banner-layers,
+  #banner-1274327306 .banner-layers {
+    position: relative;
+    padding-top: 45px;
+    padding-bottom: 70px;
+  }
+
+  #banner-1767683074 .banner-layers > .text-box,
+  #banner-1274327306 .banner-layers > .text-box {
+    position: relative !important;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: 100%;
+  }
+
+  #banner-1767683074 .home_text_go,
+  #banner-1274327306 .home_text_go {
+    height: auto;
+  }
+
+  #banner-1767683074 h1.home-hero-heading,
+  #banner-1274327306 h1.home-hero-heading {
+    font-size: clamp(30px, 4vw, 48px) !important;
+  }
+
+  #row-560000867 .count-num .mb-0,
+  #row-34630575 .count-num .mb-0 {
+    font-size: clamp(24px, 3.2vw, 42px);
+    line-height: 1;
+  }
+
+  #row-560000867 .row-num,
+  #row-34630575 .row-num {
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+
+  #row-560000867 .row-num > .col,
+  #row-34630575 .row-num > .col {
+    max-width: 50%;
+    flex-basis: 50%;
+  }
+
+  #row-560000867 .row-num p,
+  #row-34630575 .row-num p {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* 8.2: Service list on home */
+  #text-76027534 .dich_vu,
+  #text-363933116 .dich_vu {
+    flex-wrap: wrap;
+    row-gap: 16px;
+    column-gap: 20px;
+  }
+
+  #text-76027534 .dich_vu .num_dv,
+  #text-363933116 .dich_vu .num_dv {
+    width: auto;
+    flex: 0 0 auto;
+  }
+
+  #text-76027534 .dich_vu .num_dv span,
+  #text-363933116 .dich_vu .num_dv span {
+    font-size: clamp(64px, 8vw, 100px);
+    margin-right: 0;
+  }
+
+  #text-76027534 .dich_vu .num_dv span:after,
+  #text-363933116 .dich_vu .num_dv span:after {
+    font-size: clamp(54px, 7vw, 84px);
+    margin-left: 6px;
+  }
+
+  #text-76027534 .dich_vu .name_dv,
+  #text-363933116 .dich_vu .name_dv {
+    width: auto;
+    flex: 1 1 200px;
+    font-size: clamp(24px, 3vw, 34px);
+    margin-bottom: 0;
+  }
+
+  #text-76027534 .dich_vu .mta_dv,
+  #text-363933116 .dich_vu .mta_dv {
+    width: 100%;
+    flex: 1 1 100%;
+    order: 3;
+    font-size: clamp(15px, 1.6vw, 18px);
+  }
+
+  #text-76027534 .dich_vu .nut_xthem,
+  #text-363933116 .dich_vu .nut_xthem {
+    width: auto;
+    flex: 0 0 auto;
+    order: 2;
+  }
+
+  #text-76027534 .dich_vu .nut_xthem a,
+  #text-363933116 .dich_vu .nut_xthem a {
+    font-size: clamp(48px, 6vw, 72px);
+    margin-left: 0;
+  }
+
+  /* 8.2: About stats & hero text flow */
+  #content #banner-588612431,
+  #content #banner-1388775398 {
+    min-height: 480px;
+    padding-top: 0;
+  }
+
+  #banner-588612431 .banner-layers,
+  #banner-1388775398 .banner-layers {
+    position: relative;
+    padding-top: 50px;
+    padding-bottom: 60px;
+  }
+
+  #banner-588612431 .banner-layers > .text-box,
+  #banner-1388775398 .banner-layers > .text-box {
+    position: relative !important;
+    top: auto;
+    left: auto;
+    transform: none !important;
+    width: 100%;
+  }
+
+  #banner-588612431 .page_text_go,
+  #banner-1388775398 .page_text_go {
+    height: auto;
+  }
+
+  #row-1696242377 #col-188830866 > .col-inner,
+  #row-1366495858 #col-766178260 > .col-inner {
+    margin-top: 0;
+  }
+
+  #row-1192570169 .count-num .mb-0,
+  #row-1084136091 .count-num .mb-0 {
+    font-size: clamp(28px, 3.5vw, 48px);
+    line-height: 1;
+  }
+}
+
+/* 8.3: Testimonial right-col negative margin reset on home, about and service pages.
+   Pairs in order (VI then EN each): home, about, seo, website, mobile, branding, email,
+   hosting, vps, storage (IDs from testimonialsIds.ts). */
+@media (min-width: 550px) and (max-width: 1279px) {
+  #row-1068036605 #col-55011168 > .col-inner,
+  #row-437563557 #col-863261912 > .col-inner,
+  #row-417662834 #col-62393978 > .col-inner,
+  #row-845168979 #col-1874560149 > .col-inner,
+  #row-1970142633 #col-1780721471 > .col-inner,
+  #row-1264708032 #col-100487888 > .col-inner,
+  #row-1287644938 #col-1669334910 > .col-inner,
+  #row-1827612760 #col-46726236 > .col-inner,
+  #row-1744614563 #col-747664916 > .col-inner,
+  #row-920490087 #col-975785863 > .col-inner,
+  #row-892214119 #col-1087438141 > .col-inner,
+  #row-1555165122 #col-1431510694 > .col-inner,
+  #row-114143651 #col-901618470 > .col-inner,
+  #row-103329289 #col-901269700 > .col-inner,
+  #row-1720812725 #col-2099560627 > .col-inner,
+  #row-1540336113 #col-913191646 > .col-inner,
+  #row-222827155 #col-1978814024 > .col-inner,
+  #row-713008911 #col-204491766 > .col-inner,
+  #row-25758408 #col-1996022406 > .col-inner,
+  #row-2111227539 #col-1460778604 > .col-inner {
+    margin-left: 0;
+  }
+}
+
+/* 8.4: Project archive heroes top padding below 550 to clear 90px absolute header */
+@media (max-width: 549px) {
+  #banner-2058171634 .banner-layers,
+  #banner-2108105581 .banner-layers,
+  #banner-1513224978 .banner-layers,
+  #banner-1437243260 .banner-layers,
+  #banner-819223527 .banner-layers,
+  #banner-669224451 .banner-layers {
+    padding-top: 100px;
+  }
+}
+
+/* 8.4: Project archive & detail heroes flow below 1280.
+   Banners: VI (2058171634), EN (2108105581), featured index (1513224978),
+   branding (1437243260), mobile-app (819223527), website (669224451),
+   detail (1027010616). Normal flow + top padding clears 90px header and keeps
+   description/CTA from spilling onto portfolio filter below. */
+@media (min-width: 550px) and (max-width: 1279px) {
+  #wrapper #banner-2058171634,
+  #wrapper #banner-2108105581,
+  #wrapper #banner-1513224978,
+  #wrapper #banner-1437243260,
+  #wrapper #banner-819223527,
+  #wrapper #banner-669224451 {
+    min-height: 400px;
+    padding-top: 0;
+    height: auto;
+  }
+
+  #wrapper #banner-1027010616 {
+    min-height: 260px;
+    padding-top: 0;
+    height: auto;
+  }
+
+  #banner-2058171634 .banner-inner,
+  #banner-2108105581 .banner-inner,
+  #banner-1513224978 .banner-inner,
+  #banner-1437243260 .banner-inner,
+  #banner-819223527 .banner-inner,
+  #banner-669224451 .banner-inner,
+  #banner-1027010616 .banner-inner {
+    position: relative;
+    height: auto;
+  }
+
+  #banner-2058171634 .banner-layers,
+  #banner-2108105581 .banner-layers,
+  #banner-1513224978 .banner-layers,
+  #banner-1437243260 .banner-layers,
+  #banner-819223527 .banner-layers,
+  #banner-669224451 .banner-layers {
+    position: relative;
+    height: auto;
+    padding-top: 100px;
+    padding-bottom: 60px;
+  }
+
+  #banner-1027010616 .banner-layers {
+    position: relative;
+    height: auto;
+    padding-top: 100px;
+    padding-bottom: 40px;
+  }
+
+  #banner-2058171634 .banner-layers > .text-box,
+  #banner-2108105581 .banner-layers > .text-box,
+  #banner-1513224978 .banner-layers > .text-box,
+  #banner-1437243260 .banner-layers > .text-box,
+  #banner-819223527 .banner-layers > .text-box,
+  #banner-669224451 .banner-layers > .text-box,
+  #banner-1027010616 .banner-layers > .text-box {
+    position: relative !important;
+    top: auto;
+    left: auto;
+    transform: none !important;
+    width: 100%;
+  }
+
+  #banner-2058171634 .page_text_go,
+  #banner-2108105581 .page_text_go,
+  #banner-1513224978 .page_text_go,
+  #banner-1437243260 .page_text_go,
+  #banner-819223527 .page_text_go,
+  #banner-669224451 .page_text_go {
+    height: auto;
+  }
+}
+
+/* 8.5: Portfolio card title stacks above category at 550–1279 (source flex row squeezes title;
+   source already stacks them at ≤549) */
+@media (min-width: 550px) and (max-width: 1279px) {
+  .col-inner .portfolio-box .box-text-inner {
+    display: block;
+  }
+}
+
+/* 8.5: Service slider cards grow below 550 so the CTA clears the feature list.
+   Source heights stay as min-height; CTA leaves absolute positioning and margin-top:auto
+   keeps it at the card bottom. inline-block lets the CTA padding size the line box, so
+   20px card padding + 20px margin = source bottom 40px.
+   Track stretches every slide to the tallest card (AutoHeight inline height overridden),
+   so the carousel keeps one height across autoplay steps. */
+@media (max-width: 549px) {
+  .slider-wrapper.slide_ui .flickity-slider,
+  .slider-wrapper.slide_gplt .flickity-slider {
+    align-items: stretch;
+    height: auto !important;
+  }
+
+  .slider-wrapper.slide_ui .flickity-slider > .row > .col,
+  .slider-wrapper.slide_gplt .flickity-slider > .row > .col {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .slider-wrapper.slide_ui .flickity-slider > .row > .col > .col-inner,
+  .slider-wrapper.slide_gplt .flickity-slider > .row > .col > .col-inner {
+    flex: 1 0 auto;
+  }
+
+  .slider-wrapper.slide_ui .col-inner,
+  .slider-wrapper.slide_gplt .col-inner {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+  }
+
+  .slider-wrapper.slide_ui .col-inner {
+    min-height: 600px;
+  }
+
+  .slider-wrapper.slide_gplt .col-inner {
+    min-height: 633px;
+  }
+
+  .slider-wrapper.slide_ui .col-inner > p:has(> a.but-lh),
+  .slider-wrapper.slide_gplt .col-inner > p:has(> a.but-lh) {
+    margin-top: auto;
+    margin-bottom: 20px;
+  }
+
+  .slider-wrapper.slide_ui .col-inner a.but-lh,
+  .slider-wrapper.slide_gplt .col-inner a.but-lh {
+    position: static;
+    display: inline-block;
+  }
+}

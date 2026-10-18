@@ -5,11 +5,7 @@ import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/ui/FormField';
 import { FormResponse, ScreenReaderResponse, formStatusClass } from '@/components/ui/FormResponse';
 import { useSubmitAdapter } from '@/lib/forms/SubmitAdapterContext';
-import {
-  contactSchema,
-  zodResolver,
-  type ContactFormValues,
-} from '@/lib/forms/schemas';
+import { contactSchema, zodResolver, type ContactFormValues } from '@/lib/forms/schemas';
 import { useHydrated } from '@/lib/forms/useHydrated';
 import { useSubmitStatus } from '@/lib/forms/useSubmitStatus';
 import type { ContactFormContent, Locale, ShellContent } from '@/types/content';
@@ -78,13 +74,10 @@ export function ContactForm({ form, consult, locale }: ContactFormProps) {
           <div className="col large-6 small-12">
             <p>
               <label htmlFor="your-name">
-                {' '}{form.nameLabel}
+                {' '}
+                {form.nameLabel}
                 <br />
-                <FormField
-                  id="your-name"
-                  name="your-name"
-                  error={errors['your-name']?.message}
-                >
+                <FormField id="your-name" name="your-name" error={errors['your-name']?.message}>
                   <input
                     {...register('your-name')}
                     id="your-name"
@@ -103,13 +96,10 @@ export function ContactForm({ form, consult, locale }: ContactFormProps) {
           <div className="col large-6 small-12">
             <p>
               <label htmlFor="your-email">
-                {' '}{form.emailLabel}
+                {' '}
+                {form.emailLabel}
                 <br />
-                <FormField
-                  id="your-email"
-                  name="your-email"
-                  error={errors['your-email']?.message}
-                >
+                <FormField id="your-email" name="your-email" error={errors['your-email']?.message}>
                   <input
                     {...register('your-email')}
                     id="your-email"
@@ -128,7 +118,8 @@ export function ContactForm({ form, consult, locale }: ContactFormProps) {
           <div className="col large-6 small-12">
             <p>
               <label htmlFor={selectFieldName}>
-                {' '}{form.serviceLabel}
+                {' '}
+                {form.serviceLabel}
                 <br />
                 <FormField
                   id={selectFieldName}
@@ -166,13 +157,10 @@ export function ContactForm({ form, consult, locale }: ContactFormProps) {
           <div className="col large-6 small-12">
             <p>
               <label htmlFor="tel-584">
-                {' '}{form.phoneLabel}
+                {' '}
+                {form.phoneLabel}
                 <br />
-                <FormField
-                  id="tel-584"
-                  name="tel-584"
-                  error={errors['tel-584']?.message}
-                >
+                <FormField id="tel-584" name="tel-584" error={errors['tel-584']?.message}>
                   <input
                     {...register('tel-584')}
                     id="tel-584"
@@ -190,7 +178,8 @@ export function ContactForm({ form, consult, locale }: ContactFormProps) {
           <div className="col large-12 small-12">
             <p>
               <label htmlFor="your-message">
-                {' '}{form.messageLabel}
+                {' '}
+                {form.messageLabel}
                 <br />
                 <FormField
                   id="your-message"

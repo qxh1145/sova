@@ -19,20 +19,24 @@ export function PartnerLogos({ partners, assets }: PartnerLogosProps) {
           );
         }
 
+        const hasValidMedia = asset.status !== 'missing' && Boolean(asset.src);
+
         return (
           <div key={partner.id} className="gallery-col col">
             <div className="col-inner">
               <div className="box has-hover gallery-box box-none">
                 <div className="box-image image-color image-zoom" style={{ width: '80%' }}>
-                  <img
-                    decoding="async"
-                    width={asset.width ?? 480}
-                    height={asset.height ?? 325}
-                    src={asset.src}
-                    className="gal-doitac"
-                    alt=""
-                    loading="lazy"
-                  />
+                  {hasValidMedia && (
+                    <img
+                      decoding="async"
+                      width={asset.width ?? 480}
+                      height={asset.height ?? 325}
+                      src={asset.src}
+                      className="gal-doitac"
+                      alt=""
+                      loading="lazy"
+                    />
+                  )}
                 </div>
                 <div className="box-text text-left">
                   <p />

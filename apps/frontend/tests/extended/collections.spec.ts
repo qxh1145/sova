@@ -1,6 +1,7 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '../e2e/fixtures';
 import { defaultContentData } from '../../src/lib/repositories/mock';
 import {
+  extendedMockPosts,
   mockPost,
   mockPostPath,
   mockPostSearchToken,
@@ -37,8 +38,7 @@ test.describe('Extended scenario data-driven placement', () => {
   });
 
   test('Project listing: /du-an/, filter Mobile App has 2 cards, one is mock', async ({ page }) => {
-    // Dev mode hydrates late; clicking the anchor before hydration reloads the page unfiltered.
-    await page.goto('/du-an/', { waitUntil: 'networkidle' });
+    await page.goto('/du-an/');
     const mobileAppFilter = page.locator('.filter-nav a[data-term="mobile-app"]');
     await mobileAppFilter.click();
     await expect(page.locator('.filter-nav li.active a')).toHaveAttribute(
@@ -56,7 +56,7 @@ test.describe('Extended scenario data-driven placement', () => {
   test('Project archive: /featured_item/ has 63 cards, mock last', async ({ page }) => {
     await page.goto('/featured_item/');
     const cards = page.locator('#portfolio-1541637127 .col');
-    await expect(cards).toHaveCount(63);
+    await expect(cards).toHaveCount(defaultContentData.projects.length + 1);
 
     const lastCardTitle = await cards.last().locator('.portfolio-box-title').innerText();
     expect(lastCardTitle.toLowerCase()).toBe(mockProject.title.toLowerCase());
@@ -98,13 +98,42 @@ test.describe('Extended scenario data-driven placement', () => {
     );
   });
 
-  test('Blog listing: /goc-nhin/page/5/ has 4 cards, last is mock', async ({ page }) => {
-    await page.goto('/goc-nhin/page/5/');
-    const articles = page.locator('#post-list article');
-    await expect(articles).toHaveCount(4);
+  test('Blog listing: /goc-nhin/page/5/ fills with mock posts, and /goc-nhin/page/6/ renders the overflow', async ({
+    page,
+  }) => {
+    // Listing keeps data order (6 per page): default VI posts, then the extended mock posts.
+    const viPosts = [
+      ...defaultContentData.posts.filter((p) => p.locale === 'vi'),
+      ...extendedMockPosts,
+    ];
+    const page5 = viPosts.slice(24, 30);
+    const page6 = viPosts.slice(30);
+    expect(page5).toHaveLength(6);
+    expect(page6.length).toBeGreaterThan(0);
 
-    const lastArticleTitle = await articles.last().locator('.title-post-archive').innerText();
-    expect(lastArticleTitle).toBe(mockPost.title);
+    const titlesOf = (articles: import('@playwright/test').Locator) =>
+      articles.locator('.title-post-archive').allInnerTexts();
+    const isMock = (p: (typeof viPosts)[number]) => extendedMockPosts.includes(p);
+
+    // Page 5: full, mock posts in their data slots
+    await page.goto('/goc-nhin/page/5/');
+    const page5Articles = page.locator('#post-list article');
+    await expect(page5Articles).toHaveCount(page5.length);
+    const page5Titles = await titlesOf(page5Articles);
+    page5.forEach((p, i) => {
+      if (isMock(p)) expect(page5Titles[i], `page 5 slot ${i}`).toBe(p.title);
+    });
+    expect(page5Titles).toContain(mockPost.title);
+
+    // Page 5 links to page 6
+    const nextLink = page.locator('.pagination a[href*="/goc-nhin/page/6/"]');
+    await expect(nextLink.first()).toBeVisible();
+
+    // Page 6: exactly the overflow posts, in order
+    await page.goto('/goc-nhin/page/6/');
+    const page6Articles = page.locator('#post-list article');
+    await expect(page6Articles).toHaveCount(page6.length);
+    expect(await titlesOf(page6Articles)).toEqual(page6.map((p) => p.title));
   });
 
   test('Blog category: /creative-branding/ has 2 cards incl. mock; sidebar count 2', async ({

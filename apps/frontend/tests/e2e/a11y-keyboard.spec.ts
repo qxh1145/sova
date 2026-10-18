@@ -10,7 +10,9 @@ test.describe('Desktop keyboard navigation', () => {
   ] as const) {
     test(`${label} submenu opens by keyboard and Escape restores focus`, async ({ page }) => {
       await page.goto(path);
-      const item = page.locator('#masthead .header-nav-main > li.has-dropdown').filter({ hasText: label });
+      const item = page
+        .locator('#masthead .header-nav-main > li.has-dropdown')
+        .filter({ hasText: label });
       const parent = item.locator('> .nav-top-link');
       await page.keyboard.press('Tab');
       for (
@@ -24,8 +26,8 @@ test.describe('Desktop keyboard navigation', () => {
       await expect(parent).toHaveAttribute('aria-expanded', 'true');
       await expect(item).toHaveClass(/current-dropdown/);
       await expect(item.locator('.sub-menu a').first()).toBeVisible();
-      // Nested columns (Hosting/VPS) stay display:none under legacy CSS, as in source; only shown links are Tab stops.
-      const links = item.locator('.sub-menu a:visible');
+      // Nested columns (Hosting/VPS) open on focus of their column link, so every link is a Tab stop.
+      const links = item.locator('.sub-menu a');
       const count = await links.count();
       expect(count).toBeGreaterThan(1);
       for (let i = 0; i < count; i++) {
@@ -44,9 +46,13 @@ test.describe('Desktop keyboard navigation', () => {
       await expect(parent).toHaveAttribute('aria-expanded', 'false');
     });
 
-    test(`${label} submenu opens on hover, stays open on click, closes on leave`, async ({ page }) => {
+    test(`${label} submenu opens on hover, stays open on click, closes on leave`, async ({
+      page,
+    }) => {
       await page.goto(path);
-      const item = page.locator('#masthead .header-nav-main > li.has-dropdown').filter({ hasText: label });
+      const item = page
+        .locator('#masthead .header-nav-main > li.has-dropdown')
+        .filter({ hasText: label });
       const firstLink = item.locator('.sub-menu a').first();
       await expect(firstLink).toBeHidden();
       await item.locator('> .nav-top-link').hover();
@@ -55,7 +61,6 @@ test.describe('Desktop keyboard navigation', () => {
       await expect(firstLink).toBeVisible();
       await expect(item.locator('> .nav-top-link')).toHaveAttribute('aria-expanded', 'true');
       await page.mouse.move(5, 700);
-      await item.locator('> .nav-top-link').blur();
       await expect(firstLink).toBeHidden();
     });
   }
@@ -66,7 +71,8 @@ test.describe('Keyboard sweep per route family', () => {
 
   // One route per (kind, locale), same derivation as acceptance.spec.ts.
   const families = new Map<string, string>();
-  for (const r of routes) if (!families.has(`${r.kind}:${r.locale}`)) families.set(`${r.kind}:${r.locale}`, r.path);
+  for (const r of routes)
+    if (!families.has(`${r.kind}:${r.locale}`)) families.set(`${r.kind}:${r.locale}`, r.path);
 
   for (const [family, path] of families) {
     test(`${family} ${path}: every Tab stop keeps visible focus`, async ({ page }) => {
@@ -78,10 +84,33 @@ test.describe('Keyboard sweep per route family', () => {
         await page.keyboard.press('Tab');
         const stop = await page.evaluate(() => {
           const active = document.activeElement as HTMLElement | null;
-          if (!active || active === document.body || active === document.documentElement) return { key: 'body', ok: false };
+          const w = window as Window & { __sweepLast?: Element };
+          if (!active || active === document.body || active === document.documentElement) {
+            // Reaching body is fine only past the last tabbable element; else focus was lost mid-page.
+            const last = w.__sweepLast;
+            const missed =
+              !!last &&
+              (!last.isConnected ||
+                [
+                  ...document.querySelectorAll<HTMLElement>(
+                    'a[href], button, input, select, textarea, [tabindex]',
+                  ),
+                ].some(
+                  (el) =>
+                    el.tabIndex >= 0 &&
+                    !(el as HTMLButtonElement).disabled &&
+                    !last.contains(el) &&
+                    !!(last.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) &&
+                    el.checkVisibility({ visibilityProperty: true }),
+                ));
+            return { key: 'body', ok: !missed };
+          }
+          w.__sweepLast = active;
           const path: string[] = [];
           for (let el: Element | null = active; el && el !== document.body; el = el.parentElement) {
-            path.unshift(`${el.tagName.toLowerCase()}:${Array.prototype.indexOf.call(el.parentElement?.children ?? [], el)}`);
+            path.unshift(
+              `${el.tagName.toLowerCase()}:${Array.prototype.indexOf.call(el.parentElement?.children ?? [], el)}`,
+            );
           }
           const key = `${active.tagName.toLowerCase()}${active.id ? `#${active.id}` : ''} ${active.getAttribute('aria-label') ?? active.textContent?.trim().slice(0, 40) ?? ''} @${path.join('>')}`;
           const rect = active.getBoundingClientRect();
@@ -98,8 +127,8 @@ test.describe('Keyboard sweep per route family', () => {
           return { key, ok };
         });
         if (stop.key === 'body') {
-          // Focus left the document once the last stop is passed; a loss before any stop is a defect.
           if (seen.size === 0) offenders.push('focus lost to body before first stop');
+          else if (!stop.ok) offenders.push(`focus lost to body after ${[...seen].at(-1)}`);
           break;
         }
         if (seen.has(stop.key)) break; // wrapped around

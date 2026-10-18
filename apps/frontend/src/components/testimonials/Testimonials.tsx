@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { Fragment } from 'react';
-import type { AssetRef, Locale, SectionCopy, Testimonial } from '@/types/content';
+import type { AssetRef, SectionCopy, Testimonial } from '@/types/content';
 import { Carousel, type CarouselLabels } from '@/components/ui/Carousel';
 import {
   type TestimonialsIds,
@@ -16,23 +16,6 @@ export interface TestimonialsArt {
   quoteIcon: AssetRef;
   line: AssetRef;
 }
-
-export const TESTIMONIALS_LABELS: Record<Locale, CarouselLabels> = {
-  vi: {
-    prev: 'Trước',
-    next: 'Tiếp theo',
-    goTo: 'Chuyển tới slide {index}',
-    pause: 'Tạm dừng trình chiếu',
-    play: 'Tiếp tục trình chiếu',
-  },
-  en: {
-    prev: 'Previous',
-    next: 'Next',
-    goTo: 'Go to slide {index}',
-    pause: 'Pause slideshow',
-    play: 'Play slideshow',
-  },
-};
 
 export interface TestimonialsProps {
   testimonials: Testimonial[];

@@ -1,10 +1,7 @@
 import type { Locale } from '@/types/content';
 import type { ServiceAssets, ServicePage } from '@/lib/queries/services';
 import { PageHero } from '@/components/hero/PageHero';
-import {
-  SERVICE_HERO_IDS_HOSTING_EN,
-  SERVICE_HERO_IDS_HOSTING_VI,
-} from './serviceHeroIds';
+import { SERVICE_HERO_IDS_HOSTING_EN, SERVICE_HERO_IDS_HOSTING_VI } from './serviceHeroIds';
 import {
   ServiceIconCards,
   SERVICE_ICON_CARDS_IDS_HOSTING_EN,
@@ -15,11 +12,7 @@ import {
   PRICING_TABLE_IDS_HOSTING_EN,
   PRICING_TABLE_IDS_HOSTING_VI,
 } from '@/components/pricing/PricingTable';
-import {
-  Testimonials,
-  TESTIMONIALS_IDS,
-  TESTIMONIALS_LABELS,
-} from '@/components/testimonials/Testimonials';
+import { Testimonials, TESTIMONIALS_IDS } from '@/components/testimonials/Testimonials';
 import { ServiceFAQ } from './ServiceFAQ';
 
 export interface HostingServiceViewProps {
@@ -92,7 +85,7 @@ export function HostingServiceView({ page, assets, locale }: HostingServiceViewP
           copy={copy.testimonials}
           art={assets.testimonialArt}
           ids={TESTIMONIALS_IDS.hosting[locale]}
-          labels={TESTIMONIALS_LABELS[locale]}
+          labels={page.carouselLabels}
         />
       )}
 

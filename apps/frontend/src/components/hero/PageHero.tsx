@@ -41,6 +41,10 @@ export interface PageHeroIds {
   bottomGap?: string;
   /** Classes on bottomGap element; defaults to `gap-element clearfix`. */
   bottomGapClass?: string;
+  /** Inner `<span style="font-size: …">` on each heading line (About: 80%). */
+  headingLineSize?: string;
+  /** Breadcrumb and CTA as bare text, no `<p>` (project heroes). */
+  bareText?: true;
 }
 
 export interface PageHeroProps {
@@ -53,6 +57,11 @@ export interface PageHeroProps {
   ctaIcon?: AssetRef | null;
 }
 
+function Gap({ id, className = 'gap-element clearfix' }: { id?: string; className?: string }) {
+  if (!id) return null;
+  return <div id={id} className={className} style={{ display: 'block', height: 'auto' }} />;
+}
+
 export function PageHero({
   hero,
   heroImage,
@@ -62,10 +71,13 @@ export function PageHero({
   ctaIcon,
 }: PageHeroProps) {
   const { breadcrumb } = hero;
+  // Source service heroes wrap breadcrumb/CTA in `<p>…<br />`; project heroes print them bare.
+  const Line = ids.bareText ? Fragment : 'p';
+  const lineEnd = ids.bareText ? null : <br />;
 
   return (
     <>
-      <div className={`banner has-hover ${bannerClass}`} id={ids.banner}>
+      <div className={`banner has-hover ${bannerClass}`.trim()} id={ids.banner}>
         <div className="banner-inner fill">
           <div className="banner-bg fill">
             {bgImage && (
@@ -92,16 +104,10 @@ export function PageHero({
                   <div className="row align-middle" id={ids.row}>
                     <div id={ids.leftCol} className="col medium-6 small-12 large-6">
                       <div className="col-inner">
-                        {ids.topGap && (
-                          <div
-                            id={ids.topGap}
-                            className={ids.topGapClass ?? 'gap-element clearfix'}
-                            style={{ display: 'block', height: 'auto' }}
-                          />
-                        )}
+                        <Gap id={ids.topGap} className={ids.topGapClass} />
                         {breadcrumb && ids.breadcrumbText && (
                           <div id={ids.breadcrumbText} className="text">
-                            <p>
+                            <Line>
                               <span style={{ color: '#808080' }}>
                                 {breadcrumb.slice(0, -1).map((crumb, idx) => (
                                   <Fragment key={idx}>
@@ -116,17 +122,14 @@ export function PageHero({
                               </span>
                               {breadcrumb.length > 0 &&
                                 ` ${breadcrumb[breadcrumb.length - 1].label}`}
-                              <br />
-                            </p>
+                              {lineEnd}
+                            </Line>
                           </div>
                         )}
-                        {ids.breadcrumbGap && (
-                          <div
-                            id={ids.breadcrumbGap}
-                            className="gap-element clearfix show-for-small"
-                            style={{ display: 'block', height: 'auto' }}
-                          />
-                        )}
+                        <Gap
+                          id={ids.breadcrumbGap}
+                          className="gap-element clearfix show-for-small"
+                        />
                         <div
                           id={ids.headingText}
                           className={ids.headingClass ?? 'text kanit-font page_text_go'}
@@ -134,54 +137,28 @@ export function PageHero({
                           <h1 className="service-hero-heading">
                             {hero.headingLines.map((line, idx) => (
                               <span key={idx} className="typewriter">
-                                {line}
+                                {ids.headingLineSize ? (
+                                  <span style={{ fontSize: ids.headingLineSize }}>{line}</span>
+                                ) : (
+                                  line
+                                )}
                               </span>
                             ))}
                           </h1>
                         </div>
-                        {ids.headingGap && (
-                          <div
-                            id={ids.headingGap}
-                            className="gap-element clearfix show-for-small"
-                            style={{ display: 'block', height: 'auto' }}
-                          />
-                        )}
-                        {ids.gap1 && (
-                          <div
-                            id={ids.gap1}
-                            className="gap-element clearfix"
-                            style={{ display: 'block', height: 'auto' }}
-                          />
-                        )}
-                        {ids.gap1b && (
-                          <div
-                            id={ids.gap1b}
-                            className={ids.gap1bClass ?? 'gap-element clearfix'}
-                            style={{ display: 'block', height: 'auto' }}
-                          />
-                        )}
+                        <Gap id={ids.headingGap} className="gap-element clearfix show-for-small" />
+                        <Gap id={ids.gap1} />
+                        <Gap id={ids.gap1b} className={ids.gap1bClass} />
                         {hero.description && ids.descText && (
                           <div id={ids.descText} className="text">
                             <RichText content={hero.description} />
                           </div>
                         )}
-                        {ids.gap2 && (
-                          <div
-                            id={ids.gap2}
-                            className={ids.gap2Class ?? 'gap-element clearfix'}
-                            style={{ display: 'block', height: 'auto' }}
-                          />
-                        )}
-                        {ids.gap2b && (
-                          <div
-                            id={ids.gap2b}
-                            className="gap-element clearfix hide-for-small"
-                            style={{ display: 'block', height: 'auto' }}
-                          />
-                        )}
+                        <Gap id={ids.gap2} className={ids.gap2Class} />
+                        <Gap id={ids.gap2b} className="gap-element clearfix hide-for-small" />
                         {hero.cta && ids.ctaText && (
                           <div id={ids.ctaText} className="text">
-                            <p>
+                            <Line>
                               <Link className="but-lh" href={hero.cta.href}>
                                 {hero.cta.label}
                                 {ctaIcon && (
@@ -199,8 +176,8 @@ export function PageHero({
                                   </>
                                 )}
                               </Link>
-                              <br />
-                            </p>
+                              {lineEnd}
+                            </Line>
                           </div>
                         )}
                       </div>
@@ -235,13 +212,7 @@ export function PageHero({
           </div>
         </div>
       </div>
-      {ids.bottomGap && (
-        <div
-          id={ids.bottomGap}
-          className={ids.bottomGapClass ?? 'gap-element clearfix'}
-          style={{ display: 'block', height: 'auto' }}
-        />
-      )}
+      <Gap id={ids.bottomGap} className={ids.bottomGapClass} />
     </>
   );
 }

@@ -4,7 +4,7 @@ const escapeHtml = (value: string) =>
   value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 /** Replace `{{site.x}}` tokens left by the import scrub; unknown tokens stay as-is. */
-export function resolveSiteTokens(text: string, settings: SiteSettings, html = true): string {
+function resolveSiteTokens(text: string, settings: SiteSettings, html = true): string {
   const values: Record<string, string | undefined> = {
     phone: settings.phones[0]?.label,
     phoneHref: settings.phones[0]?.href,

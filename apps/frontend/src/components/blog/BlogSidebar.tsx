@@ -6,14 +6,14 @@ export interface BlogSidebarProps {
   categories: PostCategoryWithCount[];
   copy: BlogListingPageData['copy'];
   searchQuery?: string;
+  /** Path of the category being listed; its item gets the source `current-cat` marker. */
+  currentPath?: string;
 }
 
-export function BlogSidebar({ categories, copy, searchQuery }: BlogSidebarProps) {
+export function BlogSidebar({ categories, copy, searchQuery, currentPath }: BlogSidebarProps) {
   // Source: empty #secondary (no asides) when the locale has no categories (EN)
   if (categories.length === 0) {
-    return (
-      <div id="secondary" className="widget-area " role="complementary" />
-    );
+    return <div id="secondary" className="widget-area " role="complementary" />;
   }
 
   return (
@@ -54,11 +54,17 @@ export function BlogSidebar({ categories, copy, searchQuery }: BlogSidebarProps)
         </span>
         <div className="is-divider small" />
         <ul>
-          {categories.map((category) => (
-            <li key={category.id} className="cat-item">
-              <Link href={category.path}>{category.title}</Link> ({category.count})
-            </li>
-          ))}
+          {categories.map((category) => {
+            const current = category.path === currentPath;
+            return (
+              <li key={category.id} className={current ? 'cat-item current-cat' : 'cat-item'}>
+                <Link href={category.path} aria-current={current ? 'page' : undefined}>
+                  {category.title}
+                </Link>{' '}
+                ({category.count})
+              </li>
+            );
+          })}
         </ul>
       </aside>
     </div>

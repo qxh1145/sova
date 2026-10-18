@@ -5,20 +5,12 @@ import type { AssetRef } from '@/types/content';
 import { Carousel, type CarouselLabels } from '@/components/ui/Carousel';
 import { GalleryLightbox } from '@/components/projects/GalleryLightbox';
 
-const GALLERY_CAROUSEL_LABELS: CarouselLabels = {
-  prev: 'Trước',
-  next: 'Tiếp theo',
-  goTo: 'Chuyển tới slide {index}',
-  pause: 'Tạm dừng trình chiếu',
-  play: 'Tiếp tục trình chiếu',
-  region: 'Thư viện ảnh dự án',
-};
-
 export interface ProjectGallerySliderProps {
   galleryAssets: AssetRef[];
+  labels: CarouselLabels;
 }
 
-export function ProjectGallerySlider({ galleryAssets }: ProjectGallerySliderProps) {
+export function ProjectGallerySlider({ galleryAssets, labels }: ProjectGallerySliderProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const triggerRef = useRef<HTMLAnchorElement | null>(null);
 
@@ -32,7 +24,7 @@ export function ProjectGallerySlider({ galleryAssets }: ProjectGallerySliderProp
         arrows
         dots
         containScroll={false}
-        labels={GALLERY_CAROUSEL_LABELS}
+        labels={labels}
       >
         {galleryAssets.map((img, index) => (
           <div className="img col" key={img.id}>
@@ -46,7 +38,15 @@ export function ProjectGallerySlider({ galleryAssets }: ProjectGallerySliderProp
                   setLightboxIndex(index);
                 }}
               >
-                <img style={{ borderRadius: '12px' }} src={img.src} alt={img.alt ?? ''} />
+                <img
+                  style={{ borderRadius: '12px' }}
+                  src={img.src}
+                  alt={img.alt ?? ''}
+                  width={img.width}
+                  height={img.height}
+                  loading={index === 0 ? undefined : 'lazy'}
+                  decoding="async"
+                />
               </a>
             </div>
           </div>
@@ -86,7 +86,15 @@ export function ProjectGallerySingle({ asset }: ProjectGallerySingleProps) {
                 setIsOpen(true);
               }}
             >
-              <img style={{ borderRadius: '12px' }} src={asset.src} alt={asset.alt ?? ''} />
+              <img
+                style={{ borderRadius: '12px' }}
+                src={asset.src}
+                alt={asset.alt ?? ''}
+                width={asset.width}
+                height={asset.height}
+                loading="lazy"
+                decoding="async"
+              />
             </a>
           </div>
         </div>

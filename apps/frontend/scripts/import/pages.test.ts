@@ -2,7 +2,7 @@ import { expect, test } from 'vitest';
 import type { RouteEntry } from '../../src/types/content';
 import { lineLookup, parseHtml, processHref } from './html';
 import { readHeader, type NavCtx } from './navigation';
-import { faqPage, matchServiceByTitle, readStats, resolveServiceCard } from './pages';
+import { contact, faqPage, matchServiceByTitle, readStats, resolveServiceCard } from './pages';
 import type { AssetRegistry } from './assets';
 
 const parsed = (body: string) => {
@@ -131,7 +131,11 @@ test('services: unmatched card title throws Source drift error in home card reso
 test('services: EN card 2 resolves to mobile service while keeping website arrow href', () => {
   const enServices = [
     { id: 'service-website-en', title: 'Website Development', path: '/en/website-development/' },
-    { id: 'service-mobile-en', title: 'App Mobile Development', path: '/en/app-mobile-development/' },
+    {
+      id: 'service-mobile-en',
+      title: 'App Mobile Development',
+      path: '/en/app-mobile-development/',
+    },
   ];
 
   const { root, lineOf } = parsed(
@@ -148,7 +152,12 @@ test('services: EN card 2 resolves to mobile service while keeping website arrow
   expect(service?.id).toBe('service-mobile-en');
 
   const arrowEl = card.querySelector('.nut_xthem a')!;
-  const arrowHref = processHref(arrowEl.getAttribute('href') ?? '', 'en/home/index.html', lineOf(arrowEl.range[0]), stats());
+  const arrowHref = processHref(
+    arrowEl.getAttribute('href') ?? '',
+    'en/home/index.html',
+    lineOf(arrowEl.range[0]),
+    stats(),
+  );
   expect(arrowHref).toBe('/en/website-development/');
 });
 
@@ -206,3 +215,104 @@ test('faqPage imports banner title, breadcrumb home label, current text, and seo
   expect(page.sources[0].file).toBe('cau-hoi-thuong-gap/index.html');
 });
 
+const contactHtml = ({
+  iconCount = 3,
+  labelCount = 5,
+  optionCount = 8,
+  submitVal = 'Gửi thông tin',
+}: {
+  iconCount?: number;
+  labelCount?: number;
+  optionCount?: number;
+  submitVal?: string | null;
+} = {}) => `
+  <title>Liên hệ - Sova</title>
+  <div id="content">
+    <h1>Liên hệ</h1>
+    <section>
+      <div class="section-bg"><img src="hero.jpg" /></div>
+      <p><a href="index.html">Trang chủ</a> <span>Liên hệ</span></p>
+    </section>
+    <h2>Thông tin liên hệ</h2>
+    <h2>Công ty Sova</h2>
+    <p>Giới thiệu về công ty...</p>
+    ${Array.from({ length: iconCount }, (_, i) => `<div class="icon-box"><div class="icon-inner"><img src="icon-${i + 1}.svg" /></div></div>`).join('')}
+    <div class="wpcf7">
+      <form>
+        ${Array.from({ length: labelCount }, (_, i) => `<label>Nhãn ${i + 1} <input /></label>`).join('')}
+        <select>
+          ${Array.from({ length: optionCount }, (_, i) => `<option>Tuỳ chọn ${i + 1}</option>`).join('')}
+        </select>
+        ${submitVal !== null ? `<input type="submit" class="wpcf7-submit"${submitVal !== undefined ? ` value="${submitVal}"` : ''} />` : ''}
+      </form>
+    </div>
+  </div>
+`;
+
+const contactRoute: RouteEntry = {
+  id: 'route-lien-he',
+  locale: 'vi',
+  path: '/lien-he/',
+  kind: 'contact',
+  aliases: [],
+  source: { file: 'lien-he/index.html', line: 1 },
+};
+
+function runContact(html: string) {
+  const { root, lineOf } = parsed(html);
+  let imageCounter = 0;
+  const mockRegistry = {
+    add: () => undefined,
+    image: () => `asset-img-${++imageCounter}`,
+  } as unknown as AssetRegistry;
+  return contact(
+    {
+      root,
+      lineOf,
+      route: contactRoute,
+      file: 'lien-he/index.html',
+    } as Parameters<typeof contact>[0],
+    mockRegistry,
+    stats(),
+  );
+}
+
+test('contact: heading order, breadcrumb, and icon order', () => {
+  const res = runContact(contactHtml());
+  expect(res.title).toBe('Liên hệ');
+  expect(res.sectionHeading).toBe('Thông tin liên hệ');
+  expect(res.heading).toBe('Công ty Sova');
+  expect(res.breadcrumb).toEqual({
+    homeLabel: 'Trang chủ',
+    current: 'Liên hệ',
+  });
+  expect(res.heroImageId).toBe('asset-img-1');
+  expect(res.infoIconIds).toEqual({
+    address: 'asset-img-2',
+    phone: 'asset-img-3',
+    email: 'asset-img-4',
+  });
+  expect(res.form.submit).toBe('Gửi thông tin');
+});
+
+test('contact: drift throw on 2 icons', () => {
+  expect(() => runContact(contactHtml({ iconCount: 2 }))).toThrow(
+    /expected exactly 3 icon-box images/,
+  );
+});
+
+test('contact: drift throw on 4 labels', () => {
+  expect(() => runContact(contactHtml({ labelCount: 4 }))).toThrow(
+    /expected exactly 5 form labels, found 4/,
+  );
+});
+
+test('contact: drift throw on 7 options', () => {
+  expect(() => runContact(contactHtml({ optionCount: 7 }))).toThrow(
+    /expected exactly 8 select options, found 7/,
+  );
+});
+
+test('contact: drift throw on missing submit value', () => {
+  expect(() => runContact(contactHtml({ submitVal: '' }))).toThrow(/missing submit input value/);
+});

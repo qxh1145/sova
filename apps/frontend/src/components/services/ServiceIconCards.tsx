@@ -22,6 +22,8 @@ export interface ServiceIconCardsIds {
   cards: ServiceIconCardIds[];
   /** `hide-for-small` gap closing the section (hosting). */
   bottomGap?: string;
+  /** Card `h3` without the source's inline 24px (email). */
+  plainTitles?: true;
 }
 
 export const SERVICE_ICON_CARDS_IDS_HOSTING_VI: ServiceIconCardsIds = {
@@ -225,6 +227,7 @@ export const SERVICE_ICON_CARDS_IDS_VPS_EN: ServiceIconCardsIds = {
 };
 
 export const SERVICE_ICON_CARDS_IDS_EMAIL_VI: ServiceIconCardsIds = {
+  plainTitles: true,
   section: 'section_136281833',
   topGap: 'gap-1364641479',
   headingRow: 'row-346934960',
@@ -279,6 +282,7 @@ export const SERVICE_ICON_CARDS_IDS_EMAIL_VI: ServiceIconCardsIds = {
 };
 
 export const SERVICE_ICON_CARDS_IDS_EMAIL_EN: ServiceIconCardsIds = {
+  plainTitles: true,
   section: 'section_676662741',
   topGap: 'gap-1514023911',
   headingRow: 'row-832391331',
@@ -441,7 +445,9 @@ export function ServiceIconCards({
                     </div>
                     <div className="icon-box-text last-reset">
                       <div id={cardIds?.title} className="text">
-                        <h3 style={{ fontSize: 24 }}>{benefit.title}</h3>
+                        <h3 style={ids.plainTitles ? undefined : { fontSize: 24 }}>
+                          {benefit.title}
+                        </h3>
                       </div>
                       <div
                         id={cardIds?.gap}

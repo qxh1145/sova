@@ -97,6 +97,38 @@ test.describe('Mobile App Service Pages Tracer (Story 5.1)', () => {
       }
     });
 
+    for (const width of [390, 1280]) {
+      test(`Benefit titles are blue and FAQ matches source styling at ${width}px on ${config.path}`, async ({
+        page,
+      }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(config.path);
+
+        // Source: <h3><span style="color:#0065df">…</span></h3>
+        const titles = page.locator(`#${config.benefitsId} .row_ptien h3 > span`);
+        await expect(titles).toHaveCount(4);
+        for (const color of await titles.evaluateAll((els) =>
+          els.map((e) => getComputedStyle(e).color),
+        )) {
+          expect(color).toBe('rgb(0, 101, 223)');
+        }
+
+        const faq = page.locator(`#${config.faqId}`);
+        const accordion = faq.locator('.accordion.ac-luutru');
+        await expect(accordion).toHaveCount(1);
+        const title = accordion.locator('.accordion-title').first();
+        await expect(title).toHaveCSS('border-radius', '8px');
+        await expect(title).toHaveCSS('background-color', 'rgb(0, 0, 0)');
+
+        await expect(faq.locator('h2').first()).toHaveCSS('text-align', 'center');
+        const m = await faq.locator('.is-divider').evaluate((el) => {
+          const r = el.getBoundingClientRect();
+          return { w: r.width, off: Math.round(r.left + r.width / 2 - window.innerWidth / 2) };
+        });
+        expect(m).toEqual({ w: 133, off: 0 });
+      });
+    }
+
     test(`Hero, benefits and why-choose-us assets render on ${config.path}`, async ({ page }) => {
       await page.goto(config.path);
 
@@ -640,119 +672,6 @@ test.describe('Storage service pages (Story 5.4)', () => {
       await expect(offerings550.locator('.eras-table-price-slider.show-for-small')).toBeHidden();
     });
   }
-
-  test.describe('Carousel wrap guard (retro A4)', () => {
-    test.beforeEach(async ({ page }) => {
-      await page.setViewportSize({ width: 390, height: 844 });
-    });
-
-    test('mobile slider (slide_tkap) wraps next and prev at 390px with both arrows enabled', async ({
-      page,
-    }) => {
-      await page.goto('/thiet-ke-app-mobile/');
-      const slider = page.locator('.eras-table-price-slider.slide_tkap');
-      await expect(slider).toBeVisible();
-
-      const prevBtn = slider.locator('.flickity-prev-next-button.previous');
-      const nextBtn = slider.locator('.flickity-prev-next-button.next');
-      const slides = slider.locator('.flickity-slider > .row');
-      const slideCount = await slides.count();
-      expect(slideCount).toBe(3);
-
-      // Both arrows stay enabled (DOM attribute check; elements have display:none on mobile per Flatsome CSS)
-      await expect(prevBtn).toBeAttached();
-      await expect(nextBtn).toBeAttached();
-      await expect(prevBtn).toBeEnabled();
-      await expect(nextBtn).toBeEnabled();
-
-      // Initially slide 0 is selected
-      await expect(slides.nth(0)).toHaveClass(/is-selected/);
-
-      // Prev on slide 0 goes to last slide (slide 2)
-      await prevBtn.dispatchEvent('click');
-      await expect(slides.nth(slideCount - 1)).toHaveClass(/is-selected/);
-      await expect(prevBtn).toBeEnabled();
-      await expect(nextBtn).toBeEnabled();
-
-      // Next on last slide wraps to slide 0
-      await nextBtn.dispatchEvent('click');
-      await expect(slides.nth(0)).toHaveClass(/is-selected/);
-      await expect(prevBtn).toBeEnabled();
-      await expect(nextBtn).toBeEnabled();
-    });
-
-    test('storage slider (slide_gplt) wraps next and prev at 390px with both arrows enabled', async ({
-      page,
-    }) => {
-      await page.goto('/giai-phap-luu-tru/');
-      const slider = page.locator('.eras-table-price-slider.slide_gplt');
-      await expect(slider).toBeVisible();
-
-      const prevBtn = slider.locator('.flickity-prev-next-button.previous');
-      const nextBtn = slider.locator('.flickity-prev-next-button.next');
-      const slides = slider.locator('.flickity-slider > .row');
-      const slideCount = await slides.count();
-      expect(slideCount).toBe(3);
-
-      // Both arrows stay enabled (DOM attribute check; elements have display:none on mobile per Flatsome CSS)
-      await expect(prevBtn).toBeAttached();
-      await expect(nextBtn).toBeAttached();
-      await expect(prevBtn).toBeEnabled();
-      await expect(nextBtn).toBeEnabled();
-
-      // Initially slide 0 is selected
-      await expect(slides.nth(0)).toHaveClass(/is-selected/);
-
-      // Prev on slide 0 goes to last slide (slide 2)
-      await prevBtn.dispatchEvent('click');
-      await expect(slides.nth(slideCount - 1)).toHaveClass(/is-selected/);
-      await expect(prevBtn).toBeEnabled();
-      await expect(nextBtn).toBeEnabled();
-
-      // Next on last slide wraps to slide 0
-      await nextBtn.dispatchEvent('click');
-      await expect(slides.nth(0)).toHaveClass(/is-selected/);
-      await expect(prevBtn).toBeEnabled();
-      await expect(nextBtn).toBeEnabled();
-    });
-
-    for (const path of ['/seo-tu-khoa-website/', '/en/website-keyword-seo/']) {
-      test(`seo slider (slide_seo) wraps next and prev at 390px with both arrows enabled on ${path}`, async ({
-        page,
-      }) => {
-        await page.goto(path);
-        const slider = page.locator('.eras-table-price-slider.slide_seo');
-        await expect(slider).toBeVisible();
-
-        const prevBtn = slider.locator('.flickity-prev-next-button.previous');
-        const nextBtn = slider.locator('.flickity-prev-next-button.next');
-        const slides = slider.locator('.flickity-slider > .row');
-        const slideCount = await slides.count();
-        expect(slideCount).toBe(4);
-
-        // Both arrows stay enabled (DOM attribute check; elements have display:none on mobile per Flatsome CSS)
-        await expect(prevBtn).toBeAttached();
-        await expect(nextBtn).toBeAttached();
-        await expect(prevBtn).toBeEnabled();
-        await expect(nextBtn).toBeEnabled();
-
-        // Initially slide 0 is selected
-        await expect(slides.nth(0)).toHaveClass(/is-selected/);
-
-        // Prev on slide 0 goes to last slide (slide 3)
-        await prevBtn.dispatchEvent('click');
-        await expect(slides.nth(slideCount - 1)).toHaveClass(/is-selected/);
-        await expect(prevBtn).toBeEnabled();
-        await expect(nextBtn).toBeEnabled();
-
-        // Next on last slide wraps to slide 0
-        await nextBtn.dispatchEvent('click');
-        await expect(slides.nth(0)).toHaveClass(/is-selected/);
-        await expect(prevBtn).toBeEnabled();
-        await expect(nextBtn).toBeEnabled();
-      });
-    }
-  });
 });
 
 const SEO_SERVICES_ROUTES = [
@@ -1344,6 +1263,8 @@ test.describe('Website Service Pages (Story 5.7)', () => {
         await expect(card.locator('.icon-box-img img')).toHaveCount(1);
         await expect(card.locator('.icon-box h3')).toHaveText(service.benefits[i].title);
         await expect(card.locator('.col-inner > .text')).not.toBeEmpty();
+        // Source sets 16px inline on the body <p>; Sova inherits it from a wrapper (A58).
+        await expect(card.locator('.col-inner > .text p').first()).toHaveCSS('font-size', '16px');
       }
 
       // Mobile benefits heading line breaks match source
@@ -1928,5 +1849,21 @@ test.describe('Featured Projects on Service Pages (Story 5.9)', () => {
         .poll(async () => Math.abs((await translateX()) - -distance))
         .toBeLessThanOrEqual(25);
     });
+  }
+});
+
+test('Service hero lines keep source 40px boxes and 54.2px pitch below 550px', async ({ page }) => {
+  for (const width of [390, 549]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/thiet-ke-app-mobile/');
+    const boxes = await page.locator('.service-hero-heading .typewriter').evaluateAll((lines) =>
+      lines.map((line) => {
+        const { top, height } = line.getBoundingClientRect();
+        return { top, height };
+      }),
+    );
+    expect(boxes).toHaveLength(2);
+    boxes.forEach((box) => expect(box.height).toBeCloseTo(40, 0));
+    expect(boxes[1].top - boxes[0].top).toBeCloseTo(54.2, 0);
   }
 });

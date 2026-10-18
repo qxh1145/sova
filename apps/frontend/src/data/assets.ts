@@ -59,7 +59,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/10/ERAS-THUMB-WEBSITE-1.webp',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/index.html', line: 639 },
       {
@@ -79,7 +79,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/10/ERAS-THUMB-WEBSITE-2.webp',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/index.html', line: 657 },
       { file: 'kich-thuoc-anh-chuan-tren-website-giup-nang-cao-hieu-qua-seo/index.html', line: 27 },
@@ -96,7 +96,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/09/ERAS-THUMB-WEBSITE-2.webp',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/index.html', line: 675 },
       { file: 'thay-doi-duong-dan-wp-admin-trong-wordpress/index.html', line: 648 },
@@ -111,7 +111,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/08/ERAS-THUMB-WEBSITE.webp',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/index.html', line: 693 },
       { file: 'tong-hop-cac-loi-thuong-gap-khi-thiet-ke-web-co-ban/index.html', line: 27 },
@@ -125,7 +125,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/07/ERAS-THUMB-WEBSITE.webp',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/index.html', line: 711 },
       { file: 'huong-dan-xoa-cache-trinh-duyet-va-may-tinh/index.html', line: 27 },
@@ -139,7 +139,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/07/ERAS-THUMB-WEBSITE-1.webp',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/index.html', line: 729 },
       {
@@ -159,7 +159,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/07/ERAS-THUMB-WEBSITE-2.webp',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/page/2/index.html', line: 638 },
       {
@@ -179,7 +179,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/07/ERAS-THUMB-WEBSITE-3.webp',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/page/2/index.html', line: 656 },
       { file: 'huong-dan-cach-backup-website-wordpress-chi-tiet-nhat/index.html', line: 649 },
@@ -194,7 +194,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/07/ERAS-THUMB-WEBSITE-5.webp',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/page/2/index.html', line: 674 },
       { file: 'tich-hop-zalo-chat-cho-website-wordpress-don-gian-nhat/index.html', line: 27 },
@@ -208,7 +208,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/07/ERAS-THUMB-WEBSITE.png',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/page/2/index.html', line: 692 },
       { file: 'thiet-ke-website-ban-hang-nhung-mai-ma-khong-co-don-hang-nao/index.html', line: 26 },
@@ -225,7 +225,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/07/ERAS-THUMB-WEBSITE-3-1.webp',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/page/2/index.html', line: 710 },
       {
@@ -249,7 +249,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/06/ERAS-THUMB-WEBSITE-3.webp',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/page/2/index.html', line: 728 },
       { file: '5-yeu-to-cai-thien-trai-nghiem-nguoi-dung-ux/index.html', line: 26 },
@@ -263,7 +263,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/06/ERAS-THUMB-WEBSITE-3-1.webp',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/page/3/index.html', line: 638 },
       { file: 'yoast-seo-la-gi-huong-dan-thiet-lap-va-su-dung-yoast-seo/index.html', line: 26 },
@@ -277,7 +277,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/06/ERAS-THUMB-WEBSITE.webp',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/page/3/index.html', line: 656 },
       { file: 'huong-dan-cach-tao-bai-viet-trong-wordpress-don-gian-nhat/index.html', line: 26 },
@@ -291,7 +291,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/06/ERAS-THUMB-WEBSITE-1.webp',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/page/3/index.html', line: 674 },
       {
@@ -311,7 +311,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/06/ERAS-THUMB-WEBSITE-2.webp',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/page/3/index.html', line: 692 },
       { file: 'hieu-tu-a-z-ve-thiet-ke-website-responsive/index.html', line: 26 },
@@ -325,7 +325,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/06/ERAS-THUMB-WEBSITE-4.webp',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/page/3/index.html', line: 710 },
       { file: 'thoi-dai-website-gia-re-lieu-da-het/index.html', line: 26 },
@@ -339,7 +339,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/06/ERAS-THUMB-WEBSITE-5.webp',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'goc-nhin/page/3/index.html', line: 728 },
       { file: 'kinh-nghiem-tao-website-de-ban-hang-online/index.html', line: 26 },
@@ -2130,7 +2130,7 @@ export const assets: AssetRef[] = [
     src: '/wp-content/uploads/2023/06/Banner-Content-MKT-2.png',
     alt: '',
     kind: 'image',
-    status: 'local',
+    status: 'missing',
     sources: [
       { file: 'yoast-seo-la-gi-huong-dan-thiet-lap-va-su-dung-yoast-seo/index.html', line: 983 },
     ],
@@ -6778,5 +6778,18 @@ export const assets: AssetRef[] = [
     ],
     width: 25,
     height: 24,
+  },
+  {
+    id: 'asset-9c752b361a',
+    src: '/wp-content/uploads/2024/02/8b7867237f3d84a4414a09ba3e720c8d.webp',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'index.html', line: 2938 },
+      { file: 'en/home/index.html', line: 2765 },
+    ],
+    width: 2000,
+    height: 1125,
   },
 ];
