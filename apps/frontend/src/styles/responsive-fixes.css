@@ -297,7 +297,8 @@
   }
 }
 
-/* 8.5: Portfolio card title stacks above category below 1280 (source flex row squeezes title) */
+/* 8.5: Portfolio card title stacks above category at 550–1279 (source flex row squeezes title;
+   source already stacks them at ≤549) */
 @media (min-width: 550px) and (max-width: 1279px) {
   .col-inner .portfolio-box .box-text-inner {
     display: block;
@@ -307,8 +308,27 @@
 /* 8.5: Service slider cards grow below 550 so the CTA clears the feature list.
    Source heights stay as min-height; CTA leaves absolute positioning and margin-top:auto
    keeps it at the card bottom. inline-block lets the CTA padding size the line box, so
-   20px card padding + 20px margin = source bottom 40px. */
+   20px card padding + 20px margin = source bottom 40px.
+   Track stretches every slide to the tallest card (AutoHeight inline height overridden),
+   so the carousel keeps one height across autoplay steps. */
 @media (max-width: 549px) {
+  .slider-wrapper.slide_ui .flickity-slider,
+  .slider-wrapper.slide_gplt .flickity-slider {
+    align-items: stretch;
+    height: auto !important;
+  }
+
+  .slider-wrapper.slide_ui .flickity-slider > .row > .col,
+  .slider-wrapper.slide_gplt .flickity-slider > .row > .col {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .slider-wrapper.slide_ui .flickity-slider > .row > .col > .col-inner,
+  .slider-wrapper.slide_gplt .flickity-slider > .row > .col > .col-inner {
+    flex: 1 0 auto;
+  }
+
   .slider-wrapper.slide_ui .col-inner,
   .slider-wrapper.slide_gplt .col-inner {
     display: flex;
