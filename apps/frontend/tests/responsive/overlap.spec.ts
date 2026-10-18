@@ -25,6 +25,24 @@ const ALLOWLIST: { pair: RegExp; route?: RegExp; minWidth?: number; reason: stri
     reason:
       'Decorative testimonial image intentionally layers over quote or eyebrow at desktop source parity.',
   },
+  {
+    pair: /^overflow:div\.(text-box-content\.text>div\.text-inner\.text-center>div#row-\d+\.row(\.align-middle)?|text-inner\.text-center>div#row-\d+\.row(\.align-middle)?>div#col-\d+\.col\.medium-\d+)$/,
+    minWidth: 1280,
+    reason: 'source parity: Flatsome hero row gutters overflow container at desktop widths.',
+  },
+  {
+    pair: /^overflow:div(?:\.col-inner>div#text-\d+\.text\.text-target1>p|#col-\d+\.col\.col-no-hover>div\.col-inner>div#text-\d+\.text\.text-target1)$/,
+    route: /^about-/,
+    minWidth: 1280,
+    reason:
+      'source parity: About goals text-target1 negative margin overflows column at desktop widths.',
+  },
+  {
+    pair: /^div#content>div>p VS (?:div#logo|ul\.header-nav|li\.menu-item|li\.html\.custom|div\.header-button)/,
+    minWidth: 1280,
+    reason:
+      'source parity: sample page transparent header sits on top of first paragraph at desktop widths.',
+  },
 ];
 const EXPECTED_FAILURES: Record<string, string[]> = expectedFailures;
 

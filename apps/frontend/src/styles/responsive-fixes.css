@@ -356,3 +356,103 @@
     display: inline-block;
   }
 }
+
+/* 8.6: Footer quick links column sizing at 550–640.
+   Footer.tsx:172 quick links medium-2 (16.67%), EN word "Instructions" cannot shrink (+25px @550).
+   Give quick links 25%, medium-3 37.5%, and company info 100% full width. */
+@media (min-width: 550px) and (max-width: 640px) {
+  #row-1158304944 > #col-846792399 {
+    max-width: 100%;
+    flex-basis: 100%;
+  }
+
+  #row-1158304944 > .col.medium-3 {
+    max-width: 37.5%;
+    flex-basis: 37.5%;
+  }
+
+  #row-1158304944 > .col.medium-2 {
+    max-width: 25%;
+    flex-basis: 25%;
+  }
+}
+
+/* 8.6: Icon boxes 550–849.
+   Stack cards 100% on benefits/advantages/about/icons rows; 50% on package card grids;
+   drop banner padding-top to 800px on website-vi form to prevent heading/form overlap. */
+@media (min-width: 550px) and (max-width: 849px) {
+  #row-1686488490 > .col,
+  #row-850357972 > .col,
+  #row-1553857743 > .col,
+  #row-1937987832 > .col,
+  #row-1167421910 > .col {
+    max-width: 100%;
+    flex-basis: 100%;
+  }
+
+  #row-909625469 > .col,
+  #row-530539848 > .col {
+    max-width: 50%;
+    flex-basis: 50%;
+  }
+
+  #row-1168101482 #banner-1813159824 {
+    padding-top: 800px;
+  }
+}
+
+/* 8.6: Hero rows overflow clip ≤1279.
+   Flatsome .row -15px gutters in full-width text-box trigger horizontal overflow and
+   .banner-layers overflow:auto scroller below 550.
+   About heroes clip only at 1200–1279 to avoid clipping title at smaller viewports. */
+@media (max-width: 1279px) {
+  #banner-1559052784 .text-inner,
+  #banner-151127649 .text-inner,
+  #banner-1027010616 .text-inner {
+    overflow: hidden;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1279px) {
+  #banner-588612431 .text-inner,
+  #banner-1388775398 .text-inner {
+    overflow: hidden;
+  }
+}
+
+/* 8.6: About goals box 550–1279.
+   Flatsome 130% / -37% margins put text box off-screen. */
+@media (min-width: 550px) and (max-width: 1279px) {
+  #text-860603892,
+  #text-3919715460 {
+    width: calc(93% + 15px);
+    margin-left: -15px;
+  }
+}
+
+/* 8.6: Sample page ≤1279.
+   Add top padding to clear absolute transparent header (0–91px). */
+@media (max-width: 1279px) {
+  #content[role='main'] > div:not([class]):first-child {
+    padding-top: 90px;
+  }
+}
+
+/* 8.6: Login page ≤1279.
+   Bootstrap -12px negative margins on #login.row cause 12px overflow.
+   Reset margins and adjust padding to preserve painted geometry below 1280. */
+@media (max-width: 1279px) {
+  #login.row {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: calc(8% - 12px);
+    padding-right: calc(8% - 12px);
+  }
+}
+
+/* 8.6: Parity block — login page (at all viewports including >=1280).
+   Prevent horizontal scrollbar overflow from Bootstrap -12px gutters while preserving painted desktop geometry. */
+html:has(body.login),
+body.login {
+  overflow-x: hidden;
+}
