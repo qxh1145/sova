@@ -153,7 +153,7 @@ test.describe('Home query, hero and stats', () => {
   });
 
   for (const width of WIDTHS) {
-    test(`Hero heading matches source font size at width ${width}px`, async ({ page }) => {
+    test(`Hero heading matches expected font size at width ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       for (const path of ['/', '/en/home/']) {
         await page.goto(path);
@@ -161,6 +161,13 @@ test.describe('Home query, hero and stats', () => {
           heading: getComputedStyle(heading).fontSize,
           line: getComputedStyle(heading.querySelector('.typewriter')!).fontSize,
         }));
+        if (width >= 550 && width < 1200) {
+          // Story 8.1 responsive fix: clamp(30px, 4vw, 48px) in responsive-fixes.css replaces the source size.
+          const fluid = Math.min(48, Math.max(30, width * 0.04));
+          expect(parseFloat(sizes.heading)).toBeCloseTo(fluid, 1);
+          expect(parseFloat(sizes.line)).toBeCloseTo(fluid, 1);
+          continue;
+        }
         expect(sizes.heading).toBe(width < 550 ? '40px' : '67.2px');
         expect(sizes.line).toBe(width < 550 ? '34px' : '67.2px');
       }
