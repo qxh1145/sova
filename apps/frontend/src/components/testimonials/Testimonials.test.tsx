@@ -238,7 +238,7 @@ describe('Testimonials component', () => {
     expect(root.querySelector('#row-1376163772')).not.toBeNull();
   });
 
-  it('omits .icon-box-img when testimonial has no avatarId or avatar is missing', () => {
+  it('keeps an empty .icon-box-img slot when testimonial has no avatarId or avatar is missing', () => {
     const itemsWithoutAvatar: Testimonial[] = [
       {
         ...mockTestimonials[0],
@@ -258,7 +258,8 @@ describe('Testimonials component', () => {
     );
     const root = parse(html);
 
-    expect(root.querySelector('.icon-box-img')).toBeNull();
+    expect(root.querySelector('.icon-box-img')).not.toBeNull();
+    expect(root.querySelector('.icon-box-img img')).toBeNull();
     expect(root.querySelector('.icon-box-text')?.text).toContain('Anh Bình');
   });
 

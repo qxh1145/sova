@@ -1,7 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import manifest from '../baseline/manifest.json';
 import expectedFailures from './expected-failures.json';
-import { TESTIMONIALS_IDS } from '@/components/testimonials/testimonialsIds';
 
 const WIDTHS = [
   1440, 1280, 1279, 1199, 1024, 992, 850, 849, 768, 640, 575, 550, 549, 480, 414, 390, 360, 320,
@@ -9,27 +8,7 @@ const WIDTHS = [
 
 const HERO_WIDTHS = [320, 390, 549, 768, 1279];
 
-const testimonialImageWrappers = Array.from(
-  new Set(
-    Object.values(TESTIMONIALS_IDS).flatMap((locales) => [
-      locales.vi.imageWrapper,
-      locales.en.imageWrapper,
-    ]),
-  ),
-);
-
-const imgSelector = `div#(?:${testimonialImageWrappers.join('|')})\\.img\\.has-hover>div\\.img-inner\\.dark>img\\.attachment-original\\.size-original`;
-const quoteSelector = `(?:div#text-\\d+\\.text>h4>strong|div#col-\\d+\\.col\\.small-12>div\\.col-inner>div#text-\\d+\\.text\\.nd-kh)`;
-
 const ALLOWLIST: { pair: RegExp; route?: RegExp; minWidth?: number; reason: string }[] = [
-  {
-    pair: new RegExp(
-      `(?:${imgSelector} VS ${quoteSelector})|(?:${quoteSelector} VS ${imgSelector})`,
-    ),
-    minWidth: 1280,
-    reason:
-      'Decorative testimonial image intentionally layers over quote or eyebrow at desktop source parity.',
-  },
   {
     pair: /^overflow:div\.(text-box-content\.text>div\.text-inner\.text-center>div#row-\d+\.row(\.align-middle)?|text-inner\.text-center>div#row-\d+\.row(\.align-middle)?>div#col-\d+\.col\.medium-\d+)$/,
     route: /^(about|profile|projects|project-detail)-/,
@@ -42,13 +21,6 @@ const ALLOWLIST: { pair: RegExp; route?: RegExp; minWidth?: number; reason: stri
     minWidth: 1280,
     reason:
       'source parity: About goals text-target1 negative margin overflows column at desktop widths.',
-  },
-  {
-    pair: /^div#content>div>p VS (?:div#logo|ul\.header-nav|li\.menu-item|li\.html\.custom|div\.header-button)/,
-    route: /^sample-/,
-    minWidth: 1280,
-    reason:
-      'source parity: sample page transparent header sits on top of first paragraph at desktop widths.',
   },
 ];
 const EXPECTED_FAILURES: Record<string, string[]> = expectedFailures;
@@ -321,12 +293,12 @@ test('Portfolio card category sits below title at 550–1279', async ({ page }) 
 test('Hero content stays inside clipped .text-inner', async ({ page }) => {
   const cases: { url: string; banner: string; widths: number[] }[] = [
     {
-      url: '/ho-so-nang-luc-eras-vietnam/',
+      url: '/ho-so-nang-luc-sova/',
       banner: '#banner-1559052784',
       widths: HERO_WIDTHS,
     },
     {
-      url: '/en/porfolio-eras-vietnam/',
+      url: '/en/sova-portfolio/',
       banner: '#banner-151127649',
       widths: HERO_WIDTHS,
     },

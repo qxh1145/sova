@@ -6,10 +6,10 @@ import { faqTopics } from '../../src/data/faq';
 test.describe('FAQ Pages (Story FAQ Topics Page)', () => {
   for (const record of faqPages) {
     const locale = record.locale;
-    const expectedPlacements = locale === 'vi' ? 65 : 66;
     const topics = faqTopics.filter((t) => t.locale === locale);
+    const expectedPlacements = topics.reduce((sum, t) => sum + t.items.length, 0);
 
-    test(`Route ${record.path} renders 200 within shell with correct banner, breadcrumbs, 7 tabs, and accordion items`, async ({
+    test(`Route ${record.path} renders 200 within shell with correct banner, breadcrumbs, 4 tabs, and accordion items`, async ({
       page,
     }) => {
       const response = await page.goto(record.path);
@@ -59,9 +59,9 @@ test.describe('FAQ Pages (Story FAQ Topics Page)', () => {
       const tabs = col.locator('.tabbed-content.tab_cus_new');
       await expect(tabs).toBeVisible();
 
-      // 7 tabs in source order with source ids
+      // 4 tabs in source order with source ids
       const tabTriggers = tabs.locator('ul[role="tablist"] > li > a[role="tab"]');
-      await expect(tabTriggers).toHaveCount(7);
+      await expect(tabTriggers).toHaveCount(4);
 
       for (let i = 0; i < topics.length; i++) {
         const topic = topics[i];

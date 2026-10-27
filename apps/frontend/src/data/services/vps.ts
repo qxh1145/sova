@@ -267,7 +267,7 @@ export const vpsServices: Service[] = [
     pricingId: 'pricing-vps',
     benefitsBgImageId: 'asset-e0d6652ff9',
     seo: {
-      title: 'Business VPS - Công ty thiết kế website chuyên nghiệp | Sova',
+      title: 'Business VPS - Professional Website Design Company | Sova',
       description: 'Home / Services / Storage solutions / Cloud VPS',
       canonicalPath: '/en/business-vps/',
       imageId: 'asset-ba4e2e836c',

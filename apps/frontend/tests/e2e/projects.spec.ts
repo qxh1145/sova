@@ -1,5 +1,8 @@
 import { ALLOW_404, ALLOW_SERVER_ERROR, expect, test } from './fixtures';
 import { hasSource, missingSourceMessage, openSource } from '../baseline/source';
+import { listingSettings } from '../../src/data/listings';
+
+const listingHero = (routeId: string) => listingSettings.find((l) => l.routeId === routeId)!.hero!;
 
 test.describe('/du-an/ and /en/our-project/ project listing, filter and pagination', () => {
   test('Default /du-an/ renders "Tất cả" active, 6 cards, 11 pages (62 items)', async ({
@@ -33,27 +36,23 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
     await page.goto('/du-an');
     const pagination = page.locator('#portfolio-pagination .pagination');
     const current = pagination.locator('.page-numbers.current');
-    const page2 = pagination.locator('button.page-numbers', { hasText: '2' });
-    const aligned = async () => {
-      const currentBox = await current.boundingBox();
-      const nextBox = await page2.boundingBox();
-      expect(currentBox).not.toBeNull();
-      expect(nextBox).not.toBeNull();
-      expect(
-        Math.abs(currentBox!.y + currentBox!.height / 2 - nextBox!.y - nextBox!.height / 2),
-      ).toBeLessThan(2);
-    };
-    await aligned();
-    await page2.click();
+    // Both centers come from one frame: selecting a page smooth-scrolls, so two separate
+    // boundingBox() calls can straddle the scroll and differ by hundreds of pixels.
+    const centerGap = (label: string) =>
+      pagination.evaluate((el, text) => {
+        const mid = (node: Element) => {
+          const r = node.getBoundingClientRect();
+          return r.y + r.height / 2;
+        };
+        const target = [...el.querySelectorAll('button.page-numbers')].find(
+          (b) => b.textContent?.trim() === text,
+        );
+        return Math.abs(mid(el.querySelector('.page-numbers.current')!) - mid(target!));
+      }, label);
+    expect(await centerGap('2')).toBeLessThan(2);
+    await pagination.locator('button.page-numbers', { hasText: '2' }).click();
     await expect(current).toHaveText('2');
-    const page1 = pagination.getByRole('button', { name: '1', exact: true });
-    const currentBox = await current.boundingBox();
-    const page1Box = await page1.boundingBox();
-    expect(currentBox).not.toBeNull();
-    expect(page1Box).not.toBeNull();
-    expect(
-      Math.abs(currentBox!.y + currentBox!.height / 2 - page1Box!.y - page1Box!.height / 2),
-    ).toBeLessThan(2);
+    expect(await centerGap('1')).toBeLessThan(2);
   });
 
   test('VI /du-an/ hero renders imported description, CTA, breadcrumb and images', async ({
@@ -61,7 +60,7 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
   }) => {
     await page.goto('/du-an/');
     const hero = page.locator('.banner.banner-project');
-    await expect(hero).toContainText('Khám phá tư duy thiết kế và triết lý sáng tạo');
+    await expect(hero).toContainText(listingHero('route-du-an').description!.html);
     await expect(hero.locator('a.but-lh')).toHaveAttribute('href', '/lien-he/');
     await expect(hero).toContainText('Trang chủ');
     await expect(hero.locator('.banner-bg img')).toHaveAttribute(
@@ -183,8 +182,9 @@ test.describe('/du-an/ and /en/our-project/ project listing, filter and paginati
 
     // Hero title
     const heroTitle = page.locator('.service-hero-heading');
-    await expect(heroTitle).toContainText('Projects Partnered');
-    await expect(heroTitle).toContainText('with Sova');
+    for (const line of listingHero('route-en--our-project').headingLines) {
+      await expect(heroTitle).toContainText(line);
+    }
     await expect(
       page.locator(
         '#banner-2108105581:not(.banner-project) #text-1484206156 + #gap-1176636974.gap-element',
@@ -318,12 +318,12 @@ test.describe('/featured_item/ archive and /featured_item_category/* archives', 
     { slug: 'mobile-app', title: 'Mobile App', count: 1, portfolio: '#portfolio-1320843097' },
   ];
 
-  test('Archive default: THP page title (A12), "Tất cả" active, 62 cards, no pagination', async ({
+  test('Archive default: listing page title, "Tất cả" active, 62 cards, no pagination', async ({
     page,
   }) => {
     await page.goto('/featured_item/');
     await expect(page.locator('.page-title h1.entry-title')).toHaveText(
-      'Công ty Cổ phần Phát triển Công nghệ THP',
+      listingSettings.find((l) => l.routeId === 'route-featured_item')!.heading.title,
     );
     await expect(page.locator('.filter-nav li.active a')).toHaveText('Tất cả');
     await expect(page.locator('.filter-nav a')).toHaveText([
@@ -334,7 +334,9 @@ test.describe('/featured_item/ archive and /featured_item_category/* archives', 
     ]);
     await expect(page.locator(`${ARCHIVE} .col`)).toHaveCount(62);
     await expect(page.locator('#portfolio-pagination, .pagination')).toHaveCount(0);
-    await expect(page.locator('.banner.banner-project')).toContainText('Khám phá tư duy thiết kế');
+    await expect(page.locator('.banner.banner-project')).toContainText(
+      listingHero('route-featured_item').description!.html,
+    );
 
     // Cards render in source archive order: STORMICK 19th, Dsmart 23rd
     const cardLinks = page.locator(`${ARCHIVE} .col a[href*="/featured_item/"]`);
@@ -609,10 +611,10 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
       const terms = page.locator('.qodef-portfolio-content');
       await expect(terms).toBeVisible();
 
-      // Date present
+      // Date only where the record keeps one: pre-2023 import dates are hidden (stakeholder review).
       const dateEl = page.locator('.qodef-info--date');
-      await expect(dateEl).toBeVisible();
-      await expect(dateEl).toContainText(project.displayDate!);
+      if (project.displayDate) await expect(dateEl).toContainText(project.displayDate);
+      else await expect(dateEl).toHaveCount(0);
 
       // Sidebar with excerpt present
       const sidebar = page.locator('.col.large-3.small-12 .col-inner');
@@ -639,8 +641,7 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
   }) => {
     // 1. THP (multi-image carousel)
     await page.goto('/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/');
-    const thpDate = page.locator('.qodef-info--date h3.qodef-e-title');
-    await expect(thpDate).toHaveText('DATE: 24 Tháng Bảy, 2022');
+    await expect(page.locator('.qodef-info--date')).toHaveCount(0);
     const thpRelated = page.locator('.portfolio-bottom .portfolio-related .col');
     await expect(thpRelated).toHaveCount(1);
     await expect(thpRelated.locator('.portfolio-box-title')).toContainText('STORMICK');
@@ -654,8 +655,7 @@ test.describe('/featured_item/<slug>/ project detail pages', () => {
     await expect(centroSlider).toBeAttached();
     await expect(centroSlider.locator('img, .img')).toHaveCount(0);
     await expect(page.locator('#slider-duan .flickity-enabled')).toHaveCount(0);
-    const centroDate = page.locator('.qodef-info--date .entry-date');
-    await expect(centroDate).toHaveText('24 Tháng Bảy, 2022');
+    await expect(page.locator('.qodef-info--date')).toHaveCount(0);
 
     // 3. Evc Athena (empty row: #slider-duan > div.row:empty)
     await page.goto('/featured_item/evc-athena-cong-ty-tnhh-evc-athena/');

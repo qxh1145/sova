@@ -257,7 +257,7 @@ export const emailServices: Service[] = [
     pricingId: 'pricing-email',
     benefitsBgImageId: 'asset-e0d6652ff9',
     seo: {
-      title: 'Business E-mail - Công ty thiết kế website chuyên nghiệp | Sova',
+      title: 'Business E-mail - Professional Website Design Company | Sova',
       description: 'Home / Services / Email Business',
       canonicalPath: '/en/business-e-mail/',
       imageId: 'asset-63902d0c9c',

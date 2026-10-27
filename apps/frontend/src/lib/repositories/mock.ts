@@ -13,20 +13,20 @@ import { faqPages } from '@/data/pages/faq';
 import { partners } from '@/data/partners';
 import { postCategories } from '@/data/post-categories';
 import { posts } from '@/data/posts';
-import { emailPricing } from '@/data/pricing/email';
-import { hostingPricing } from '@/data/pricing/hosting';
-import { vpsPricing } from '@/data/pricing/vps';
+// import { emailPricing } from '@/data/pricing/email';
+// import { hostingPricing } from '@/data/pricing/hosting';
+// import { vpsPricing } from '@/data/pricing/vps';
 import { websitePricing } from '@/data/pricing/website';
 import { projectCategories } from '@/data/project-categories';
 import { projects } from '@/data/projects';
 import { routes } from '@/data/routes';
 import { brandingServices } from '@/data/services/branding';
-import { emailServices } from '@/data/services/email';
-import { hostingServices } from '@/data/services/hosting';
+// import { emailServices } from '@/data/services/email';
+// import { hostingServices } from '@/data/services/hosting';
 import { mobileServices } from '@/data/services/mobile';
 import { seoServices } from '@/data/services/seo';
-import { storageServices } from '@/data/services/storage';
-import { vpsServices } from '@/data/services/vps';
+// import { storageServices } from '@/data/services/storage';
+// import { vpsServices } from '@/data/services/vps';
 import { websiteServices } from '@/data/services/website';
 import { siteSettings } from '@/data/site';
 import { stats } from '@/data/stats';
@@ -262,10 +262,10 @@ export const defaultContentData: ContentData = {
     ...mobileServices,
     ...seoServices,
     ...brandingServices,
-    ...storageServices,
-    ...emailServices,
-    ...hostingServices,
-    ...vpsServices,
+    // ...storageServices,
+    // ...emailServices,
+    // ...hostingServices,
+    // ...vpsServices,
   ],
   projects,
   projectCategories,
@@ -276,7 +276,8 @@ export const defaultContentData: ContentData = {
   testimonials,
   partners,
   stats,
-  pricing: [...websitePricing, ...emailPricing, ...hostingPricing, ...vpsPricing],
+  // Hidden services' pricing stays out with them: ...emailPricing, ...hostingPricing, ...vpsPricing
+  pricing: [...websitePricing],
   assets,
   homePages,
   aboutPages,

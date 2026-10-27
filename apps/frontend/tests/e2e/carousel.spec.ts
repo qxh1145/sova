@@ -58,9 +58,8 @@ test.describe('Real route autoplay controls', () => {
   const VI = { pause: 'Tạm dừng trình chiếu', play: 'Tiếp tục trình chiếu' };
   const EN = { pause: 'Pause slideshow', play: 'Play slideshow' };
   for (const [name, url, width, selector, labels] of [
-    ['home testimonials', '/', 1280, '.slide-kh .flickity-enabled', VI],
-    ['EN home testimonials', '/en/home/', 1280, '.slide-kh .flickity-enabled', EN],
     ['about goals', '/gioi-thieu/', 390, '#slider-512312949', VI],
+    ['EN about goals', '/en/about-us/', 390, '#slider-1289423272', EN],
     ['pricing cards', '/thiet-ke-website/', 390, '.slide_tke1 .flickity-enabled', VI],
     ['service cards', '/thiet-ke-app-mobile/', 390, '.slide_tkap .flickity-enabled', VI],
     [
@@ -118,7 +117,8 @@ test.describe('Carousel contract checks', () => {
   });
 
   test('Testimonials adaptive height: viewport follows the selected slide', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 800 });
+    // 414: the three quotes wrap to different heights in Be Vietnam Pro (at 390 they tie).
+    await page.setViewportSize({ width: 414, height: 800 });
     await openPaused(page, '/dev-fixtures/carousel/testimonials');
     const slides = page.locator(`${TESTIMONIALS} .flickity-slider > *`);
     const viewport = page.locator(`${TESTIMONIALS} .flickity-viewport`);

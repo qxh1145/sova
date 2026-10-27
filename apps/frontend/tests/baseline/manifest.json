@@ -122,71 +122,17 @@
       "reason": "family"
     },
     {
-      "key": "email-vi",
-      "url": "/e-mail-doanh-nghiep/",
-      "family": "email",
-      "locale": "vi",
-      "reason": "family"
-    },
-    {
-      "key": "email-en",
-      "url": "/en/business-e-mail/",
-      "family": "email",
-      "locale": "en",
-      "reason": "family"
-    },
-    {
-      "key": "hosting-vi",
-      "url": "/hosting-doanh-nghiep/",
-      "family": "hosting",
-      "locale": "vi",
-      "reason": "family"
-    },
-    {
-      "key": "hosting-en",
-      "url": "/en/business-hosting/",
-      "family": "hosting",
-      "locale": "en",
-      "reason": "family"
-    },
-    {
-      "key": "vps-vi",
-      "url": "/vps-doanh-nghiep/",
-      "family": "vps",
-      "locale": "vi",
-      "reason": "family"
-    },
-    {
-      "key": "vps-en",
-      "url": "/en/business-vps/",
-      "family": "vps",
-      "locale": "en",
-      "reason": "family"
-    },
-    {
-      "key": "storage-vi",
-      "url": "/giai-phap-luu-tru/",
-      "family": "storage",
-      "locale": "vi",
-      "reason": "family"
-    },
-    {
-      "key": "storage-en",
-      "url": "/en/storage-solution/",
-      "family": "storage",
-      "locale": "en",
-      "reason": "family"
-    },
-    {
       "key": "profile-vi",
-      "url": "/ho-so-nang-luc-eras-vietnam/",
+      "url": "/ho-so-nang-luc-sova/",
+      "file": "ho-so-nang-luc-eras-vietnam/index.html",
       "family": "profile",
       "locale": "vi",
       "reason": "family; exception: profile PDF"
     },
     {
       "key": "profile-en",
-      "url": "/en/porfolio-eras-vietnam/",
+      "url": "/en/sova-portfolio/",
+      "file": "en/porfolio-eras-vietnam/index.html",
       "family": "profile",
       "locale": "en",
       "reason": "family"
@@ -383,21 +329,15 @@
     },
     {
       "key": "thank-you-vi",
-      "url": "/eras-xin-chan-thanh-cam-on-quy-khach/",
+      "url": "/xin-chan-thanh-cam-on-quy-khach/",
+      "file": "eras-xin-chan-thanh-cam-on-quy-khach/index.html",
       "family": "thank-you",
       "locale": "vi",
       "reason": "family"
     },
     {
-      "key": "sample-vi",
-      "url": "/sample-page/",
-      "family": "sample",
-      "locale": "vi",
-      "reason": "family"
-    },
-    {
       "key": "login-vi",
-      "url": "/login-eras/",
+      "url": "/login-sova/",
       "file": "login-eras/index__q_6b334f548d36.html",
       "family": "login",
       "locale": "vi",

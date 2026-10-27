@@ -1,4 +1,5 @@
-import { expect, expectNoDuplicateIds, test } from './fixtures';
+import { ALLOW_404, expect, expectNoDuplicateIds, test } from './fixtures';
+import { getService } from '../../src/lib/queries/services';
 
 const SERVICES_ROUTES = [
   {
@@ -19,7 +20,6 @@ const SERVICES_ROUTES = [
       text: 'Trang chủ / Dịch vụ / Thiết kế App Mobile',
     },
     imageWrapperId: 'image_984856161',
-    sampleItem: 'Tăng tính tiện lợi, cạnh tranh',
   },
   {
     locale: 'en',
@@ -31,7 +31,7 @@ const SERVICES_ROUTES = [
     testimonialsId: 'section_1896637792',
     faqId: 'section_703582263',
     headingLines: ['Professional', 'Mobile App Design'],
-    faqCount: 9,
+    faqCount: 8,
     breadcrumbId: 'text-1919501786',
     breadcrumb: {
       home: 'Home',
@@ -39,7 +39,6 @@ const SERVICES_ROUTES = [
       text: 'Home / Services / App Mobile Development',
     },
     imageWrapperId: 'image_1568157091',
-    sampleItem: 'Increased Convenience & Competitiveness',
   },
 ];
 
@@ -61,7 +60,6 @@ test.describe('Mobile App Service Pages Tracer (Story 5.1)', () => {
         config.benefitsId,
         config.whyChooseUsId,
         config.decorId,
-        config.testimonialsId,
         config.faqId,
       ]);
 
@@ -89,7 +87,7 @@ test.describe('Mobile App Service Pages Tracer (Story 5.1)', () => {
       const firstTrigger = faqItems.first().locator('.accordion-title');
       await expect(firstTrigger).toHaveClass(/active/);
 
-      // Duplicate question ID verification on EN (orders 2 and 3 have unique IDs)
+      // Question IDs stay unique on EN
       if (config.locale === 'en') {
         const itemIds = await faqItems.evaluateAll((items) => items.map((i) => i.id));
         const uniqueIds = new Set(itemIds);
@@ -130,6 +128,8 @@ test.describe('Mobile App Service Pages Tracer (Story 5.1)', () => {
     }
 
     test(`Hero, benefits and why-choose-us assets render on ${config.path}`, async ({ page }) => {
+      const { mobileServices } = await import('../../src/data/services/mobile');
+      const service = mobileServices.find((s) => s.locale === config.locale)!;
       await page.goto(config.path);
 
       const hero = page.locator(`#${config.heroBannerId}`);
@@ -159,7 +159,7 @@ test.describe('Mobile App Service Pages Tracer (Story 5.1)', () => {
       }
       await expect(
         page.locator(`#${config.whyChooseUsId} .eras-table-price.hide-for-small`),
-      ).toContainText(config.sampleItem);
+      ).toContainText(service.offerings[0].items![0]);
     });
 
     test(`Responsive why-choose-us slider vs grid toggle on ${config.path}`, async ({ page }) => {
@@ -184,13 +184,12 @@ test.describe('Mobile App Service Pages Tracer (Story 5.1)', () => {
       await expect(slider).toBeHidden();
     });
 
-    test(`Testimonials renders 3 cards on ${config.path}`, async ({ page }) => {
+    // Testimonials hidden (stakeholder review 2026-10-27): the quotes came from the source site's clients.
+    test(`No testimonials section on ${config.path}`, async ({ page }) => {
       await page.goto(config.path);
 
-      const testimonialSlides = page.locator(
-        `#${config.testimonialsId} .slide-kh .flickity-slider > *`,
-      );
-      await expect(testimonialSlides).toHaveCount(3);
+      await expect(page.locator(`#${config.testimonialsId}`)).toHaveCount(0);
+      await expect(page.locator('.ss-kh, .slide-kh')).toHaveCount(0);
     });
 
     test(`No tab UI ([role=tablist]) on service page on ${config.path}`, async ({ page }) => {
@@ -200,476 +199,27 @@ test.describe('Mobile App Service Pages Tracer (Story 5.1)', () => {
       await expect(tablists).toHaveCount(0);
     });
   }
-
-  test('EN duplicate FAQ items open independently without key warnings', async ({ page }) => {
-    const keyWarnings: string[] = [];
-    page.on('console', (msg) => {
-      if (msg.type() === 'error' && /same key/i.test(msg.text())) keyWarnings.push(msg.text());
-    });
-
-    await page.goto('/en/app-mobile-development/');
-    const items = page.locator('#section_703582263 .accordion-item');
-    const second = items.nth(1).locator('.accordion-title');
-    const third = items.nth(2).locator('.accordion-title');
-
-    await expect(second).toHaveText(await third.innerText());
-
-    await second.click();
-    await expect(second).toHaveClass(/active/);
-    await expect(third).not.toHaveClass(/active/);
-
-    await third.click();
-    await expect(third).toHaveClass(/active/);
-    await expect(second).not.toHaveClass(/active/);
-
-    expect(keyWarnings).toEqual([]);
-  });
 });
 
-const TABLE_SERVICE_ROUTES = [
-  {
-    key: 'hosting',
-    locale: 'vi',
-    path: '/hosting-doanh-nghiep/',
-    sectionIds: [
-      'banner-998365047',
-      'section_1575376699',
-      'section_2022484527',
-      'section_601922759',
-      'section_2047789767',
-    ],
-    headingLines: ['Dịch vụ', 'Business Hosting'],
-    pricingTitle: 'Bảng giá dịch vụ',
-    benefitsTitle: 'Sử dụng dịch vụ của Sova',
-    rows: 8,
-    columns: 8,
-    faqCount: 10,
-    icons: 6,
-    iconWidths: ['78px', '78px', '78px', '78px', '78px', '78px'],
-  },
-  {
-    key: 'hosting',
-    locale: 'en',
-    path: '/en/business-hosting/',
-    sectionIds: [
-      'banner-1497056567',
-      'section_594539523',
-      'section_1382323701',
-      'section_1341923526',
-      'section_748910381',
-    ],
-    headingLines: ['Business Hosting', 'Service'],
-    pricingTitle: 'Business Hosting Pricing',
-    benefitsTitle: 'Sova’s Email Service ?',
-    rows: 8,
-    columns: 8,
-    faqCount: 10,
-    icons: 6,
-    iconWidths: ['78px', '78px', '78px', '78px', '78px', '78px'],
-  },
-  {
-    key: 'vps',
-    locale: 'vi',
-    path: '/vps-doanh-nghiep/',
-    sectionIds: [
-      'banner-52976556',
-      'section_887597801',
-      'section_753586130',
-      'section_2083222755',
-      'section_630471639',
-    ],
-    headingLines: ['Dịch vụ', 'Cloud VPS'],
-    pricingTitle: 'Bảng giá dịch vụ',
-    benefitsTitle: 'Sử dụng dịch vụ của Sova',
-    rows: 6,
-    columns: 8,
-    faqCount: 12,
-    icons: 5,
-    iconWidths: ['78px', '78px', '94px', '79px', '80px', '78px'],
-  },
-  {
-    key: 'vps',
-    locale: 'en',
-    path: '/en/business-vps/',
-    sectionIds: [
-      'banner-1956119831',
-      'section_932558823',
-      'section_349332889',
-      'section_1606797624',
-      'section_681289048',
-    ],
-    headingLines: ['Cloud VPS', 'Service'],
-    // EN source copy errors kept as-is.
-    pricingTitle: 'Business Hosting Pricing',
-    benefitsTitle: 'Sova’s Email Service ?',
-    rows: 6,
-    columns: 8,
-    faqCount: 12,
-    icons: 5,
-    iconWidths: ['78px', '78px', '94px', '79px', '80px', '78px'],
-  },
-  {
-    key: 'email',
-    locale: 'vi',
-    path: '/e-mail-doanh-nghiep/',
-    sectionIds: [
-      'banner-880688064',
-      'section_1723121385',
-      'section_136281833',
-      'section_1984183481',
-      'section_630184286',
-    ],
-    headingLines: ['Dịch vụ', 'Email doanh nghiệp'],
-    pricingTitle: 'Bảng giá dịch vụ',
-    benefitsTitle: 'Sử dụng dịch vụ tại Sova',
-    rows: 7,
-    columns: 7,
-    faqCount: 9,
-    icons: 6,
-    iconWidths: ['60px', '60px', '75px', '60px', '60px', '60px'],
-  },
-  {
-    key: 'email',
-    locale: 'en',
-    path: '/en/business-e-mail/',
-    sectionIds: [
-      'banner-782456447',
-      'section_1607043033',
-      'section_676662741',
-      'section_2136010649',
-      'section_1417737979',
-    ],
-    headingLines: ['Business', 'Email Service'],
-    pricingTitle: 'Service Pricing Table',
-    benefitsTitle: 'Sova’s Email Service ?',
-    rows: 5,
-    columns: 7,
-    faqCount: 9,
-    icons: 6,
-    iconWidths: ['60px', '60px', '75px', '60px', '60px', '60px'],
-  },
+// Storage, e-mail, hosting and VPS are hidden (stakeholder review 2026-10-27): records and routes are commented out.
+const HIDDEN_SERVICE_PATHS = [
+  '/giai-phap-luu-tru/',
+  '/en/storage-solution/',
+  '/e-mail-doanh-nghiep/',
+  '/en/business-e-mail/',
+  '/hosting-doanh-nghiep/',
+  '/en/business-hosting/',
+  '/vps-doanh-nghiep/',
+  '/en/business-vps/',
 ] as const;
 
-test.describe('Hosting, VPS, and Email service pages', () => {
-  for (const config of TABLE_SERVICE_ROUTES) {
-    test(`Sections, h1, table, cards, testimonials and FAQ on ${config.path}`, async ({ page }) => {
-      const { hostingPricing } = await import('../../src/data/pricing/hosting');
-      const { vpsPricing } = await import('../../src/data/pricing/vps');
-      const { emailPricing } = await import('../../src/data/pricing/email');
-      const pricingMap = { hosting: hostingPricing, vps: vpsPricing, email: emailPricing };
-      const pricing = pricingMap[config.key].find((p) => p.locale === config.locale);
-      if (pricing?.kind !== 'table') throw new Error('table pricing missing');
+test.describe('Hidden storage, e-mail, hosting and VPS service pages', () => {
+  test.use({ allowConsole: [ALLOW_404] });
 
-      await page.goto(config.path);
-
-      const sectionIds = await page.evaluate(() =>
-        Array.from(
-          document.querySelectorAll('main#main > .banner, main#main > section'),
-          (el) => el.id,
-        ),
-      );
-      expect(sectionIds).toEqual(config.sectionIds);
-      await expectNoDuplicateIds(page);
-
-      // No benefits video, projects, upgrade-triggers, or why-choose-us sections.
-      await expect(page.locator('main video')).toHaveCount(0);
-      await expect(page.locator('main .ss-decor')).toHaveCount(0);
-      await expect(page.locator('main .eras-table-price')).toHaveCount(0);
-      await expect(page.locator('main .vps-actions')).toHaveCount(0);
-      await expect(page.locator('main .vps-btn-config')).toHaveCount(0);
-      await expect(page.locator('main [id*="popup"]')).toHaveCount(0);
-      await expect(page.locator('[role=tablist]')).toHaveCount(0);
-
-      await expect(page.locator('main h1')).toHaveCount(1);
-      await expect(page.locator('main h1 .typewriter')).toHaveText([...config.headingLines]);
-
-      const [, pricingId, iconsId, testimonialsId, faqId] = config.sectionIds;
-      await expect(page.locator(`#${pricingId} h2`)).toHaveText(config.pricingTitle);
-      const table = page.locator(`#${pricingId} .vps-table-wrapper > table.vps-table`);
-      await expect(table.locator('thead th')).toHaveText(pricing.columns.map((c) => c.label));
-      const rows = table.locator('tbody tr');
-      await expect(rows).toHaveCount(config.rows);
-      for (const [i, plan] of pricing.plans.entries()) {
-        const row = rows.nth(i);
-        await expect(row.locator('td')).toHaveCount(config.columns);
-        await expect(row.locator('td').first()).toHaveText(plan.name);
-        await expect(row.locator('td.vps-price')).toHaveText(plan.price!.displayText);
-        const cta = row.locator('td:last-child a.vps-btn');
-        await expect(cta).toHaveAttribute('href', /^https:\/\//);
-        await expect(cta).toHaveAttribute('target', '_blank');
-        await expect(cta.locator('span')).toHaveText(plan.cta.label);
-      }
-
-      const icons = page.locator(`#${iconsId}`);
-      await expect(icons).toHaveClass(/ss-ndv-seo/);
-      await expect(
-        icons.locator('img.bg[src*="b64598d7e18308083c456d32c69bae66.webp"]'),
-      ).toHaveCount(1);
-      await expect(icons.locator('h2')).toHaveText(config.benefitsTitle);
-      await expect(icons.locator('.row_ptien > .col')).toHaveCount(6);
-      await expect(icons.locator('.row_ptien .icon-box-img img')).toHaveCount(config.icons);
-      expect(
-        await icons
-          .locator('.row_ptien .icon-box-img')
-          .evaluateAll((els) => els.map((el) => (el as HTMLElement).style.width)),
-      ).toEqual(config.iconWidths);
-
-      await expect(page.locator(`#${testimonialsId} .slide-kh .flickity-slider > *`)).toHaveCount(
-        3,
-      );
-
-      const faqItems = page.locator(`#${faqId} .accordion.ac-luutru .accordion-item`);
-      await expect(faqItems).toHaveCount(config.faqCount);
-      await expect(faqItems.first().locator('.accordion-title')).toHaveClass(/active/);
-      await expect(page.locator(`#${faqId} > .section-content > .gap-element`)).toHaveCount(
-        config.key === 'hosting' ? 1 : 0,
-      );
-    });
-
-    test(`Hero assets and breadcrumb on ${config.path}`, async ({ page }) => {
-      await page.goto(config.path);
-      const hero = page.locator(`#${config.sectionIds[0]}`);
-      const bg =
-        config.key === 'hosting'
-          ? 'freepikvdfvdf_2704716-scaled-1-1.webp'
-          : config.key === 'vps'
-            ? 'anh-nen-1.webp'
-            : 'zdvdxf-xdbfd-scaled-1.webp';
-      await expect(hero.locator(`img.bg[src*="${bg}"]`)).toHaveCount(1);
-      await expect(hero.locator('.img-inner img')).toHaveCount(1);
-      if (config.key === 'email') {
-        await expect(
-          hero.getByRole('link', {
-            name: config.locale === 'vi' ? 'Trang chủ' : 'Home',
-          }),
-        ).toHaveAttribute('href', config.locale === 'vi' ? '/' : '/en/home/');
-        const crumbs = hero.locator(
-          `#${config.locale === 'vi' ? 'text-951094996' : 'text-2322921990'}`,
-        );
-        await expect(crumbs).toContainText(
-          config.locale === 'vi' ? 'Dịch vụ / Email Business' : 'Services / Email Business',
-        );
-        await expect(crumbs.locator('a')).toHaveCount(1);
-        await expect(
-          hero.locator(`#${config.locale === 'vi' ? 'gap-2007649633' : 'gap-1782042057'}`),
-        ).toHaveClass('gap-element clearfix show-for-small');
-      } else {
-        await expect(
-          hero.getByRole('link', {
-            name: config.locale === 'vi' ? 'Giải pháp lưu trữ' : 'Storage solutions',
-          }),
-        ).toHaveAttribute(
-          'href',
-          config.locale === 'vi' ? '/giai-phap-luu-tru/' : '/en/storage-solution/',
-        );
-      }
-    });
-
-    test(`Table scrolls inside its wrapper, never the page, on ${config.path}`, async ({
-      page,
-    }) => {
-      for (const width of [390, 549, 768]) {
-        await page.setViewportSize({ width, height: 844 });
-        await page.goto(config.path);
-        const metrics = await page.evaluate(() => {
-          const wrapper = document.querySelector<HTMLElement>('.vps-table-wrapper')!;
-          const lastCell = wrapper.querySelector('tbody tr td:last-child')!;
-          wrapper.scrollLeft = wrapper.scrollWidth;
-          const cell = lastCell.getBoundingClientRect();
-          const box = wrapper.getBoundingClientRect();
-          return {
-            page: document.documentElement.scrollWidth - window.innerWidth,
-            scrollable: wrapper.scrollWidth > wrapper.clientWidth,
-            lastCellReachable: cell.right <= box.right + 1 && cell.left >= box.left - 1,
-          };
-        });
-        expect(metrics, `${width}px`).toEqual({
-          page: 0,
-          scrollable: true,
-          lastCellReachable: true,
-        });
-      }
-    });
-  }
-});
-
-const STORAGE_SERVICE_ROUTES = [
-  {
-    locale: 'vi',
-    path: '/giai-phap-luu-tru/',
-    sectionIds: [
-      'banner-1255492643',
-      'section_1644279447',
-      'section_1086282974',
-      'section_1048537414',
-      'section_1489580969',
-    ],
-    headingLines: ['Giải pháp lưu trữ', 'cho doanh nghiệp'],
-    eyebrow: 'Sova cung cấp',
-    title: 'Các dịch vụ lưu trữ',
-    faqEyebrow: { id: 'text-1409335333', text: 'GIẢI ĐÁP' },
-    decoImageId: 'image_1886760630',
-    heroSmallGaps: ['gap-1295344278', 'gap-161076987'],
-    routes: ['/hosting-doanh-nghiep/', '/vps-doanh-nghiep/', '/e-mail-doanh-nghiep/'],
-    slideTitles: ['Business hosting', 'Cloud VPS', 'E-mail doanh nghiệp'],
-    faqCount: 4,
-  },
-  {
-    locale: 'en',
-    path: '/en/storage-solution/',
-    sectionIds: [
-      'banner-964121618',
-      'section_475696028',
-      'section_674888486',
-      'section_2078920882',
-      'section_1266521913',
-    ],
-    headingLines: ['Business', 'Storage Solutions'],
-    eyebrow: 'Sova provides',
-    title: 'Storage Services',
-    faqEyebrow: { id: 'text-4251296495', text: 'FAQs' },
-    decoImageId: 'image_1222782848',
-    heroSmallGaps: ['gap-474200673', 'gap-2132235472'],
-    routes: ['/en/business-hosting/', '/en/business-vps/', '/en/business-e-mail/'],
-    slideTitles: ['Business hosting', 'Cloud VPS', 'Business Email'],
-    faqCount: 4,
-  },
-] as const;
-
-test.describe('Storage service pages (Story 5.4)', () => {
-  for (const config of STORAGE_SERVICE_ROUTES) {
-    test(`Section order, h1, cards, testimonials and FAQ on ${config.path}`, async ({ page }) => {
-      const { storageServices } = await import('../../src/data/services/storage');
-      const service = storageServices.find((s) => s.locale === config.locale);
-      if (!service) throw new Error('storage service missing');
-
-      await page.goto(config.path);
-
-      const sectionIds = await page.evaluate(() =>
-        Array.from(
-          document.querySelectorAll('main#main > .banner, main#main > section'),
-          (el) => el.id,
-        ),
-      );
-      expect(sectionIds).toEqual(config.sectionIds);
-      await expectNoDuplicateIds(page);
-
-      // No pricing table, benefits video or marquee markup.
-      await expect(page.locator('main table')).toHaveCount(0);
-      await expect(page.locator('main video')).toHaveCount(0);
-      await expect(page.locator('main .ss-ndv-seo')).toHaveCount(0);
-      await expect(page.locator('main .cs-moving_text')).toHaveCount(0);
-      await expect(page.locator('[role=tablist]')).toHaveCount(0);
-
-      // Projects slot is present and empty.
-      const projectsSlot = page.locator(`#${config.sectionIds[2]}`);
-      await expect(projectsSlot).toHaveClass(/ss-decor/);
-
-      // H1 heading lines
-      await expect(page.locator('main h1')).toHaveCount(1);
-      await expect(page.locator('main h1 .typewriter')).toHaveText([...config.headingLines]);
-
-      // Offerings section
-      const offerings = page.locator(`#${config.sectionIds[1]}`);
-      await expect(offerings).toContainText(config.eyebrow);
-      await expect(offerings.locator('h2')).toHaveText(config.title);
-      await expect(
-        offerings.locator(`#${config.decoImageId} img[src*="Deco-1-6.svg"]`),
-      ).toHaveCount(1);
-      const gridCards = offerings.locator('.eras-table-price > .col');
-      await expect(gridCards).toHaveCount(3);
-
-      for (let i = 0; i < 3; i++) {
-        const card = gridCards.nth(i);
-        const offering = service.offerings[i];
-        await expect(card.locator('h3')).toHaveText(offering.title);
-        await expect(card.locator('.icon-box')).toHaveCount(7);
-        await expect(card.locator('.icon-box h5')).toHaveText(offering.items ?? []);
-        const cta = card.locator('p a.but-lh');
-        await expect(cta).toHaveAttribute('href', config.routes[i]);
-      }
-
-      // Testimonials (3 slides)
-      await expect(
-        page.locator(`#${config.sectionIds[3]} .slide-kh .flickity-slider > *`),
-      ).toHaveCount(3);
-
-      // FAQ (4 items, first open)
-      const faqItems = page.locator(
-        `#${config.sectionIds[4]} .accordion.ac-luutru .accordion-item`,
-      );
-      await expect(faqItems).toHaveCount(config.faqCount);
-      await expect(faqItems.first().locator('.accordion-title')).toHaveClass(/active/);
-      await expect(page.locator(`#${config.faqEyebrow.id}`)).toHaveText(config.faqEyebrow.text);
-    });
-
-    test(`Hero assets and breadcrumb on ${config.path}`, async ({ page }) => {
-      await page.goto(config.path);
-      const hero = page.locator(`#${config.sectionIds[0]}`);
-      await expect(
-        hero.locator('img.bg[src*="de729be13c98f6a585c5656f0ce73db4-1.webp"]'),
-      ).toHaveCount(1);
-      await expect(hero.locator('.img-inner img[src*="image-71.svg"]')).toHaveCount(1);
-      for (const gapId of config.heroSmallGaps) {
-        await expect(hero.locator(`#${gapId}`)).toHaveClass('gap-element clearfix show-for-small');
-      }
-
-      const breadcrumb = hero.locator(
-        `#${config.locale === 'vi' ? 'text-445793396' : 'text-1244128777'}`,
-      );
-      await expect(breadcrumb).toContainText(
-        config.locale === 'vi'
-          ? 'Trang chủ / Dịch vụ / Giải pháp lưu trữ'
-          : 'Home / Services / Storage solutions',
-      );
-      await expect(
-        hero.getByRole('link', {
-          name: config.locale === 'vi' ? 'Trang chủ' : 'Home',
-        }),
-      ).toHaveAttribute('href', config.locale === 'vi' ? '/' : '/en/home/');
-    });
-
-    test(`Grid hidden and slider visible at mobile viewports with no page scroll on ${config.path}`, async ({
-      page,
-    }) => {
-      for (const width of [390, 549]) {
-        await page.setViewportSize({ width, height: 844 });
-        await page.goto(config.path);
-
-        const offerings = page.locator(`#${config.sectionIds[1]}`);
-        const grid = offerings.locator('.eras-table-price.hide-for-small');
-        const slider = offerings.locator('.eras-table-price-slider.show-for-small');
-
-        await expect(grid).toBeHidden();
-        await expect(slider).toBeVisible();
-
-        // 3 slides in carousel
-        const slides = slider.locator('.flickity-slider > .row');
-        await expect(slides).toHaveCount(3);
-        for (let i = 0; i < 3; i++) {
-          const slide = slides.nth(i);
-          await expect(slide.locator('h3')).toHaveText(config.slideTitles[i]);
-          await expect(slide.locator('.icon-box')).toHaveCount(7);
-          const cta = slide.locator('p a.but-lh');
-          await expect(cta).toHaveAttribute('href', config.routes[i]);
-        }
-
-        // Carousel dots and arrows present
-        await expect(slider.locator('.flickity-page-dots')).toBeVisible();
-        await expect(slider.locator('.flickity-prev-next-button')).toHaveCount(2);
-
-        // No horizontal page scroll
-        const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-        const innerWidth = await page.evaluate(() => window.innerWidth);
-        expect(scrollWidth, `${width}px scrollWidth <= innerWidth`).toBeLessThanOrEqual(innerWidth);
-      }
-
-      // At >= 550px: slider hidden, grid visible
-      await page.setViewportSize({ width: 550, height: 844 });
-      await page.goto(config.path);
-      const offerings550 = page.locator(`#${config.sectionIds[1]}`);
-      await expect(offerings550.locator('.eras-table-price.hide-for-small')).toBeVisible();
-      await expect(offerings550.locator('.eras-table-price-slider.show-for-small')).toBeHidden();
+  for (const path of HIDDEN_SERVICE_PATHS) {
+    test(`${path} returns 404`, async ({ page }) => {
+      const response = await page.goto(path);
+      expect(response?.status()).toBe(404);
     });
   }
 });
@@ -683,7 +233,6 @@ const SEO_SERVICES_ROUTES = [
       'section_922596210',
       'section_148064088',
       'section_1443166173',
-      'section_994856196',
       'section_1595200881',
     ],
     headingLines: ['Dịch vụ SEO TOP', 'từ khoá website'],
@@ -698,16 +247,7 @@ const SEO_SERVICES_ROUTES = [
     faqEyebrowId: 'text-1069659283',
     faqEyebrow: 'GIẢI ĐÁP',
     advantagesEyebrow: 'Dịch vụ SEO website',
-    advantagesTitle: 'Lợi thế khi chọn dịch vụ SEO của chúng tôi',
-    advantageTitles: [
-      'Tăng thứ hạng bền vững trên Google',
-      'Tối ưu SEO toàn diện (Onpage & Offpage)',
-      'Báo cáo & theo dõi minh bạch',
-      'Đội ngũ chuyên gia giàu kinh nghiệm',
-    ],
     offeringsEyebrow: 'Những dịch vụ',
-    // Source splits the VI title with <br>.
-    offeringsTitle: 'SEO top Google tại\nSova',
     packageTitles: ['SEO ONPAGE', 'SEO OFFPAGE', 'CHĂM SÓC WEBSITE', 'CONTENT WRITER'],
     faqCount: 8,
   },
@@ -719,7 +259,6 @@ const SEO_SERVICES_ROUTES = [
       'section_1367982414',
       'section_1771281465',
       'section_1303915883',
-      'section_1195289173',
       'section_1520280801',
     ],
     headingLines: ['Top-Ranking', 'SEO Services'],
@@ -734,15 +273,7 @@ const SEO_SERVICES_ROUTES = [
     faqEyebrowId: 'text-712709189',
     faqEyebrow: 'FAQs',
     advantagesEyebrow: 'Website Keyword SEO',
-    advantagesTitle: 'Advantages of Choosing Our SEO Services',
-    advantageTitles: [
-      'Achieve Sustainable Google Rankings',
-      'Comprehensive SEO Optimization',
-      'Transparent Reporting & Monitoring',
-      'Experienced SEO Experts',
-    ],
     offeringsEyebrow: 'Services',
-    offeringsTitle: 'SEO top Google at Sova',
     packageTitles: ['SEO ONPAGE', 'SEO OFFPAGE', 'WEBSITE MAINTENANCE', 'CONTENT WRITER'],
     faqCount: 8,
   },
@@ -804,18 +335,20 @@ test.describe('SEO Service Pages (Story 5.5)', () => {
       await expect(advantagesSection).toContainText(config.advantagesEyebrow);
       await expect(
         advantagesSection.locator(config.locale === 'en' ? 'h3' : 'h2').first(),
-      ).toHaveText(config.advantagesTitle);
+      ).toHaveText(service.sectionCopy.benefits!.title);
       const advantageCards = advantagesSection.locator('.row.align-equal > .col');
       await expect(advantageCards).toHaveCount(4);
       for (let i = 0; i < 4; i++) {
-        await expect(advantageCards.nth(i).locator('h3')).toHaveText(config.advantageTitles[i]);
+        await expect(advantageCards.nth(i).locator('h3')).toHaveText(service.benefits[i].title);
       }
 
       // Package cards desktop grid: 4 package cards
       const packagesSection = page.locator(`#${config.sectionIds[2]}`);
       await expect(packagesSection).toContainText(config.offeringsEyebrow);
+      // Source splits the VI title with <br>.
+      const offeringsCopy = service.sectionCopy.offerings!;
       expect(await packagesSection.locator(`#${config.offeringsTitleId} h2`).innerText()).toBe(
-        config.offeringsTitle,
+        (offeringsCopy.titleLines ?? [offeringsCopy.title]).join('\n'),
       );
       const gridCards = packagesSection.locator('.eras-table-price > .col');
       await expect(gridCards).toHaveCount(4);
@@ -828,13 +361,11 @@ test.describe('SEO Service Pages (Story 5.5)', () => {
         await expect(card.locator('p a.but-lh')).toHaveAttribute('href', zaloHref!);
       }
 
-      // Testimonials (3 slides)
-      await expect(
-        page.locator(`#${config.sectionIds[4]} .slide-kh .flickity-slider > *`),
-      ).toHaveCount(3);
+      // Testimonials hidden (stakeholder review 2026-10-27).
+      await expect(page.locator('.ss-kh, .slide-kh')).toHaveCount(0);
 
       // FAQ items count per locale (8 items, first open)
-      const faqSection = page.locator(`#${config.sectionIds[5]}`);
+      const faqSection = page.locator(`#${config.sectionIds[4]}`);
       await expect(faqSection.locator(`#${config.faqEyebrowId}`)).toHaveText(config.faqEyebrow);
       const faqItems = faqSection.locator('.accordion-item');
       await expect(faqItems).toHaveCount(config.faqCount);
@@ -898,7 +429,6 @@ const BRANDING_SERVICES_ROUTES = [
       'section_1240484658',
       'section_282263172',
       'section_2117777695',
-      'section_1502022357',
       'section_1909361623',
     ],
     headingLines: ['UI/UX,', 'Branding Design'],
@@ -914,15 +444,7 @@ const BRANDING_SERVICES_ROUTES = [
     faqEyebrow: 'GIẢI ĐÁP',
     advantagesEyebrow: 'Dịch vụ thiết kế UI/UX',
     advantagesTitle: 'Tại Sova',
-    advantagesSubtitle: 'Chúng tôi thiết kế dựa trên cốt lõi văn hóa doanh nghiệp',
-    advantageTitles: [
-      'Nghiên cứu văn hoá doanh nghiệp',
-      'Thiết kế trải nghiệm doanh nghiệp',
-      'Phát triển chiến lược sản phẩm',
-      'Tạo dựng giá trị bền vững',
-    ],
     offeringsEyebrow: 'Những dịch vụ',
-    offeringsTitle: 'Thiết kế UI/UX\ntại Sova',
     packageTitles: [
       'THIẾT KẾ LOGO THƯƠNG HIỆU',
       'THIẾT KẾ UI/UX WEB/APP',
@@ -939,7 +461,6 @@ const BRANDING_SERVICES_ROUTES = [
       'section_1111233762',
       'section_879951789',
       'section_1698149091',
-      'section_1058517608',
       'section_1106628234',
     ],
     headingLines: ['UI/UX,', 'Branding Design'],
@@ -955,15 +476,7 @@ const BRANDING_SERVICES_ROUTES = [
     faqEyebrow: 'FAQs',
     advantagesEyebrow: 'UI/UX Design Service',
     advantagesTitle: 'At Sova',
-    advantagesSubtitle: 'We design with your corporate culture at the core',
-    advantageTitles: [
-      'Corporate Culture Research',
-      'Enterprise Experience Design',
-      'Product Strategy Development',
-      'Building Sustainable Value',
-    ],
     offeringsEyebrow: 'Services',
-    offeringsTitle: 'UI/UX Design at Sova',
     packageTitles: [
       'BRAND LOGO DESIGN',
       'UI/UX DESIGN FOR WEB & APP',
@@ -1042,12 +555,12 @@ test.describe('Branding Service Pages (Story 5.6)', () => {
       ).toHaveCount(1);
       await expect(advantagesSection).toContainText(config.advantagesEyebrow);
       await expect(advantagesSection.locator('h2').first()).toHaveText(config.advantagesTitle);
-      await expect(advantagesSection).toContainText(config.advantagesSubtitle);
+      await expect(advantagesSection).toContainText(service.sectionCopy.benefits!.description!);
 
       const advantageCards = advantagesSection.locator('.row.align-equal > .col');
       await expect(advantageCards).toHaveCount(4);
       for (let i = 0; i < 4; i++) {
-        await expect(advantageCards.nth(i).locator('h3')).toHaveText(config.advantageTitles[i]);
+        await expect(advantageCards.nth(i).locator('h3')).toHaveText(service.benefits[i].title);
       }
       expect(
         await advantageCards
@@ -1061,8 +574,10 @@ test.describe('Branding Service Pages (Story 5.6)', () => {
       await expect(
         packagesSection.locator('.section-bg img[src*="b64598d7e18308083c456d32c69bae66.webp"]'),
       ).toHaveCount(1);
+      // Source splits the VI title with <br>.
+      const offeringsCopy = service.sectionCopy.offerings!;
       expect(await packagesSection.locator(`#${config.offeringsTitleId} h2`).innerText()).toBe(
-        config.offeringsTitle,
+        (offeringsCopy.titleLines ?? [offeringsCopy.title]).join('\n'),
       );
       const gridCards = packagesSection.locator('.eras-table-price > .col');
       await expect(gridCards).toHaveCount(4);
@@ -1077,13 +592,11 @@ test.describe('Branding Service Pages (Story 5.6)', () => {
         await expect(card.locator('p a.but-lh')).toHaveAttribute('href', zaloHref!);
       }
 
-      // Testimonials (3 slides)
-      await expect(
-        page.locator(`#${config.sectionIds[4]} .slide-kh .flickity-slider > *`),
-      ).toHaveCount(3);
+      // Testimonials hidden (stakeholder review 2026-10-27).
+      await expect(page.locator('.ss-kh, .slide-kh')).toHaveCount(0);
 
       // FAQ items count per locale (10 items, first open)
-      const faqSection = page.locator(`#${config.sectionIds[5]}`);
+      const faqSection = page.locator(`#${config.sectionIds[4]}`);
       await expect(faqSection.locator(`#${config.faqEyebrowId}`)).toHaveText(config.faqEyebrow);
       const faqItems = faqSection.locator('.accordion-item');
       await expect(faqItems).toHaveCount(config.faqCount);
@@ -1157,7 +670,6 @@ const WEBSITE_SERVICES_ROUTES = [
       'section_1346750226',
       'section_2045360196',
       'section_1384595751',
-      'section_1621881932',
       'section_852011045',
     ],
     pricingSectionId: 'section_1346750226',
@@ -1167,7 +679,6 @@ const WEBSITE_SERVICES_ROUTES = [
     breadcrumbId: 'text-560624937',
     benefitsCardsRowId: 'row-2045382502',
     mobileHeadingId: 'text-3235701455',
-    mobileHeadingLines: ['Phát triển lợi thế', 'doanh nghiệp của bạn', 'trên nền tảng số'],
     faqSectionId: 'section_852011045',
     faqCount: 8,
     plans: [
@@ -1189,7 +700,6 @@ const WEBSITE_SERVICES_ROUTES = [
       'section_1856214289',
       'section_720050151',
       'section_1784272447',
-      'section_374756684',
       'section_581402483',
     ],
     pricingSectionId: 'section_1856214289',
@@ -1199,7 +709,6 @@ const WEBSITE_SERVICES_ROUTES = [
     breadcrumbId: 'text-2147121753',
     benefitsCardsRowId: 'row-850357972',
     mobileHeadingId: 'text-2812727029',
-    mobileHeadingLines: ['Drive Your Business Growth with a Strategic Digital Presence'],
     faqSectionId: 'section_581402483',
     faqCount: 8,
     plans: [
@@ -1231,10 +740,12 @@ test.describe('Website Service Pages (Story 5.7)', () => {
   for (const config of WEBSITE_SERVICES_ROUTES) {
     test(`Sections render in source order and structure on ${config.path}`, async ({ page }) => {
       const { websiteServices } = await import('../../src/data/services/website');
+      const { websitePricing } = await import('../../src/data/pricing/website');
       const { siteSettings } = await import('../../src/data/site');
       const zaloHref = siteSettings.find((x) => x.locale === config.locale)?.zaloHref;
       const service = websiteServices.find((s) => s.locale === config.locale);
       if (!service) throw new Error('website service missing');
+      const pricing = websitePricing.find((p) => p.locale === config.locale)!;
 
       await page.goto(config.path);
 
@@ -1268,13 +779,15 @@ test.describe('Website Service Pages (Story 5.7)', () => {
       }
 
       // Mobile benefits heading line breaks match source
+      const benefitsCopy = service.sectionCopy.benefits!;
+      const mobileHeadingLines = benefitsCopy.mobileTitleLines ?? [benefitsCopy.title];
       const mobileHeading = page.locator(`#${config.mobileHeadingId} h2`);
-      await expect(mobileHeading.locator('br')).toHaveCount(config.mobileHeadingLines.length - 1);
+      await expect(mobileHeading.locator('br')).toHaveCount(mobileHeadingLines.length - 1);
       expect(
         (await mobileHeading.innerHTML())
           .split(/<br\s*\/?>/)
           .map((line) => line.replace(/<[^>]+>/g, '').trim()),
-      ).toEqual(config.mobileHeadingLines);
+      ).toEqual(mobileHeadingLines);
 
       // Projects slot is present and empty ss-decor
       const projectsSlot = page.locator(`#${config.sectionIds[4]}`);
@@ -1305,7 +818,7 @@ test.describe('Website Service Pages (Story 5.7)', () => {
       await expect(marquee).toBeVisible();
       await expect(marquee.locator('img[src*="Ellipse-2351.svg"]').first()).toBeAttached();
 
-      // Pricing cards desktop grid (3 plans, 9 features + CTA each)
+      // Pricing cards desktop grid (3 plans, features from data + CTA each)
       const pricingSection = page.locator(`#${config.pricingSectionId}`);
       const gridCards = pricingSection.locator('.eras-table-price > .col');
       await expect(gridCards).toHaveCount(3);
@@ -1331,8 +844,9 @@ test.describe('Website Service Pages (Story 5.7)', () => {
           await expect(card.locator('p.gia_giam + h3')).toHaveText(plan.price);
         }
 
-        // 9 features
-        await expect(card.locator('.icon-box-left .text p')).toHaveCount(9);
+        await expect(card.locator('.icon-box-left .text p')).toHaveCount(
+          pricing.plans[i].featureIds.length,
+        );
         // CTA
         await expect(card.locator('a.but-lh')).toHaveAttribute('href', zaloHref!);
       }
@@ -1347,10 +861,8 @@ test.describe('Website Service Pages (Story 5.7)', () => {
         );
       }
 
-      // Testimonials (3 slides)
-      await expect(
-        page.locator(`#${config.sectionIds[5]} .slide-kh .flickity-slider > *`),
-      ).toHaveCount(3);
+      // Testimonials hidden (stakeholder review 2026-10-27).
+      await expect(page.locator('.ss-kh, .slide-kh')).toHaveCount(0);
 
       // FAQ items count per locale (8 items, first open)
       const faqSection = page.locator(`#${config.faqSectionId}`);
@@ -1411,7 +923,6 @@ test.describe('Website Contact Form Banner (Story 5.8)', () => {
       formBoxId: 'text-box-1917404396',
       formId: 'wpcf7-f6818-p7233-o1',
       promoBoxId: 'text-box-324172340',
-      promoText: '100 MÃ ƯU ĐÃI THÁNG NÀY',
       submitText: 'Gửi yêu cầu tư vấn  →',
       namePlaceholder: 'Họ & tên của bạn',
       phonePlaceholder: 'Số điện thoại của bạn',
@@ -1428,7 +939,6 @@ test.describe('Website Contact Form Banner (Story 5.8)', () => {
       formBoxId: 'text-box-1136070934',
       formId: 'wpcf7-f6823-p7372-o1',
       promoBoxId: null,
-      promoText: null,
       submitText: 'Send a consultation request →',
       namePlaceholder: 'Your full name',
       phonePlaceholder: 'Your phone number',
@@ -1484,7 +994,9 @@ test.describe('Website Contact Form Banner (Story 5.8)', () => {
       if (config.promoBoxId) {
         const promoBox = banner.locator(`#${config.promoBoxId}`);
         await expect(promoBox).toBeVisible();
-        await expect(promoBox).toContainText(config.promoText!);
+        const { websiteServices } = await import('../../src/data/services/website');
+        const service = websiteServices.find((s) => s.locale === config.locale)!;
+        await expect(promoBox).toContainText(service.sectionCopy.contact!.eyebrow!);
       } else {
         await expect(banner.locator('#text-box-324172340')).toHaveCount(0);
       }
@@ -1648,7 +1160,7 @@ test.describe('Website Contact Form Banner (Story 5.8)', () => {
 test.describe('Featured Projects on Service Pages (Story 5.9)', () => {
   const VI_TARGET_SERVICES = [
     {
-      name: 'website',
+      name: 'website' as const,
       path: '/thiet-ke-website/',
       rowId: 'row-134970593',
       colId: 'col-1655533775',
@@ -1657,7 +1169,7 @@ test.describe('Featured Projects on Service Pages (Story 5.9)', () => {
       eyebrowText: 'Sova',
     },
     {
-      name: 'mobile',
+      name: 'mobile' as const,
       path: '/thiet-ke-app-mobile/',
       rowId: 'row-26389138',
       colId: 'col-1861618344',
@@ -1666,7 +1178,7 @@ test.describe('Featured Projects on Service Pages (Story 5.9)', () => {
       eyebrowText: 'Sova',
     },
     {
-      name: 'seo',
+      name: 'seo' as const,
       path: '/seo-tu-khoa-website/',
       rowId: 'row-328500521',
       colId: 'col-1824878441',
@@ -1675,21 +1187,12 @@ test.describe('Featured Projects on Service Pages (Story 5.9)', () => {
       eyebrowText: 'Sova',
     },
     {
-      name: 'branding',
+      name: 'branding' as const,
       path: '/ui-ux-branding-design/',
       rowId: 'row-262932845',
       colId: 'col-1523603196',
       eyebrowId: 'text-1453977587',
       titleId: 'text-642705441',
-      eyebrowText: 'Sova',
-    },
-    {
-      name: 'storage',
-      path: '/giai-phap-luu-tru/',
-      rowId: 'row-1255166091',
-      colId: 'col-802613459',
-      eyebrowId: 'text-1101289681',
-      titleId: 'text-899631907',
       eyebrowText: 'Sova',
     },
   ];
@@ -1738,16 +1241,6 @@ test.describe('Featured Projects on Service Pages (Story 5.9)', () => {
     '/en/app-mobile-development/',
     '/en/website-keyword-seo/',
     '/en/ui-ux-branding-design-2/',
-    '/en/storage-solution/',
-  ];
-
-  const UNTOUCHED_PATHS = [
-    '/hosting-doanh-nghiep/',
-    '/en/business-hosting/',
-    '/vps-doanh-nghiep/',
-    '/en/business-vps/',
-    '/e-mail-doanh-nghiep/',
-    '/en/business-e-mail/',
   ];
 
   for (const service of VI_TARGET_SERVICES) {
@@ -1761,8 +1254,9 @@ test.describe('Featured Projects on Service Pages (Story 5.9)', () => {
       await expect(section.locator(`#${service.rowId}`)).toBeVisible();
       await expect(section.locator(`#${service.colId}`)).toBeVisible();
       await expect(section.locator(`#${service.eyebrowId}`)).toContainText(service.eyebrowText);
-      await expect(section.locator(`#${service.titleId} h2`)).toHaveText(
-        /Dự án chứa đựng\s*Tâm huyết Sáng tạo/,
+      const { titleLines } = (await getService(service.name, 'vi'))!.sectionCopy.projects!;
+      expect(await section.locator(`#${service.titleId} h2`).innerText()).toBe(
+        titleLines!.join('\n'),
       );
       await expect(section.locator(`#${service.titleId} h2 br`)).toHaveCount(1);
 
@@ -1785,13 +1279,6 @@ test.describe('Featured Projects on Service Pages (Story 5.9)', () => {
   for (const enPath of EN_TARGET_PATHS) {
     test(`EN ${enPath} renders no horizontal-scroll-section`, async ({ page }) => {
       await page.goto(enPath);
-      await expect(page.locator('.horizontal-scroll-section')).toHaveCount(0);
-    });
-  }
-
-  for (const untouchedPath of UNTOUCHED_PATHS) {
-    test(`Untouched ${untouchedPath} renders no horizontal-scroll-section`, async ({ page }) => {
-      await page.goto(untouchedPath);
       await expect(page.locator('.horizontal-scroll-section')).toHaveCount(0);
     });
   }

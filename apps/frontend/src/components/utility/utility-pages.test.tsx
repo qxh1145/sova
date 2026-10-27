@@ -8,13 +8,13 @@ import { createMockRepository } from '@/lib/repositories/mock';
 import type { ContentData, ContentRepository } from '@/lib/repositories/contracts';
 import type { UtilityContent } from '@/types/content';
 import { ThankYouView } from './ThankYouView';
-import ThankYouPage from '@/app/(site)/(vi)/eras-xin-chan-thanh-cam-on-quy-khach/page'; // business-text-ok: route import
-import HoSoNangLucPage from '@/app/(site)/(vi)/ho-so-nang-luc-eras-vietnam/page'; // business-text-ok: route import
-import EnPortfolioPage from '@/app/(site)/en/porfolio-eras-vietnam/page'; // business-text-ok: route import
+import ThankYouPage from '@/app/(site)/(vi)/xin-chan-thanh-cam-on-quy-khach/page';
+import HoSoNangLucPage from '@/app/(site)/(vi)/ho-so-nang-luc-sova/page';
+import EnPortfolioPage from '@/app/(site)/en/sova-portfolio/page';
 import SamplePage from '@/app/(site)/(vi)/sample-page/page';
 import LoginPage, {
   generateMetadata as generateLoginMetadata,
-} from '@/app/(utility)/login-eras/page'; // business-text-ok: route import
+} from '@/app/(utility)/login-sova/page';
 
 const notFoundMock = vi.fn(() => {
   throw new Error('NEXT_NOT_FOUND');
@@ -25,6 +25,7 @@ vi.mock('next/navigation', () => ({
 }));
 
 const thankYouRecord = utilityContent.find((c) => c.id === 'thank-you-vi')!;
+const thankYouHeading = parse(thankYouRecord.body.html).querySelector('h1')!.text;
 
 const repoWith = (data: Partial<ContentData> = {}) =>
   createMockRepository({
@@ -74,7 +75,7 @@ describe('ThankYouView component', () => {
     // Heading from record
     const h1 = root.querySelector('h1');
     expect(h1).not.toBeNull();
-    expect(h1?.text).toBe('Gửi thông tin thành công!');
+    expect(h1?.text).toBe(thankYouHeading);
 
     // Success svg
     const svg = root.querySelector('.success-animate svg');
@@ -104,7 +105,7 @@ describe('ThankYouView component', () => {
 
     // Heading still intact
     const h1 = root.querySelector('h1');
-    expect(h1?.text).toBe('Gửi thông tin thành công!');
+    expect(h1?.text).toBe(thankYouHeading);
   });
 
   it('handles route with demo=1 showing badge', async () => {
@@ -156,8 +157,8 @@ describe('ThankYouView component', () => {
     expect(notFoundMock).toHaveBeenCalledTimes(1);
   });
 
-  it('invokes notFound() when sample-page record is missing', async () => {
-    repository = repoWith({ utilityContent: [] });
+  it('invokes notFound() for the hidden sample page (sample-vi record commented out)', async () => {
+    repository = repoWith();
 
     await expect(SamplePage()).rejects.toThrow('NEXT_NOT_FOUND');
     expect(notFoundMock).toHaveBeenCalledTimes(1);

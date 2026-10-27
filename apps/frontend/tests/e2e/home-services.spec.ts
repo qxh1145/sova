@@ -1,20 +1,11 @@
 import { expect, expectNoDuplicateIds, test } from './fixtures';
 import { homePages } from '../../src/data/pages/home';
 import { brandingServices } from '../../src/data/services/branding';
-import { emailServices } from '../../src/data/services/email';
 import { mobileServices } from '../../src/data/services/mobile';
 import { seoServices } from '../../src/data/services/seo';
-import { storageServices } from '../../src/data/services/storage';
 import { websiteServices } from '../../src/data/services/website';
 
-const HOME_SERVICES = [
-  ...websiteServices,
-  ...mobileServices,
-  ...seoServices,
-  ...brandingServices,
-  ...storageServices,
-  ...emailServices,
-];
+const HOME_SERVICES = [...websiteServices, ...mobileServices, ...seoServices, ...brandingServices];
 
 test.describe('Services list, accordion and marquee', () => {
   test('Home accordion button matches source anchor metrics at 390px', async ({ page }) => {
@@ -48,7 +39,7 @@ test.describe('Services list, accordion and marquee', () => {
     ]);
   });
 
-  test('Six services and accordion items render in order with matching titles, summaries and arrow hrefs', async ({
+  test('Four services and accordion items render in order with matching titles, summaries and arrow hrefs', async ({
     page,
   }) => {
     for (const [path, locale, expectedArrow2, expectedTitle2] of [
@@ -64,10 +55,10 @@ test.describe('Services list, accordion and marquee', () => {
       await expect(section.locator('h2')).toHaveText(home.sectionCopy.services.title);
 
       const desktopCards = page.locator('.hide-for-small .dich_vu');
-      await expect(desktopCards).toHaveCount(6);
+      await expect(desktopCards).toHaveCount(4);
 
       const accordionItems = page.locator('.show-for-small .accordion-item');
-      await expect(accordionItems).toHaveCount(6);
+      await expect(accordionItems).toHaveCount(4);
 
       // Verify card 2 arrow href (source anomaly parity for EN)
       const desktopCard2Arrow = desktopCards.nth(1).locator('.nut_xthem a');
@@ -80,7 +71,7 @@ test.describe('Services list, accordion and marquee', () => {
       await expect(accordionItems.nth(1).locator('.acc-title')).toHaveText(expectedTitle2);
 
       // Titles, summaries and arrows follow serviceIds order in both views.
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 4; i++) {
         await expect(desktopCards.nth(i).locator('.name_dv')).toContainText(expected[i].title);
         await expect(desktopCards.nth(i).locator('.mta_dv')).toHaveText(expected[i].homeSummary);
         await expect(desktopCards.nth(i).locator('.nut_xthem a')).toHaveAttribute(
@@ -96,7 +87,7 @@ test.describe('Services list, accordion and marquee', () => {
       }
 
       // Verify desktop titles match accordion titles
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 4; i++) {
         const desktopNum = desktopCards.nth(i).locator('.num_dv span');
         const expectedNum = String(i + 1).padStart(2, '0');
         await expect(desktopNum).toHaveText(expectedNum);
@@ -113,35 +104,23 @@ test.describe('Services list, accordion and marquee', () => {
       }
 
       // Check last item has dich_vu_last
-      await expect(desktopCards.nth(5)).toHaveClass(/dich_vu_last/);
-      await expect(accordionItems.nth(5)).toHaveClass(/dich_vu_last/);
+      await expect(desktopCards.nth(3)).toHaveClass(/dich_vu_last/);
+      await expect(accordionItems.nth(3)).toHaveClass(/dich_vu_last/);
 
       await expectNoDuplicateIds(page);
     }
   });
 
-  test('VI item 5 renders sub-services Business Hosting and Cloud VPS', async ({ page }) => {
-    await page.goto('/');
-
-    const desktopSubServices = page
-      .locator('.hide-for-small .dich_vu')
-      .nth(4)
-      .locator('.name_dv span a');
-    await expect(desktopSubServices).toHaveCount(2);
-    await expect(desktopSubServices.nth(0)).toHaveText('Business Hosting');
-    await expect(desktopSubServices.nth(0)).toHaveAttribute('href', '/hosting-doanh-nghiep/');
-    await expect(desktopSubServices.nth(1)).toHaveText('Cloud VPS');
-    await expect(desktopSubServices.nth(1)).toHaveAttribute('href', '/vps-doanh-nghiep/');
-
-    const accSubServices = page
-      .locator('.show-for-small .accordion-item')
-      .nth(4)
-      .locator('.dv-con a');
-    await expect(accSubServices).toHaveCount(2);
-    await expect(accSubServices.nth(0)).toHaveText('Business Hosting');
-    await expect(accSubServices.nth(0)).toHaveAttribute('href', '/hosting-doanh-nghiep/');
-    await expect(accSubServices.nth(1)).toHaveText('Cloud VPS');
-    await expect(accSubServices.nth(1)).toHaveAttribute('href', '/vps-doanh-nghiep/');
+  test('Hidden storage, e-mail, hosting and VPS services are absent from the home list and accordion', async ({
+    page,
+  }) => {
+    const hiddenLinks = ['luu-tru', 'storage-solution', 'e-mail', 'hosting', 'vps']
+      .map((slug) => `a[href*="${slug}"]`)
+      .join(', ');
+    for (const path of ['/', '/en/home/']) {
+      await page.goto(path);
+      await expect(page.locator('.dich_vu, .acc_dvu').locator(hiddenLinks)).toHaveCount(0);
+    }
   });
 
   test('Responsive visibility: accordion visible only at 549px, list visible at 550, 849, 850px', async ({

@@ -1,25 +1,31 @@
 import type { Page } from '@playwright/test';
 import { expect, expectNoDuplicateIds, KNOWN_ABSENT_CSS_ASSETS, STAGING, test } from './fixtures';
 import manifest from '../baseline/manifest.json';
+import { homePages } from '../../src/data/pages/home';
+import type { SectionCopy } from '@/types/content';
 
 const WIDTHS = [...manifest.viewports, ...manifest.marqueeViewports].sort((a, b) => a - b);
-const STAT_VALUES = ['3500', '1500', '40', '09'];
+const STAT_VALUES = ['500', '50', '20', '03'];
+
+const homeVi = homePages.find((p) => p.locale === 'vi')!;
+const homeEn = homePages.find((p) => p.locale === 'en')!;
+const statsBreaks = ({ titleLines }: SectionCopy) => (titleLines?.length ?? 1) - 1;
 
 const HOME_COPY = {
   '/': {
-    lines: ['Thấu hiểu, đồng hành', 'và thiết kế trải nghiệm', 'digital toàn diện'],
+    lines: homeVi.hero.headingLines,
     cta: { label: 'Về chúng tôi →', href: '/gioi-thieu/' },
-    statsTitle: 'Thành tựu chúng tôi đạt được',
-    statsBreaks: 1,
-    statsDesc: { id: 'text-718633786', start: 'Đối với Sova xem mỗi dự án' },
+    statsTitle: homeVi.sectionCopy.achievements.title,
+    statsBreaks: statsBreaks(homeVi.sectionCopy.achievements),
+    statsDesc: { id: 'text-718633786', start: homeVi.sectionCopy.achievements.description! },
     labels: ['Khách hàng hài lòng', 'Dự án hoàn thành', 'Thành viên', 'Năm kinh nghiệm'],
   },
   '/en/home/': {
-    lines: ['From Understanding', 'to Innovation', 'We Craft Digital Excellence'],
+    lines: homeEn.hero.headingLines,
     cta: { label: 'About us →', href: '/en/about-us/' },
-    statsTitle: 'Our Achievements',
-    statsBreaks: 0,
-    statsDesc: { id: 'text-3546826826', start: 'Sova see every project' },
+    statsTitle: homeEn.sectionCopy.achievements.title,
+    statsBreaks: statsBreaks(homeEn.sectionCopy.achievements),
+    statsDesc: { id: 'text-3546826826', start: homeEn.sectionCopy.achievements.description! },
     labels: ['Satisfied Clients', 'Projects Completed', 'Team members', 'Years of experience'],
   },
 } as const;

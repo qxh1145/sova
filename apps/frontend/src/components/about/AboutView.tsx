@@ -33,6 +33,9 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
   const ids = isVi ? ABOUT_IDS_VI : ABOUT_IDS_EN;
   const testimonialIds = TESTIMONIALS_IDS.about[locale];
   const labels = page.carouselLabels;
+  // Each half of the timeline loop must be as wide as the source's 9 items, or a gap shows before it
+  // wraps; the duration keeps the source's speed for the longer strip.
+  const timelineReps = Math.ceil(9 / Math.max(page.timeline.length, 1));
 
   return (
     <div id="content" role="main">
@@ -467,73 +470,47 @@ export function AboutView({ page, assets, locale }: AboutViewProps) {
       <section className="section hinhthanh-phattrien" id={ids.timelineItemsSection}>
         <div className="section-bg fill" />
         <div className="section-content relative timeline-track-wrap">
-          <div className="timeline-track">
-            {/* Primary set of 9 items */}
-            {page.timeline.map((item) => (
-              <div key={item.id} className="timeline-item row row-collapse row-full-width">
-                <div className="col small-12 large-12">
-                  <div className="col-inner">
-                    <div className="text text-border">
-                      <p style={{ marginBottom: 0 }}>
-                        <img
-                          decoding="async"
-                          className="alignnone wp-image-3335 size-full"
-                          role="img"
-                          src={page.timelineDot.src}
-                          alt=""
-                          width={page.timelineDot.width ?? 25}
-                          height={page.timelineDot.height ?? 24}
-                        />
-                      </p>
-                    </div>
-                    <div className="text">
-                      <h3>
-                        <span style={{ color: '#0065df', fontSize: '120%' }}>{item.year}</span>
-                      </h3>
-                      <h3>
-                        <span style={{ fontSize: '110%' }}>{item.title}</span>
-                      </h3>
-                      <p dangerouslySetInnerHTML={paragraphHtml(item.body)} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-            {/* Duplicated set for seamless CSS loop (aria-hidden) */}
-            {page.timeline.map((item) => (
-              <div
-                key={`dup-${item.id}`}
-                aria-hidden="true"
-                className="timeline-item row row-collapse row-full-width"
-              >
-                <div className="col small-12 large-12">
-                  <div className="col-inner">
-                    <div className="text text-border">
-                      <p style={{ marginBottom: 0 }}>
-                        <img
-                          decoding="async"
-                          className="alignnone wp-image-3335 size-full"
-                          role="img"
-                          src={page.timelineDot.src}
-                          alt=""
-                          width={page.timelineDot.width ?? 25}
-                          height={page.timelineDot.height ?? 24}
-                        />
-                      </p>
-                    </div>
-                    <div className="text">
-                      <h3>
-                        <span style={{ color: '#0065df', fontSize: '120%' }}>{item.year}</span>
-                      </h3>
-                      <h3>
-                        <span style={{ fontSize: '110%' }}>{item.title}</span>
-                      </h3>
-                      <p dangerouslySetInnerHTML={paragraphHtml(item.body)} />
+          <div
+            className="timeline-track"
+            style={{ animationDuration: `${(35 * timelineReps * page.timeline.length) / 9}s` }}
+          >
+            {/* Copies after the first are aria-hidden; CSS drops them on mobile and reduced motion. */}
+            {Array.from({ length: timelineReps * 2 }, (_, rep) =>
+              page.timeline.map((item) => (
+                <div
+                  key={`${rep}-${item.id}`}
+                  aria-hidden={rep > 0 || undefined}
+                  className="timeline-item row row-collapse row-full-width"
+                >
+                  <div className="col small-12 large-12">
+                    <div className="col-inner">
+                      <div className="text text-border">
+                        <p style={{ marginBottom: 0 }}>
+                          <img
+                            decoding="async"
+                            className="alignnone wp-image-3335 size-full"
+                            role="img"
+                            src={page.timelineDot.src}
+                            alt=""
+                            width={page.timelineDot.width ?? 25}
+                            height={page.timelineDot.height ?? 24}
+                          />
+                        </p>
+                      </div>
+                      <div className="text">
+                        <h3>
+                          <span style={{ color: '#0065df', fontSize: '120%' }}>{item.year}</span>
+                        </h3>
+                        <h3>
+                          <span style={{ fontSize: '110%' }}>{item.title}</span>
+                        </h3>
+                        <p dangerouslySetInnerHTML={paragraphHtml(item.body)} />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )),
+            )}
           </div>
         </div>
       </section>

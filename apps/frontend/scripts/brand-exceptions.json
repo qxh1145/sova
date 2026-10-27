@@ -2,17 +2,17 @@
   {
     "match": "eras-",
     "within": "porfolio-eras-vietnam",
-    "reason": "Source slug kept in the mock route registry and SourceRef files (MIGRATION_PLAN: rename to a Sova slug before release)"
+    "reason": "Source slug kept in route ids, SourceRef files and the old-URL redirects; public paths use the Sova slug (RENAMED_PATHS, stakeholder review 2026-10-27)"
   },
   {
     "match": "eras-",
     "within": "ho-so-nang-luc-eras-vietnam",
-    "reason": "Source slug kept in the mock route registry and SourceRef files (MIGRATION_PLAN: rename to a Sova slug before release)"
+    "reason": "Source slug kept in route ids, SourceRef files and the old-URL redirects; public paths use the Sova slug (RENAMED_PATHS, stakeholder review 2026-10-27)"
   },
   {
     "match": "eras-",
     "within": "eras-xin-chan-thanh-cam-on-quy-khach",
-    "reason": "Source slug kept in the mock route registry and SourceRef files (MIGRATION_PLAN: rename to a Sova slug before release)"
+    "reason": "Source slug kept in route ids, SourceRef files and the old-URL redirects; public paths use the Sova slug (RENAMED_PATHS, stakeholder review 2026-10-27)"
   },
   {
     "match": "eras-",
@@ -30,18 +30,13 @@
     "reason": "Source class name kept in why-choose-us service table"
   },
   {
-    "match": "eras-",
-    "within": "eras-table-price-slider",
-    "reason": "Source class name kept in carousel fixture"
-  },
-  {
     "match": "eras/",
     "within": "login-eras/",
-    "reason": "Source slug kept in the mock route registry and SourceRef files (/login-eras/, id route-login-eras; MIGRATION_PLAN: rename to a Sova slug before release)"
+    "reason": "Source slug kept in route id route-login-eras, SourceRef files and the /login-eras/ 301; the public path is /login-sova/ (RENAMED_PATHS, stakeholder review 2026-10-27)"
   },
   {
     "match": "eras",
     "within": "login-eras",
-    "reason": "Source slug kept in the mock route registry and SourceRef files (/login-eras/, id route-login-eras; MIGRATION_PLAN: rename to a Sova slug before release)"
+    "reason": "Source slug kept in route id route-login-eras, SourceRef files and the /login-eras/ 301; the public path is /login-sova/ (RENAMED_PATHS, stakeholder review 2026-10-27)"
   }
 ]

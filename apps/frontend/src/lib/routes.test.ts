@@ -50,12 +50,12 @@ const route = (path: string, extra: Partial<RouteEntry> = {}): RouteEntry => ({
 });
 const noSlugs = { postSlugs: [], projectSlugs: [] };
 
-test('registry: 148 entries, trailing slashes, unique ids, valid', () => {
-  expect(routes).toHaveLength(148);
+test('registry: 139 entries, trailing slashes, unique ids, valid', () => {
+  expect(routes).toHaveLength(139);
   expect(routes.every((r) => r.path.endsWith('/'))).toBe(true);
   expect(new Set(routes.map((r) => r.id)).size).toBe(routes.length);
   expect(() => validateRoutes(routes, slugs)).not.toThrow();
-  expect(routes.find((r) => r.path === '/login-eras/')).toMatchObject({
+  expect(routes.find((r) => r.path === '/login-sova/')).toMatchObject({
     id: 'route-login-eras',
     kind: 'login',
     aliases: ['/dang-ky-nghi-phep/'],
@@ -103,7 +103,7 @@ test('I/O matrix: canonical, no slash + query + hash, alias, unknown', () => {
     route: { path: '/en/home/' },
     redirect: true,
   });
-  expect(resolvePath(routes, '/login-eras/?redirect_to=x')).toMatchObject({
+  expect(resolvePath(routes, '/login-sova/?redirect_to=x')).toMatchObject({
     route: { kind: 'login' },
     redirect: false,
   });
@@ -120,8 +120,7 @@ test('reserved root slugs cover non-[slug] roots and aliases, plus static roots,
   const reserved = reservedRootSlugs(routes);
   for (const s of ['en', 'goc-nhin', 'du-an', 'featured_item', 'featured_item_category'])
     expect(reserved).toContain(s);
-  for (const s of ['login-eras', 'lien-he', 'dang-ky-nghi-phep', 'porfolio-eras-vietnam'])
-    expect(reserved).toContain(s);
+  for (const s of ['login-sova', 'lien-he', 'dang-ky-nghi-phep']) expect(reserved).toContain(s);
   for (const s of ['tim-kiem', 'page', 'dev-fixtures']) expect(reserved).toContain(s);
   for (const s of ['social-marketing', 'thu-thuat', ...slugs.postSlugs])
     expect(reserved).not.toContain(s);

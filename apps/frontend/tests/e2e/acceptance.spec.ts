@@ -9,27 +9,28 @@ import {
   test,
 } from './fixtures';
 import { aboutPages } from '../../src/data/pages/about';
+import { homePages } from '../../src/data/pages/home';
 import { brandingServices } from '../../src/data/services/branding';
-import { emailServices } from '../../src/data/services/email';
-import { hostingServices } from '../../src/data/services/hosting';
 import { mobileServices } from '../../src/data/services/mobile';
 import { seoServices } from '../../src/data/services/seo';
-import { storageServices } from '../../src/data/services/storage';
-import { vpsServices } from '../../src/data/services/vps';
 import { websiteServices } from '../../src/data/services/website';
 import { contactPages } from '../../src/data/pages/contact';
 import { faqPages } from '../../src/data/pages/faq';
 import { legalPages, paymentGuides } from '../../src/data/pages/legal';
 import { profiles } from '../../src/data/pages/profile';
+import { utilityContent } from '../../src/data/content';
 import { getContactPreset } from '../../src/components/contact/contactIds';
 import { getFAQPreset } from '../../src/components/faq/faqIds';
 import { getLegalPreset } from '../../src/components/legal/legalIds';
 import { getPaymentPreset } from '../../src/components/legal/paymentIds';
 import { routes } from '@/data/routes';
-import type { Service } from '@/types/content';
+import type { SectionCopy, Service } from '@/types/content';
 import manifest from '../baseline/manifest.json';
 
 const WIDTHS = manifest.viewports;
+const thankYouHeading = utilityContent
+  .find((c) => c.id === 'thank-you-vi')!
+  .body.html.match(/<h1>(.*?)<\/h1>/)![1];
 
 function setupResponse404Collector(page: Page) {
   const missingResponses: string[] = [];
@@ -398,27 +399,32 @@ interface HomeSectionSpec {
   headingText?: string;
 }
 
+const homeVi = homePages.find((p) => p.locale === 'vi')!;
+const homeEn = homePages.find((p) => p.locale === 'en')!;
+/** First `<br>` line of a section heading, which toContainText can match across the break. */
+const firstLine = (copy: SectionCopy) => (copy.titleLines ?? [copy.title])[0];
+
 const VI_SECTIONS: HomeSectionSpec[] = [
   {
     name: 'Hero',
     selector: '#banner-1767683074',
     sourceLine: 'eras-clone/index.html:627',
     headingSelector: 'h1',
-    headingText: 'Thấu hiểu, đồng hành',
+    headingText: homeVi.hero.headingLines[0],
   },
   {
     name: 'Stats',
     selector: '#row-560000867',
     sourceLine: 'eras-clone/index.html:772',
     headingSelector: 'h2',
-    headingText: 'Thành tựu',
+    headingText: firstLine(homeVi.sectionCopy.achievements),
   },
   {
     name: 'Services',
     selector: '#section_1856001238',
     sourceLine: 'eras-clone/index.html:1097',
     headingSelector: 'h2',
-    headingText: 'Dịch vụ tại Sova',
+    headingText: homeVi.sectionCopy.services.title,
   },
   {
     name: 'Marquee',
@@ -430,28 +436,14 @@ const VI_SECTIONS: HomeSectionSpec[] = [
     selector: 'section.horizontal-scroll-section',
     sourceLine: 'eras-clone/index.html:1400',
     headingSelector: 'h2',
-    headingText: 'Dự án chứa đựng',
-  },
-  {
-    name: 'Partners',
-    selector: '#section_62935602',
-    sourceLine: 'eras-clone/index.html:1664',
-    headingSelector: 'h2',
-    headingText: 'Đối tác tin cậy',
-  },
-  {
-    name: 'Testimonials',
-    selector: '#section_1900032435',
-    sourceLine: 'eras-clone/index.html:2122',
-    headingSelector: 'h2',
-    headingText: 'Khách hàng nhận xét',
+    headingText: firstLine(homeVi.sectionCopy.projects),
   },
   {
     name: 'LatestPosts',
     selector: '#section_549960105',
     sourceLine: 'eras-clone/index.html:2529',
     headingSelector: 'h2',
-    headingText: 'Theo dõi tin tức',
+    headingText: firstLine(homeVi.sectionCopy.posts),
   },
 ];
 
@@ -461,51 +453,49 @@ const EN_SECTIONS: HomeSectionSpec[] = [
     selector: '#banner-1274327306',
     sourceLine: 'eras-clone/en/home/index.html:627',
     headingSelector: 'h1',
-    headingText: 'From Understanding',
+    headingText: homeEn.hero.headingLines[0],
   },
   {
     name: 'Stats',
     selector: '#row-34630575',
     sourceLine: 'eras-clone/en/home/index.html:773',
     headingSelector: 'h2',
-    headingText: 'Our Achievements',
+    headingText: firstLine(homeEn.sectionCopy.achievements),
   },
   {
     name: 'Services',
     selector: '#section_2119007658',
     sourceLine: 'eras-clone/en/home/index.html:1098',
     headingSelector: 'h2',
-    headingText: 'Our Services',
+    headingText: homeEn.sectionCopy.services.title,
   },
   {
     name: 'Marquee',
     selector: '#section_2114423796',
     sourceLine: 'eras-clone/en/home/index.html:1357',
   },
-  {
-    name: 'Partners',
-    selector: '#section_841675174',
-    sourceLine: 'eras-clone/en/home/index.html:1599',
-    headingSelector: 'h2',
-    headingText: 'Our Clients',
-  },
-  {
-    name: 'Testimonials',
-    selector: '#section_1228410742',
-    sourceLine: 'eras-clone/en/home/index.html:2053',
-    headingSelector: 'h2',
-    headingText: 'Customer Reviews',
-  },
 ];
 
 const HOME_LOCALES = [
-  { locale: 'vi', route: '/', sections: VI_SECTIONS, absent: [] },
+  // Partners and Testimonials are omitted on both locales (placements empty after the 2026-10-27
+  // stakeholder review).
+  {
+    locale: 'vi',
+    route: '/',
+    sections: VI_SECTIONS,
+    absent: ['#section_62935602', '#section_1900032435'],
+  },
   {
     locale: 'en',
     route: '/en/home/',
     sections: EN_SECTIONS,
     // Documented omissions: FeaturedProjects (A22 (e)) and LatestPosts (postPlacements empty).
-    absent: ['section.horizontal-scroll-section', '#section_549960105'],
+    absent: [
+      'section.horizontal-scroll-section',
+      '#section_549960105',
+      '#section_841675174',
+      '#section_1228410742',
+    ],
   },
 ];
 
@@ -612,25 +602,6 @@ test.describe('Acceptance: Collections', () => {
   }
 });
 
-const EXPECTED_SERVICE_FAQ_COUNTS: Record<string, number> = {
-  '/thiet-ke-website/': 8,
-  '/en/website-development/': 8,
-  '/thiet-ke-app-mobile/': 8,
-  '/en/app-mobile-development/': 9,
-  '/seo-tu-khoa-website/': 8,
-  '/en/website-keyword-seo/': 8,
-  '/ui-ux-branding-design/': 10,
-  '/en/ui-ux-branding-design-2/': 10,
-  '/giai-phap-luu-tru/': 4,
-  '/en/storage-solution/': 4,
-  '/e-mail-doanh-nghiep/': 9,
-  '/en/business-e-mail/': 9,
-  '/hosting-doanh-nghiep/': 10,
-  '/en/business-hosting/': 10,
-  '/vps-doanh-nghiep/': 12,
-  '/en/business-vps/': 12,
-};
-
 test.describe('Acceptance: Services and About', () => {
   test.beforeEach(async ({ page }) => {
     setupResponse404Collector(page);
@@ -645,10 +616,6 @@ test.describe('Acceptance: Services and About', () => {
     ...mobileServices,
     ...seoServices,
     ...brandingServices,
-    ...storageServices,
-    ...emailServices,
-    ...hostingServices,
-    ...vpsServices,
   ];
 
   for (const service of allServices) {
@@ -661,18 +628,14 @@ test.describe('Acceptance: Services and About', () => {
       );
       await expect(page.locator('main h1').first()).toBeVisible();
 
-      const expectedFaqCount = EXPECTED_SERVICE_FAQ_COUNTS[service.path] ?? 0;
-      await expect(page.locator('.accordion-item')).toHaveCount(expectedFaqCount);
+      await expect(page.locator('.accordion-item')).toHaveCount(service.faqs.length);
 
       if ((service.testimonialIds?.length ?? 0) > 0) {
         await expect(page.locator('.slide-kh, .section.ss-kh').first()).toBeVisible();
       }
 
       if (service.pricingId) {
-        const selector = ['email', 'hosting', 'vps'].includes(service.key)
-          ? '.vps-table-wrapper'
-          : '.eras-table-price';
-        await expect(page.locator(selector).first()).toBeVisible();
+        await expect(page.locator('.eras-table-price').first()).toBeVisible();
       }
     });
   }
@@ -782,55 +745,44 @@ test.describe('Acceptance: Utility', () => {
     });
   }
 
-  test('Thank-you (plain) on /eras-xin-chan-thanh-cam-on-quy-khach/ returns 200, heading, no demo badge, and clean console', async ({
+  test('Thank-you (plain) on /xin-chan-thanh-cam-on-quy-khach/ returns 200, heading, no demo badge, and clean console', async ({
     page,
   }) => {
-    const response = await page.goto('/eras-xin-chan-thanh-cam-on-quy-khach/');
+    const response = await page.goto('/xin-chan-thanh-cam-on-quy-khach/');
     expect(
       response?.ok(),
-      `Route /eras-xin-chan-thanh-cam-on-quy-khach/ returned status ${response?.status()}`,
+      `Route /xin-chan-thanh-cam-on-quy-khach/ returned status ${response?.status()}`,
     ).toBe(true);
     await expect(page.locator('header#header')).toBeVisible();
     await expect(page.locator('footer#footer')).toBeVisible();
-    await expect(page.locator('#section_430522107 h1')).toHaveText('Gửi thông tin thành công!');
+    await expect(page.locator('#section_430522107 h1')).toHaveText(thankYouHeading);
     await expect(
       page.locator('.wpcf7-demo-badge'),
       'Expected no demo badge on plain route',
     ).toHaveCount(0);
   });
 
-  test('Thank-you (demo=1) on /eras-xin-chan-thanh-cam-on-quy-khach/?demo=1 returns 200, heading, demo badge, and clean console', async ({
+  test('Thank-you (demo=1) on /xin-chan-thanh-cam-on-quy-khach/?demo=1 returns 200, heading, demo badge, and clean console', async ({
     page,
   }) => {
-    const response = await page.goto('/eras-xin-chan-thanh-cam-on-quy-khach/?demo=1');
+    const response = await page.goto('/xin-chan-thanh-cam-on-quy-khach/?demo=1');
     expect(
       response?.ok(),
-      `Route /eras-xin-chan-thanh-cam-on-quy-khach/?demo=1 returned status ${response?.status()}`,
+      `Route /xin-chan-thanh-cam-on-quy-khach/?demo=1 returned status ${response?.status()}`,
     ).toBe(true);
     await expect(page.locator('header#header')).toBeVisible();
     await expect(page.locator('footer#footer')).toBeVisible();
-    await expect(page.locator('#section_430522107 h1')).toHaveText('Gửi thông tin thành công!');
+    await expect(page.locator('#section_430522107 h1')).toHaveText(thankYouHeading);
     await expect(page.locator('.wpcf7-demo-badge'), 'Expected demo badge on ?demo=1').toHaveText(
       'Bản demo — chưa gửi thông tin',
     );
   });
 
-  test('Sample on /sample-page/ returns 200, content, blockquotes, and clean console', async ({
+  test('Login on /login-sova/ returns 200, #login container, form elements, and clean console', async ({
     page,
   }) => {
-    const response = await page.goto('/sample-page/');
-    expect(response?.ok(), `Route /sample-page/ returned status ${response?.status()}`).toBe(true);
-    await expect(page.locator('header#header')).toBeVisible();
-    await expect(page.locator('footer#footer')).toBeVisible();
-    await expect(page.locator('#content')).toBeVisible();
-    await expect(page.locator('#content blockquote')).toHaveCount(2);
-  });
-
-  test('Login on /login-eras/ returns 200, #login container, form elements, and clean console', async ({
-    page,
-  }) => {
-    const response = await page.goto('/login-eras/');
-    expect(response?.ok(), `Route /login-eras/ returned status ${response?.status()}`).toBe(true);
+    const response = await page.goto('/login-sova/');
+    expect(response?.ok(), `Route /login-sova/ returned status ${response?.status()}`).toBe(true);
     await expect(page.locator('body')).toHaveClass(/\blogin\b/);
     await expect(page.locator('body')).toHaveClass(/\bwp-core-ui\b/);
     await expect(page.locator('#login')).toBeVisible();
@@ -840,30 +792,15 @@ test.describe('Acceptance: Utility', () => {
     await expect(page.locator('#wp-submit')).toBeVisible();
   });
 
-  test('Alias /porfolio-eras-vietnam/ redirects to EN profile and keeps clean console', async ({
-    page,
-  }) => {
-    const response = await page.goto('/porfolio-eras-vietnam/');
-    expect(
-      response?.ok(),
-      `Route /porfolio-eras-vietnam/ returned status ${response?.status()}`,
-    ).toBe(true);
-    expect(
-      page.url(),
-      `Expected landed URL to match /en/porfolio-eras-vietnam/, got ${page.url()}`,
-    ).toMatch(/\/en\/porfolio-eras-vietnam\/$/);
-    await expect(page.locator('#banner-151127649 h2')).toBeVisible();
-  });
-
-  test('Alias /dang-ky-nghi-phep/ redirects to /login-eras/ and keeps clean console', async ({
+  test('Alias /dang-ky-nghi-phep/ redirects to /login-sova/ and keeps clean console', async ({
     page,
   }) => {
     const response = await page.goto('/dang-ky-nghi-phep/');
     expect(response?.ok(), `Route /dang-ky-nghi-phep/ returned status ${response?.status()}`).toBe(
       true,
     );
-    expect(page.url(), `Expected landed URL to match /login-eras/, got ${page.url()}`).toMatch(
-      /\/login-eras\/$/,
+    expect(page.url(), `Expected landed URL to match /login-sova/, got ${page.url()}`).toMatch(
+      /\/login-sova\/$/,
     );
     await expect(page.locator('#login')).toBeVisible();
   });

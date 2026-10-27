@@ -11,7 +11,7 @@ import { useSubmitStatus } from '@/lib/forms/useSubmitStatus';
 import type { ContactFormContent, Locale, ShellContent } from '@/types/content';
 import { CONTACT_FORM_PRESETS } from '@/components/contact/contactIds';
 
-const THANK_YOU_PATH = '/eras-xin-chan-thanh-cam-on-quy-khach/?demo=1'; // business-text-ok: legacy thank-you route path
+const THANK_YOU_PATH = '/xin-chan-thanh-cam-on-quy-khach/?demo=1';
 
 export interface ContactFormProps {
   form: ContactFormContent;
