@@ -148,3 +148,37 @@ test('verify fails on a local AssetRef absent from the source hash', () => {
     writeFileSync(file, original);
   }
 }, 60_000);
+
+test('verify fails on a changed redesigned byte', () => {
+  const rel = 'wp-content/uploads/2024/02/Subtract.svg';
+  const hashes = JSON.parse(
+    readFileSync(path.join(APP, 'tests/baseline/redesigned-hash.json'), 'utf8'),
+  ) as Record<string, unknown>;
+  expect(hashes[rel]).toBeDefined();
+  const file = path.join(APP, 'public', rel);
+  const original = readFileSync(file);
+  appendFileSync(file, 'x');
+  try {
+    const r = run(['--verify'], { ERAS_CLONE_DIR: '/nonexistent-eras-clone' });
+    expect(r.status).toBe(1);
+    expect(r.stderr).toContain(`hash mismatch vs redesigned-hash.json: public/${rel}`);
+  } finally {
+    writeFileSync(file, original);
+  }
+}, 60_000);
+
+test('verify fails on an unreferenced redesigned entry', () => {
+  const file = path.join(APP, 'tests/baseline/redesigned-hash.json');
+  const original = readFileSync(file, 'utf8');
+  const rel = 'wp-content/uploads/__unreferenced-test.svg';
+  const hashes = JSON.parse(original) as Record<string, unknown>;
+  hashes[rel] = { sha256: '0'.repeat(64), original: null };
+  writeFileSync(file, JSON.stringify(hashes));
+  try {
+    const r = run(['--verify'], { ERAS_CLONE_DIR: '/nonexistent-eras-clone' });
+    expect(r.status).toBe(1);
+    expect(r.stderr).toContain(`redesigned but not referenced: public/${rel}`);
+  } finally {
+    writeFileSync(file, original);
+  }
+}, 60_000);
