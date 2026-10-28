@@ -276,7 +276,7 @@ export const blogDetailCopy = {
   breadcrumbHome: 'Trang chủ',
   breadcrumbBlog: 'Góc nhìn',
   breadcrumbCurrent: 'Chi tiết',
-  headingBackgroundImage: '/wp-content/uploads/2024/03/ec9c55cfcb4d0c64ecafd52d957c13e9.png',
+  headingBackgroundImage: '/wp-content/uploads/2024/03/ec9c55cfcb4d0c64ecafd52d957c13e9.webp',
   relatedTitle: 'Bài viết liên quan:',
 };
 

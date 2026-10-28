@@ -4077,7 +4077,7 @@ export const assets: AssetRef[] = [
   },
   {
     id: 'asset-6ea8fcf731',
-    src: '/wp-content/uploads/2024/03/ec9c55cfcb4d0c64ecafd52d957c13e9.png',
+    src: '/wp-content/uploads/2024/03/ec9c55cfcb4d0c64ecafd52d957c13e9.webp',
     alt: '',
     kind: 'image',
     status: 'local',
@@ -5536,6 +5536,32 @@ export const assets: AssetRef[] = [
     height: 1,
   },
   {
+    id: 'asset-6d767e6b57',
+    src: '/wp-content/uploads/2024/03/branding-strategy.svg',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'ui-ux-branding-design/index.html', line: 1159 },
+      { file: 'en/ui-ux-branding-design-2/index.html', line: 1159 },
+    ],
+    width: 1,
+    height: 1,
+  },
+  {
+    id: 'asset-9f7d38ffd5',
+    src: '/wp-content/uploads/2024/03/branding-value.svg',
+    alt: '',
+    kind: 'image',
+    status: 'local',
+    sources: [
+      { file: 'ui-ux-branding-design/index.html', line: 1225 },
+      { file: 'en/ui-ux-branding-design-2/index.html', line: 1225 },
+    ],
+    width: 1,
+    height: 1,
+  },
+  {
     id: 'asset-890c9a06c6',
     src: '/wp-content/uploads/2025/04/Screenshot-2025-04-23-at-21.49.40.webp',
     alt: '',
@@ -6260,7 +6286,7 @@ export const assets: AssetRef[] = [
   },
   {
     id: 'asset-e835ec4125',
-    src: '/wp-content/uploads/2025/04/menu-bar-1.png',
+    src: '/wp-content/uploads/2025/04/menu-bar-1.svg',
     alt: 'Menu',
     kind: 'image',
     status: 'local',
@@ -6271,7 +6297,7 @@ export const assets: AssetRef[] = [
   },
   {
     id: 'asset-2defc00acc',
-    src: '/wp-content/uploads/2025/04/contact-1.png',
+    src: '/wp-content/uploads/2025/04/contact-1.svg',
     alt: 'Liên hệ',
     kind: 'image',
     status: 'local',
@@ -6282,7 +6308,7 @@ export const assets: AssetRef[] = [
   },
   {
     id: 'asset-93ae800f4d',
-    src: '/wp-content/uploads/2025/04/call-111.png',
+    src: '/wp-content/uploads/2025/04/call-111.svg',
     alt: 'Gọi ngay',
     kind: 'image',
     status: 'local',
@@ -6293,7 +6319,7 @@ export const assets: AssetRef[] = [
   },
   {
     id: 'asset-d6e9626f10',
-    src: '/wp-content/uploads/2025/04/messenger-111.png',
+    src: '/wp-content/uploads/2025/04/messenger-111.svg',
     alt: 'Messenger',
     kind: 'image',
     status: 'local',
@@ -6304,7 +6330,7 @@ export const assets: AssetRef[] = [
   },
   {
     id: 'asset-b76e523c6b',
-    src: '/wp-content/uploads/2025/04/zalo-111.png',
+    src: '/wp-content/uploads/2025/04/zalo-111.svg',
     alt: 'Zalo',
     kind: 'image',
     status: 'local',
@@ -6334,7 +6360,7 @@ export const assets: AssetRef[] = [
   },
   {
     id: 'asset-067e286c8e',
-    src: '/wp-content/uploads/2024/02/Icon-Glass-1.png',
+    src: '/wp-content/uploads/2024/02/Icon-Glass-1.svg',
     alt: '',
     kind: 'image',
     status: 'local',
@@ -6360,7 +6386,7 @@ export const assets: AssetRef[] = [
   },
   {
     id: 'asset-b76c181761',
-    src: '/wp-content/uploads/2024/02/Icon-Glass-3-e1708484005472.png',
+    src: '/wp-content/uploads/2024/02/Icon-Glass-3-e1708484005472.svg',
     alt: '',
     kind: 'image',
     status: 'local',
@@ -6386,7 +6412,7 @@ export const assets: AssetRef[] = [
   },
   {
     id: 'asset-4df71020f1',
-    src: '/wp-content/uploads/2024/02/Group-48095355.png',
+    src: '/wp-content/uploads/2024/02/Group-48095355.svg',
     alt: '',
     kind: 'image',
     status: 'local',
@@ -6399,7 +6425,7 @@ export const assets: AssetRef[] = [
   },
   {
     id: 'asset-74979526ba',
-    src: '/wp-content/uploads/2024/02/Group-48095375.png',
+    src: '/wp-content/uploads/2024/02/Group-48095375.svg',
     alt: '',
     kind: 'image',
     status: 'local',
