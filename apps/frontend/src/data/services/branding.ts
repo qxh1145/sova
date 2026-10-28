@@ -68,7 +68,7 @@ export const brandingServices: Service[] = [
           assetIds: [],
           sources: [{ file: 'ui-ux-branding-design/index.html', line: 1150 }],
         },
-        iconId: 'asset-c1702f3eb0',
+        iconId: 'asset-6d767e6b57',
       },
       {
         id: 'service-branding-vi-benefit-tao-dung-gia-tri-ben-vung',
@@ -79,7 +79,7 @@ export const brandingServices: Service[] = [
           assetIds: [],
           sources: [{ file: 'ui-ux-branding-design/index.html', line: 1216 }],
         },
-        iconId: 'asset-715577a59b',
+        iconId: 'asset-9f7d38ffd5',
       },
     ],
     faqs: [
@@ -294,7 +294,7 @@ export const brandingServices: Service[] = [
           assetIds: [],
           sources: [{ file: 'en/ui-ux-branding-design-2/index.html', line: 1150 }],
         },
-        iconId: 'asset-c1702f3eb0',
+        iconId: 'asset-6d767e6b57',
       },
       {
         id: 'service-branding-en-benefit-building-sustainable-value',
@@ -305,7 +305,7 @@ export const brandingServices: Service[] = [
           assetIds: [],
           sources: [{ file: 'en/ui-ux-branding-design-2/index.html', line: 1216 }],
         },
-        iconId: 'asset-715577a59b',
+        iconId: 'asset-9f7d38ffd5',
       },
     ],
     faqs: [
