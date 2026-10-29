@@ -14,6 +14,7 @@ import type {
 import { resolveDeep } from './tokens';
 
 export const BRAND_TITLE_SUFFIX = ' - Công ty thiết kế website chuyên nghiệp | Sova';
+export const BRAND_TITLE_SUFFIX_EN = ' - Professional Website Design Company | Sova';
 
 const resolveSettings = (settings: SiteSettings) =>
   JSON.stringify(settings).includes('{{site.') ? resolveDeep(settings, settings) : settings;

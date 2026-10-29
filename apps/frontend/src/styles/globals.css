@@ -131,17 +131,18 @@ html.has-custom-cursor .cursor-ring {
   }
 }
 
-/* Storage offerings card titles: source inline `font-family: Poppins, sans-serif!important`.
-   React inline styles cannot carry !important on client render, so the rule lives here. */
+/* Storage offerings card titles: source inline `font-family: Poppins, sans-serif!important`, now the
+   site font (Be Vietnam Pro). React inline styles cannot carry !important on client render, so the
+   rule lives here. */
 #section_1644279447 h3,
 #section_475696028 h3 {
-  font-family: Poppins, sans-serif !important;
+  font-family: var(--font-body) !important;
 }
 
 /* About achievements heading (VI + EN): same source inline rule. */
 #text-1037698079 h2,
 #text-714894948 h2 {
-  font-family: Poppins, sans-serif !important;
+  font-family: var(--font-body) !important;
 }
 
 /* SEO package card titles 1-3 (grid + slider, VI + EN): same source inline rule; card 4 has none. */
@@ -170,7 +171,7 @@ html.has-custom-cursor .cursor-ring {
 #text-1459112478 h3,
 #text-4105864399 h3,
 #text-933025357 h3 {
-  font-family: Poppins, sans-serif !important;
+  font-family: var(--font-body) !important;
 }
 
 /* SEO advantage card titles: in source a per-id <style> follows each h3, so `.last-reset :last-child`

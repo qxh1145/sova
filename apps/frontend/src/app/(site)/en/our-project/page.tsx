@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 import '@/styles/legacy/sections/route-en--our-project.css';
 import { notFound } from 'next/navigation';
-import { BRAND_TITLE_SUFFIX, routeAlternates } from '@/lib/queries/site';
+import { BRAND_TITLE_SUFFIX_EN, routeAlternates } from '@/lib/queries/site';
 import { getProjectListingPage } from '@/lib/queries/projects';
 import { ProjectListView } from '@/components/projects/ProjectListView';
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = await getProjectListingPage('en');
   if (!data) return {};
-  const title = `Our Project${BRAND_TITLE_SUFFIX}`;
+  const title = `Our Project${BRAND_TITLE_SUFFIX_EN}`;
   const alternates = await routeAlternates('/en/our-project/');
   return {
     title,

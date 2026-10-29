@@ -76,11 +76,24 @@ export function applyBrandTerms(text: string): { text: string; count: number } {
 export const BRAND_LEAK_RE =
   /Eras|eras-|eras\/|erasvietnam|ERAS(?!-THUMB)|(?<!\p{L})eras(?!\p{L})/gu;
 
+/**
+ * Public paths that carried the Eras slug -> their Sova path (stakeholder review 2026-10-27).
+ * next.config.ts answers each old path with a 301; the importer emits the new path. Route ids and
+ * SourceRef files keep the source slug.
+ */
+export const RENAMED_PATHS: Record<string, string> = {
+  '/ho-so-nang-luc-eras-vietnam/': '/ho-so-nang-luc-sova/',
+  '/en/porfolio-eras-vietnam/': '/en/sova-portfolio/',
+  '/porfolio-eras-vietnam/': '/en/sova-portfolio/',
+  '/eras-xin-chan-thanh-cam-on-quy-khach/': '/xin-chan-thanh-cam-on-quy-khach/',
+  '/login-eras/': '/login-sova/',
+};
+
 const SITE_HOSTS = ['erasvietnam.vn', 'www.erasvietnam.vn'];
 
 /**
- * erasvietnam.vn links (absolute, or relative to the mirror page at `base`) -> site-relative path;
- * other Eras hosts -> null (unwrap to text); anything else unchanged.
+ * erasvietnam.vn links (absolute, or relative to the mirror page at `base`) -> site-relative path
+ * (renamed per RENAMED_PATHS); other Eras hosts -> null (unwrap to text); anything else unchanged.
  */
 export function rewriteEraLinks(href: string, base = 'https://erasvietnam.vn/'): string | null {
   if (href.startsWith('{{')) return href;
@@ -93,7 +106,8 @@ export function rewriteEraLinks(href: string, base = 'https://erasvietnam.vn/'):
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return href;
   if (SITE_HOSTS.includes(url.hostname)) {
     // The mirror stores pages as dir/index.html (and dated index.mirror-*.html copies).
-    return url.pathname.replace(/index(\.mirror-[^/]*)?\.html$/, '') + url.search + url.hash;
+    const pathname = url.pathname.replace(/index(\.mirror-[^/]*)?\.html$/, '');
+    return (RENAMED_PATHS[pathname] ?? pathname) + url.search + url.hash;
   }
   if (/(^|\.)erasvietnam\.(vn|com)$/i.test(url.hostname)) return null;
   return href;

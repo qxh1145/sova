@@ -1,0 +1,18 @@
+# P3 shots (icons I1–I6): node design/images/tools/shots.mjs --routes design/images/tools/p3-shots.txt --dir p3 --only i --before
+# route | el: <selector> | click: <selector> | widths: <list> | as: <name>
+/ | widths: 390 | as: mobile-bar-header
+/ | widths: 1440 | as: widget-closed
+/ | click: .arcu-message-button | widths: 1440 | as: widget-open
+/ | el: .cs-moving_text_wrap | as: home-marquee
+/thiet-ke-website/ | el: section:has(.icon-tke) | as: pricing-cards
+/thiet-ke-website/ | el: section:has(img[src*="benefit-icon-1"]) | as: benefits-website
+/thiet-ke-app-mobile/ | el: section:has(img[src*="brand-image"]) | as: benefits-mobile
+/seo-tu-khoa-website/ | el: section:has(img[src*="2024/02/SEO.svg"]) | as: benefits-seo
+/ui-ux-branding-design/ | el: section:has(img[src*="teamwork"]) | as: benefits-branding
+/gioi-thieu/ | el: section:has(img[src*="Icon-Glass-1"]) | as: about-goals
+/gioi-thieu/ | el: section:has(img[src*="Ellipse-2354"]) | as: about-timeline
+/seo-tu-khoa-website/ | el: div[id^="col-"]:has(a.but-lh) | as: seo-cta
+/seo-tu-khoa-website/ | el: section:has(img[src*="Deco-1-6"]) | as: seo-advantages
+/lien-he/ | el: section:has(img[src*="Mask-group-1"]) | as: contact-info
+/cau-hoi-thuong-gap/ | el: .ac-luutru | as: faq-chevron
+/goc-nhin/ | el: .widget:has(li.cat-item) | as: blog-categories

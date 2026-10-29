@@ -330,26 +330,45 @@
      keeps it at the card bottom. inline-block lets the CTA padding size the line box, so
      20px card padding + 20px margin = source bottom 40px.
      Track stretches every slide to the tallest card (AutoHeight inline height overridden),
-     so the carousel keeps one height across autoplay steps. */
+     so the carousel keeps one height across autoplay steps.
+     SEO cards (slide_seo) join too: Be Vietnam Pro is wider than the source font, so the feature
+     list outgrows the fixed 772px card and the absolute CTA (p, bottom 20px) covered the last item.
+     Their p leaves absolute positioning; a 9px margin keeps the source 29px button-to-card-edge gap.
+     Website pricing (slide_tke1) and website/mobile why-choose-us (slide_tsao, slide_tkap) cards
+     join the stretch only: their fixed source heights (815/580/611px) clipped the wrapped feature
+     list and the in-flow pricing CTA under the dots at 320–414. They keep block layout. */
   .slider-wrapper.slide_ui .flickity-slider,
-  .slider-wrapper.slide_gplt .flickity-slider {
+  .slider-wrapper.slide_gplt .flickity-slider,
+  .slider-wrapper.slide_seo .flickity-slider,
+  .slider-wrapper.slide_tke1 .flickity-slider,
+  .slider-wrapper.slide_tsao .flickity-slider,
+  .slider-wrapper.slide_tkap .flickity-slider {
     align-items: stretch;
     height: auto !important;
   }
 
   .slider-wrapper.slide_ui .flickity-slider > .row > .col,
-  .slider-wrapper.slide_gplt .flickity-slider > .row > .col {
+  .slider-wrapper.slide_gplt .flickity-slider > .row > .col,
+  .slider-wrapper.slide_seo .flickity-slider > .row > .col,
+  .slider-wrapper.slide_tke1 .flickity-slider > .row > .col,
+  .slider-wrapper.slide_tsao .flickity-slider > .row > .col,
+  .slider-wrapper.slide_tkap .flickity-slider > .row > .col {
     display: flex;
     flex-direction: column;
   }
 
   .slider-wrapper.slide_ui .flickity-slider > .row > .col > .col-inner,
-  .slider-wrapper.slide_gplt .flickity-slider > .row > .col > .col-inner {
+  .slider-wrapper.slide_gplt .flickity-slider > .row > .col > .col-inner,
+  .slider-wrapper.slide_seo .flickity-slider > .row > .col > .col-inner,
+  .slider-wrapper.slide_tke1 .flickity-slider > .row > .col > .col-inner,
+  .slider-wrapper.slide_tsao .flickity-slider > .row > .col > .col-inner,
+  .slider-wrapper.slide_tkap .flickity-slider > .row > .col > .col-inner {
     flex: 1 0 auto;
   }
 
   .slider-wrapper.slide_ui .col-inner,
-  .slider-wrapper.slide_gplt .col-inner {
+  .slider-wrapper.slide_gplt .col-inner,
+  .slider-wrapper.slide_seo .col-inner {
     display: flex;
     flex-direction: column;
     height: auto;
@@ -363,24 +382,56 @@
     min-height: 633px;
   }
 
+  .slider-wrapper.slide_seo .col-inner {
+    min-height: 772px;
+  }
+
+  .slider-wrapper.slide_tke1 .col-inner {
+    height: auto;
+    min-height: 815px;
+  }
+
+  .slider-wrapper.slide_tsao .col-inner {
+    height: auto;
+    min-height: 580px;
+  }
+
+  .slider-wrapper.slide_tkap .col-inner {
+    height: auto;
+    min-height: 611px;
+  }
+
   .slider-wrapper.slide_ui .col-inner > p:has(> a.but-lh),
-  .slider-wrapper.slide_gplt .col-inner > p:has(> a.but-lh) {
+  .slider-wrapper.slide_gplt .col-inner > p:has(> a.but-lh),
+  .slider-wrapper.slide_seo .col-inner > p:has(> a.but-lh) {
     margin-top: auto;
     margin-bottom: 20px;
   }
 
+  .slider-wrapper.slide_seo .col-inner > p:has(> a.but-lh) {
+    position: static;
+    width: auto;
+    margin-bottom: 9px;
+  }
+
   .slider-wrapper.slide_ui .col-inner a.but-lh,
-  .slider-wrapper.slide_gplt .col-inner a.but-lh {
+  .slider-wrapper.slide_gplt .col-inner a.but-lh,
+  .slider-wrapper.slide_seo .col-inner a.but-lh {
     position: static;
     display: inline-block;
   }
 }
 
 /* 8.6: Icon boxes 550–849.
-   Stack cards 100% on benefits/advantages/about/icons rows; 50% on package card grids;
-   raise banner padding-top from 700px to 800px on website-vi form to prevent heading/form overlap. */
+   Stack cards 100% on benefits/advantages/about/icons rows; 50% on package and pricing card grids;
+   raise banner padding-top from 700px to 800px on website-vi form to prevent heading/form overlap.
+   Be Vietnam Pro (wider than the source font) also pushes the mobile-vi benefits row
+   (#row-1049225699, twin of EN #row-1686488490) and mobile-en detail cards (#row-2041526175)
+   past the viewport at 550–578, so they stack too. */
 @media (min-width: 550px) and (max-width: 849px) {
   #row-1686488490 > .col,
+  #row-1049225699 > .col,
+  #row-2041526175 > .col,
   #row-850357972 > .col,
   #row-1553857743 > .col,
   #row-1937987832 > .col,
@@ -397,6 +448,23 @@
 
   #row-1168101482 #banner-1813159824 {
     padding-top: 800px;
+  }
+
+  /* Website pricing grid (VI #row-1975763604, EN #row-308766213): three ~153–390px cards put
+     the plan name, price and "Giảm x%" past the card edge (EN up to 75px at 550, 3px at 768).
+     Two columns with the third card centered, and 20px side padding, keep every line inside. */
+  :is(#row-1975763604, #row-308766213) {
+    justify-content: center;
+  }
+
+  :is(#row-1975763604, #row-308766213) > .col {
+    max-width: 50%;
+    flex-basis: 50%;
+  }
+
+  :is(#row-1975763604, #row-308766213) > .col > .col-inner {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
 

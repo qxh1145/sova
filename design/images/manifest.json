@@ -1,0 +1,386 @@
+[
+  {
+    "id": "f1-footer-bg",
+    "target": "wp-content/uploads/2024/02/8b7867237f3d84a4414a09ba3e720c8d.webp",
+    "replaces": "wp-content/uploads/2024/02/8b7867237f3d84a4414a09ba3e720c8d.webp",
+    "kb": 18.5
+  },
+  {
+    "id": "h1-branding-bg",
+    "target": "wp-content/uploads/2024/02/scdscszdcs-scaled-1.webp",
+    "replaces": "wp-content/uploads/2024/02/scdscszdcs-scaled-1.webp",
+    "kb": 12
+  },
+  {
+    "id": "h1-mobile-bg",
+    "target": "wp-content/uploads/2024/02/svzd-zdfvx-scaled-1.webp",
+    "replaces": "wp-content/uploads/2024/02/svzd-zdfvx-scaled-1.webp",
+    "kb": 15.4
+  },
+  {
+    "id": "h1-seo-bg",
+    "target": "wp-content/uploads/2024/02/szfvsdbsdfbdf.webp",
+    "replaces": "wp-content/uploads/2024/02/szfvsdbsdfbdf.webp",
+    "kb": 10
+  },
+  {
+    "id": "h1-website-bg",
+    "target": "wp-content/uploads/2024/02/xzc-zcx-cx_.webp",
+    "replaces": "wp-content/uploads/2024/02/xzc-zcx-cx_.webp",
+    "kb": 9
+  },
+  {
+    "id": "h2-branding-illus",
+    "target": "wp-content/uploads/2024/02/xcgbxfgb-fcgbg-scaled-1.webp",
+    "replaces": "wp-content/uploads/2024/02/xcgbxfgb-fcgbg-scaled-1.webp",
+    "kb": 181.6
+  },
+  {
+    "id": "h2-mobile-illus",
+    "target": "wp-content/uploads/2024/02/Mesa-de-trabajo-1-copia-3@4x.webp",
+    "replaces": "wp-content/uploads/2024/02/Mesa-de-trabajo-1-copia-3@4x.webp",
+    "kb": 111.1
+  },
+  {
+    "id": "h2-seo-illus",
+    "target": "wp-content/uploads/2024/02/sdcasdcsvdzfvad.webp",
+    "replaces": "wp-content/uploads/2024/02/sdcasdcsvdzfvad.webp",
+    "kb": 84.8
+  },
+  {
+    "id": "h2-website-illus",
+    "target": "wp-content/uploads/2024/02/vc-zx-dfzfvxfd-scaled-1.webp",
+    "replaces": "wp-content/uploads/2024/02/vc-zx-dfzfvxfd-scaled-1.webp",
+    "kb": 185.2
+  },
+  {
+    "id": "h3-about-bg",
+    "target": "wp-content/uploads/2024/02/b803093e046f6c0f65cdc5e8b18780ed.webp",
+    "replaces": "wp-content/uploads/2024/02/b803093e046f6c0f65cdc5e8b18780ed.webp",
+    "kb": 23.7
+  },
+  {
+    "id": "h4-projects-bg",
+    "target": "wp-content/uploads/2024/02/de729be13c98f6a585c5656f0ce73db4-1.webp",
+    "replaces": "wp-content/uploads/2024/02/de729be13c98f6a585c5656f0ce73db4-1.webp",
+    "kb": 15.2
+  },
+  {
+    "id": "h4-projects-illus",
+    "target": "wp-content/uploads/2024/02/43e3185f955f1d3fca7ffa93786c89a0.png",
+    "replaces": "wp-content/uploads/2024/02/43e3185f955f1d3fca7ffa93786c89a0.png",
+    "kb": 58.2
+  },
+  {
+    "id": "h5-simple-hero",
+    "target": "wp-content/uploads/2024/03/contact_hero_bg.jpg",
+    "replaces": "wp-content/uploads/2024/03/contact_hero_bg.jpg",
+    "kb": 19.5
+  },
+  {
+    "id": "h6-detail-header",
+    "target": "wp-content/uploads/2024/03/ec9c55cfcb4d0c64ecafd52d957c13e9.webp",
+    "replaces": "wp-content/uploads/2024/03/ec9c55cfcb4d0c64ecafd52d957c13e9.png",
+    "kb": 8.5
+  },
+  {
+    "id": "i1-call",
+    "target": "wp-content/uploads/2025/04/call-111.svg",
+    "replaces": "wp-content/uploads/2025/04/call-111.png",
+    "kb": 1.4
+  },
+  {
+    "id": "i1-contact",
+    "target": "wp-content/uploads/2025/04/contact-1.svg",
+    "replaces": "wp-content/uploads/2025/04/contact-1.png",
+    "kb": 0.5
+  },
+  {
+    "id": "i1-menu",
+    "target": "wp-content/uploads/2025/04/menu-bar-1.svg",
+    "replaces": "wp-content/uploads/2025/04/menu-bar-1.png",
+    "kb": 0.2
+  },
+  {
+    "id": "i1-messenger",
+    "target": "wp-content/uploads/2025/04/messenger-111.svg",
+    "replaces": "wp-content/uploads/2025/04/messenger-111.png",
+    "kb": 0.9
+  },
+  {
+    "id": "i1-zalo",
+    "target": "wp-content/uploads/2025/04/zalo-111.svg",
+    "replaces": "wp-content/uploads/2025/04/zalo-111.png",
+    "kb": 1.3
+  },
+  {
+    "id": "i2-check",
+    "target": "wp-content/uploads/2024/02/Subtract.svg",
+    "replaces": "wp-content/uploads/2024/02/Subtract.svg",
+    "kb": 1.6
+  },
+  {
+    "id": "i3-plan-1",
+    "target": "wp-content/uploads/2024/02/Glass-Left-1.svg",
+    "replaces": "wp-content/uploads/2024/02/Glass-Left-1.svg",
+    "kb": 2.5
+  },
+  {
+    "id": "i3-plan-2",
+    "target": "wp-content/uploads/2024/02/Group-1000001808.svg",
+    "replaces": "wp-content/uploads/2024/02/Group-1000001808.svg",
+    "kb": 2.9
+  },
+  {
+    "id": "i3-plan-3",
+    "target": "wp-content/uploads/2024/02/Group-1000001809.svg",
+    "replaces": "wp-content/uploads/2024/02/Group-1000001809.svg",
+    "kb": 2.5
+  },
+  {
+    "id": "i3-tile",
+    "target": "wp-content/uploads/2024/02/Rectangle-1057.svg",
+    "replaces": "wp-content/uploads/2024/02/Rectangle-1057.svg",
+    "kb": 1.2
+  },
+  {
+    "id": "i4-branding-1",
+    "target": "wp-content/uploads/2024/03/teamwork.svg",
+    "replaces": "wp-content/uploads/2024/03/teamwork.svg",
+    "kb": 3.5
+  },
+  {
+    "id": "i4-branding-2",
+    "target": "wp-content/uploads/2024/03/good-rating.svg",
+    "replaces": "wp-content/uploads/2024/03/good-rating.svg",
+    "kb": 5.4
+  },
+  {
+    "id": "i4-branding-3",
+    "target": "wp-content/uploads/2024/03/branding-strategy.svg",
+    "replaces": null,
+    "kb": 5
+  },
+  {
+    "id": "i4-branding-4",
+    "target": "wp-content/uploads/2024/03/branding-value.svg",
+    "replaces": null,
+    "kb": 4.3
+  },
+  {
+    "id": "i4-mobile-1",
+    "target": "wp-content/uploads/2024/03/brand-image.svg",
+    "replaces": "wp-content/uploads/2024/03/brand-image.svg",
+    "kb": 5
+  },
+  {
+    "id": "i4-mobile-2",
+    "target": "wp-content/uploads/2024/03/feature-selection.svg",
+    "replaces": "wp-content/uploads/2024/03/feature-selection.svg",
+    "kb": 5.2
+  },
+  {
+    "id": "i4-mobile-3",
+    "target": "wp-content/uploads/2024/03/best-seller.svg",
+    "replaces": "wp-content/uploads/2024/03/best-seller.svg",
+    "kb": 5.6
+  },
+  {
+    "id": "i4-mobile-4",
+    "target": "wp-content/uploads/2024/03/user-experience.svg",
+    "replaces": "wp-content/uploads/2024/03/user-experience.svg",
+    "kb": 5.4
+  },
+  {
+    "id": "i4-seo-1",
+    "target": "wp-content/uploads/2024/02/SEO.svg",
+    "replaces": "wp-content/uploads/2024/02/SEO.svg",
+    "kb": 4.3
+  },
+  {
+    "id": "i4-seo-2",
+    "target": "wp-content/uploads/2024/02/Group-1000001811.svg",
+    "replaces": "wp-content/uploads/2024/02/Group-1000001811.svg",
+    "kb": 4.5
+  },
+  {
+    "id": "i4-seo-3",
+    "target": "wp-content/uploads/2024/02/SEO-3.svg",
+    "replaces": "wp-content/uploads/2024/02/SEO-3.svg",
+    "kb": 5.7
+  },
+  {
+    "id": "i4-seo-4",
+    "target": "wp-content/uploads/2024/02/SEO-4.svg",
+    "replaces": "wp-content/uploads/2024/02/SEO-4.svg",
+    "kb": 5.5
+  },
+  {
+    "id": "i4-website-1",
+    "target": "wp-content/uploads/2024/02/benefit-icon-1.svg",
+    "replaces": "wp-content/uploads/2024/02/benefit-icon-1.svg",
+    "kb": 3.8
+  },
+  {
+    "id": "i4-website-2",
+    "target": "wp-content/uploads/2024/02/benefit-icon-2.svg",
+    "replaces": "wp-content/uploads/2024/02/benefit-icon-2.svg",
+    "kb": 4.3
+  },
+  {
+    "id": "i4-website-3",
+    "target": "wp-content/uploads/2024/02/Icon-benefit.svg",
+    "replaces": "wp-content/uploads/2024/02/Icon-benefit.svg",
+    "kb": 5.2
+  },
+  {
+    "id": "i4-website-4",
+    "target": "wp-content/uploads/2024/02/Icon-benefit-1.svg",
+    "replaces": "wp-content/uploads/2024/02/Icon-benefit-1.svg",
+    "kb": 5
+  },
+  {
+    "id": "i5-about-1",
+    "target": "wp-content/uploads/2024/02/Icon-Glass-1.svg",
+    "replaces": "wp-content/uploads/2024/02/Icon-Glass-1.png",
+    "kb": 3.8
+  },
+  {
+    "id": "i5-about-2",
+    "target": "wp-content/uploads/2024/02/Group-1000001804.svg",
+    "replaces": "wp-content/uploads/2024/02/Group-1000001804.svg",
+    "kb": 3.2
+  },
+  {
+    "id": "i5-about-3",
+    "target": "wp-content/uploads/2024/02/Icon-Glass-3-e1708484005472.svg",
+    "replaces": "wp-content/uploads/2024/02/Icon-Glass-3-e1708484005472.png",
+    "kb": 3.1
+  },
+  {
+    "id": "i5-about-4",
+    "target": "wp-content/uploads/2024/02/Group-1000001805.svg",
+    "replaces": "wp-content/uploads/2024/02/Group-1000001805.svg",
+    "kb": 4
+  },
+  {
+    "id": "i5-about-5",
+    "target": "wp-content/uploads/2024/02/Group-48095355.svg",
+    "replaces": "wp-content/uploads/2024/02/Group-48095355.png",
+    "kb": 3.6
+  },
+  {
+    "id": "i5-about-6",
+    "target": "wp-content/uploads/2024/02/Group-48095375.svg",
+    "replaces": "wp-content/uploads/2024/02/Group-48095375.png",
+    "kb": 5.2
+  },
+  {
+    "id": "i6-arrow",
+    "target": "wp-content/uploads/2024/02/Vector-Stroke.svg",
+    "replaces": "wp-content/uploads/2024/02/Vector-Stroke.svg",
+    "kb": 0.2
+  },
+  {
+    "id": "i6-chevron",
+    "target": "wp-content/uploads/2025/05/right-e1746699669862.png",
+    "replaces": "wp-content/uploads/2025/05/right-e1746699669862.png",
+    "kb": 0.2
+  },
+  {
+    "id": "i6-deco",
+    "target": "wp-content/uploads/2024/02/Deco-1-6.svg",
+    "replaces": "wp-content/uploads/2024/02/Deco-1-6.svg",
+    "kb": 1.1
+  },
+  {
+    "id": "i6-dot-blue",
+    "target": "wp-content/uploads/2024/02/Ellipse-2354.svg",
+    "replaces": "wp-content/uploads/2024/02/Ellipse-2354.svg",
+    "kb": 1.1
+  },
+  {
+    "id": "i6-dot-grey",
+    "target": "wp-content/uploads/2024/02/Ellipse-2351.svg",
+    "replaces": "wp-content/uploads/2024/02/Ellipse-2351.svg",
+    "kb": 1.2
+  },
+  {
+    "id": "i6-mail",
+    "target": "wp-content/uploads/2024/02/Mask-group.png",
+    "replaces": "wp-content/uploads/2024/02/Mask-group.png",
+    "kb": 7.6
+  },
+  {
+    "id": "i6-next",
+    "target": "wp-content/uploads/2025/08/arrow-next-right.svg",
+    "replaces": "wp-content/uploads/2025/08/arrow-next-right.svg",
+    "kb": 0.2
+  },
+  {
+    "id": "i6-phone",
+    "target": "wp-content/uploads/2024/02/Mask-group-1.svg",
+    "replaces": "wp-content/uploads/2024/02/Mask-group-1.svg",
+    "kb": 1.4
+  },
+  {
+    "id": "i6-pin",
+    "target": "wp-content/uploads/2024/02/Mask-group.svg",
+    "replaces": "wp-content/uploads/2024/02/Mask-group.svg",
+    "kb": 1.3
+  },
+  {
+    "id": "s1-projects-bg",
+    "target": "wp-content/uploads/2025/04/alex-kotliarskyi-QBpZGqEMsKg-unsplash.webp",
+    "replaces": "wp-content/uploads/2025/04/alex-kotliarskyi-QBpZGqEMsKg-unsplash.webp",
+    "kb": 14.3
+  },
+  {
+    "id": "s2-packages-bg",
+    "target": "wp-content/uploads/2024/02/b64598d7e18308083c456d32c69bae66.webp",
+    "replaces": "wp-content/uploads/2024/02/b64598d7e18308083c456d32c69bae66.webp",
+    "kb": 18.8
+  },
+  {
+    "id": "s3-contact-desktop",
+    "target": "wp-content/uploads/2025/04/anh-nen-new-111.webp",
+    "replaces": "wp-content/uploads/2025/04/anh-nen-new-111.webp",
+    "kb": 6.5
+  },
+  {
+    "id": "s3-contact-mobile",
+    "target": "wp-content/uploads/2025/04/anh-nen-doc-111.webp",
+    "replaces": "wp-content/uploads/2025/04/anh-nen-doc-111.webp",
+    "kb": 7.4
+  },
+  {
+    "id": "s3-contact-mobile-en",
+    "target": "wp-content/uploads/2025/04/anh-nen-doc-111-450x800.webp",
+    "replaces": "wp-content/uploads/2025/04/anh-nen-doc-111-450x800.webp",
+    "kb": 1.5
+  },
+  {
+    "id": "s4-seo-advantages",
+    "target": "wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash.webp",
+    "replaces": "wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash.webp",
+    "kb": 35.8
+  },
+  {
+    "id": "s4-seo-advantages-320",
+    "target": "wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-320x400.webp",
+    "replaces": "wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-320x400.webp",
+    "kb": 9.3
+  },
+  {
+    "id": "s4-seo-advantages-640",
+    "target": "wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-640x800.webp",
+    "replaces": "wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-640x800.webp",
+    "kb": 20.7
+  },
+  {
+    "id": "s4-seo-advantages-768",
+    "target": "wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-768x960.webp",
+    "replaces": "wp-content/uploads/2024/02/arthur-osipyan-5OyvN4Yx46E-unsplash-768x960.webp",
+    "kb": 25.9
+  }
+]

@@ -83,7 +83,7 @@ test('parents, pricing ids and plan counts follow the source', () => {
     } else {
       expect(p.plans.map((plan) => !!plan.recommended)).toEqual([false, true, false]);
       for (const plan of p.plans) {
-        expect(plan.featureIds).toHaveLength(9);
+        expect(plan.featureIds).toHaveLength(8);
         for (const id of plan.featureIds) expect(p.features.map((f) => f.id)).toContain(id);
         if (p.locale === 'vi')
           expect([plan.discountLabel, plan.price]).toEqual([expect.any(String), undefined]);
@@ -156,28 +156,28 @@ test('VI item 5 sub-services Business Hosting + Cloud VPS', () => {
   expect(viStorage!.homeSummary).toContain('hệ thống server chất lượng cao');
 });
 
-test('EN home serviceIds has six services, index 1 is service-mobile-en with website arrow', () => {
+test('EN home serviceIds has four services, index 1 is service-mobile-en with website arrow', () => {
   const enHome = homePages.find((p) => p.locale === 'en');
   expect(enHome).toBeDefined();
-  expect(enHome!.serviceIds).toHaveLength(6);
+  expect(enHome!.serviceIds).toHaveLength(4);
   expect(enHome!.serviceIds[1]).toBe('service-mobile-en');
   expect(enHome!.serviceIds).toEqual([
     'service-website-en',
     'service-mobile-en',
     'service-seo-en',
     'service-branding-en',
-    'service-storage-en',
-    'service-email-en',
   ]);
 
   const enMobile = mobileServices.find((s) => s.locale === 'en');
   expect(enMobile).toBeDefined();
   expect(enMobile!.arrowHref).toBe('/en/website-development/');
   expect(enMobile!.subServices).toEqual([]);
-  expect(enMobile!.homeSummary).toContain('Our mobile solutions');
+  expect(enMobile!.homeSummary).not.toBe(
+    mobileServices.find((s) => s.locale === 'vi')!.homeSummary,
+  );
 });
 
-test('VI home serviceIds has six services in order', () => {
+test('VI home serviceIds has four services in order', () => {
   const viHome = homePages.find((p) => p.locale === 'vi');
   expect(viHome).toBeDefined();
   expect(viHome!.serviceIds).toEqual([
@@ -185,8 +185,6 @@ test('VI home serviceIds has six services in order', () => {
     'service-mobile-vi',
     'service-seo-vi',
     'service-branding-vi',
-    'service-storage-vi',
-    'service-email-vi',
   ]);
   expect(viHome!.marqueeSeparatorId).toBe('asset-400b882328');
 });

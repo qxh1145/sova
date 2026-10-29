@@ -7,33 +7,17 @@ import {
   getBodyOverflow,
   test,
 } from './fixtures';
+import { shellContent } from '../../src/data/shell';
+import { siteSettings } from '../../src/data/site';
+import { resolveDeep } from '../../src/lib/queries/tokens';
 
-const COPIES = {
-  vi: {
-    heading: 'Đăng ký',
-    placeholder: 'Số điện thoại',
-    submit: 'Gửi đi  →',
-    submitting: 'Đang gửi...',
-    required: 'Vui lòng nhập số điện thoại',
-    invalid: 'Số điện thoại không hợp lệ',
-    success: 'Đã ghi nhận yêu cầu trong bản demo.',
-    error: 'Đã có lỗi xảy ra trong quá trình gửi. Vui lòng thử lại.',
-    demoBadge: 'Bản demo — chưa gửi thông tin',
-    note: 'Đăng ký để nhận những thông tin mới nhất về các chương trình ưu đãi của Sova',
-  },
-  en: {
-    heading: 'Register',
-    placeholder: 'Phone Number',
-    submit: 'Submit →',
-    submitting: 'Sending...',
-    required: 'Please enter your phone number',
-    invalid: 'Invalid phone number',
-    success: 'Request recorded in demo mode.',
-    error: 'An error occurred while sending. Please try again.',
-    demoBadge: 'Demo — no data was sent',
-    note: "Register to receive the latest information about Sova's promotional programs",
-  },
-};
+// Shell copy with `{{site.*}}` tokens resolved, as the repository serves it.
+const consultCopy = (locale: 'vi' | 'en') =>
+  resolveDeep(
+    shellContent.find((s) => s.locale === locale)!.consult,
+    siteSettings.find((s) => s.locale === locale)!,
+  );
+const COPIES = { vi: consultCopy('vi'), en: consultCopy('en') };
 
 test.describe('ConsultForm and drawer demo flow contract', () => {
   test('ConsultForm and FormResponse import nothing from src/data or src/dev', () => {

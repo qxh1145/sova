@@ -17,11 +17,11 @@ const SERVICE_KEYS: ServiceKey[] = [
 ];
 
 test.each([
-  ['vi', 65],
-  ['en', 66],
-] as const)('%s has 7 topics with %i placements in order', (locale, placements) => {
+  ['vi', 34],
+  ['en', 34],
+] as const)('%s has 4 topics with %i placements in order', (locale, placements) => {
   const topics = faqTopics.filter((t) => t.locale === locale);
-  expect(topics).toHaveLength(7);
+  expect(topics).toHaveLength(4);
   expect(topics.flatMap((t) => t.items)).toHaveLength(placements);
   for (const topic of topics)
     expect(topic.items.map((i) => i.order)).toEqual(topic.items.map((_, i) => i + 1));
@@ -40,7 +40,7 @@ test('ids are unique and every placement resolves to a FAQ of the same locale an
 });
 
 test('every topic placement resolves to a same-locale FAQ placed on a service page unless allowlisted (decision 1)', () => {
-  const allowlist = new Set(['faq-vi-3703276752', 'faq-vi-4220319995', 'faq-en-2947114095']);
+  const allowlist = new Set(['faq-vi-3703276752', 'faq-vi-4220319995']);
   for (const topic of faqTopics) {
     for (const { faqId } of topic.items) {
       const faq = faqs.find((f) => f.id === faqId);

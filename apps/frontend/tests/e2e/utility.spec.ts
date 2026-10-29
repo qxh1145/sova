@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test';
-import { expect, expectNoDuplicateIds, test } from './fixtures';
+import { ALLOW_404, expect, expectNoDuplicateIds, test } from './fixtures';
+import { RENAMED_PATHS } from '../../src/lib/content/brand';
 import { getProfile, getUtilityContent } from '../../src/lib/queries/pages';
 
 async function expectSeo(page: Page, id: string) {
@@ -12,14 +13,17 @@ async function expectSeo(page: Page, id: string) {
   );
 }
 
+const thankYouHeading = async () =>
+  (await getUtilityContent('thank-you-vi'))!.body.html.match(/<h1>(.*?)<\/h1>/)![1];
+
 test.describe('Utility Pages (Story 6.4)', () => {
-  test('Thank-you demo: GET /eras-xin-chan-thanh-cam-on-quy-khach/?demo=1 renders h1 from record and demo badge', async ({
+  test('Thank-you demo: GET /xin-chan-thanh-cam-on-quy-khach/?demo=1 renders h1 from record and demo badge', async ({
     page,
   }) => {
     const requestedUrls: string[] = [];
     page.on('request', (req) => requestedUrls.push(req.url()));
 
-    const response = await page.goto('/eras-xin-chan-thanh-cam-on-quy-khach/?demo=1');
+    const response = await page.goto('/xin-chan-thanh-cam-on-quy-khach/?demo=1');
     expect(response?.status()).toBe(200);
 
     // Shell header and footer
@@ -33,7 +37,7 @@ test.describe('Utility Pages (Story 6.4)', () => {
     // Exactly one h1 from record
     const h1 = page.locator('#section_430522107 h1');
     await expect(h1).toHaveCount(1);
-    await expect(h1).toHaveText('Gửi thông tin thành công!');
+    await expect(h1).toHaveText(await thankYouHeading());
 
     // Demo badge visible beside/above heading
     const demoBadge = page.locator('.wpcf7-demo-badge');
@@ -51,25 +55,25 @@ test.describe('Utility Pages (Story 6.4)', () => {
     await expectNoDuplicateIds(page);
   });
 
-  test('Thank-you plain: GET /eras-xin-chan-thanh-cam-on-quy-khach/ renders h1 and no demo badge', async ({
+  test('Thank-you plain: GET /xin-chan-thanh-cam-on-quy-khach/ renders h1 and no demo badge', async ({
     page,
   }) => {
     const requestedUrls: string[] = [];
     page.on('request', (req) => requestedUrls.push(req.url()));
 
-    const response = await page.goto('/eras-xin-chan-thanh-cam-on-quy-khach/');
+    const response = await page.goto('/xin-chan-thanh-cam-on-quy-khach/');
     expect(response?.status()).toBe(200);
     await expectSeo(page, 'thank-you-vi');
 
     const h1 = page.locator('#section_430522107 h1');
     await expect(h1).toHaveCount(1);
-    await expect(h1).toHaveText('Gửi thông tin thành công!');
+    await expect(h1).toHaveText(await thankYouHeading());
 
     // Demo badge must not exist
     await expect(page.locator('.wpcf7-demo-badge')).toHaveCount(0);
 
     // Also with ?demo=0
-    await page.goto('/eras-xin-chan-thanh-cam-on-quy-khach/?demo=0');
+    await page.goto('/xin-chan-thanh-cam-on-quy-khach/?demo=0');
     await expect(page.locator('.wpcf7-demo-badge')).toHaveCount(0);
 
     expect(requestedUrls.some((u) => u.includes('.pdf'))).toBe(false);
@@ -81,13 +85,13 @@ test.describe('Utility Pages (Story 6.4)', () => {
     {
       locale: 'vi' as const,
       name: 'VI',
-      path: '/ho-so-nang-luc-eras-vietnam/',
+      path: '/ho-so-nang-luc-sova/',
       bannerId: '#banner-1559052784',
     },
     {
       locale: 'en' as const,
       name: 'EN',
-      path: '/en/porfolio-eras-vietnam/',
+      path: '/en/sova-portfolio/',
       bannerId: '#banner-151127649',
     },
   ];
@@ -135,61 +139,23 @@ test.describe('Utility Pages (Story 6.4)', () => {
     });
   }
 
-  test('Alias: GET /porfolio-eras-vietnam/ redirects to /en/porfolio-eras-vietnam/', async ({
-    page,
+  test('Renamed: each old Eras-slug URL answers 301 with the Sova path as Location', async ({
+    request,
   }) => {
-    const requestedUrls: string[] = [];
-    page.on('request', (req) => requestedUrls.push(req.url()));
-
-    const response = await page.goto('/porfolio-eras-vietnam/');
-    expect(response?.status()).toBe(200);
-    const redirect = await response!.request().redirectedFrom()!.response();
-    expect(redirect?.status()).toBe(308);
-    expect(page.url()).toMatch(/\/en\/porfolio-eras-vietnam\/$/);
-
-    const heading = page.locator('#banner-151127649 h2');
-    await expect(heading).toHaveCount(1);
-
-    expect(requestedUrls.some((u) => u.includes('.pdf'))).toBe(false);
-    expect(requestedUrls.some((u) => u.includes('erasvietnam.vn'))).toBe(false);
-
-    await expectNoDuplicateIds(page);
+    for (const [from, to] of Object.entries(RENAMED_PATHS)) {
+      const response = await request.get(`${from}?demo=1`, { maxRedirects: 0 });
+      expect(response.status(), from).toBe(301);
+      expect(response.headers().location, from).toBe(`${to}?demo=1`);
+    }
   });
+});
 
-  test('Sample: GET /sample-page/ renders body paragraphs and blockquotes from record', async ({
-    page,
-  }) => {
-    const sample = await getUtilityContent('sample-vi');
-    expect(sample).not.toBeNull();
+// WordPress "Sample Page" leftover, hidden (stakeholder review 2026-10-27): route and record are commented out.
+test.describe('Hidden sample page', () => {
+  test.use({ allowConsole: [ALLOW_404] });
 
-    const requestedUrls: string[] = [];
-    page.on('request', (req) => requestedUrls.push(req.url()));
-
+  test('/sample-page/ returns 404', async ({ page }) => {
     const response = await page.goto('/sample-page/');
-    expect(response?.status()).toBe(200);
-    await expectSeo(page, 'sample-vi');
-
-    // Shell header and footer
-    await expect(page.locator('header#header')).toBeVisible();
-    await expect(page.locator('footer#footer')).toBeVisible();
-
-    // Body paragraphs and blockquote
-    const content = page.locator('#content');
-    await expect(content).toBeVisible();
-
-    const blockquotes = content.locator('blockquote');
-    await expect(blockquotes).toHaveCount(2);
-    await expect(blockquotes.first()).toContainText('Hi there!');
-    await expect(blockquotes.nth(1)).toContainText('The XYZ Doohickey Company');
-
-    // Link rewriting: dashboard link points to /wp-admin/
-    const adminLink = content.locator('a[href="/wp-admin/"]');
-    await expect(adminLink).toBeVisible();
-    await expect(adminLink).toHaveText('your dashboard');
-
-    expect(requestedUrls.some((u) => u.includes('.pdf'))).toBe(false);
-    expect(requestedUrls.some((u) => u.includes('erasvietnam.vn'))).toBe(false);
-
-    await expectNoDuplicateIds(page);
+    expect(response?.status()).toBe(404);
   });
 });

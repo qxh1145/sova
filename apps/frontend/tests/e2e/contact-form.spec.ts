@@ -58,6 +58,48 @@ test.describe('Contact Form (Story Contact form with demo submit)', () => {
     });
   }
 
+  test('Service select lists the live services and Recruitment, without storage or e-mail', async ({
+    page,
+  }) => {
+    const cases = [
+      {
+        path: '/lien-he/',
+        selectName: 'dynamic_select-682',
+        options: [
+          'Chọn loại dịch vụ',
+          'Dịch Vụ Thiết Kế Website',
+          'Dịch Vụ Thiết Kế App Mobile',
+          'Dịch Vụ SEO Từ Khoá Website',
+          'Dịch Vụ UI/UX, Branding Design',
+          'Tuyển Dụng',
+        ],
+        hidden: ['Dịch Vụ Giải Pháp Lưu Trữ', 'Dịch Vụ E-mail Doanh Nghiệp'],
+      },
+      {
+        path: '/en/contact-us/',
+        selectName: 'dynamic_select-6827',
+        options: [
+          '—Please choose an option—',
+          'Website Development',
+          'App Mobile Development',
+          'Website Keyword SEO',
+          'UI/UX, Branding Design',
+          'Recruitment',
+        ],
+        hidden: ['Business E-mail', 'Storage Solution'],
+      },
+    ];
+
+    for (const c of cases) {
+      await page.goto(c.path);
+      const options = page.locator(`form.wpcf7-form select[name="${c.selectName}"] option`);
+      await expect(options).toHaveText(c.options);
+      for (const label of c.hidden) {
+        await expect(options.filter({ hasText: label })).toHaveCount(0);
+      }
+    }
+  });
+
   test('Bad email retains other field values and shows email tip only', async ({ page }) => {
     await page.goto('/lien-he/');
     const form = page.locator('form.wpcf7-form');
@@ -204,7 +246,7 @@ test.describe('Contact Form (Story Contact form with demo submit)', () => {
     await form.locator('input.wpcf7-submit').click();
     await page.locator('[data-testid="fixture-release"]').click();
 
-    await page.waitForURL('**/eras-xin-chan-thanh-cam-on-quy-khach/?demo=1');
+    await page.waitForURL('**/xin-chan-thanh-cam-on-quy-khach/?demo=1');
     const badge = page.locator('.wpcf7-demo-badge');
     await expect(badge).toBeVisible();
   });
@@ -247,8 +289,8 @@ test.describe('Contact Form (Story Contact form with demo submit)', () => {
       const submitBtn = form.locator('input.wpcf7-submit');
       await submitBtn.click();
 
-      await page.waitForURL('**/eras-xin-chan-thanh-cam-on-quy-khach/?demo=1');
-      expect(page.url()).toContain('/eras-xin-chan-thanh-cam-on-quy-khach/?demo=1');
+      await page.waitForURL('**/xin-chan-thanh-cam-on-quy-khach/?demo=1');
+      expect(page.url()).toContain('/xin-chan-thanh-cam-on-quy-khach/?demo=1');
 
       // Demo badge visible on thank-you page (thank-you page is VI-only)
       const badge = page.locator('.wpcf7-demo-badge');

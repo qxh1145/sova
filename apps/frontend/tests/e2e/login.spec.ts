@@ -2,11 +2,11 @@ import { expect, expectNoClientStorage, expectNoDuplicateIds, test } from './fix
 import { getUtilityContent } from '../../src/lib/queries/pages';
 import { getSiteSettings, getShellContent } from '../../src/lib/queries/site';
 
-test.describe('Legacy Login UI (/login-eras/)', () => {
-  test('Page load: GET /login-eras/ renders #login, no shell, 1 h1, support panel, wordmark, and no duplicate IDs', async ({
+test.describe('Legacy Login UI (/login-sova/)', () => {
+  test('Page load: GET /login-sova/ renders #login, no shell, 1 h1, support panel, wordmark, and no duplicate IDs', async ({
     page,
   }) => {
-    const response = await page.goto('/login-eras/');
+    const response = await page.goto('/login-sova/');
     expect(response?.status()).toBe(200);
 
     // Body classes required for styling (DW:311)
@@ -59,7 +59,7 @@ test.describe('Legacy Login UI (/login-eras/)', () => {
   test('Empty submit: both fields blank shows required error per field, aria-invalid="true", no notice', async ({
     page,
   }) => {
-    await page.goto('/login-eras/');
+    await page.goto('/login-sova/');
     const submitBtn = page.locator('#wp-submit');
     const userInput = page.locator('#user_login');
     const passInput = page.locator('#user_pass');
@@ -82,7 +82,7 @@ test.describe('Legacy Login UI (/login-eras/)', () => {
   test('One field blank: username filled, password blank keeps username value and shows password error only', async ({
     page,
   }) => {
-    await page.goto('/login-eras/');
+    await page.goto('/login-sova/');
     const userInput = page.locator('#user_login');
     const passInput = page.locator('#user_pass');
     const submitBtn = page.locator('#wp-submit');
@@ -107,7 +107,7 @@ test.describe('Legacy Login UI (/login-eras/)', () => {
   test('Password reveal button: toggles type, aria-pressed, data-toggle, aria-label, and icon class', async ({
     page,
   }) => {
-    await page.goto('/login-eras/');
+    await page.goto('/login-sova/');
     const passInput = page.locator('#user_pass');
     const revealBtn = page.locator('button.wp-hide-pw');
     const icon = revealBtn.locator('span.dashicons');
@@ -144,7 +144,7 @@ test.describe('Legacy Login UI (/login-eras/)', () => {
   test('Valid submit: shows demo notice, no network requests after submit, URL unchanged, no storage or cookies', async ({
     page,
   }) => {
-    await page.goto('/login-eras/');
+    await page.goto('/login-sova/');
     const userInput = page.locator('#user_login');
     const passInput = page.locator('#user_pass');
     const rememberCheckbox = page.locator('#rememberme');
@@ -167,7 +167,7 @@ test.describe('Legacy Login UI (/login-eras/)', () => {
     await expect(notice).toContainText(shell.consult.demoBadge);
 
     // URL unchanged
-    expect(page.url()).toMatch(/\/login-eras\/$/);
+    expect(page.url()).toMatch(/\/login-sova\/$/);
 
     // No network requests were dispatched by submit
     expect(submittedUrls).toHaveLength(0);
@@ -182,12 +182,12 @@ test.describe('Legacy Login UI (/login-eras/)', () => {
     await expect(userInput).toHaveAttribute('aria-invalid', 'true');
   });
 
-  test('Alias: GET /dang-ky-nghi-phep/ permanently redirects to /login-eras/', async ({ page }) => {
+  test('Alias: GET /dang-ky-nghi-phep/ permanently redirects to /login-sova/', async ({ page }) => {
     const response = await page.goto('/dang-ky-nghi-phep/');
     expect(response?.status()).toBe(200);
     const redirect = await response!.request().redirectedFrom()!.response();
     expect(redirect?.status()).toBe(308);
-    expect(page.url()).toMatch(/\/login-eras\/$/);
+    expect(page.url()).toMatch(/\/login-sova\/$/);
 
     await expect(page.locator('#login')).toBeVisible();
     await expectNoDuplicateIds(page);

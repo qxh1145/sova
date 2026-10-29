@@ -36,7 +36,7 @@ describe('buildContactItems', () => {
       title: 'Hotline',
       subtitle: '(7h30 - 23h00)',
       href: 'tel:0123456789',
-      iconSrc: '/wp-content/uploads/2025/04/call-111.png',
+      iconSrc: '/wp-content/uploads/2025/04/call-111.svg',
       target: '_blank',
     });
 
@@ -45,7 +45,7 @@ describe('buildContactItems', () => {
       title: 'Messenger',
       subtitle: '(7h30 - 23h00)',
       href: 'https://m.me/test',
-      iconSrc: '/wp-content/uploads/2025/04/messenger-111.png',
+      iconSrc: '/wp-content/uploads/2025/04/messenger-111.svg',
       target: '_blank',
     });
 
@@ -54,7 +54,7 @@ describe('buildContactItems', () => {
       title: 'Chat Zalo',
       subtitle: '(7h30 - 23h00)',
       href: 'https://zalo.me/0123456789',
-      iconSrc: '/wp-content/uploads/2025/04/zalo-111.png',
+      iconSrc: '/wp-content/uploads/2025/04/zalo-111.svg',
       target: '_blank',
     });
 

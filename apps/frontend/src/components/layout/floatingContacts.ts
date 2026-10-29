@@ -1,9 +1,9 @@
 import type { ShellContent, SiteSettings } from '@/types/content';
 
 export const CONTACT_ICON_SRC = {
-  call: '/wp-content/uploads/2025/04/call-111.png',
-  messenger: '/wp-content/uploads/2025/04/messenger-111.png',
-  zalo: '/wp-content/uploads/2025/04/zalo-111.png',
+  call: '/wp-content/uploads/2025/04/call-111.svg',
+  messenger: '/wp-content/uploads/2025/04/messenger-111.svg',
+  zalo: '/wp-content/uploads/2025/04/zalo-111.svg',
 } as const;
 
 export const FLOATING_CONTACT_COLOR = '#2A63D7';

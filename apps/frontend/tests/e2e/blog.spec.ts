@@ -652,18 +652,18 @@ test.describe('Blog listing and post detail', () => {
       expect(postMap.get('post-836')!.title.toLowerCase()).not.toContain('copywriter');
       expect(postMap.get('post-836')!.excerpt.toLowerCase()).toContain('copywriter');
 
-      // 3. Body-only word: "haravan" -> matches only in body of post-853 (/kinh-doanh-nho-le-co-nen-xay-dung-website-ban-hang/), not in title or excerpt
-      await page.goto('/?s=haravan');
+      // 3. Body-only word: "livechat" -> matches only in body of post-853 (/kinh-doanh-nho-le-co-nen-xay-dung-website-ban-hang/), not in title or excerpt
+      await page.goto('/?s=livechat');
       await expect(page.locator('#section_1769897078 h1')).toContainText(
-        'Kết quả tìm kiếm: haravan',
+        'Kết quả tìm kiếm: livechat',
       );
-      const haravanCards = page.locator('#post-list article');
-      await expect(haravanCards).toHaveCount(1);
-      await expect(haravanCards.first().locator('.title-post-archive')).toHaveText(
+      const livechatCards = page.locator('#post-list article');
+      await expect(livechatCards).toHaveCount(1);
+      await expect(livechatCards.first().locator('.title-post-archive')).toHaveText(
         postMap.get('post-853')!.title,
       );
-      expect(postMap.get('post-853')!.title.toLowerCase()).not.toContain('haravan');
-      expect(postMap.get('post-853')!.excerpt.toLowerCase()).not.toContain('haravan');
+      expect(postMap.get('post-853')!.title.toLowerCase()).not.toContain('livechat');
+      expect(postMap.get('post-853')!.excerpt.toLowerCase()).not.toContain('livechat');
 
       // 4. Many results: "wordpress" -> 7 matches -> 6 cards on page 1, pagination to page 2
       await page.goto('/?s=wordpress');

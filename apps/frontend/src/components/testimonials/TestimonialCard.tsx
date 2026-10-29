@@ -40,8 +40,9 @@ export function TestimonialCard({ testimonial, avatar, lineArt, ids }: Testimoni
             </p>
           </div>
           <div className="icon-box featured-box icon-kh icon-box-left text-left">
-            {avatar && (
-              <div className="icon-box-img" style={{ width: '106px' }}>
+            {/* The slot stays without an avatar so the name keeps clear of the section photo. */}
+            <div className="icon-box-img" style={{ width: '106px' }}>
+              {avatar && (
                 <div className="icon">
                   <div className="icon-inner">
                     <img
@@ -55,8 +56,8 @@ export function TestimonialCard({ testimonial, avatar, lineArt, ids }: Testimoni
                     />
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
             <div className="icon-box-text last-reset">
               <div id={ids?.iconBoxText} className="text">
                 <h3>

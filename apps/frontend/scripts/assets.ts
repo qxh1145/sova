@@ -4,6 +4,9 @@
 // checks each copied file and fl-icon's sha256 against tests/baseline/source-hash.json (and the
 // mirror when present), that every local AssetRef is in the source, that no /wp-includes/ url()
 // remains, and that public/wp-content/ holds nothing else. CSS comments are not refs.
+// Redesigned files (tests/baseline/redesigned-hash.json, written by design/images/build.mjs) are
+// checked against their own hash instead; copy never overwrites them. Their `original` must still be
+// in source-hash.json (null = a new file), and each must be referenced.
 import { createHash } from 'node:crypto';
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -54,6 +57,7 @@ const APP = path.resolve(here, '..');
 const PUBLIC = path.join(APP, 'public');
 const LEGACY = path.join(APP, 'src/styles/legacy');
 const sha256 = (data: Buffer) => createHash('sha256').update(data).digest('hex');
+type Redesigned = Record<string, { sha256: string; original: string | null }>;
 const files = (dir: string) =>
   readdirSync(dir, { recursive: true, withFileTypes: true })
     .filter((e) => e.isFile())
@@ -70,13 +74,21 @@ async function main() {
   const icons = manifest.assets.map((a) => a.source);
   const allowlist = buildAllowlist(assets, css, icons);
   const hasMirror = existsSync(ERAS_CLONE_DIR);
+  const redesigned = JSON.parse(
+    readFileSync(path.join(APP, 'tests/baseline/redesigned-hash.json'), 'utf8'),
+  ) as Redesigned;
 
   if (!process.argv.includes('--verify')) {
     if (!hasMirror)
       throw new Error(`Source mirror not found at ${ERAS_CLONE_DIR} (set ERAS_CLONE_DIR)`);
     let written = 0;
     let skipped = 0;
+    let kept = 0;
     for (const rel of allowlist) {
+      if (redesigned[rel]) {
+        kept++;
+        continue;
+      }
       const source = path.join(ERAS_CLONE_DIR, rel);
       if (!existsSync(source)) {
         console.log(`missing in mirror, skipped: ${rel}`);
@@ -91,7 +103,8 @@ async function main() {
       written++;
     }
     console.log(
-      `copy:assets: ${allowlist.length} allowlisted, ${written} written, ${skipped} missing in mirror`,
+      `copy:assets: ${allowlist.length} allowlisted, ${written} written, ${skipped} missing in mirror, ` +
+        `${kept} redesigned kept`,
     );
     return;
   }
@@ -101,6 +114,7 @@ async function main() {
   ) as Record<string, string>;
   const failures: string[] = [];
   let checked = 0;
+  let redesignedChecked = 0;
   const localRels = new Set(
     assets
       .filter((a) => a.status === 'local')
@@ -109,6 +123,21 @@ async function main() {
   );
   for (const rel of [...allowlist, ...icons]) {
     const target = path.join(PUBLIC, rel);
+    const redesign = redesigned[rel];
+    if (redesign) {
+      const { original } = redesign;
+      if (original !== null && !expected[original]) {
+        failures.push(
+          original === rel && localRels.has(rel)
+            ? `local AssetRef not in source-hash.json: public/${rel}`
+            : `original not in source-hash.json: public/${original} (for public/${rel})`,
+        );
+      } else if (!existsSync(target)) failures.push(`missing: public/${rel}`);
+      else if (sha256(readFileSync(target)) !== redesign.sha256)
+        failures.push(`hash mismatch vs redesigned-hash.json: public/${rel}`);
+      else redesignedChecked++;
+      continue;
+    }
     // Not in the source hash = not in the mirror: a CSS url() the source never shipped; nothing to
     // copy. A `local` AssetRef must be in the source (a `missing` one is never allowlisted).
     if (!expected[rel]) {
@@ -129,6 +158,8 @@ async function main() {
     checked++;
   }
   const known = new Set([...allowlist, ...icons]);
+  for (const rel of Object.keys(redesigned))
+    if (!known.has(rel)) failures.push(`redesigned but not referenced: public/${rel}`);
   for (const file of files(path.join(PUBLIC, 'wp-content'))) {
     const rel = path.relative(PUBLIC, file).split(path.sep).join('/');
     if (path.basename(file) === '.DS_Store') continue;
@@ -142,7 +173,9 @@ async function main() {
   console.log(
     `verify:assets: ${checked} files (${icons.length} fl-icons) match source-hash.json` +
       `${hasMirror ? ' and the mirror' : ''}, ` +
-      `${allowlist.length + icons.length - checked} CSS refs absent from source, no stray files`,
+      `${redesignedChecked} redesigned match redesigned-hash.json, ` +
+      `${allowlist.length + icons.length - checked - redesignedChecked} CSS refs absent from source, ` +
+      `no stray files`,
   );
 }
 

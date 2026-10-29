@@ -51,6 +51,15 @@ const contactWithPhone: ContactPageContent = {
 const website = websiteServices.find((s) => s.locale === 'vi')!;
 const websiteWithPhone = { ...website, summary: `${website.summary} {{site.phone}}` };
 
+// Testimonials are hidden on the committed about pages (stakeholder review 2026-10-27); tests that
+// exercise them place these ids.
+const aboutVi = aboutPages.find((p) => p.locale === 'vi')!;
+const TESTIMONIAL_IDS = [
+  'testimonial-feedback-ten',
+  'testimonial-feedback-dong-a',
+  'testimonial-feedback-vinatex',
+];
+
 // The committed import output, with optional overrides of one domain.
 const repoWith = (data: Partial<ContentData> = {}) =>
   createMockRepository({
@@ -162,10 +171,11 @@ test('VI home query resolves all collections in record order', async () => {
   expect(page?.stats.map((s) => s.id)).toEqual(home.statIds);
   expect(page?.marqueeSeparator.id).toBe(home.marqueeSeparatorId);
   expect(page?.marqueeSeparator.src).toBe('/wp-content/uploads/2024/02/Ellipse-2351.svg');
-  expect(page?.services).toHaveLength(6);
+  expect(page?.services).toHaveLength(4);
   expect(page?.projects).toHaveLength(6);
-  expect(page?.partners).toHaveLength(30);
-  expect(page?.testimonials).toHaveLength(3);
+  expect(page?.partners).toEqual([]);
+  // Testimonials hidden (stakeholder review 2026-10-27): placements are empty.
+  expect(page?.testimonials).toEqual([]);
   expect(page?.posts).toHaveLength(3);
   expect(page?.stats).toHaveLength(4);
   expect(page?.testimonialArt.photo.id).toBe(home.testimonialArtIds.photoId);
@@ -188,8 +198,8 @@ test('EN home query resolves services and empty lists', async () => {
   expect(page?.testimonialArt.line.id).toBe(home.testimonialArtIds.lineId);
   expect(page?.projects).toEqual([]);
   expect(page?.posts).toEqual([]);
-  expect(page?.partners).toHaveLength(30);
-  expect(page?.testimonials).toHaveLength(3);
+  expect(page?.partners).toEqual([]);
+  expect(page?.testimonials).toEqual([]);
   expect(page?.postListingHref).toBe('/en/insight/');
 });
 
@@ -237,7 +247,7 @@ test('getHomePage accepts optional repository parameter', async () => {
 test('navigation resolves without tokens left', async () => {
   repository = repoWith();
   const nav = await getNavigation('en');
-  expect(nav.serviceOptions).toHaveLength(6);
+  expect(nav.serviceOptions).toHaveLength(4);
   expect(JSON.stringify(nav)).not.toContain('{{site.');
 });
 
@@ -368,7 +378,7 @@ test('getAboutAssets rejects on a dangling goal icon id', async () => {
 });
 
 test('getAboutAssets rejects on a dangling testimonial avatar id', async () => {
-  repository = repoWith();
+  repository = repoWith({ aboutPages: [{ ...aboutVi, testimonialIds: TESTIMONIAL_IDS }] });
   const about = await getAboutPage('vi');
   const testimonials = about!.testimonials.map((t, i) =>
     i === 0 ? { ...t, avatarId: 'asset-dangling-avatar' } : t,
@@ -397,15 +407,10 @@ test('getContactAssets rejects on a dangling icon id', async () => {
 });
 
 test('getAboutPage resolves 3 testimonials in placement order', async () => {
-  repository = repoWith();
+  repository = repoWith({ aboutPages: [{ ...aboutVi, testimonialIds: TESTIMONIAL_IDS }] });
   const about = await getAboutPage('vi');
   expect(about).not.toBeNull();
-  expect(about!.testimonials).toHaveLength(3);
-  expect(about!.testimonials.map((t) => t.id)).toEqual([
-    'testimonial-feedback-ten',
-    'testimonial-feedback-dong-a',
-    'testimonial-feedback-vinatex',
-  ]);
+  expect(about!.testimonials.map((t) => t.id)).toEqual(TESTIMONIAL_IDS);
   expect(about!.stats).toHaveLength(4);
   expect(about!.marqueeSeparator.id).toBe('asset-400b882328');
   expect(about!.purposeImage.id).toBe('asset-e0d6652ff9');

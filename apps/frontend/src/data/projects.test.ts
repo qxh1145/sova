@@ -91,23 +91,21 @@ test('every project image resolves to a local /wp-content/uploads/ or missing as
   expect(projects.flatMap((p) => p.galleryIds)).toHaveLength(136);
 });
 
-test('gallery shapes 0–4 and all 62 pages have displayDate and summary', () => {
+test('gallery shapes 0–4, all 62 pages have a summary, only the 2023 project keeps a date', () => {
   const sizes = projects.map((p) => p.galleryIds.length);
   expect(Math.max(...sizes)).toBe(4);
   expect(sizes.filter((n) => n === 0)).toHaveLength(4);
   expect(sizes.filter((n) => n === 1)).toHaveLength(8);
-  expect(projects.filter((p) => !p.displayDate)).toHaveLength(0);
+  expect(projects.filter((p) => p.displayDate).map((p) => p.displayDate)).toEqual([
+    'Ngày 22 tháng 4 năm 2023',
+  ]);
   expect(projects.filter((p) => !p.summary)).toHaveLength(0);
 });
 
 test('no Eras word or raw Eras contact value in project, category and terms text', () => {
-  // Source refs and route paths are provenance, not text (the thank-you route keeps the brand slug).
+  // Source refs are provenance, not text; public paths use Sova slugs (RENAMED_PATHS).
   const text = JSON.stringify({ projects, projectCategories, utilityContent }, (key, value) =>
-    key === 'sources' ||
-    key === 'canonicalPath' ||
-    (typeof value === 'string' && value.startsWith('/login-eras/'))
-      ? undefined
-      : value,
+    key === 'sources' ? undefined : value,
   );
   expect([...text.matchAll(BRAND_LEAK_RE)].map((m) => m[0])).toEqual([]);
   for (const [pattern] of SCRUB_RULES) expect(text.match(pattern)).toBeNull();
@@ -163,7 +161,7 @@ test('getProjectListingPage serves featured archives: 62 all, 59/2/1 by category
 
   const archive = await getProjectListingPage('vi', repo, { routeId: 'route-featured_item' });
   expect(archive!.projects).toHaveLength(62);
-  expect(archive!.settings?.heading.title).toBe('Công ty Cổ phần Phát triển Công nghệ THP');
+  expect(archive!.settings?.heading.title).toBe('Dự án của Sova');
   expect(archive!.heroImage).not.toBeNull();
   expect(archive!.bgImage).not.toBeNull();
 
@@ -266,7 +264,8 @@ test('getProjectDetail returns project, assets, terms, related cards or null for
   // Cards past the old four-card cap still resolve their thumbnails.
   expect(centro!.related.length).toBeGreaterThan(4);
   for (const r of centro!.related.slice(4)) {
-    if (r.project.thumbnailId) expect(r.thumbnailAsset?.id, r.project.slug).toBe(r.project.thumbnailId);
+    if (r.project.thumbnailId)
+      expect(r.thumbnailAsset?.id, r.project.slug).toBe(r.project.thumbnailId);
   }
 });
 

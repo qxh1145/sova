@@ -9,6 +9,6 @@ tsconfig.json
 .omc/
 /baseline/
 src/styles/legacy/
-src/app/(utility)/login-eras/bootstrap-subset.css
+src/app/(utility)/login-sova/bootstrap-subset.css
 tests/baseline/vendor/bootstrap-5.0.2.min.css
 /baseline-diff/

@@ -16,12 +16,6 @@ const LOOP_SLIDERS: SliderTarget[] = [
     slides: 3,
   },
   {
-    name: 'storage solution (slide_gplt)',
-    path: '/giai-phap-luu-tru/',
-    selector: '.slide_gplt',
-    slides: 3,
-  },
-  {
     name: 'seo vi (slide_seo)',
     path: '/seo-tu-khoa-website/',
     selector: '.slide_seo',
