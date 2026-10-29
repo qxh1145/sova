@@ -378,9 +378,33 @@ html.has-custom-cursor .cursor-ring {
   will-change: transform;
 }
 
+/* Not in source: wider column + fixed gutter so copy never runs into the next milestone. */
+.hinhthanh-phattrien {
+  padding-bottom: 96px !important;
+}
+
+.hinhthanh-phattrien:after {
+  background: rgba(255, 255, 255, 0.24);
+}
+
 .timeline-item {
   flex: 0 0 auto;
-  width: 280px;
+  box-sizing: border-box;
+  width: 336px;
+  padding-right: 56px;
+}
+
+.timeline-item h3 {
+  margin-bottom: 8px;
+}
+
+.timeline-item h3 + h3 {
+  margin-bottom: 12px;
+}
+
+.timeline-item .text p {
+  color: rgba(255, 255, 255, 0.64);
+  line-height: 1.6;
 }
 
 /* Not in source: let users stop the strip to read a milestone. */
@@ -396,8 +420,16 @@ html.has-custom-cursor .cursor-ring {
     flex-direction: column;
     width: 100%;
   }
+  /* Vertical rail sits at left: 25px (legacy :before); dot centres on it, copy starts after it. */
   .timeline-item {
     width: 100%;
+    padding: 0 16px 40px 56px;
+  }
+  /* Offset is from .col-inner (position: relative), which starts 56px in. */
+  .timeline-item .text-border {
+    position: absolute;
+    top: 4px;
+    left: -43px;
   }
   .timeline-track [aria-hidden='true'] {
     display: none !important;
