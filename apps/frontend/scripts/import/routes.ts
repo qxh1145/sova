@@ -2,21 +2,24 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { EntityId, PublicPath, RouteEntry } from '../../src/types/content.ts';
 import { validateRoutes } from '../../src/lib/routes.ts';
+import { RENAMED_PATHS } from '../../src/lib/content/brand.ts';
 import { load } from './projects.ts';
 
 const EXPECTED_RETAINED = 147;
 // Source hreflang pairs: home, about, faq, contact, profile, 8 services, 5 legal, du-an, goc-nhin.
 const EXPECTED_PAIRS = 20;
+// Ids and SourceRef files keep the source slug; the public path takes the Sova slug (RENAMED_PATHS).
 const LOGIN = {
-  path: '/login-eras/',
+  sourcePath: '/login-eras/',
+  path: '/login-sova/',
   source: 'login-eras/index__q_6b334f548d36.html',
 } as const;
-/** ROUTE_MAP alias table: alias -> canonical path. */
+/** ROUTE_MAP alias table: alias -> canonical path. The source alias /porfolio-eras-vietnam/ is a
+ * RENAMED_PATHS 301 instead, so no public path keeps the Eras slug. */
 const ALIASES: Record<PublicPath, PublicPath> = {
   '/en/': '/en/home/',
   '/ui-ux-branding-design-2/': '/en/ui-ux-branding-design-2/',
   '/en/ui-ux-branding-design/': '/ui-ux-branding-design/',
-  '/porfolio-eras-vietnam/': '/en/porfolio-eras-vietnam/',
   '/dang-ky-nghi-phep/': LOGIN.path,
 };
 const KINDS: Record<string, RouteEntry['kind']> = {
@@ -99,7 +102,7 @@ export function importRoutes(
     return {
       id: routeId(row.route),
       locale,
-      path: row.route,
+      path: (RENAMED_PATHS[row.route] ?? row.route) as PublicPath,
       kind,
       ...(entityId && { entityId }),
       ...(counterpart && { counterpartId: routeId(counterpart) }),
@@ -108,7 +111,7 @@ export function importRoutes(
     };
   });
   routes.push({
-    id: routeId(LOGIN.path),
+    id: routeId(LOGIN.sourcePath),
     locale: 'vi',
     path: LOGIN.path,
     kind: 'login',

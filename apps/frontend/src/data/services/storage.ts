@@ -195,7 +195,7 @@ export const storageServices: Service[] = [
     ],
     featuredProjectIds: [],
     seo: {
-      title: 'Storage Solution - Công ty thiết kế website chuyên nghiệp | Sova',
+      title: 'Storage Solution - Professional Website Design Company | Sova',
       description: 'Home / Services / Storage solutions',
       canonicalPath: '/en/storage-solution/',
       imageId: 'asset-ec224e4de3',

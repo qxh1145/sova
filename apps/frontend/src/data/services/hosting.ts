@@ -265,7 +265,7 @@ export const hostingServices: Service[] = [
     pricingId: 'pricing-hosting',
     benefitsBgImageId: 'asset-e0d6652ff9',
     seo: {
-      title: 'Business Hosting - Công ty thiết kế website chuyên nghiệp | Sova',
+      title: 'Business Hosting - Professional Website Design Company | Sova',
       description: 'Home / Services / Storage solutions / Business Hosting',
       canonicalPath: '/en/business-hosting/',
       imageId: 'asset-948e4d7073',

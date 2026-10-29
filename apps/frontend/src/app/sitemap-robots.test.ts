@@ -7,11 +7,11 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 
-test('sitemap generates one absolute loc per registry path (148 URLs, no aliases)', async () => {
+test('sitemap generates one absolute loc per registry path (139 URLs, no aliases)', async () => {
   vi.stubEnv('SITE_URL', 'https://example.com');
   const items = await sitemap();
 
-  expect(items).toHaveLength(148);
+  expect(items).toHaveLength(139);
   expect(items.map((i) => i.url)).toEqual(routes.map((r) => `https://example.com${r.path}`));
 });
 

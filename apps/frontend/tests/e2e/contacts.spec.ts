@@ -1,4 +1,8 @@
 import { expect, KNOWN_ABSENT_CSS_ASSETS, test } from './fixtures';
+import { shellContent } from '../../src/data/shell';
+
+const floating = (locale: 'vi' | 'en') =>
+  shellContent.find((s) => s.locale === locale)!.floatingContacts;
 
 test.describe('Floating contacts and mobile contact bar', () => {
   test('Mobile 390px (VI): bar visible with 5 links, localized labels; widget button visible', async ({
@@ -67,7 +71,7 @@ test.describe('Floating contacts and mobile contact bar', () => {
     await expect(widget).toBeVisible();
     const widgetBtn = widget.locator('.arcu-message-button');
     await expect(widgetBtn).toBeVisible();
-    await expect(widgetBtn.locator('p')).toHaveText('Contact us');
+    await expect(widgetBtn.locator('p')).toHaveText(floating('vi').buttonText);
 
     // Icon slider (contactus.min.js B()): after the 2s pause the icons replace the static text
     await expect(widgetBtn.locator('.icons')).not.toHaveClass(/arcu-hide/, { timeout: 5000 });
@@ -98,15 +102,13 @@ test.describe('Floating contacts and mobile contact bar', () => {
     const menuBlock = page.locator('#arcontactus .messangers-block');
     await expect(menuBlock).toHaveClass(/arcu-show/);
     await expect(menuBlock.locator('.arcu-menu-header-content')).toHaveText(
-      'Xin chào, Chúng tôi có thể giúp gì cho bạn.',
+      floating('vi').menuHeader,
     );
 
     const items = menuBlock.locator('.messangers-list li a');
     await expect(items).toHaveCount(4);
-    await expect(items.nth(0).locator('.arcu-item-title')).toHaveText('Hotline');
-    await expect(items.nth(1).locator('.arcu-item-title')).toHaveText('Messenger');
-    await expect(items.nth(2).locator('.arcu-item-title')).toHaveText('Chat Zalo');
-    await expect(items.nth(3).locator('.arcu-item-title')).toHaveText('Email us');
+    const { hotline, messenger, zalo, email } = floating('vi');
+    await expect(items.locator('.arcu-item-title')).toHaveText([hotline, messenger, zalo, email]);
 
     await page.keyboard.press('Space');
     await expect(widgetBtn).toHaveAttribute('aria-expanded', 'false');
@@ -120,7 +122,7 @@ test.describe('Floating contacts and mobile contact bar', () => {
 
     const menuBlock = page.locator('#arcontactus .messangers-block');
     await expect(menuBlock.locator('.arcu-menu-header-content')).toHaveText(
-      'How would you like to contact us?',
+      floating('en').menuHeader,
     );
   });
 

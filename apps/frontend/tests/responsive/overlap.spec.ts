@@ -1,39 +1,52 @@
 import { test, expect, type Page } from '@playwright/test';
 import manifest from '../baseline/manifest.json';
 import expectedFailures from './expected-failures.json';
-import { TESTIMONIALS_IDS } from '@/components/testimonials/testimonialsIds';
 
 const WIDTHS = [
   1440, 1280, 1279, 1199, 1024, 992, 850, 849, 768, 640, 575, 550, 549, 480, 414, 390, 360, 320,
 ];
 
-const testimonialImageWrappers = Array.from(
-  new Set(
-    Object.values(TESTIMONIALS_IDS).flatMap((locales) => [
-      locales.vi.imageWrapper,
-      locales.en.imageWrapper,
-    ]),
-  ),
-);
+const HERO_WIDTHS = [320, 390, 549, 768, 1279];
 
 const ALLOWLIST: { pair: RegExp; route?: RegExp; minWidth?: number; reason: string }[] = [
   {
-    pair: new RegExp(
-      `(?:div#(?:${testimonialImageWrappers.join('|')})\\.img\\.has-hover>div\\.img-inner\\.dark>img\\.attachment-original\\.size-original VS (?:div#text-\\d+\\.text>h4>strong|div#col-\\d+\\.col\\.small-12>div\\.col-inner>div#text-\\d+\\.text\\.nd-kh))|(?:(?:div#text-\\d+\\.text>h4>strong|div#col-\\d+\\.col\\.small-12>div\\.col-inner>div#text-\\d+\\.text\\.nd-kh) VS div#(?:${testimonialImageWrappers.join('|')})\\.img\\.has-hover>div\\.img-inner\\.dark>img\\.attachment-original\\.size-original)`,
-    ),
+    pair: /^overflow:div\.(text-box-content\.text>div\.text-inner\.text-center>div#row-\d+\.row(\.align-middle)?|text-inner\.text-center>div#row-\d+\.row(\.align-middle)?>div#col-\d+\.col\.medium-\d+)$/,
+    route: /^(about|profile|projects|project-detail)-/,
+    minWidth: 1280,
+    reason: 'source parity: Flatsome hero row gutters overflow container at desktop widths.',
+  },
+  {
+    pair: /^overflow:div(?:\.col-inner>div#text-\d+\.text\.text-target1>p|#col-\d+\.col\.col-no-hover>div\.col-inner>div#text-\d+\.text\.text-target1)$/,
+    route: /^about-/,
     minWidth: 1280,
     reason:
-      'Decorative testimonial image intentionally layers over quote or eyebrow at desktop source parity.',
+      'source parity: About goals text-target1 negative margin overflows column at desktop widths.',
   },
 ];
 const EXPECTED_FAILURES: Record<string, string[]> = expectedFailures;
 
-async function settle(page: Page) {
-  await page.emulateMedia({ reducedMotion: 'reduce' });
+expect(ALLOWLIST.every(({ reason }) => reason.trim().length > 0)).toBe(true);
+
+async function injectCss(page: Page) {
+  if (process.env.RESPONSIVE_INJECT_CSS)
+    await page.addStyleTag({ content: process.env.RESPONSIVE_INJECT_CSS });
+}
+
+async function open(page: Page, url: string, width?: number) {
+  if (width !== undefined) await page.setViewportSize({ width, height: 900 });
+  const response = await page.goto(url, { waitUntil: 'load' });
+  expect(response?.ok()).toBe(true);
+}
+
+async function freeze(page: Page) {
   await page.addStyleTag({
     content:
       '*,*::before,*::after{transition:none!important;animation-duration:0s!important;animation-delay:0s!important;scroll-behavior:auto!important}',
   });
+}
+
+async function settle(page: Page) {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.evaluate(async () => {
     const w = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
     document
@@ -59,8 +72,6 @@ async function settle(page: Page) {
     win.gsap?.globalTimeline.getChildren(true, true, true).forEach((t) => t.progress(1));
     win.ScrollTrigger?.update();
   });
-  if (process.env.RESPONSIVE_INJECT_CSS)
-    await page.addStyleTag({ content: process.env.RESPONSIVE_INJECT_CSS });
 }
 
 function measure() {
@@ -139,9 +150,9 @@ function measure() {
     range.selectNodeContents(n);
     for (const r of range.getClientRects()) push(el, r, 'text', txt.slice(0, 50));
   }
+  const bg = (e: Element | null) =>
+    e && ['absolute', 'fixed'].includes(getComputedStyle(e).position);
   for (const el of document.querySelectorAll('img,video,iframe,input,textarea,select,svg')) {
-    const bg = (e: Element | null) =>
-      e && ['absolute', 'fixed'].includes(getComputedStyle(e).position);
     if (bg(el) || bg(el.parentElement) || el.closest('.fill,.bg,.banner-bg,.section-bg')) continue;
     if (isFixed(el) || !visible(el) || (el.tagName === 'svg' && el.parentElement?.closest('svg')))
       continue;
@@ -204,17 +215,11 @@ function measure() {
   const de = document.documentElement;
   if (de.scrollWidth > vw + 1)
     hits.push({ sa: `overflow:document`, sb: '', x: de.scrollWidth, y: 0 });
-  return {
-    overflowX: Math.max(0, de.scrollWidth - vw),
-    height: de.scrollHeight,
-    hits,
-    hitCount: hits.length,
-  };
+  return { hits };
 }
 
 for (const row of manifest.rows) {
   test(`Responsive ${row.key}`, async ({ page }) => {
-    expect(ALLOWLIST.every(({ reason }) => reason.trim().length > 0)).toBe(true);
     const pairs = new Set<string>();
     const details = new Map<string, Set<string>>();
     const seen = new Set<string>();
@@ -239,16 +244,18 @@ for (const row of manifest.rows) {
           pairs.add(`${row.key}, ${width}, ${mode}, ${pair}`);
       }
     }
-    const response = await page.goto(row.url, { waitUntil: 'load' });
-    expect(response?.ok()).toBe(true);
+    async function load(width?: number) {
+      await open(page, row.url, width);
+      await freeze(page);
+      await injectCss(page);
+    }
+    await load();
     for (const width of WIDTHS) {
       await page.setViewportSize({ width, height: 900 });
       await check(width, 'resize');
     }
     for (const width of WIDTHS) {
-      await page.setViewportSize({ width, height: 900 });
-      const response = await page.goto(row.url, { waitUntil: 'load' });
-      expect(response?.ok()).toBe(true);
+      await load(width);
       await check(width, 'fresh');
     }
     const stale = (EXPECTED_FAILURES[row.key] ?? []).filter((pair) => !seen.has(pair));
@@ -264,11 +271,8 @@ for (const row of manifest.rows) {
 // The gate clips clamped title lines, so it cannot see the 550–1279 flex-row squeeze (8.5).
 test('Portfolio card category sits below title at 550–1279', async ({ page }) => {
   for (const width of [550, 850, 1024, 1279]) {
-    await page.setViewportSize({ width, height: 900 });
-    const response = await page.goto('/featured_item_category/branding/', { waitUntil: 'load' });
-    expect(response?.ok()).toBe(true);
-    if (process.env.RESPONSIVE_INJECT_CSS)
-      await page.addStyleTag({ content: process.env.RESPONSIVE_INJECT_CSS });
+    await open(page, '/featured_item_category/branding/', width);
+    await injectCss(page);
     const gaps = await page.$$eval('.col-inner .portfolio-box .box-text-inner', (cards) =>
       cards.map((card) => {
         const title = card.querySelector('.portfolio-box-title')!.getBoundingClientRect();
@@ -281,5 +285,50 @@ test('Portfolio card category sits below title at 550–1279', async ({ page }) 
       gaps.filter((gap) => gap < 0),
       `${width}: category above title bottom`,
     ).toEqual([]);
+  }
+});
+
+// Hero `.text-inner { overflow: hidden }` (8.6) mutes the gate for anything it clips,
+// so assert hero text and links still paint inside the clip box.
+test('Hero content stays inside clipped .text-inner', async ({ page }) => {
+  const cases: { url: string; banner: string; widths: number[] }[] = [
+    {
+      url: '/ho-so-nang-luc-sova/',
+      banner: '#banner-1559052784',
+      widths: HERO_WIDTHS,
+    },
+    {
+      url: '/en/sova-portfolio/',
+      banner: '#banner-151127649',
+      widths: HERO_WIDTHS,
+    },
+    {
+      url: '/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/',
+      banner: '#banner-1027010616',
+      widths: HERO_WIDTHS,
+    },
+    { url: '/gioi-thieu/', banner: '#banner-588612431', widths: [1200, 1279] },
+    { url: '/en/about-us/', banner: '#banner-1388775398', widths: [1200, 1279] },
+  ];
+  for (const { url, banner, widths } of cases) {
+    for (const width of widths) {
+      await open(page, url, width);
+      const clipped = await page.$eval(`${banner} .text-inner`, (inner) => {
+        const box = inner.getBoundingClientRect();
+        return Array.from(inner.querySelectorAll('h1, h2, h3, h4, p, a, li'))
+          .filter((el) => {
+            const r = el.getBoundingClientRect();
+            if (r.width < 1 || r.height < 1) return false;
+            return (
+              r.left < box.left - 1 ||
+              r.right > box.right + 1 ||
+              r.top < box.top - 1 ||
+              r.bottom > box.bottom + 1
+            );
+          })
+          .map((el) => `${el.tagName.toLowerCase()} "${el.textContent?.trim().slice(0, 30)}"`);
+      });
+      expect(clipped, `${url} @ ${width}: hero content clipped`).toEqual([]);
+    }
   }
 });

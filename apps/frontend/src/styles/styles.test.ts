@@ -63,9 +63,14 @@ test('globals.css imports tokens then the cascade in manifest order', () => {
   ]);
 });
 
-test('no webfont loading anywhere under src/', () => {
-  // This file names the hosts; the manifest only logs the skipped <link>s.
-  const skip = [path.resolve(__filename), path.join(LEGACY, 'manifest.json')];
+test('no webfont loading under src/ except Be Vietnam Pro in RootDocument', () => {
+  // This file names the hosts; the manifest only logs the skipped <link>s. RootDocument self-hosts
+  // the one approved webfont through next/font (stakeholder review 2026-10-27).
+  const skip = [
+    path.resolve(__filename),
+    path.join(LEGACY, 'manifest.json'),
+    path.join(APP, 'src/components/layout/RootDocument.tsx'),
+  ];
   const hits: string[] = [];
   for (const rel of readdirSync(path.join(APP, 'src'), { recursive: true, encoding: 'utf8' })) {
     const file = path.join(APP, 'src', rel);

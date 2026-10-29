@@ -1,7 +1,7 @@
 import { ALLOW_404, ALLOW_SERVER_ERROR, expect, test } from './fixtures';
 import { routes } from '../../src/data/routes';
 import { buildCounterpartMap } from '../../src/lib/routes';
-import { BRAND_TITLE_SUFFIX } from '../../src/lib/queries/site';
+import { BRAND_TITLE_SUFFIX, BRAND_TITLE_SUFFIX_EN } from '../../src/lib/queries/site';
 
 test.describe('Metadata & Indexing Acceptance', () => {
   // Family routes: one route per (kind, locale)
@@ -39,7 +39,8 @@ test.describe('Metadata & Indexing Acceptance', () => {
       const title = await page.title();
       expect(title).toBeTruthy();
       if (route.kind !== 'login') {
-        expect(title.endsWith(BRAND_TITLE_SUFFIX)).toBe(true);
+        const suffix = route.locale === 'en' ? BRAND_TITLE_SUFFIX_EN : BRAND_TITLE_SUFFIX;
+        expect(title.endsWith(suffix), `${title} ends with${suffix}`).toBe(true);
       }
 
       // Canonical pathname matches route's own path
@@ -69,7 +70,7 @@ test.describe('Metadata & Indexing Acceptance', () => {
     });
   }
 
-  test('Sitemap /sitemap.xml serves 148 registry loc pathnames and no aliases', async ({
+  test('Sitemap /sitemap.xml serves 139 registry loc pathnames and no aliases', async ({
     request,
   }) => {
     const response = await request.get('/sitemap.xml');
@@ -77,7 +78,7 @@ test.describe('Metadata & Indexing Acceptance', () => {
     const body = await response.text();
 
     const locMatches = [...body.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-    expect(locMatches).toHaveLength(148);
+    expect(locMatches).toHaveLength(139);
 
     const locPathnames = locMatches.map((loc) => new URL(loc).pathname);
     const registryPaths = routes.map((r) => r.path);

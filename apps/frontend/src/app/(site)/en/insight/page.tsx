@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import '@/styles/legacy/sections/route-en--insight.css';
 import { notFound } from 'next/navigation';
-import { BRAND_TITLE_SUFFIX, routeAlternates } from '@/lib/queries/site';
+import { BRAND_TITLE_SUFFIX_EN, routeAlternates } from '@/lib/queries/site';
 import { getBlogListingPage } from '@/lib/queries/posts';
 import { BlogListView } from '@/components/blog/BlogListView';
 
@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
   });
   if (!data) return {};
 
-  const title = `${data.settings?.heading.title ?? data.copy.title}${BRAND_TITLE_SUFFIX}`;
+  const title = `${data.settings?.heading.title ?? data.copy.title}${BRAND_TITLE_SUFFIX_EN}`;
   const alternates = await routeAlternates('/en/insight/');
   return {
     title,

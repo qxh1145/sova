@@ -26,7 +26,7 @@ test.describe('Desktop keyboard navigation', () => {
       await expect(parent).toHaveAttribute('aria-expanded', 'true');
       await expect(item).toHaveClass(/current-dropdown/);
       await expect(item.locator('.sub-menu a').first()).toBeVisible();
-      // Nested columns (Hosting/VPS) open on focus of their column link, so every link is a Tab stop.
+      // Every submenu link is a Tab stop.
       const links = item.locator('.sub-menu a');
       const count = await links.count();
       expect(count).toBeGreaterThan(1);

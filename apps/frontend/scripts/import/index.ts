@@ -35,7 +35,14 @@ function keepCurated(file: string, flag: string) {
   return keep;
 }
 
+/** A curated header names its own overwrite flag, so hand-curating any generated file protects it. */
+const CURATED_FLAG_RE =
+  /^\/\/ Seeded by scripts\/import, then curated by hand\. .* unless (\w+)=1\./;
+
 async function writeTs(file: string, body: string) {
+  const flag = existsSync(file) ? CURATED_FLAG_RE.exec(readFileSync(file, 'utf8'))?.[1] : undefined;
+  if (flag && keepCurated(file, flag)) return;
+  if (flag) body = body.replace(HEADER, curatedHeader(flag));
   assertNoLeak(path.relative(DATA, file), body);
   const options = await resolveConfig(file);
   const text = await format(body, { ...options, filepath: file });

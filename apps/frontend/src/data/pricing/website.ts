@@ -13,7 +13,6 @@ export const websitePricing: Pricing[] = [
         name: 'CƠ BẢN',
         featureIds: [
           'pricing-website-feature-1',
-          'pricing-website-feature-2',
           'pricing-website-feature-3',
           'pricing-website-feature-4',
           'pricing-website-feature-5',
@@ -30,7 +29,6 @@ export const websitePricing: Pricing[] = [
         name: 'NÂNG CAO',
         featureIds: [
           'pricing-website-feature-1',
-          'pricing-website-feature-10',
           'pricing-website-feature-11',
           'pricing-website-feature-12',
           'pricing-website-feature-5',
@@ -48,7 +46,6 @@ export const websitePricing: Pricing[] = [
         name: 'CHUYÊN NGHIỆP',
         featureIds: [
           'pricing-website-feature-1',
-          'pricing-website-feature-13',
           'pricing-website-feature-14',
           'pricing-website-feature-15',
           'pricing-website-feature-5',
@@ -65,18 +62,15 @@ export const websitePricing: Pricing[] = [
     kind: 'cards',
     features: [
       { id: 'pricing-website-feature-1', label: 'Cam kết tải trang nhanh 2 giây' },
-      { id: 'pricing-website-feature-2', label: 'Tặng hosting 03 Gb SSD' },
       { id: 'pricing-website-feature-3', label: 'Giao diện có sẵn, đổi màu 1 lần' },
       { id: 'pricing-website-feature-4', label: 'Thời gian bàn giao: 5-7 ngày' },
       { id: 'pricing-website-feature-5', label: 'Tặng tên miền quốc tế (.COM)' },
       { id: 'pricing-website-feature-6', label: 'Miễn phí bảo mật SSL (https)' },
-      { id: 'pricing-website-feature-7', label: 'Bảo hành trọn đời website' },
+      { id: 'pricing-website-feature-7', label: 'Bảo hành website 1 năm' },
       { id: 'pricing-website-feature-8', label: 'Tối ưu chuẩn SEO Google' },
       { id: 'pricing-website-feature-9', label: 'Responsive đa thiết bị di động' },
-      { id: 'pricing-website-feature-10', label: 'Tặng hosting 05 GB SSD' },
       { id: 'pricing-website-feature-11', label: 'Giao diện sẵn, tùy chỉnh Trang chủ cơ bản' },
       { id: 'pricing-website-feature-12', label: 'Thời gian bàn giao: 9-14 ngày' },
-      { id: 'pricing-website-feature-13', label: 'Tặng hosting 10GB NVMe' },
       { id: 'pricing-website-feature-14', label: 'Giao diện sẵn hoặc thiết kế riêng' },
       { id: 'pricing-website-feature-15', label: 'Thời gian bàn giao: 20-25 ngày' },
     ],
@@ -92,7 +86,6 @@ export const websitePricing: Pricing[] = [
         name: 'STANDARD',
         featureIds: [
           'pricing-website-feature-1',
-          'pricing-website-feature-2',
           'pricing-website-feature-3',
           'pricing-website-feature-4',
           'pricing-website-feature-5',
@@ -115,7 +108,6 @@ export const websitePricing: Pricing[] = [
         name: 'ADVANCED',
         featureIds: [
           'pricing-website-feature-1',
-          'pricing-website-feature-10',
           'pricing-website-feature-11',
           'pricing-website-feature-12',
           'pricing-website-feature-5',
@@ -139,7 +131,6 @@ export const websitePricing: Pricing[] = [
         name: 'PROFESSIONAL',
         featureIds: [
           'pricing-website-feature-1',
-          'pricing-website-feature-13',
           'pricing-website-feature-14',
           'pricing-website-feature-15',
           'pricing-website-feature-5',
@@ -170,7 +161,6 @@ export const websitePricing: Pricing[] = [
         id: 'pricing-website-feature-1',
         label: 'Lightning-Fast Loading – Under 2 Seconds Guaranteed',
       },
-      { id: 'pricing-website-feature-2', label: 'Free 3GB SSD Hosting' },
       {
         id: 'pricing-website-feature-3',
         label: 'Pre-designed Theme with One-Time Color Customization',
@@ -178,16 +168,14 @@ export const websitePricing: Pricing[] = [
       { id: 'pricing-website-feature-4', label: 'Handover time: 5-7 days' },
       { id: 'pricing-website-feature-5', label: 'Free international domain (.COM)' },
       { id: 'pricing-website-feature-6', label: 'SSL Security Included (HTTPS)' },
-      { id: 'pricing-website-feature-7', label: 'Lifetime Warranty & Support' },
+      { id: 'pricing-website-feature-7', label: '1-Year Website Warranty' },
       { id: 'pricing-website-feature-8', label: 'SEO-Ready – Optimized for Google Search' },
       { id: 'pricing-website-feature-9', label: 'Fully Responsive on All Devices' },
-      { id: 'pricing-website-feature-10', label: 'Free 5GB SSD Hosting' },
       {
         id: 'pricing-website-feature-11',
         label: 'Ready-Made Templates with Tailored Homepage Customization',
       },
       { id: 'pricing-website-feature-12', label: 'Handover time: 9-14 days' },
-      { id: 'pricing-website-feature-13', label: 'Free 10GB NVMe Hosting' },
       {
         id: 'pricing-website-feature-14',
         label: 'Ready-Made Themes or Custom Design to Suit Your Needs',

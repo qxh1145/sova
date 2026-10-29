@@ -1,6 +1,7 @@
 // Post-build / staging crawl (CAP-2): crawl every registry route and alias over HTTP against
 // STAGING_URL or local next start, and fail on any CAP-2 violation.
 import { routes } from '../src/data/routes.ts';
+import { RENAMED_PATHS } from '../src/lib/content/brand.ts';
 
 const BASE_URL = (
   process.env.STAGING_URL || `http://localhost:${process.env.PORT || 3000}`
@@ -19,9 +20,10 @@ const MAX_HOPS = 5;
 const REQUEST_TIMEOUT_MS = 10000;
 const REDIRECT_STATUSES = new Set([301, 302, 307, 308]);
 
-// ROUTE_MAP excluded families (from src/data/navigation.test.ts:17-18).
+// ROUTE_MAP excluded families plus the hidden storage/email services (from
+// src/data/navigation.test.ts:17-21) and the hidden WordPress sample page.
 const EXCLUDED_RE =
-  /^\/(?:en\/)?(?:tuyen-dung|giai-phap-truyen-thong-so|digital-communications-solutions)\//;
+  /^\/(?:en\/)?(?:tuyen-dung|giai-phap-truyen-thong-so|digital-communications-solutions|e-mail-doanh-nghiep|giai-phap-luu-tru|hosting-doanh-nghiep|vps-doanh-nghiep|business-e-mail|business-hosting|business-vps|storage-solution|sample-page)\//;
 
 const UNKNOWN_SLUGS = ['/featured_item/khong-ton-tai-xyz/', '/khong-ton-tai-xyz/'];
 
@@ -30,6 +32,17 @@ const REMOVED_ROUTES = [
   '/en/tuyen-dung/',
   '/giai-phap-truyen-thong-so/',
   '/en/digital-communications-solutions/',
+  // Storage, email, hosting and VPS are hidden until further notice (stakeholder review 2026-10-27).
+  '/giai-phap-luu-tru/',
+  '/en/storage-solution/',
+  '/e-mail-doanh-nghiep/',
+  '/en/business-e-mail/',
+  '/hosting-doanh-nghiep/',
+  '/en/business-hosting/',
+  '/vps-doanh-nghiep/',
+  '/en/business-vps/',
+  // WordPress "Sample Page" leftover, hidden (stakeholder review 2026-10-27).
+  '/sample-page/',
 ];
 
 function isRemovedRouteHref(href: string, pageUrl: string): boolean {
@@ -37,7 +50,7 @@ function isRemovedRouteHref(href: string, pageUrl: string): boolean {
     const url = new URL(href, pageUrl);
     if (url.origin !== BASE_ORIGIN) return false;
     const path = url.pathname.endsWith('/') ? url.pathname : `${url.pathname}/`;
-    return EXCLUDED_RE.test(path);
+    return EXCLUDED_RE.test(path) || Object.hasOwn(RENAMED_PATHS, path);
   } catch {
     return false;
   }
@@ -157,6 +170,26 @@ async function checkUnknownSlug(slug: string, failures: string[]): Promise<void>
   }
 }
 
+// Renamed paths must answer 301 straight to the new path (query kept), not 308 or a chain.
+async function checkRenamed(from: string, to: string, failures: string[]): Promise<void> {
+  const url = `${BASE_URL}${from}?q=1`;
+  try {
+    const res = await fetch(url, {
+      redirect: 'manual',
+      headers: requestHeaders(url),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    });
+    const location = res.headers.get('location');
+    const target = location ? new URL(location, url) : null;
+    if (res.status !== 301) failures.push(`${from}: got ${res.status}, expected 301`);
+    else if (target?.origin !== BASE_ORIGIN || `${target.pathname}${target.search}` !== `${to}?q=1`)
+      failures.push(`${from}: Location ${location}, expected ${to}?q=1`);
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    failures.push(`${from}: ${msg}`);
+  }
+}
+
 async function checkRemovedRoute(route: string, failures: string[]): Promise<void> {
   const url = `${BASE_URL}${route}`;
   try {
@@ -178,7 +211,8 @@ type Task =
   | { kind: 'kept'; path: string }
   | { kind: 'alias'; alias: string; canonical: string }
   | { kind: 'unknown'; path: string }
-  | { kind: 'removed'; path: string };
+  | { kind: 'removed'; path: string }
+  | { kind: 'renamed'; from: string; to: string };
 
 const aliasTasks: Task[] = routes.flatMap((r) =>
   r.aliases.map((alias) => ({ kind: 'alias' as const, alias, canonical: r.path })),
@@ -186,8 +220,19 @@ const aliasTasks: Task[] = routes.flatMap((r) =>
 const keptTasks: Task[] = routes.map((r) => ({ kind: 'kept' as const, path: r.path }));
 const unknownTasks: Task[] = UNKNOWN_SLUGS.map((path) => ({ kind: 'unknown' as const, path }));
 const removedTasks: Task[] = REMOVED_ROUTES.map((path) => ({ kind: 'removed' as const, path }));
+const renamedTasks: Task[] = Object.entries(RENAMED_PATHS).map(([from, to]) => ({
+  kind: 'renamed' as const,
+  from,
+  to,
+}));
 
-const allTasks: Task[] = [...keptTasks, ...aliasTasks, ...unknownTasks, ...removedTasks];
+const allTasks: Task[] = [
+  ...keptTasks,
+  ...aliasTasks,
+  ...unknownTasks,
+  ...removedTasks,
+  ...renamedTasks,
+];
 
 const failures: string[] = [];
 
@@ -204,6 +249,9 @@ await runConcurrent(allTasks, CONCURRENCY, async (task) => {
       break;
     case 'removed':
       await checkRemovedRoute(task.path, failures);
+      break;
+    case 'renamed':
+      await checkRenamed(task.from, task.to, failures);
       break;
   }
 });

@@ -1,4 +1,8 @@
 import { expect, expectNoDuplicateIds, getBodyOverflow, test } from './fixtures';
+import { shellContent } from '../../src/data/shell';
+
+const tagline = (locale: 'vi' | 'en') =>
+  shellContent.find((s) => s.locale === locale)!.mobileMenu.tagline;
 
 test.describe('Mobile menu drawer and accordion navigation', () => {
   test('Matrix 1: Keyboard open on mobile (390px) — Enter opens drawer, focus inside, scroll locked', async ({
@@ -56,7 +60,7 @@ test.describe('Mobile menu drawer and accordion navigation', () => {
     expect(accordionDisplay).toBe('none');
 
     // Logo, tagline, contact heading are still visible in desktop drawer
-    await expect(drawer.locator('h3')).toContainText('Thấu hiểu, đồng hành');
+    await expect(drawer.locator('h3')).toHaveText(tagline('vi'));
     await expect(drawer.locator('#text-101127661 h4')).toHaveText('Liên hệ');
   });
 
@@ -183,7 +187,9 @@ test.describe('Mobile menu drawer and accordion navigation', () => {
     expect(page.url()).toBe(initialUrl);
   });
 
-  test('Matrix 6: Nested submenu — two-level nesting reachable and navigable', async ({ page }) => {
+  test('Matrix 6: Service submenu — four links, no nested level while storage and e-mail are hidden', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
 
@@ -198,20 +204,20 @@ test.describe('Mobile menu drawer and accordion navigation', () => {
     await level1Li.locator('> button.toggle-submenu').click();
     await expect(level1Li).toHaveClass(/active/);
 
-    // Open level 2 (Giải pháp lưu trữ inside Dịch vụ)
-    const level2Li = level1Li.locator('ul.sub-menu > li.has-children').first();
-    const level2Toggle = level2Li.locator('> button.toggle-submenu');
-    await level2Toggle.click();
-    await expect(level2Li).toHaveClass(/active/);
-    await expect(level2Toggle).toHaveAttribute('aria-expanded', 'true');
-
-    // Grandchild links (Hosting / VPS) reachable
-    const grandchildLinks = level2Li.locator('ul.sub-menu a');
-    await expect(grandchildLinks).toHaveCount(2);
-    await expect(grandchildLinks.first()).toBeVisible();
+    // Only the four live services remain, and none of them nests a level 2
+    await expect(level1Li.locator('ul.sub-menu a')).toHaveText([
+      'Thiết kế website',
+      'Thiết kế App Mobile',
+      'SEO từ khoá website',
+      'UI/UX, Branding Design',
+    ]);
+    await expect(level1Li.locator('ul.sub-menu li.has-children')).toHaveCount(0);
+    await expect(
+      drawer.locator('.accordion-menu a', { hasText: /lưu trữ|e-mail|hosting|vps/i }),
+    ).toHaveCount(0);
   });
 
-  test('Matrix 7: Parent link click navigates and closes drawer', async ({ page }) => {
+  test('Matrix 7: Submenu link click navigates and closes drawer', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
 
@@ -226,15 +232,15 @@ test.describe('Mobile menu drawer and accordion navigation', () => {
     await level1Li.locator('> button.toggle-submenu').click();
     await expect(level1Li).toHaveClass(/active/);
 
-    // Click parent link with children and destination (Giải pháp lưu trữ)
-    const storageLink = drawer.locator('.accordion-menu a', { hasText: 'Giải pháp lưu trữ' });
-    await expect(storageLink).toBeVisible();
-    await storageLink.click();
+    // Click a service link (Thiết kế website)
+    const serviceLink = drawer.locator('.accordion-menu a', { hasText: 'Thiết kế website' });
+    await expect(serviceLink).toBeVisible();
+    await serviceLink.click();
 
     // Drawer closes and page navigates
     await expect(page.locator('#main-menu')).toHaveCount(0);
     await expect(page.locator('body')).not.toHaveAttribute('data-scroll-locked');
-    await expect(page).toHaveURL(/\/giai-phap-luu-tru\/?$/);
+    await expect(page).toHaveURL(/\/thiet-ke-website\/?$/);
   });
 
   test('Matrix 8: EN root (/en/home/) — EN labels, EN nav items, reversed switcher', async ({
@@ -250,9 +256,7 @@ test.describe('Mobile menu drawer and accordion navigation', () => {
     await expect(drawer).toBeVisible();
 
     // EN Tagline
-    await expect(drawer.locator('h3')).toHaveText(
-      'Understand, accompany, and design a comprehensive digital experience.',
-    );
+    await expect(drawer.locator('h3')).toHaveText(tagline('en'));
 
     // EN Headings
     await expect(drawer.locator('#text-1183739128 h4')).toHaveText('Menu');

@@ -4,6 +4,7 @@ import path from 'node:path';
 import { promisify } from 'node:util';
 import { afterAll, beforeAll, beforeEach, expect, test } from 'vitest';
 import { routes } from '../src/data/routes.ts';
+import { RENAMED_PATHS } from '../src/lib/content/brand.ts';
 
 const execFileAsync = promisify(execFile);
 const SCRIPT = path.join(__dirname, 'check-routes.ts');
@@ -15,8 +16,8 @@ for (const r of routes) {
     aliasMap.set(a, r.path);
   }
 }
-// kept + aliases + 2 unknown slugs + 4 removed roots
-const TOTAL = routes.length + aliasMap.size + 6;
+// kept + aliases + 2 unknown slugs + 4 removed roots + 8 hidden service roots + sample page + renamed
+const TOTAL = routes.length + aliasMap.size + 15 + Object.keys(RENAMED_PATHS).length;
 
 type OverrideHandler = (req: http.IncomingMessage, res: http.ServerResponse) => boolean;
 
@@ -30,6 +31,12 @@ beforeAll(async () => {
       return;
     }
     const url = req.url ?? '/';
+    const [pathname, query] = url.split('?');
+    if (Object.hasOwn(RENAMED_PATHS, pathname)) {
+      res.writeHead(301, { Location: `${RENAMED_PATHS[pathname]}?${query}` });
+      res.end();
+      return;
+    }
     if (aliasMap.has(url)) {
       res.writeHead(307, { Location: aliasMap.get(url)! });
       res.end();
@@ -88,7 +95,7 @@ test('all routes, aliases, unknown slugs, and removed routes pass when server be
 
 test('one registry path 404 (removed page) fails naming it', async () => {
   override = (req, res) => {
-    if (req.url === '/login-eras/') {
+    if (req.url === '/login-sova/') {
       res.writeHead(404);
       res.end('Not Found');
       return true;
@@ -97,7 +104,7 @@ test('one registry path 404 (removed page) fails naming it', async () => {
   };
   const { status, stderr } = await runCheckRoutes();
   expect(status).toBe(1);
-  expect(stderr).toContain('/login-eras/: got 404');
+  expect(stderr).toContain('/login-sova/: got 404');
 });
 
 test('alias redirecting to itself fails', async () => {
@@ -302,8 +309,8 @@ test('alias redirect without Location header fails', async () => {
 
 test('kept route answering with a redirect fails', async () => {
   override = (req, res) => {
-    if (req.url === '/login-eras/') {
-      res.writeHead(308, { Location: '/login-eras' });
+    if (req.url === '/login-sova/') {
+      res.writeHead(308, { Location: '/login-sova' });
       res.end();
       return true;
     }
@@ -311,7 +318,43 @@ test('kept route answering with a redirect fails', async () => {
   };
   const { status, stderr } = await runCheckRoutes();
   expect(status).toBe(1);
-  expect(stderr).toContain('/login-eras/: got 308');
+  expect(stderr).toContain('/login-sova/: got 308');
+});
+
+test('renamed path answering 308 or the wrong Location fails', async () => {
+  override = (req, res) => {
+    if (req.url === '/login-eras/?q=1') {
+      res.writeHead(308, { Location: '/login-sova/?q=1' });
+      res.end();
+      return true;
+    }
+    if (req.url === '/ho-so-nang-luc-eras-vietnam/?q=1') {
+      res.writeHead(301, { Location: '/ho-so-nang-luc-sova/' });
+      res.end();
+      return true;
+    }
+    return false;
+  };
+  const { status, stderr } = await runCheckRoutes();
+  expect(status).toBe(1);
+  expect(stderr).toContain('/login-eras/: got 308, expected 301');
+  expect(stderr).toContain(
+    '/ho-so-nang-luc-eras-vietnam/: Location /ho-so-nang-luc-sova/, expected /ho-so-nang-luc-sova/?q=1',
+  );
+});
+
+test('page linking an old renamed path fails', async () => {
+  override = (req, res) => {
+    if (req.url === '/') {
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end('<html><body><a href="/login-eras/?action=register">Login</a></body></html>');
+      return true;
+    }
+    return false;
+  };
+  const { status, stderr } = await runCheckRoutes();
+  expect(status).toBe(1);
+  expect(stderr).toContain('/: links to /login-eras/?action=register');
 });
 
 test('unknown featured_item slug returning 200 fails', async () => {

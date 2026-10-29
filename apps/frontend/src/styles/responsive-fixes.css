@@ -1,6 +1,8 @@
 /* Responsive overrides: scope with route IDs to beat later per-route CSS and inline globals.
    Use !important only against important source rules. Parity corrections at >=1280 belong
    in a clearly marked parity block outside these media queries. */
+
+/* 8.1: Home stats columns stack */
 @media (min-width: 550px) and (max-width: 640px) {
   #row-34630575 #col-497116769 {
     max-width: 100%;
@@ -27,23 +29,38 @@
     margin-bottom: 20px;
     padding-right: 0;
   }
+
+  /* 8.6: Footer quick links column sizing at 550–640.
+     Footer.tsx:172 quick links medium-2 (16.67%), EN word "Instructions" cannot shrink (+25px @550).
+     Give quick links 25%, medium-3 37.5%, and company info 100% full width. */
+  #row-1158304944 > #col-846792399 {
+    max-width: 100%;
+    flex-basis: 100%;
+  }
+
+  #row-1158304944 > .col.medium-3 {
+    max-width: 37.5%;
+    flex-basis: 37.5%;
+  }
+
+  #row-1158304944 > .col.medium-2 {
+    max-width: 25%;
+    flex-basis: 25%;
+  }
 }
 
 @media (min-width: 550px) and (max-width: 1199px) {
-  #banner-1767683074,
-  #banner-1274327306 {
+  :is(#banner-1767683074, #banner-1274327306) {
     min-height: 420px;
   }
 
-  #banner-1767683074 .banner-layers,
-  #banner-1274327306 .banner-layers {
+  :is(#banner-1767683074, #banner-1274327306) .banner-layers {
     position: relative;
     padding-top: 45px;
     padding-bottom: 70px;
   }
 
-  #banner-1767683074 .banner-layers > .text-box,
-  #banner-1274327306 .banner-layers > .text-box {
+  :is(#banner-1767683074, #banner-1274327306) .banner-layers > .text-box {
     position: relative !important;
     top: auto;
     left: auto;
@@ -51,111 +68,94 @@
     width: 100%;
   }
 
-  #banner-1767683074 .home_text_go,
-  #banner-1274327306 .home_text_go {
+  :is(#banner-1767683074, #banner-1274327306) .home_text_go {
     height: auto;
   }
 
-  #banner-1767683074 h1.home-hero-heading,
-  #banner-1274327306 h1.home-hero-heading {
+  :is(#banner-1767683074, #banner-1274327306) h1.home-hero-heading {
     font-size: clamp(30px, 4vw, 48px) !important;
   }
 
-  #row-560000867 .count-num .mb-0,
-  #row-34630575 .count-num .mb-0 {
+  :is(#row-560000867, #row-34630575) .count-num .mb-0 {
     font-size: clamp(24px, 3.2vw, 42px);
     line-height: 1;
   }
 
-  #row-560000867 .row-num,
-  #row-34630575 .row-num {
+  :is(#row-560000867, #row-34630575) .row-num {
     flex-wrap: nowrap;
     align-items: center;
   }
 
-  #row-560000867 .row-num > .col,
-  #row-34630575 .row-num > .col {
+  :is(#row-560000867, #row-34630575) .row-num > .col {
     max-width: 50%;
     flex-basis: 50%;
   }
 
-  #row-560000867 .row-num p,
-  #row-34630575 .row-num p {
+  :is(#row-560000867, #row-34630575) .row-num p {
     margin-top: 0 !important;
     margin-bottom: 0 !important;
   }
 
   /* 8.2: Service list on home */
-  #text-76027534 .dich_vu,
-  #text-363933116 .dich_vu {
+  :is(#text-76027534, #text-363933116) .dich_vu {
     flex-wrap: wrap;
     row-gap: 16px;
     column-gap: 20px;
   }
 
-  #text-76027534 .dich_vu .num_dv,
-  #text-363933116 .dich_vu .num_dv {
+  :is(#text-76027534, #text-363933116) .dich_vu .num_dv {
     width: auto;
     flex: 0 0 auto;
   }
 
-  #text-76027534 .dich_vu .num_dv span,
-  #text-363933116 .dich_vu .num_dv span {
+  :is(#text-76027534, #text-363933116) .dich_vu .num_dv span {
     font-size: clamp(64px, 8vw, 100px);
     margin-right: 0;
   }
 
-  #text-76027534 .dich_vu .num_dv span:after,
-  #text-363933116 .dich_vu .num_dv span:after {
+  :is(#text-76027534, #text-363933116) .dich_vu .num_dv span:after {
     font-size: clamp(54px, 7vw, 84px);
     margin-left: 6px;
   }
 
-  #text-76027534 .dich_vu .name_dv,
-  #text-363933116 .dich_vu .name_dv {
+  :is(#text-76027534, #text-363933116) .dich_vu .name_dv {
     width: auto;
     flex: 1 1 200px;
     font-size: clamp(24px, 3vw, 34px);
     margin-bottom: 0;
   }
 
-  #text-76027534 .dich_vu .mta_dv,
-  #text-363933116 .dich_vu .mta_dv {
+  :is(#text-76027534, #text-363933116) .dich_vu .mta_dv {
     width: 100%;
     flex: 1 1 100%;
     order: 3;
     font-size: clamp(15px, 1.6vw, 18px);
   }
 
-  #text-76027534 .dich_vu .nut_xthem,
-  #text-363933116 .dich_vu .nut_xthem {
+  :is(#text-76027534, #text-363933116) .dich_vu .nut_xthem {
     width: auto;
     flex: 0 0 auto;
     order: 2;
   }
 
-  #text-76027534 .dich_vu .nut_xthem a,
-  #text-363933116 .dich_vu .nut_xthem a {
+  :is(#text-76027534, #text-363933116) .dich_vu .nut_xthem a {
     font-size: clamp(48px, 6vw, 72px);
     margin-left: 0;
   }
 
   /* 8.2: About stats & hero text flow */
-  #content #banner-588612431,
-  #content #banner-1388775398 {
+  #content :is(#banner-588612431, #banner-1388775398) {
     min-height: 480px;
     padding-top: 0;
   }
 
-  #banner-588612431 .banner-layers,
-  #banner-1388775398 .banner-layers {
+  :is(#banner-588612431, #banner-1388775398) .banner-layers {
     position: relative;
     padding-top: 50px;
     padding-bottom: 60px;
   }
 
-  #banner-588612431 .banner-layers > .text-box,
-  #banner-1388775398 .banner-layers > .text-box {
+  :is(#banner-588612431, #banner-1388775398) .banner-layers > .text-box {
     position: relative !important;
     top: auto;
     left: auto;
@@ -163,8 +163,7 @@
     width: 100%;
   }
 
-  #banner-588612431 .page_text_go,
-  #banner-1388775398 .page_text_go {
+  :is(#banner-588612431, #banner-1388775398) .page_text_go {
     height: auto;
   }
 
@@ -206,32 +205,21 @@
   #row-2111227539 #col-1460778604 > .col-inner {
     margin-left: 0;
   }
-}
 
-/* 8.4: Project archive heroes top padding below 550 to clear 90px absolute header */
-@media (max-width: 549px) {
-  #banner-2058171634 .banner-layers,
-  #banner-2108105581 .banner-layers,
-  #banner-1513224978 .banner-layers,
-  #banner-1437243260 .banner-layers,
-  #banner-819223527 .banner-layers,
-  #banner-669224451 .banner-layers {
-    padding-top: 100px;
-  }
-}
-
-/* 8.4: Project archive & detail heroes flow below 1280.
-   Banners: VI (2058171634), EN (2108105581), featured index (1513224978),
-   branding (1437243260), mobile-app (819223527), website (669224451),
-   detail (1027010616). Normal flow + top padding clears 90px header and keeps
-   description/CTA from spilling onto portfolio filter below. */
-@media (min-width: 550px) and (max-width: 1279px) {
-  #wrapper #banner-2058171634,
-  #wrapper #banner-2108105581,
-  #wrapper #banner-1513224978,
-  #wrapper #banner-1437243260,
-  #wrapper #banner-819223527,
-  #wrapper #banner-669224451 {
+  /* 8.4: Project archive & detail heroes flow below 1280.
+     Banners: VI (2058171634), EN (2108105581), featured index (1513224978),
+     branding (1437243260), mobile-app (819223527), website (669224451),
+     detail (1027010616). Normal flow + top padding clears 90px header and keeps
+     description/CTA from spilling onto portfolio filter below. */
+  #wrapper
+    :is(
+      #banner-2058171634,
+      #banner-2108105581,
+      #banner-1513224978,
+      #banner-1437243260,
+      #banner-819223527,
+      #banner-669224451
+    ) {
     min-height: 400px;
     padding-top: 0;
     height: auto;
@@ -243,23 +231,29 @@
     height: auto;
   }
 
-  #banner-2058171634 .banner-inner,
-  #banner-2108105581 .banner-inner,
-  #banner-1513224978 .banner-inner,
-  #banner-1437243260 .banner-inner,
-  #banner-819223527 .banner-inner,
-  #banner-669224451 .banner-inner,
-  #banner-1027010616 .banner-inner {
+  :is(
+      #banner-2058171634,
+      #banner-2108105581,
+      #banner-1513224978,
+      #banner-1437243260,
+      #banner-819223527,
+      #banner-669224451,
+      #banner-1027010616
+    )
+    .banner-inner {
     position: relative;
     height: auto;
   }
 
-  #banner-2058171634 .banner-layers,
-  #banner-2108105581 .banner-layers,
-  #banner-1513224978 .banner-layers,
-  #banner-1437243260 .banner-layers,
-  #banner-819223527 .banner-layers,
-  #banner-669224451 .banner-layers {
+  :is(
+      #banner-2058171634,
+      #banner-2108105581,
+      #banner-1513224978,
+      #banner-1437243260,
+      #banner-819223527,
+      #banner-669224451
+    )
+    .banner-layers {
     position: relative;
     height: auto;
     padding-top: 100px;
@@ -273,13 +267,17 @@
     padding-bottom: 40px;
   }
 
-  #banner-2058171634 .banner-layers > .text-box,
-  #banner-2108105581 .banner-layers > .text-box,
-  #banner-1513224978 .banner-layers > .text-box,
-  #banner-1437243260 .banner-layers > .text-box,
-  #banner-819223527 .banner-layers > .text-box,
-  #banner-669224451 .banner-layers > .text-box,
-  #banner-1027010616 .banner-layers > .text-box {
+  :is(
+      #banner-2058171634,
+      #banner-2108105581,
+      #banner-1513224978,
+      #banner-1437243260,
+      #banner-819223527,
+      #banner-669224451,
+      #banner-1027010616
+    )
+    .banner-layers
+    > .text-box {
     position: relative !important;
     top: auto;
     left: auto;
@@ -287,50 +285,90 @@
     width: 100%;
   }
 
-  #banner-2058171634 .page_text_go,
-  #banner-2108105581 .page_text_go,
-  #banner-1513224978 .page_text_go,
-  #banner-1437243260 .page_text_go,
-  #banner-819223527 .page_text_go,
-  #banner-669224451 .page_text_go {
+  :is(
+      #banner-2058171634,
+      #banner-2108105581,
+      #banner-1513224978,
+      #banner-1437243260,
+      #banner-819223527,
+      #banner-669224451
+    )
+    .page_text_go {
     height: auto;
   }
-}
 
-/* 8.5: Portfolio card title stacks above category at 550–1279 (source flex row squeezes title;
-   source already stacks them at ≤549) */
-@media (min-width: 550px) and (max-width: 1279px) {
+  /* 8.5: Portfolio card title stacks above category at 550–1279 (source flex row squeezes title;
+     source already stacks them at ≤549) */
   .col-inner .portfolio-box .box-text-inner {
     display: block;
   }
+
+  /* 8.6: About goals box 550–1279.
+     Flatsome 130% / -37% margins put text box off-screen. */
+  :is(#text-860603892, #text-3919715460) {
+    width: calc(93% + 15px);
+    margin-left: -15px;
+  }
 }
 
-/* 8.5: Service slider cards grow below 550 so the CTA clears the feature list.
-   Source heights stay as min-height; CTA leaves absolute positioning and margin-top:auto
-   keeps it at the card bottom. inline-block lets the CTA padding size the line box, so
-   20px card padding + 20px margin = source bottom 40px.
-   Track stretches every slide to the tallest card (AutoHeight inline height overridden),
-   so the carousel keeps one height across autoplay steps. */
 @media (max-width: 549px) {
+  /* 8.4: Project archive heroes top padding below 550 to clear 90px absolute header */
+  :is(
+      #banner-2058171634,
+      #banner-2108105581,
+      #banner-1513224978,
+      #banner-1437243260,
+      #banner-819223527,
+      #banner-669224451
+    )
+    .banner-layers {
+    padding-top: 100px;
+  }
+
+  /* 8.5: Service slider cards grow below 550 so the CTA clears the feature list.
+     Source heights stay as min-height; CTA leaves absolute positioning and margin-top:auto
+     keeps it at the card bottom. inline-block lets the CTA padding size the line box, so
+     20px card padding + 20px margin = source bottom 40px.
+     Track stretches every slide to the tallest card (AutoHeight inline height overridden),
+     so the carousel keeps one height across autoplay steps.
+     SEO cards (slide_seo) join too: Be Vietnam Pro is wider than the source font, so the feature
+     list outgrows the fixed 772px card and the absolute CTA (p, bottom 20px) covered the last item.
+     Their p leaves absolute positioning; a 9px margin keeps the source 29px button-to-card-edge gap.
+     Website pricing (slide_tke1) and website/mobile why-choose-us (slide_tsao, slide_tkap) cards
+     join the stretch only: their fixed source heights (815/580/611px) clipped the wrapped feature
+     list and the in-flow pricing CTA under the dots at 320–414. They keep block layout. */
   .slider-wrapper.slide_ui .flickity-slider,
-  .slider-wrapper.slide_gplt .flickity-slider {
+  .slider-wrapper.slide_gplt .flickity-slider,
+  .slider-wrapper.slide_seo .flickity-slider,
+  .slider-wrapper.slide_tke1 .flickity-slider,
+  .slider-wrapper.slide_tsao .flickity-slider,
+  .slider-wrapper.slide_tkap .flickity-slider {
     align-items: stretch;
     height: auto !important;
   }
 
   .slider-wrapper.slide_ui .flickity-slider > .row > .col,
-  .slider-wrapper.slide_gplt .flickity-slider > .row > .col {
+  .slider-wrapper.slide_gplt .flickity-slider > .row > .col,
+  .slider-wrapper.slide_seo .flickity-slider > .row > .col,
+  .slider-wrapper.slide_tke1 .flickity-slider > .row > .col,
+  .slider-wrapper.slide_tsao .flickity-slider > .row > .col,
+  .slider-wrapper.slide_tkap .flickity-slider > .row > .col {
     display: flex;
     flex-direction: column;
   }
 
   .slider-wrapper.slide_ui .flickity-slider > .row > .col > .col-inner,
-  .slider-wrapper.slide_gplt .flickity-slider > .row > .col > .col-inner {
+  .slider-wrapper.slide_gplt .flickity-slider > .row > .col > .col-inner,
+  .slider-wrapper.slide_seo .flickity-slider > .row > .col > .col-inner,
+  .slider-wrapper.slide_tke1 .flickity-slider > .row > .col > .col-inner,
+  .slider-wrapper.slide_tsao .flickity-slider > .row > .col > .col-inner,
+  .slider-wrapper.slide_tkap .flickity-slider > .row > .col > .col-inner {
     flex: 1 0 auto;
   }
 
   .slider-wrapper.slide_ui .col-inner,
-  .slider-wrapper.slide_gplt .col-inner {
+  .slider-wrapper.slide_gplt .col-inner,
+  .slider-wrapper.slide_seo .col-inner {
     display: flex;
     flex-direction: column;
     height: auto;
@@ -344,15 +382,130 @@
     min-height: 633px;
   }
 
+  .slider-wrapper.slide_seo .col-inner {
+    min-height: 772px;
+  }
+
+  .slider-wrapper.slide_tke1 .col-inner {
+    height: auto;
+    min-height: 815px;
+  }
+
+  .slider-wrapper.slide_tsao .col-inner {
+    height: auto;
+    min-height: 580px;
+  }
+
+  .slider-wrapper.slide_tkap .col-inner {
+    height: auto;
+    min-height: 611px;
+  }
+
   .slider-wrapper.slide_ui .col-inner > p:has(> a.but-lh),
-  .slider-wrapper.slide_gplt .col-inner > p:has(> a.but-lh) {
+  .slider-wrapper.slide_gplt .col-inner > p:has(> a.but-lh),
+  .slider-wrapper.slide_seo .col-inner > p:has(> a.but-lh) {
     margin-top: auto;
     margin-bottom: 20px;
   }
 
+  .slider-wrapper.slide_seo .col-inner > p:has(> a.but-lh) {
+    position: static;
+    width: auto;
+    margin-bottom: 9px;
+  }
+
   .slider-wrapper.slide_ui .col-inner a.but-lh,
-  .slider-wrapper.slide_gplt .col-inner a.but-lh {
+  .slider-wrapper.slide_gplt .col-inner a.but-lh,
+  .slider-wrapper.slide_seo .col-inner a.but-lh {
     position: static;
     display: inline-block;
+  }
+}
+
+/* 8.6: Icon boxes 550–849.
+   Stack cards 100% on benefits/advantages/about/icons rows; 50% on package and pricing card grids;
+   raise banner padding-top from 700px to 800px on website-vi form to prevent heading/form overlap.
+   Be Vietnam Pro (wider than the source font) also pushes the mobile-vi benefits row
+   (#row-1049225699, twin of EN #row-1686488490) and mobile-en detail cards (#row-2041526175)
+   past the viewport at 550–578, so they stack too. */
+@media (min-width: 550px) and (max-width: 849px) {
+  #row-1686488490 > .col,
+  #row-1049225699 > .col,
+  #row-2041526175 > .col,
+  #row-850357972 > .col,
+  #row-1553857743 > .col,
+  #row-1937987832 > .col,
+  #row-1167421910 > .col {
+    max-width: 100%;
+    flex-basis: 100%;
+  }
+
+  #row-909625469 > .col,
+  #row-530539848 > .col {
+    max-width: 50%;
+    flex-basis: 50%;
+  }
+
+  #row-1168101482 #banner-1813159824 {
+    padding-top: 800px;
+  }
+
+  /* Website pricing grid (VI #row-1975763604, EN #row-308766213): three ~153–390px cards put
+     the plan name, price and "Giảm x%" past the card edge (EN up to 75px at 550, 3px at 768).
+     Two columns with the third card centered, and 20px side padding, keep every line inside. */
+  :is(#row-1975763604, #row-308766213) {
+    justify-content: center;
+  }
+
+  :is(#row-1975763604, #row-308766213) > .col {
+    max-width: 50%;
+    flex-basis: 50%;
+  }
+
+  :is(#row-1975763604, #row-308766213) > .col > .col-inner {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+@media (max-width: 1279px) {
+  /* 8.6: Hero rows overflow clip ≤1279.
+     Flatsome .row -15px gutters in full-width text-box trigger horizontal overflow and
+     .banner-layers overflow:auto scroller below 550. */
+  :is(#banner-1559052784, #banner-151127649, #banner-1027010616) .text-inner {
+    overflow: hidden;
+  }
+
+  /* 8.6: Sample page ≤1279.
+     Add top padding to clear absolute transparent header (0–91px). */
+  #content[role='main'] > div:not([class]):first-child {
+    padding-top: 90px;
+  }
+
+  /* 8.6: Login page ≤1279.
+     Bootstrap -12px negative margins on #login.row cause 12px overflow.
+     Reset margins and adjust padding to preserve painted geometry below 1280. */
+  #login.row {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: calc(8% - 12px);
+    padding-right: calc(8% - 12px);
+  }
+}
+
+/* 8.6: About heroes clip only at 1200–1279 to avoid clipping title at smaller viewports. */
+@media (min-width: 1200px) and (max-width: 1279px) {
+  :is(#banner-588612431, #banner-1388775398) .text-inner {
+    overflow: hidden;
+  }
+}
+
+/* 8.6: Parity block — login page >=1280.
+   Prevent horizontal scrollbar overflow from Bootstrap -12px gutters while preserving painted desktop geometry.
+   Scoped to >=1280 and #login so the ≤1279 fix above stays visible to the overflow gates. */
+@media (min-width: 1280px) {
+  html:has(#login),
+  body:has(#login) {
+    overflow-x: hidden;
   }
 }

@@ -46,7 +46,7 @@ const repoWith = (data: Partial<ContentData> = {}) =>
     ...data,
   } as unknown as ContentData);
 
-test('service page query: FAQs in placement order, 3 testimonials, 6 projects, pricing, no tokens', async () => {
+test('service page query: FAQs in placement order, no testimonials, 6 projects, pricing, no tokens', async () => {
   repository = repoWith();
   const page = await getServicePage('website', 'vi');
   const service = websiteServices.find((s) => s.locale === 'vi')!;
@@ -54,7 +54,8 @@ test('service page query: FAQs in placement order, 3 testimonials, 6 projects, p
   expect(page?.faqs.map((f) => f.id)).toEqual(
     [...service.faqs].sort((a, b) => a.order - b.order).map((p) => p.faqId),
   );
-  expect(page?.testimonials).toHaveLength(3);
+  // Testimonials hidden (stakeholder review 2026-10-27): the service lists no testimonial ids.
+  expect(page?.testimonials).toEqual([]);
   expect(page?.projects.map((p) => p.id)).toEqual(service.featuredProjectIds);
   expect(page?.projects).toHaveLength(6);
   expect(page?.pricing?.id).toBe('pricing-website');

@@ -10,20 +10,21 @@ export const aboutPages: AboutPageRecord[] = [
     sources: [{ file: 'en/about-us/index.html', line: 658, sourceId: '7349' }],
     translationKey: 'about',
     hero: {
-      headingLines: ['Strategically Building', 'Elevating Brand Value'],
+      headingLines: ['Taking Your Brand', 'to New Heights'],
       breadcrumb: [{ label: 'Home', href: '/en/home/' }, { label: 'About Us' }],
       description: {
         format: 'sanitized-html',
-        html: '<p>Sova Technology Solutions Co., Ltd. – A top-tier web design company, committed to delivering exceptional digital products, innovative services, and an unparalleled user experience</p>',
+        html: '<p>Sova Technology Solutions Co., Ltd. – a website design company that puts its whole heart into every product, service and experience it delivers to clients.</p>',
         assetIds: [],
         sources: [{ file: 'en/about-us/index.html', line: 686 }],
       },
       imageId: 'asset-1a1c3b1f81',
-      cta: { label: 'Sova Porfolio →', href: '/en/porfolio-eras-vietnam/' },
+      cta: { label: 'Sova Portfolio →', href: '/en/sova-portfolio/' },
     },
     seo: {
-      title: 'About Us - Công ty thiết kế website chuyên nghiệp | Sova',
-      description: 'Home / About Us',
+      title: 'About Us - Professional Website Design Company | Sova',
+      description:
+        'The Sova story: in the market since 2023, a 20-member team serving 500+ clients across 50+ projects in website design, mobile apps, SEO and branding.',
       canonicalPath: '/en/about-us/',
       imageId: 'asset-8318759646',
     },
@@ -31,10 +32,10 @@ export const aboutPages: AboutPageRecord[] = [
     goals: [
       {
         id: 'about-en-goal-staying-ahead-of-the-curve',
-        title: 'Staying Ahead of the Curve',
+        title: 'Getting Ahead of Change',
         body: {
           format: 'sanitized-html',
-          html: '<p>Embracing innovation is what drives Sova to grow stronger and build a sustainable future.</p>',
+          html: '<p>Welcoming new ideas early keeps Sova strong and lays the groundwork for lasting growth.</p>',
           assetIds: [],
           sources: [{ file: 'en/about-us/index.html', line: 1183 }],
         },
@@ -42,10 +43,10 @@ export const aboutPages: AboutPageRecord[] = [
       },
       {
         id: 'about-en-goal-solution-oriented-thinking',
-        title: 'Solution-Oriented Thinking',
+        title: 'A Solution-First Mindset',
         body: {
           format: 'sanitized-html',
-          html: '<p>We constantly seek out emerging technologies and challenge ourselves to discover the most powerful and sustainable solutions.</p>',
+          html: '<p>We keep a close eye on new technologies and set ourselves challenges to find the most effective, lasting answers.</p>',
           assetIds: [],
           sources: [{ file: 'en/about-us/index.html', line: 1265 }],
         },
@@ -53,10 +54,10 @@ export const aboutPages: AboutPageRecord[] = [
       },
       {
         id: 'about-en-goal-listening-understanding',
-        title: 'Listening & Understanding',
+        title: 'Understanding by Listening',
         body: {
           format: 'sanitized-html',
-          html: '<p>We listen carefully, analyze thoroughly, and provide clear, thoughtful answers — helping you gain clarity and offering the most effective solutions to your challenges.</p>',
+          html: '<p>Sova listens to every question you raise, analyzes it closely and answers in detail until everything is clear. From there, we propose the best-fitting way to solve the problem.</p>',
           assetIds: [],
           sources: [{ file: 'en/about-us/index.html', line: 1347 }],
         },
@@ -64,10 +65,10 @@ export const aboutPages: AboutPageRecord[] = [
       },
       {
         id: 'about-en-goal-turning-vision-into-reality',
-        title: 'Turning Vision into Reality',
+        title: 'Delivering Concrete Results',
         body: {
           format: 'sanitized-html',
-          html: '<p>To build the Sova brand, we focus on understanding and becoming a reliable “right-hand partner” — using technology to transform every customer need into tangible results.</p>',
+          html: '<p>The Sova brand is built on understanding: we aim to be a trusted “right hand” for our clients, using technology to turn each need into concrete results.</p>',
           assetIds: [],
           sources: [{ file: 'en/about-us/index.html', line: 1429 }],
         },
@@ -75,10 +76,10 @@ export const aboutPages: AboutPageRecord[] = [
       },
       {
         id: 'about-en-goal-trust-reliability',
-        title: 'Trust & Reliability',
+        title: 'Keeping Our Promises',
         body: {
           format: 'sanitized-html',
-          html: '<p>We value long-term, sustainable partnerships built on transparency and trust. Sova is committed to delivering lasting value and satisfaction throughout every collaboration.</p>',
+          html: '<p>To Sova, every client is a lasting relationship. We stay transparent in every transaction, keep the commitments we make, and bring satisfaction and enduring value throughout our work together.</p>',
           assetIds: [],
           sources: [{ file: 'en/about-us/index.html', line: 1510 }],
         },
@@ -86,10 +87,10 @@ export const aboutPages: AboutPageRecord[] = [
       },
       {
         id: 'about-en-goal-positive-change',
-        title: 'Positive Change',
+        title: 'Innovating Daily',
         body: {
           format: 'sanitized-html',
-          html: '<p>Continuous, positive innovation enables Sova to become the top choice for clients — where every project delivers business value and the energetic spirit we passionately pursue.</p>',
+          html: '<p>Constantly renewing ourselves in a positive way is how Sova becomes the preferred choice for clients: each project creates business value while spreading the energy we pursue.</p>',
           assetIds: [],
           sources: [{ file: 'en/about-us/index.html', line: 1592 }],
         },
@@ -102,7 +103,7 @@ export const aboutPages: AboutPageRecord[] = [
         title: 'Our Goal',
         content: {
           format: 'sanitized-html',
-          html: '<p>We are committed to creating the most optimized products and services that drive business performance for our clients. What sets us apart from competitors is our superior quality and unwavering commitment to excellence.</p>',
+          html: '<p>Sova aims for products and services optimized down to every detail, helping our clients’ businesses perform at a high level. What sets us apart from competitors is outstanding quality and a clear commitment to every product and service.</p>',
           assetIds: [],
           sources: [{ file: 'en/about-us/index.html', line: 2263 }],
         },
@@ -112,7 +113,7 @@ export const aboutPages: AboutPageRecord[] = [
         title: 'Our Commitment',
         content: {
           format: 'sanitized-html',
-          html: '<p>We provide software solutions that offer end-to-end support for organizations and businesses — optimizing workflows, enhancing productivity, addressing operational challenges, reducing costs, and increasing profitability.</p>',
+          html: '<p>Sova delivers software products that fully support organizations and businesses, making workflows leaner and productivity higher. Along the way, roadblocks get cleared, costs come down and profits improve.</p>',
           assetIds: [],
           sources: [{ file: 'en/about-us/index.html', line: 2296 }],
         },
@@ -122,7 +123,7 @@ export const aboutPages: AboutPageRecord[] = [
         title: 'Our Mission',
         content: {
           format: 'sanitized-html',
-          html: '<p>To become a leading company distinguished by our expertise in digital products and digital experience services. We aim to strengthen our core competencies, foster creativity, and uphold a deep sense of responsibility in everything we do.</p>',
+          html: '<p>Sova aims to establish its standing through its own strengths in digital products and digital experience services for businesses, while steadily building up our core capabilities, sense of responsibility and creative thinking.</p>',
           assetIds: [],
           sources: [{ file: 'en/about-us/index.html', line: 2329 }],
         },
@@ -132,7 +133,7 @@ export const aboutPages: AboutPageRecord[] = [
         title: 'Our Vision',
         content: {
           format: 'sanitized-html',
-          html: '<p>Sova strives to become a sustainable enterprise in the era of digital transformation — empowering businesses to grow faster and more efficiently through innovative technology.</p>',
+          html: '<p>In this new technology era, Sova wants to become a sustainably growing business and a springboard that helps other companies keep pace and speed up their digital transformation journey.</p>',
           assetIds: [],
           sources: [{ file: 'en/about-us/index.html', line: 2362 }],
         },
@@ -140,102 +141,47 @@ export const aboutPages: AboutPageRecord[] = [
     ],
     timeline: [
       {
-        id: 'about-en-timeline-2016',
-        year: '2016',
-        title: 'Market Entry',
-        body: {
-          format: 'sanitized-html',
-          html: '<p>Founded and entered the market as a specialized provider of Facebook Marketing solutions.</p>',
-          assetIds: [],
-          sources: [{ file: 'en/about-us/index.html', line: 2518 }],
-        },
-      },
-      {
-        id: 'about-en-timeline-2017',
-        year: '2017',
-        title: 'Launch of SEO Services',
-        body: {
-          format: 'sanitized-html',
-          html: '<p>Expanded our offerings to include SEO services, further strengthening our digital marketing solutions.</p>',
-          assetIds: [],
-          sources: [{ file: 'en/about-us/index.html', line: 2559 }],
-        },
-      },
-      {
-        id: 'about-en-timeline-2018',
-        year: '2018',
-        title: 'Website, Branding',
-        body: {
-          format: 'sanitized-html',
-          html: '<p>Founded and entered the market as a specialized provider of Facebook Marketing solutions.</p>',
-          assetIds: [],
-          sources: [{ file: 'en/about-us/index.html', line: 2600 }],
-        },
-      },
-      {
-        id: 'about-en-timeline-2019',
-        year: '2019',
-        title: 'Staying ahead of trends',
-        body: {
-          format: 'sanitized-html',
-          html: '<p>Continued to innovate by offering cutting-edge solutions in Facebook Marketing to keep up with market trends.</p>',
-          assetIds: [],
-          sources: [{ file: 'en/about-us/index.html', line: 2641 }],
-        },
-      },
-      {
-        id: 'about-en-timeline-2020',
-        year: '2020',
-        title: 'Explosive Growth During Social Distancing',
-        body: {
-          format: 'sanitized-html',
-          html: '<p>With products perfectly suited for online needs, remote work, and e-commerce, our revenue tripled during the pandemic.</p>',
-          assetIds: [],
-          sources: [{ file: 'en/about-us/index.html', line: 2682 }],
-        },
-      },
-      {
-        id: 'about-en-timeline-2021',
-        year: '2021',
-        title: 'Launch of New Products',
-        body: {
-          format: 'sanitized-html',
-          html: '<p>Introduced domain-specific email services to offer a more comprehensive product suite to our clients.</p>',
-          assetIds: [],
-          sources: [{ file: 'en/about-us/index.html', line: 2723 }],
-        },
-      },
-      {
-        id: 'about-en-timeline-2022',
-        year: '2022',
-        title: 'Reaching 2000 Clients Milestone',
-        body: {
-          format: 'sanitized-html',
-          html: '<p>Achieved the milestone of serving 2000 clients and expanded our presence by opening a representative office in Ho Chi Minh City.</p>',
-          assetIds: [],
-          sources: [{ file: 'en/about-us/index.html', line: 2764 }],
-        },
-      },
-      {
         id: 'about-en-timeline-2023',
         year: '2023',
-        title: 'Launch new services',
+        title: 'Entering the market',
         body: {
           format: 'sanitized-html',
-          html: '<p>Introduced mobile app design and development services to keep up with the growing mobile platform trends.</p>',
+          html: '<p>Starting from small ideas, Sova built its first digital products.</p>',
           assetIds: [],
-          sources: [{ file: 'en/about-us/index.html', line: 2805 }],
+          sources: [],
         },
       },
       {
         id: 'about-en-timeline-2024',
         year: '2024',
-        title: 'Continuous Self-Improvement',
+        title: 'Refining our products',
         body: {
           format: 'sanitized-html',
-          html: '<p>Re-organized our internal structure to pave the way for significant growth and transformation in the coming year.</p>',
+          html: '<p>Focused on improving product quality based on real-world feedback.</p>',
           assetIds: [],
-          sources: [{ file: 'en/about-us/index.html', line: 2852 }],
+          sources: [],
+        },
+      },
+      {
+        id: 'about-en-timeline-2025',
+        year: '2025',
+        title: 'Launching our services',
+        body: {
+          format: 'sanitized-html',
+          html: '<p>Officially launched website design, SEO, mobile app development and outsourcing services.</p>',
+          assetIds: [],
+          sources: [],
+        },
+      },
+      {
+        id: 'about-en-timeline-2026',
+        year: '2026',
+        title: 'Scaling up',
+        body: {
+          format: 'sanitized-html',
+          html: '<p>Expanded our team to serve clients nationwide and reach international markets.</p>',
+          assetIds: [],
+          sources: [],
         },
       },
     ],
@@ -245,7 +191,7 @@ export const aboutPages: AboutPageRecord[] = [
         title: 'BUILDING A STRATEGY',
         content: {
           format: 'sanitized-html',
-          html: '<ul><li>Understand Customer Needs</li><li>Optimize Workflow Processes</li><li>Continuous Product Improvement and Upgrades</li><li>Optimize User Experience (UX/UI)</li><li>Ensure Security and Compliance</li><li>Support Digital Transformation and Sustainable Growth</li><li>Measure Effectiveness and Customer FeedbackMeasure Effectiveness and Customer Feedback</li><li>Enhance Product Customization and Flexibility</li><li>Drive Innovation and Leverage Advanced Technologies</li></ul>',
+          html: '<ul><li>Pinpointing Exactly What Clients Need</li><li>Streamlining Workflows for Efficiency</li><li>Regularly Refreshing and Upgrading Products</li><li>Putting User Experience (UX/UI) First</li><li>Tight Security and Proper Compliance</li><li>Supporting Digital Transformation and Long-Term Growth</li><li>Tracking Results and Listening to Client Feedback</li><li>Making Products Easier to Customize and More Flexible</li><li>Prioritizing Innovation with Advanced Technology</li></ul>',
           assetIds: [],
           sources: [{ file: 'en/about-us/index.html', line: 4149 }],
         },
@@ -255,7 +201,7 @@ export const aboutPages: AboutPageRecord[] = [
         title: 'EXPERIENCE DESIGN',
         content: {
           format: 'sanitized-html',
-          html: '<ul><li>Optimizing Workflow &amp; Interaction Processes</li><li>Ensuring Flexibility &amp; Customization</li><li>Enhancing Collaboration &amp; Connectivity</li><li>Optimized for Multiple Platforms and Devices</li><li>Enhancing Collaboration &amp; Connectivity</li><li>Improving System Speed &amp; Performance</li><li>Integrating Analytics &amp; Reporting Tools</li><li>Creating User Experiences for Diverse Audiences</li><li>Crafting Intuitive &amp; Easy-to-Use Interfaces</li></ul>',
+          html: '<ul><li>Clear, Coherent Task &amp; Interaction Flows</li><li>Easy to Adjust &amp; Flexible to Each Need</li><li>Smoother Connection &amp; Collaboration</li><li>Looking Great on Every Platform and Device</li><li>Protecting Data Safety &amp; Privacy</li><li>Fast Response &amp; Smooth System Operation</li><li>Built-In Analytics &amp; Reporting Tools</li><li>Experiences That Suit Many Different User Groups</li><li>Intuitive Interfaces Anyone Can Easily Use</li></ul>',
           assetIds: [],
           sources: [{ file: 'en/about-us/index.html', line: 4521 }],
         },
@@ -265,52 +211,53 @@ export const aboutPages: AboutPageRecord[] = [
         title: 'PRODUCT DEVELOPMENT',
         content: {
           format: 'sanitized-html',
-          html: '<ul><li>Continuous Improvement &amp; Upgrades</li><li>Integrating Advanced Technologies</li><li>Customization &amp; Flexibility</li><li>Enhancing Collaboration &amp; Connectivity</li><li>Optimizing User Experience (UX/UI)</li><li>Improving Security &amp; Compliance</li><li>Supporting Digital Transformation &amp; Sustainable Growth</li><li>Meeting Business Customer Needs &amp; Demands</li><li>Providing Workflow Optimization Solutions</li></ul>',
+          html: '<ul><li>Development in Cycles of Improvement</li><li>Applying Modern Technologies</li><li>Open Structure, Easy to Extend &amp; Fine-Tune</li><li>Supporting Teamwork &amp; Data Linking</li><li>Care for Every UX/UI Touchpoint</li><li>Raising Safety &amp; Compliance Standards</li><li>Powering a Sustainable Digitalization Journey</li><li>Following the Real Needs &amp; Requests of Business Clients</li><li>Proposing Solutions for Smoother Operations</li></ul>',
           assetIds: [],
           sources: [{ file: 'en/about-us/index.html', line: 4893 }],
         },
       },
     ],
     partnerIds: [],
+    // Testimonials hidden (stakeholder review 2026-10-27): the quotes came from the source site's
+    // clients. Uncomment the entries to show the section again.
     testimonialIds: [
-      'testimonial-feedback-ten',
-      'testimonial-feedback-dong-a',
-      'testimonial-feedback-vinatex',
+      // 'testimonial-feedback-ten',
+      // 'testimonial-feedback-dong-a',
+      // 'testimonial-feedback-vinatex',
     ],
     sectionCopy: {
       achievements: {
-        title: 'Our Achievements',
+        title: 'Numbers That Speak',
         description:
-          'Sova see every project as more than just a task — it’s a chance to co-create value with our clients, delivering meaningful digital experiences that drive impact and foster lasting partnerships.',
+          'For Sova, each project is both a chance to add value for a business and a promise of long-term partnership, so every digital experience we build brings extra value to its customers.',
       },
       goals: {
         eyebrow: 'Target',
-        title: 'Our Mission',
+        title: 'Sova’s Aims',
         description:
-          'Sova are committed to continuously improving our service quality\nwith the goal of becoming the top choice for our clients.\nEvery project is both a new experience and a meaningful challenge for us.',
+          'Raising our service quality every day is what Sova always pursues,\nbecause we want to be the first name clients think of.\nFor Sova, every project is a fresh experience and a new challenge.',
         descriptionLines: [
-          'Sova are committed to continuously improving our service quality',
-          'with the goal of becoming the top choice for our clients.',
-          'Every project is both a new experience and a meaningful challenge for us.',
+          'Raising our service quality every day is what Sova always pursues,',
+          'because we want to be the first name clients think of.',
+          'For Sova, every project is a fresh experience and a new challenge.',
         ],
       },
       purpose: {
-        title: 'Our Products',
+        title: 'Sova Products',
         description:
-          'All of Sova’s products are precisely aligned with market demands, officially certified by the State for intellectual property rights, and ready to partner with financial institutions of all sizes — enabling comprehensive and sustainable growth.',
+          'Every product is built around real market needs and is ready to stand alongside businesses of every size—large, medium or small—toward comprehensive, sustainable growth.',
       },
       timeline: {
-        title: 'Our Journey of Growth',
+        title: 'Growing Step by Step',
       },
       pillars: {
         eyebrow: 'Services',
-        title: 'What You Can Find at Sova',
-        description:
-          'As a client of Sova, you can take advantage of the following services provided by our company:',
+        title: 'Ready to Serve You at Sova',
+        description: 'As a Sova client, you are backed by the capabilities listed below:',
       },
       testimonials: {
         eyebrow: 'Sova',
-        title: 'Customer Reviews',
+        title: 'Reviews for Sova',
       },
     },
     marqueeText: ['Development', 'UI/UX', 'Sova', 'Branding', 'Writer', 'Mobile'],
@@ -331,20 +278,21 @@ export const aboutPages: AboutPageRecord[] = [
     sources: [{ file: 'gioi-thieu/index.html', line: 658, sourceId: '7192' }],
     translationKey: 'about',
     hero: {
-      headingLines: ['Kiến tạo & Nâng tầm', 'thương hiệu'],
+      headingLines: ['Đưa thương hiệu của bạn', 'vươn tầm cao mới'],
       breadcrumb: [{ label: 'Trang chủ', href: '/' }, { label: 'Giới thiệu' }],
       description: {
         format: 'sanitized-html',
-        html: '<p>Công ty TNHH Giải Pháp Công Nghệ Sova – Một trong những đơn vị thiết kế website hàng đầu hiện nay, tự hào mang đến cho khách hàng những sản phẩm, dịch vụ và trải nghiệm xuất sắc nhất.</p>',
+        html: '<p>Công ty TNHH Giải Pháp Công Nghệ Sova – đơn vị thiết kế website luôn đặt trọn tâm huyết vào từng sản phẩm, dịch vụ và trải nghiệm trao tới khách hàng.</p>',
         assetIds: [],
         sources: [{ file: 'gioi-thieu/index.html', line: 686 }],
       },
       imageId: 'asset-1a1c3b1f81',
-      cta: { label: 'Sova Porfolio →', href: '/ho-so-nang-luc-eras-vietnam/' },
+      cta: { label: 'Sova Portfolio →', href: '/ho-so-nang-luc-sova/' },
     },
     seo: {
       title: 'Giới thiệu - Công ty thiết kế website chuyên nghiệp | Sova',
-      description: 'Trang chủ / Giới thiệu',
+      description:
+        'Câu chuyện của Sova: bước vào thị trường năm 2023, đội ngũ 20 thành viên, hơn 500 khách hàng và hơn 50 dự án thiết kế website, app mobile, SEO, branding.',
       canonicalPath: '/gioi-thieu/',
       imageId: 'asset-8318759646',
     },
@@ -352,10 +300,10 @@ export const aboutPages: AboutPageRecord[] = [
     goals: [
       {
         id: 'about-vi-goal-theo-kip-xu-huong',
-        title: 'Theo kịp xu hướng',
+        title: 'Đón đầu thay đổi',
         body: {
           format: 'sanitized-html',
-          html: '<p>Việc nắm bắt xu hướng đổi mới là động lực giúp Sova trở nên mạnh mẽ và phát triển bền vững trong tương lai.</p>',
+          html: '<p>Chủ động đón nhận cái mới giúp Sova luôn vững mạnh và đặt nền móng cho sự phát triển lâu dài.</p>',
           assetIds: [],
           sources: [{ file: 'gioi-thieu/index.html', line: 1183 }],
         },
@@ -363,10 +311,10 @@ export const aboutPages: AboutPageRecord[] = [
       },
       {
         id: 'about-vi-goal-tim-kiem-giai-phap',
-        title: 'Tìm kiếm giải pháp',
+        title: 'Tư duy giải pháp',
         body: {
           format: 'sanitized-html',
-          html: '<p>Luôn tìm kiếm xu hướng công nghệ mới và thử thách bản thân tìm ra những giải pháp mạnh mẽ và bền vững nhất</p>',
+          html: '<p>Chúng tôi không ngừng theo dõi các công nghệ mới và tự đặt thử thách cho mình để tìm ra lời giải hiệu quả, bền vững nhất.</p>',
           assetIds: [],
           sources: [{ file: 'gioi-thieu/index.html', line: 1265 }],
         },
@@ -374,10 +322,10 @@ export const aboutPages: AboutPageRecord[] = [
       },
       {
         id: 'about-vi-goal-luon-lang-nghe-thau-hieu',
-        title: 'Luôn lắng nghe & thấu hiểu',
+        title: 'Thấu hiểu nhờ lắng nghe',
         body: {
           format: 'sanitized-html',
-          html: '<p>Chúng tôi luôn lắng nghe, phân tích và giải đáp cặn kẽ mọi câu hỏi của bạn để bạn có thể hiểu rõ. Và đưa ra các phương án xử lý tối ưu nhất để giải quyết vấn đề.</p>',
+          html: '<p>Mỗi câu hỏi của bạn đều được Sova lắng nghe, phân tích kỹ và trả lời tường tận cho đến khi bạn nắm rõ. Từ đó, chúng tôi đề xuất hướng xử lý phù hợp nhất cho vấn đề.</p>',
           assetIds: [],
           sources: [{ file: 'gioi-thieu/index.html', line: 1347 }],
         },
@@ -385,10 +333,10 @@ export const aboutPages: AboutPageRecord[] = [
       },
       {
         id: 'about-vi-goal-thuc-hien-hoa',
-        title: 'Thực hiện hoá',
+        title: 'Kết quả cụ thể',
         body: {
           format: 'sanitized-html',
-          html: '<p>Để xây dựng thương hiệu Sova, điều quan trọng là phải thấu hiểu và trở thành “cánh tay phải” tin cậy, sử dụng công nghệ để hiện thực hóa mọi nhu cầu của khách hàng.</p>',
+          html: '<p>Thương hiệu Sova được xây nên từ sự thấu hiểu: chúng tôi muốn là “cánh tay phải” đáng tin của khách hàng, dùng công nghệ biến từng nhu cầu thành kết quả cụ thể.</p>',
           assetIds: [],
           sources: [{ file: 'gioi-thieu/index.html', line: 1429 }],
         },
@@ -396,10 +344,10 @@ export const aboutPages: AboutPageRecord[] = [
       },
       {
         id: 'about-vi-goal-su-tin-cay',
-        title: 'Sự tin cậy',
+        title: 'Giữ chữ tín',
         body: {
           format: 'sanitized-html',
-          html: '<p>Sova chú trọng xây dựng mối quan hệ lâu dài và bền vững với khách hàng, dựa trên nền tảng minh bạch trong mọi giao dịch và cam kết tin cậy, mang lại sự hài lòng và giá trị lâu dài cho khách hàng trong suốt quá trình hợp tác.</p>',
+          html: '<p>Với Sova, mỗi khách hàng là một mối quan hệ gắn bó lâu dài. Chúng tôi minh bạch trong từng giao dịch, giữ đúng những cam kết đã đưa ra và đem lại sự hài lòng cùng giá trị bền lâu suốt thời gian hai bên hợp tác.</p>',
           assetIds: [],
           sources: [{ file: 'gioi-thieu/index.html', line: 1510 }],
         },
@@ -407,10 +355,10 @@ export const aboutPages: AboutPageRecord[] = [
       },
       {
         id: 'about-vi-goal-thay-doi-tich-cuc',
-        title: 'Thay đổi tích cực',
+        title: 'Đổi mới mỗi ngày',
         body: {
           format: 'sanitized-html',
-          html: '<p>Sự đổi mới liên tục theo hướng tích cực sẽ giúp Sova trở thành sự lựa chọn hàng đầu của khách hàng, khi mỗi dự án không chỉ mang lại giá trị cho doanh nghiệp mà còn truyền tải năng lượng mà công ty luôn theo đuổi.</p>',
+          html: '<p>Không ngừng làm mới mình theo hướng tích cực là cách Sova trở thành lựa chọn ưu tiên của khách hàng: mỗi dự án vừa tạo giá trị cho doanh nghiệp, vừa lan tỏa nguồn năng lượng mà chúng tôi theo đuổi.</p>',
           assetIds: [],
           sources: [{ file: 'gioi-thieu/index.html', line: 1592 }],
         },
@@ -423,7 +371,7 @@ export const aboutPages: AboutPageRecord[] = [
         title: 'Mục tiêu',
         content: {
           format: 'sanitized-html',
-          html: '<p>Chúng tôi luôn sẵn sàng tạo ra những sản phẩm và dịch vụ tối ưu nhất, mang lại hiệu quả cao cho hoạt động kinh doanh của khách hàng. Đồng thời, chúng tôi tạo sự khác biệt so với các đối thủ cạnh tranh nhờ vào chất lượng vượt trội và cam kết vững chắc về sản phẩm và dịch vụ.</p>',
+          html: '<p>Sova hướng đến những sản phẩm và dịch vụ được tối ưu tới từng chi tiết, giúp hoạt động kinh doanh của khách hàng đạt hiệu quả cao. Điều làm nên khác biệt của chúng tôi trước các đối thủ chính là chất lượng vượt trội cùng cam kết rõ ràng cho từng sản phẩm, dịch vụ.</p>',
           assetIds: [],
           sources: [{ file: 'gioi-thieu/index.html', line: 2263 }],
         },
@@ -433,7 +381,7 @@ export const aboutPages: AboutPageRecord[] = [
         title: 'Cam kết',
         content: {
           format: 'sanitized-html',
-          html: '<p>Cung cấp các sản phẩm phần mềm mang đến giải pháp toàn diện cho các tổ chức và doanh nghiệp, giúp tối ưu hóa quy trình làm việc và nâng cao năng suất công việc. Đồng thời, giải quyết nhiều khó khăn, tiết kiệm chi phí và gia tăng lợi nhuận.</p>',
+          html: '<p>Sova mang đến các sản phẩm phần mềm đồng hành trọn vẹn cùng tổ chức và doanh nghiệp, để quy trình làm việc trở nên gọn gàng, năng suất được nâng lên. Bên cạnh đó, nhiều vướng mắc được tháo gỡ, chi phí được tiết giảm và lợi nhuận được cải thiện.</p>',
           assetIds: [],
           sources: [{ file: 'gioi-thieu/index.html', line: 2296 }],
         },
@@ -443,7 +391,7 @@ export const aboutPages: AboutPageRecord[] = [
         title: 'Sứ mệnh',
         content: {
           format: 'sanitized-html',
-          html: '<p>Trở thành công ty dẫn đầu với thế mạnh khác biệt trong các sản phẩm số và dịch vụ trải nghiệm số cho doanh nghiệp, đồng thời nâng cao năng lực cốt lõi, tinh thần trách nhiệm và khả năng sáng tạo.</p>',
+          html: '<p>Sova đặt mục tiêu khẳng định vị thế nhờ thế mạnh riêng về sản phẩm số và dịch vụ trải nghiệm số dành cho doanh nghiệp, song song với việc bồi đắp năng lực cốt lõi, tinh thần trách nhiệm và óc sáng tạo.</p>',
           assetIds: [],
           sources: [{ file: 'gioi-thieu/index.html', line: 2329 }],
         },
@@ -453,7 +401,7 @@ export const aboutPages: AboutPageRecord[] = [
         title: 'Tầm nhìn',
         content: {
           format: 'sanitized-html',
-          html: '<p>Sova hướng đến mục tiêu trở thành doanh nghiệp phát triển bền vững trong thời đại công nghệ mới, giúp các doanh nghiệp tiếp cận và phát triển nhanh chóng hơn trong quá trình chuyển đổi số.</p>',
+          html: '<p>Trong kỷ nguyên công nghệ mới, Sova muốn trở thành một doanh nghiệp phát triển bền vững, đồng thời là bệ đỡ giúp các doanh nghiệp khác bắt nhịp và tăng tốc trên hành trình chuyển đổi số.</p>',
           assetIds: [],
           sources: [{ file: 'gioi-thieu/index.html', line: 2362 }],
         },
@@ -461,102 +409,47 @@ export const aboutPages: AboutPageRecord[] = [
     ],
     timeline: [
       {
-        id: 'about-vi-timeline-2016',
-        year: '2016',
+        id: 'about-vi-timeline-2023',
+        year: '2023',
         title: 'Gia nhập thị trường',
         body: {
           format: 'sanitized-html',
-          html: '<p>Thành lập và gia nhập thị trường với tư cách là đơn vị chuyên cung cấp các giải pháp Marketing Facebook</p>',
+          html: '<p>Khởi đầu từ những ý tưởng nhỏ, Sova xây dựng các sản phẩm số đầu tiên.</p>',
           assetIds: [],
-          sources: [{ file: 'gioi-thieu/index.html', line: 2519 }],
-        },
-      },
-      {
-        id: 'about-vi-timeline-2017',
-        year: '2017',
-        title: 'Ra mắt dịch vụ SEO',
-        body: {
-          format: 'sanitized-html',
-          html: '<p>Thành lập và gia nhập thị trường với tư cách là đơn vị chuyên cung cấp các giải pháp Marketing Facebook</p>',
-          assetIds: [],
-          sources: [{ file: 'gioi-thieu/index.html', line: 2560 }],
-        },
-      },
-      {
-        id: 'about-vi-timeline-2018',
-        year: '2018',
-        title: 'Website, Branding',
-        body: {
-          format: 'sanitized-html',
-          html: '<p>Thành lập và gia nhập thị trường với tư cách là đơn vị chuyên cung cấp các giải pháp Marketing Facebook</p>',
-          assetIds: [],
-          sources: [{ file: 'gioi-thieu/index.html', line: 2601 }],
-        },
-      },
-      {
-        id: 'about-vi-timeline-2019',
-        year: '2019',
-        title: 'Bắt kịp xu hướng',
-        body: {
-          format: 'sanitized-html',
-          html: '<p>Thành lập và gia nhập thị trường với tư cách là đơn vị chuyên cung cấp các giải pháp Marketing Facebook</p>',
-          assetIds: [],
-          sources: [{ file: 'gioi-thieu/index.html', line: 2642 }],
-        },
-      },
-      {
-        id: 'about-vi-timeline-2020',
-        year: '2020',
-        title: 'Tăng trưởng bùng nổ thời giãn cách',
-        body: {
-          format: 'sanitized-html',
-          html: '<p>Sản phẩm phù hợp với nhu cầu online, remote work, thương mại điện tử, nên doanh thu tăng gấp 3 lần.</p>',
-          assetIds: [],
-          sources: [{ file: 'gioi-thieu/index.html', line: 2683 }],
-        },
-      },
-      {
-        id: 'about-vi-timeline-2021',
-        year: '2021',
-        title: 'Ra mắt sản phẩm mới',
-        body: {
-          format: 'sanitized-html',
-          html: '<p>Bổ sung thêm dịch vụ E-mail theo tên miền nhằm cung cấp toàn diện hơn các sản phẩm cho khách hàng.</p>',
-          assetIds: [],
-          sources: [{ file: 'gioi-thieu/index.html', line: 2724 }],
-        },
-      },
-      {
-        id: 'about-vi-timeline-2022',
-        year: '2022',
-        title: 'Đạt cột mốc 2000 khách hàng',
-        body: {
-          format: 'sanitized-html',
-          html: '<p>Bắt đầu mở văn phòng đại diện chi nhánh tại Hồ Chính Minh</p>',
-          assetIds: [],
-          sources: [{ file: 'gioi-thieu/index.html', line: 2765 }],
-        },
-      },
-      {
-        id: 'about-vi-timeline-2023',
-        year: '2023',
-        title: 'Ra mắt sản phẩm mới',
-        body: {
-          format: 'sanitized-html',
-          html: '<p>Bổ sung thêm dịch vụ thiết kế lập trình App Mobile nhằm theo kịp xu thế phát triển nền tảng di động.</p>',
-          assetIds: [],
-          sources: [{ file: 'gioi-thieu/index.html', line: 2806 }],
+          sources: [],
         },
       },
       {
         id: 'about-vi-timeline-2024',
         year: '2024',
-        title: 'Tích cực hoàn thiện bản thân',
+        title: 'Hoàn thiện sản phẩm',
         body: {
           format: 'sanitized-html',
-          html: '<p>Cơ cấu tổ chức lại bộ máy nhân sự để có bước chuyển mình mạnh mẽ trong năm tiếp theo.</p>',
+          html: '<p>Tập trung cải tiến và nâng cao chất lượng sản phẩm dựa trên phản hồi thực tế.</p>',
           assetIds: [],
-          sources: [{ file: 'gioi-thieu/index.html', line: 2853 }],
+          sources: [],
+        },
+      },
+      {
+        id: 'about-vi-timeline-2025',
+        year: '2025',
+        title: 'Ra mắt dịch vụ',
+        body: {
+          format: 'sanitized-html',
+          html: '<p>Chính thức cung cấp dịch vụ thiết kế website, SEO, phát triển app mobile và outsourcing.</p>',
+          assetIds: [],
+          sources: [],
+        },
+      },
+      {
+        id: 'about-vi-timeline-2026',
+        year: '2026',
+        title: 'Mở rộng quy mô',
+        body: {
+          format: 'sanitized-html',
+          html: '<p>Mở rộng đội ngũ, phục vụ khách hàng trên toàn quốc và hướng ra thị trường quốc tế.</p>',
+          assetIds: [],
+          sources: [],
         },
       },
     ],
@@ -566,7 +459,7 @@ export const aboutPages: AboutPageRecord[] = [
         title: 'XÂY DỰNG CHIẾN LƯỢC',
         content: {
           format: 'sanitized-html',
-          html: '<ul><li>Hiểu rõ nhu cầu của khách hàng</li><li>Tối ưu hóa quy trình công việc</li><li>Cải tiến và nâng cấp sản phẩm liên tục</li><li>Tối ưu trải nghiệm người dùng (UX/UI)</li><li>Đảm bảo tính bảo mật và tuân thủ quy định</li><li>Hỗ trợ chuyển đổi số và tăng trưởng bền vững</li><li>Đo lường hiệu quả và phản hồi từ khách hàng</li><li>Tăng cường khả năng tùy biến và linh hoạt của sản phẩm</li><li>Định hướng đổi mới sáng tạo và công nghệ tiên tiến</li></ul>',
+          html: '<ul><li>Nắm bắt chính xác điều khách hàng cần</li><li>Sắp xếp quy trình làm việc gọn, hiệu quả</li><li>Đều đặn làm mới và nâng cấp sản phẩm</li><li>Đặt trải nghiệm người dùng (UX/UI) lên hàng đầu</li><li>Bảo mật chặt chẽ, tuân thủ đúng quy định</li><li>Đồng hành cùng chuyển đổi số và tăng trưởng dài hạn</li><li>Theo dõi hiệu quả, lắng nghe phản hồi khách hàng</li><li>Giúp sản phẩm dễ tùy biến và linh hoạt hơn</li><li>Ưu tiên đổi mới cùng công nghệ tiên tiến</li></ul>',
           assetIds: [],
           sources: [{ file: 'gioi-thieu/index.html', line: 4150 }],
         },
@@ -576,7 +469,7 @@ export const aboutPages: AboutPageRecord[] = [
         title: 'THIẾT KẾ TRẢI NGHIỆM',
         content: {
           format: 'sanitized-html',
-          html: '<ul><li>Tối ưu hóa quy trình làm việc và tương tác</li><li>Đảm bảo tính linh hoạt và tùy chỉnh</li><li>Tăng cường khả năng hợp tác và kết nối</li><li>Tối ưu hóa cho đa nền tảng và thiết bị</li><li>Tăng cường tính bảo mật và quyền riêng tư</li><li>Cải thiện tốc độ và hiệu suất hệ thống</li><li>Tích hợp các công cụ phân tích và báo cáo</li><li>Tạo ra trải nghiệm phù hợp với nhiều đối tượng người dùng</li><li>Tạo ra trải nghiệm người dùng dễ dàng và trực quan</li></ul>',
+          html: '<ul><li>Luồng thao tác và tương tác mạch lạc</li><li>Dễ điều chỉnh, linh hoạt theo từng nhu cầu</li><li>Kết nối và cộng tác thuận tiện hơn</li><li>Hiển thị tốt trên mọi nền tảng, thiết bị</li><li>Bảo vệ an toàn dữ liệu và quyền riêng tư</li><li>Hệ thống phản hồi nhanh, vận hành mượt</li><li>Tích hợp sẵn công cụ phân tích, lập báo cáo</li><li>Trải nghiệm phù hợp cho nhiều nhóm người dùng khác nhau</li><li>Giao diện trực quan, ai cũng dễ dàng sử dụng</li></ul>',
           assetIds: [],
           sources: [{ file: 'gioi-thieu/index.html', line: 4522 }],
         },
@@ -586,55 +479,56 @@ export const aboutPages: AboutPageRecord[] = [
         title: 'PHÁT TRIỂN SẢN PHẨM',
         content: {
           format: 'sanitized-html',
-          html: '<ul><li>Cải tiến và nâng cấp liên tục</li><li>Tích hợp công nghệ tiên tiến</li><li>Khả năng tùy chỉnh và linh hoạt</li><li>Tăng cường khả năng hợp tác và kết nối</li><li>Tối ưu hóa trải nghiệm người dùng (UX/UI)</li><li>Cải thiện tính bảo mật và tuân thủ quy định</li><li>Hỗ trợ chuyển đổi số và phát triển bền vững</li><li>Đáp ứng nhu cầu và yêu cầu của khách hàng doanh nghiệp</li><li>Cung cấp giải pháp tối ưu hóa quy trình công việc</li></ul>',
+          html: '<ul><li>Phát triển theo vòng lặp cải tiến</li><li>Ứng dụng các công nghệ hiện đại</li><li>Cấu trúc mở, dễ mở rộng và tinh chỉnh</li><li>Hỗ trợ làm việc nhóm và liên kết dữ liệu</li><li>Chăm chút từng điểm chạm UX/UI</li><li>Nâng chuẩn an toàn và mức độ tuân thủ</li><li>Tiếp sức cho hành trình số hóa bền vững</li><li>Bám sát nhu cầu và đòi hỏi thực tế của khách hàng doanh nghiệp</li><li>Đề xuất giải pháp giúp vận hành trơn tru hơn</li></ul>',
           assetIds: [],
           sources: [{ file: 'gioi-thieu/index.html', line: 4894 }],
         },
       },
     ],
     partnerIds: [],
+    // Testimonials hidden (stakeholder review 2026-10-27): the quotes came from the source site's
+    // clients. Uncomment the entries to show the section again.
     testimonialIds: [
-      'testimonial-feedback-ten',
-      'testimonial-feedback-dong-a',
-      'testimonial-feedback-vinatex',
+      // 'testimonial-feedback-ten',
+      // 'testimonial-feedback-dong-a',
+      // 'testimonial-feedback-vinatex',
     ],
     sectionCopy: {
       achievements: {
-        title: 'Thành tựu chúng tôi đạt được',
+        title: 'Những con số biết nói về Sova',
         description:
-          'Đối với Sova xem mỗi dự án không chỉ là cơ hội tạo ra giá trị cho doanh nghiệp mà còn là sự đồng hành cùng doanh nghiệp, mang lại giá trị cộng hưởng cho khách hàng thông qua từng sản phẩm trải nghiệm số.',
+          'Mỗi dự án, với Sova, vừa là dịp tạo thêm giá trị cho doanh nghiệp, vừa là lời cam kết đồng hành dài lâu, để từng trải nghiệm số chúng tôi làm ra đem lại giá trị cộng thêm cho khách hàng.',
       },
       goals: {
         eyebrow: 'Target',
-        title: 'Mục tiêu của chúng tôi',
+        title: 'Điều Sova hướng tới',
         description:
-          'Sova luôn nỗ lực không ngừng để nâng cao chất lượng dịch vụ,\nvới mục tiêu trở thành sự lựa chọn hàng đầu của khách hàng.\nMỗi dự án là một trải nghiệm và thử thách đối với chúng tôi.',
+          'Nâng chất lượng dịch vụ lên từng ngày là điều Sova luôn theo đuổi,\nbởi chúng tôi muốn là cái tên khách hàng nghĩ đến đầu tiên.\nVới Sova, dự án nào cũng là một trải nghiệm mới và một thử thách.',
         descriptionLines: [
-          'Sova luôn nỗ lực không ngừng để nâng cao chất lượng dịch vụ,',
-          'với mục tiêu trở thành sự lựa chọn hàng đầu của khách hàng.',
-          'Mỗi dự án là một trải nghiệm và thử thách đối với chúng tôi.',
+          'Nâng chất lượng dịch vụ lên từng ngày là điều Sova luôn theo đuổi,',
+          'bởi chúng tôi muốn là cái tên khách hàng nghĩ đến đầu tiên.',
+          'Với Sova, dự án nào cũng là một trải nghiệm mới và một thử thách.',
         ],
       },
       purpose: {
-        title: 'Các sản phẩm của Sova',
-        titleLines: ['Các sản phẩm của', 'Sova'],
+        title: 'Sản phẩm mang tên Sova',
+        titleLines: ['Sản phẩm mang tên', 'Sova'],
         description:
-          'Tất cả đều đang đáp ứng chính xác nhu cầu của thị trường, đã được cấp chứng chỉ sở hữu trí tuệ từ Nhà nước, và sẵn sàng đồng hành cùng các tổ chức doanh nghiệp lớn, vừa và nhỏ để phát triển một cách toàn diện và bền vững.',
+          'Mỗi sản phẩm đều được xây dựng sát với nhu cầu thực tế của thị trường và sẵn sàng sát cánh cùng doanh nghiệp ở mọi quy mô, từ lớn, vừa đến nhỏ, hướng tới phát triển toàn diện, bền vững.',
       },
       timeline: {
-        title: 'Hình thành và phát triển',
+        title: 'Từng bước trưởng thành',
       },
       pillars: {
         eyebrow: 'Những dịch vụ',
-        title: 'Có thể tìm thấy tại Sova',
-        titleLines: ['Có thể tìm thấy tại', 'Sova'],
-        description:
-          'Khi trở thành khách hàng của Sova, bạn có thể sử dụng những dịch vụ do công ty cung cấp như sau',
+        title: 'Sẵn sàng phục vụ tại Sova',
+        titleLines: ['Sẵn sàng phục vụ tại', 'Sova'],
+        description: 'Là khách hàng của Sova, bạn được đồng hành bởi những năng lực dưới đây',
       },
       testimonials: {
         eyebrow: 'Sova',
-        title: 'Khách hàng nhận xét về chúng tôi',
-        titleLines: ['Khách hàng nhận xét', 'về chúng tôi'],
+        title: 'Những lời đánh giá dành cho Sova',
+        titleLines: ['Những lời đánh giá', 'dành cho Sova'],
       },
     },
     marqueeText: ['Development', 'UI/UX', 'Sova', 'Branding', 'Writer', 'Mobile'],

@@ -13,9 +13,10 @@ import { profiles } from './pages/profile';
 import { routes } from './routes';
 import { stats } from './stats';
 
-// ROUTE_MAP excluded families (see docs/evidence/routes.json).
+// ROUTE_MAP excluded families (see docs/evidence/routes.json), plus the storage, email, hosting
+// and VPS services hidden after the 2026-10-27 stakeholder review.
 const EXCLUDED =
-  /^\/(?:en\/)?(?:tuyen-dung|giai-phap-truyen-thong-so|digital-communications-solutions)\//;
+  /^\/(?:en\/)?(?:tuyen-dung|giai-phap-truyen-thong-so|digital-communications-solutions|e-mail-doanh-nghiep|giai-phap-luu-tru|hosting-doanh-nghiep|vps-doanh-nghiep|business-e-mail|business-hosting|business-vps|storage-solution)\//;
 const flatten = (items: NavigationItem[]): NavigationItem[] =>
   items.flatMap((i) => [i, ...flatten(i.children ?? [])]);
 
@@ -37,17 +38,17 @@ test('every internal destination resolves in routes and none is an excluded path
   }
 });
 
-test('12 header links and 6 service options per locale, each option a service page', () => {
+test('8 header links and 4 service options per locale, each option a service page', () => {
   expect(navigation.map((n) => n.locale).sort()).toEqual(['en', 'vi']);
   for (const nav of navigation) {
-    expect(flatten(nav.header).filter((i) => i.destination)).toHaveLength(12);
+    expect(flatten(nav.header).filter((i) => i.destination)).toHaveLength(8);
     expect(nav.mobile).toEqual(nav.header);
     expect(nav.footerGroups.map((g) => g.id)).toEqual([
       'footer-about',
       'footer-service',
       'footer-quick-links',
     ]);
-    expect(nav.serviceOptions).toHaveLength(6);
+    expect(nav.serviceOptions).toHaveLength(4);
     for (const option of nav.serviceOptions) {
       const routeId = option.destination?.kind === 'internal' ? option.destination.routeId : '';
       expect(routes.find((r) => r.id === routeId)?.kind, option.id).toBe('service');

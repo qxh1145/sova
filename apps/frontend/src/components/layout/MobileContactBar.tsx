@@ -18,14 +18,14 @@ export function MobileContactBar({ labels, settings, contactHref }: MobileContac
       <div id="azt-contact-footer">
         <MobileMenuTrigger label={labels.menu}>
           <span>
-            <img src="/wp-content/uploads/2025/04/menu-bar-1.png" alt={labels.menu} />
+            <img src="/wp-content/uploads/2025/04/menu-bar-1.svg" alt={labels.menu} />
             <span className="azt-contact-footer-btn-label">{labels.menu}</span>
           </span>
         </MobileMenuTrigger>
 
         <Link href={contactHref}>
           <span>
-            <img src="/wp-content/uploads/2025/04/contact-1.png" alt={labels.contact} />
+            <img src="/wp-content/uploads/2025/04/contact-1.svg" alt={labels.contact} />
             <span className="azt-contact-footer-btn-label">{labels.contact}</span>
           </span>
         </Link>

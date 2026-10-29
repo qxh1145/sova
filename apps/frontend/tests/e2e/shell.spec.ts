@@ -1,4 +1,8 @@
 import { ALLOW_404, expect, test } from './fixtures';
+import { shellContent } from '../../src/data/shell';
+
+const footerLines = (locale: 'vi' | 'en') =>
+  shellContent.find((s) => s.locale === locale)!.footerCta.headingLines;
 
 test.describe('Site shell and primitives', () => {
   test('VI root renders one shell with VI labels and switcher linking to EN', async ({ page }) => {
@@ -29,8 +33,9 @@ test.describe('Site shell and primitives', () => {
     const footerCta = page.locator('footer#footer section.ss-last');
     await expect(footerCta).toBeVisible();
     await expect(footerCta.locator('h1 a')).toHaveAttribute('href', '/lien-he/');
-    await expect(footerCta.locator('h1')).toContainText('Hiện thực hoá');
-    await expect(footerCta.locator('h1')).toContainText('ý tưởng của bạn');
+    for (const line of footerLines('vi')) {
+      await expect(footerCta.locator('h1')).toContainText(line);
+    }
 
     // Footer company name and copyright
     await expect(page.locator('footer#footer h3').first()).toHaveText('Sova');
@@ -64,7 +69,9 @@ test.describe('Site shell and primitives', () => {
     const footerCta = page.locator('footer#footer section.ss-last');
     await expect(footerCta).toBeVisible();
     await expect(footerCta.locator('h1 a')).toHaveAttribute('href', '/en/contact-us/');
-    await expect(footerCta.locator('h1')).toContainText('Realize your amazing digital experience!');
+    for (const line of footerLines('en')) {
+      await expect(footerCta.locator('h1')).toContainText(line);
+    }
   });
 
   test('Switcher with no counterpart shows current-locale label only', async ({ page }) => {

@@ -115,7 +115,7 @@ describe('ContactView and contact routes', () => {
       // Info row
       expect(root.querySelector(`div#${preset.main.infoColId} h2 span`)?.text).toBe(page.heading);
 
-      // Form column with 5 labelled fields and 7 options + prompt
+      // Form column with 5 labelled fields and 5 options + prompt
       const formCol = root.querySelector(`div#${preset.main.formColId}`);
       expect(formCol).not.toBeNull();
       const formEl = formCol?.querySelector('form.wpcf7-form');
@@ -131,7 +131,7 @@ describe('ContactView and contact routes', () => {
       expect(labels?.[4]?.text).toContain(page.form.messageLabel);
 
       const options = formEl?.querySelectorAll('select option');
-      expect(options).toHaveLength(8);
+      expect(options).toHaveLength(6);
       expect(options?.[0]?.text).toBe(page.form.servicePrompt);
       expect(options?.slice(1).map((o) => o.text)).toEqual(page.form.serviceOptions);
 

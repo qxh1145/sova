@@ -16,7 +16,7 @@ export const shellContent: ShellContent[] = [
     },
     projectGalleryLabel: 'Thư viện ảnh dự án',
     footerCta: {
-      headingLines: ['Hiện thực hoá', 'ý tưởng của bạn'],
+      headingLines: ['Biến ý tưởng', 'thành sản phẩm số'],
       targetRouteId: 'route-lien-he',
     },
     copyright: 'Copyright © 2026 {{site.companyName}} | All Rights Reserved.',
@@ -28,7 +28,7 @@ export const shellContent: ShellContent[] = [
     mobileMenu: {
       trigger: 'Menu',
       close: 'Đóng',
-      tagline: 'Thấu hiểu, đồng hành và thiết kế trải nghiệm digital toàn diện',
+      tagline: 'Trải nghiệm số trọn vẹn khởi nguồn từ thấu hiểu và sự đồng hành',
       menuHeading: 'Menu',
       contactHeading: 'Liên hệ',
       toggleSubmenu: 'Mở rộng menu con',
@@ -43,7 +43,7 @@ export const shellContent: ShellContent[] = [
       success: 'Đã ghi nhận yêu cầu trong bản demo.',
       error: 'Đã có lỗi xảy ra trong quá trình gửi. Vui lòng thử lại.',
       demoBadge: 'Bản demo — chưa gửi thông tin',
-      note: 'Đăng ký để nhận những thông tin mới nhất về các chương trình ưu đãi của {{site.companyName}}',
+      note: 'Cập nhật sớm nhất mọi chương trình ưu đãi từ {{site.companyName}} chỉ với một lần đăng ký',
     },
     contactBar: {
       menu: 'Menu',
@@ -53,13 +53,13 @@ export const shellContent: ShellContent[] = [
       zalo: 'Zalo',
     },
     floatingContacts: {
-      buttonText: 'Contact us',
-      menuHeader: 'Xin chào, Chúng tôi có thể giúp gì cho bạn.',
+      buttonText: 'Liên hệ',
+      menuHeader: 'Chào bạn, Sova có thể hỗ trợ bạn điều gì?',
       hours: '(7h30 - 23h00)',
       hotline: 'Hotline',
       messenger: 'Messenger',
       zalo: 'Chat Zalo',
-      email: 'Email us',
+      email: 'Gửi email',
     },
   },
   {
@@ -77,7 +77,7 @@ export const shellContent: ShellContent[] = [
     },
     projectGalleryLabel: 'Project gallery',
     footerCta: {
-      headingLines: ['Realize your amazing digital experience!'],
+      headingLines: ['Turn your ideas into digital products!'],
       targetRouteId: 'route-en--contact-us',
     },
     copyright: 'Copyright © 2026 {{site.companyName}} | All Rights Reserved.',
@@ -89,7 +89,7 @@ export const shellContent: ShellContent[] = [
     mobileMenu: {
       trigger: 'Menu',
       close: 'Close',
-      tagline: 'Understand, accompany, and design a comprehensive digital experience.',
+      tagline: 'Complete digital experiences, rooted in insight and partnership',
       menuHeading: 'Menu',
       contactHeading: 'Contact',
       toggleSubmenu: 'Toggle submenu',
@@ -104,7 +104,7 @@ export const shellContent: ShellContent[] = [
       success: 'Request recorded in demo mode.',
       error: 'An error occurred while sending. Please try again.',
       demoBadge: 'Demo — no data was sent',
-      note: "Register to receive the latest information about {{site.companyName}}'s promotional programs",
+      note: 'Be the first to hear about every {{site.companyName}} promotion with a single sign-up',
     },
     contactBar: {
       menu: 'Menu',
@@ -115,7 +115,7 @@ export const shellContent: ShellContent[] = [
     },
     floatingContacts: {
       buttonText: 'Contact us',
-      menuHeader: 'How would you like to contact us?',
+      menuHeader: 'Hello, how can Sova support you?',
       hours: '(7h30 - 23h00)',
       hotline: 'Hotline',
       messenger: 'Messenger',

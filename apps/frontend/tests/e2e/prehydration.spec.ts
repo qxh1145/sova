@@ -7,7 +7,7 @@ const cases = [
   { path: '/en/contact-us/', field: 'input[name="your-name"]', value: 'John Doe' },
   { path: '/thiet-ke-website/', field: 'input[name="your-name"]', value: 'Nguyen Van A' },
   { path: '/en/website-development/', field: 'input[name="your-name"]', value: 'John Doe' },
-  { path: '/login-eras/', field: '#user_login', value: 'testuser' },
+  { path: '/login-sova/', field: '#user_login', value: 'testuser' },
 ];
 
 test.describe('Pre-hydration submit guard', () => {
@@ -31,7 +31,7 @@ test.describe('Pre-hydration submit guard', () => {
 
       const input = page.locator(field).first();
       await input.fill(value);
-      if (path === '/login-eras/') await page.locator('#user_pass').fill('secret123');
+      if (path === '/login-sova/') await page.locator('#user_pass').fill('secret123');
       await input.press('Enter');
 
       await page.waitForLoadState('load');
