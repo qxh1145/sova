@@ -11,7 +11,7 @@ Quyết định cho public UI mock trước, backend/dashboard nối sau. Đây 
 | Ngôn ngữ | TypeScript, strict mode | Content models, props, repository contracts, locale/route mapping |
 | Styling | CSS Modules + global CSS có kiểm soát + CSS custom properties | Port source CSS theo cascade; giữ spacing, fonts, colors, breakpoints; component styles colocated |
 | UI behavior primitives | Radix Primitives (Dialog, Accordion, Tabs khi cần) | Focus/keyboard/state cho popup, mobile drawer, FAQ; tự style theo source |
-| Motion | CSS transitions/keyframes + GSAP/ScrollTrigger + @gsap/react | CSS cho typewriter/marquee/hover; GSAP cho pinned horizontal projects và animation cần DOM |
+| Motion | CSS transitions/keyframes + GSAP/ScrollTrigger + @gsap/react + hand-written WebGL canvas | CSS cho typewriter/marquee/hover/reveal; scroll reveal qua 1 IntersectionObserver island + CSS transitions (không SplitText); hero backgrounds qua WebGL canvas tự viết port từ React Bits (≤1 context/page, dừng khi offscreen/tab ẩn, 1 frame tĩnh khi reduced motion); GSAP cho pinned horizontal projects |
 | Carousel | Embla Carousel React | Một Carousel adapter dùng chung, thêm autoplay/auto-height plugin khi instance cần |
 | Forms | React Hook Form + Zod + @hookform/resolvers | Typed fields, validation/schema, trạng thái submit mock; transport thật nối sau |
 | Content/data | Typed TS mock records + async repository/query layer | Đọc local trước; thay API adapter khi backend có, không fetch trong cards |
@@ -33,7 +33,7 @@ Radix là primitives không áp đặt giao diện hoàn chỉnh; dùng phần b
 
 ## Motion và carousel: adapter có kiểm tra parity
 
-GSAP dùng trong client island với scoped refs và cleanup qua useGSAP; giữ pin/scrub/resize lifecycle. CSS typewriter/marquee không cần client timer. Không thêm Framer Motion/Motion song song cho cùng một loại hiệu ứng. [GSAP React](https://gsap.com/resources/React/).
+GSAP dùng trong client island với scoped refs và cleanup qua useGSAP; giữ pin/scrub/resize lifecycle. CSS typewriter/marquee không cần client timer. Scroll reveal dùng một IntersectionObserver island + CSS transitions (không dùng SplitText để đảm bảo JS budget). Hero backgrounds dùng hand-written WebGL canvas ported từ React Bits (≤1 context, pause offscreen/hidden, one still frame under reduced motion). Giữ nguyên lệnh cấm cài Framer Motion, `motion`, `three` hoặc `ogl`. [GSAP React](https://gsap.com/resources/React/).
 
 Embla là lựa chọn đích cho slider React; repository chính thức có React wrapper. [Embla repository](https://github.com/davidjerleke/embla-carousel).
 

@@ -129,6 +129,13 @@ html.has-custom-cursor .cursor-ring {
   .success-animate .check {
     stroke-dashoffset: 0;
   }
+  /* Not in source: typewriter shows final state at once for users who ask for reduced motion (CAP-16, story 9.1). */
+  .typewriter,
+  .typewriter:nth-child(n) {
+    animation: none;
+    width: 100%;
+    opacity: 1;
+  }
 }
 
 /* Storage offerings card titles: source inline `font-family: Poppins, sans-serif!important`, now the
