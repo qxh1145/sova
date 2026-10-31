@@ -38,6 +38,7 @@ baseline/
 !apps/frontend/tests/baseline/
 apps/frontend/baseline-sova/
 apps/frontend/baseline-diff/
+apps/frontend/tests/e2e/.cap16-parts/
 
 # Testing and Coverage
 coverage/

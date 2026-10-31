@@ -16,6 +16,13 @@
   --radius-card: 10px;
   --radius-pill: 100px;
 
+  /* Motion tokens (CAP-16, story 9.1). */
+  --motion-duration-fast: 150ms;
+  --motion-duration-base: 300ms;
+  --motion-duration-slow: 600ms;
+  --motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
   --shadow-cta: 0 4px 10px rgba(0, 101, 223, 0.3);
   --shadow-cta-hover: 0 6px 18px rgba(0, 101, 223, 0.4);
   --shadow-achievement: 0 0 10px rgba(255, 255, 255, 0.5);
