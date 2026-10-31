@@ -53,3 +53,71 @@ article[data-pointer],
       0% 0%;
   }
 }
+
+/* CTA hover ring & pointer pull driven by PointerTracker (CAP-16, E9.3). */
+
+@property --cta-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes cta-ring-rotate {
+  to {
+    --cta-angle: 360deg;
+  }
+}
+
+/* Any position: relative sits in :where() so legacy position: absolute (slider a.but-lh) wins. */
+:where([data-pointer='cta']) {
+  position: relative;
+}
+
+/* 2px masked rotating conic-gradient ring on ::after (hero CTA ::before is legacy slide). */
+[data-pointer='cta']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  box-sizing: border-box;
+  pointer-events: none;
+  opacity: 0;
+  background: conic-gradient(from var(--cta-angle) at 50% 50%, #0065df, #38bdf8, #a5d8ff, #0065df);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  transition: opacity var(--motion-duration-base) var(--motion-ease-out);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-pointer='cta']:focus-visible::after {
+    opacity: 1;
+    animation: cta-ring-rotate 3s linear infinite;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  [data-pointer='cta']:hover::after {
+    opacity: 1;
+    animation: cta-ring-rotate 3s linear infinite;
+  }
+
+  :root[data-pointer-tracker] [data-pointer='cta'] {
+    transition:
+      transform var(--motion-duration-base) var(--motion-ease-out),
+      background-color var(--motion-duration-base) var(--motion-ease-out),
+      color var(--motion-duration-base) var(--motion-ease-out),
+      box-shadow var(--motion-duration-base) var(--motion-ease-out),
+      translate var(--motion-duration-fast) var(--motion-ease-out);
+  }
+
+  :root[data-pointer-tracker] [data-pointer='cta']:hover {
+    translate: calc((var(--pointer-x, 50%) - 50%) * 0.2) calc((var(--pointer-y, 50%) - 50%) * 0.2);
+  }
+}

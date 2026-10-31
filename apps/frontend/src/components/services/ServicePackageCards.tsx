@@ -689,7 +689,12 @@ function CardContent({
 
       {offering.ctaHref && (
         <p>
-          <Link className="but-lh" style={{ borderRadius: 12 }} href={offering.ctaHref.href}>
+          <Link
+            className="but-lh"
+            style={{ borderRadius: 12 }}
+            href={offering.ctaHref.href}
+            data-pointer="cta"
+          >
             {offering.ctaHref.label}
           </Link>
         </p>

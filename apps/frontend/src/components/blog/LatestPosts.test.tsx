@@ -130,6 +130,7 @@ describe('LatestPosts component', () => {
     expect(root.querySelector('#col-1323995894 .is-divider.divider')).not.toBeNull();
     const link = root.querySelector('#text-578526168 a.but-lh');
     expect(link?.getAttribute('href')?.replace(/\/$/, '')).toBe('/goc-nhin');
+    expect(link?.getAttribute('data-pointer')).toBe('cta');
     expect(link?.text).toBe('Khám phá thêm →');
   });
 

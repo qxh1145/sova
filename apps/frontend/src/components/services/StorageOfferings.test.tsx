@@ -132,6 +132,12 @@ describe('StorageOfferings / StorageServiceView', () => {
       expect(slider?.querySelectorAll('a.but-lh').map((a) => a.getAttribute('href'))).toEqual(
         hrefs,
       );
+      grid?.querySelectorAll('a.but-lh').forEach((a) => {
+        expect(a.getAttribute('data-pointer')).toBe('cta');
+      });
+      slider?.querySelectorAll('a.but-lh').forEach((a) => {
+        expect(a.getAttribute('data-pointer')).toBe('cta');
+      });
       expect(slider?.querySelectorAll('h3').map((h) => h.text)).toEqual(
         service.offerings.map((o) => o.slideTitle),
       );

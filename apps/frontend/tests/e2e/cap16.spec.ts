@@ -1112,6 +1112,272 @@ test.describe('CAP-16: Card hover', () => {
   });
 });
 
+test.describe('CAP-16: CTA effects', () => {
+  const CTA_SITES = [
+    {
+      name: 'HomeHeroCTA',
+      url: '/',
+      selector: '.link_banner a[data-pointer="cta"]',
+    },
+    {
+      name: 'PricingCardsCTA',
+      url: '/thiet-ke-website/',
+      selector: '#row-1975763604 a.but-lh[data-pointer="cta"]',
+    },
+    {
+      name: 'PageHeroCTA',
+      url: '/gioi-thieu/',
+      selector:
+        '.service-hero-heading ~ * a.but-lh[data-pointer="cta"], .banner a.but-lh[data-pointer="cta"]',
+    },
+    {
+      name: 'FooterCTA',
+      url: '/',
+      selector: 'section.ss-last a.plain[data-pointer="cta"]',
+    },
+  ];
+
+  for (const site of CTA_SITES) {
+    test(`Fine pointer hover pulls CTA and shows rotating ring, pointer leave resets on ${site.name} (${site.url})`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await page.goto(site.url, { waitUntil: 'load' });
+      const cta = page.locator(site.selector).first();
+      await cta.evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        window.scrollBy(0, r.top - 150);
+      });
+      await page.waitForTimeout(200);
+
+      const box = await cta.boundingBox();
+      expect(box, `${site.name} CTA should have a bounding box`).not.toBeNull();
+
+      // Hover off-centre (at 80% width, 80% height)
+      await page.mouse.move(box!.x + box!.width * 0.8, box!.y + box!.height * 0.8);
+      await page.waitForTimeout(350);
+
+      const hoverState = await cta.evaluate((el) => ({
+        x: el.style.getPropertyValue('--pointer-x'),
+        y: el.style.getPropertyValue('--pointer-y'),
+        translate: window.getComputedStyle(el).translate,
+        ringOpacity: parseFloat(window.getComputedStyle(el, '::after').opacity),
+        ringAnim: window.getComputedStyle(el, '::after').animationName,
+      }));
+
+      expect(hoverState.x, `${site.name} should set --pointer-x`).not.toBe('');
+      expect(hoverState.y, `${site.name} should set --pointer-y`).not.toBe('');
+      expect(hoverState.translate, `${site.name} translate should not be none or 0px`).not.toBe(
+        'none',
+      );
+      expect(hoverState.translate).not.toBe('0px');
+      expect(hoverState.ringOpacity, `${site.name} ring opacity should be > 0`).toBeGreaterThan(0);
+      expect(hoverState.ringAnim).toBe('cta-ring-rotate');
+
+      // Pointer leaves
+      await page.mouse.move(0, 0);
+      await page.waitForTimeout(350);
+
+      const leaveState = await cta.evaluate((el) => ({
+        translate: window.getComputedStyle(el).translate,
+        ringOpacity: parseFloat(window.getComputedStyle(el, '::after').opacity),
+      }));
+
+      expect(leaveState.translate, `${site.name} translate should return to none`).toBe('none');
+      expect(leaveState.ringOpacity, `${site.name} ring opacity should fade to 0`).toBe(0);
+    });
+
+    test(`Touch tap sets no --pointer-x and leaves translate at none on ${site.name} (${site.url})`, async ({
+      browser,
+    }) => {
+      const context = await browser.newContext({
+        hasTouch: true,
+        isMobile: true,
+        viewport: { width: 800, height: 1000 },
+      });
+      const page = await context.newPage();
+      await page.goto(site.url, { waitUntil: 'load' });
+      await page.evaluate(() => {
+        window.addEventListener('click', (e) => e.preventDefault(), { capture: true });
+      });
+      const cta = page.locator(site.selector).first();
+      await cta.evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        window.scrollBy(0, r.top - 150);
+      });
+      await page.waitForTimeout(200);
+      await cta.tap();
+      await page.waitForTimeout(100);
+
+      const tapState = await cta.evaluate((el) => ({
+        x: el.style.getPropertyValue('--pointer-x'),
+        translate: window.getComputedStyle(el).translate,
+        ringOpacity: parseFloat(window.getComputedStyle(el, '::after').opacity),
+      }));
+
+      expect(tapState.x, `${site.name} touch tap should not set --pointer-x`).toBe('');
+      expect(tapState.translate, `${site.name} touch tap translate should be none`).toBe('none');
+      expect(tapState.ringOpacity, `${site.name} touch tap ring opacity should be 0`).toBe(0);
+
+      await context.close();
+    });
+  }
+
+  test('Keyboard focus shows ring and keeps outline visible', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/', { waitUntil: 'load' });
+    const cta = page.locator('.link_banner a[data-pointer="cta"]');
+    await cta.focus();
+    await page.waitForTimeout(350);
+
+    const focusState = await cta.evaluate((el) => ({
+      ringOpacity: parseFloat(window.getComputedStyle(el, '::after').opacity),
+      animName: window.getComputedStyle(el, '::after').animationName,
+      outlineStyle: window.getComputedStyle(el).outlineStyle,
+      outlineWidth: window.getComputedStyle(el).outlineWidth,
+    }));
+
+    expect(focusState.ringOpacity, 'Focus should show rotating ring').toBeGreaterThan(0);
+    expect(focusState.animName).toBe('cta-ring-rotate');
+    expect(focusState.outlineStyle).not.toBe('none');
+    expect(focusState.outlineWidth).not.toBe('0px');
+  });
+
+  test('Reduced motion disables CTA pull, ring and hero sheen', async ({ browser }) => {
+    const context = await browser.newContext({
+      reducedMotion: 'reduce',
+      viewport: { width: 1440, height: 900 },
+    });
+    const page = await context.newPage();
+    await page.goto('/', { waitUntil: 'load' });
+
+    // Check hero sheen is disabled
+    const sheenAnim = await page.locator('.home-hero-sheen').evaluate((el) => {
+      return window.getComputedStyle(el).animationName;
+    });
+    expect(sheenAnim, 'Hero sheen animation should be none under reduced motion').toBe('none');
+
+    // Check typewriter final state
+    const typewriterOpacity = await page
+      .locator('.typewriter')
+      .first()
+      .evaluate((el) => {
+        return window.getComputedStyle(el).opacity;
+      });
+    expect(typewriterOpacity).toBe('1');
+
+    // Check CTA hover has no pull and no ring
+    const cta = page.locator('.link_banner a[data-pointer="cta"]');
+    const box = await cta.boundingBox();
+    expect(box).not.toBeNull();
+    await page.mouse.move(box!.x + 40, box!.y + 20);
+    await page.waitForTimeout(200);
+
+    const ctaState = await cta.evaluate((el) => ({
+      translate: window.getComputedStyle(el).translate,
+      ringOpacity: parseFloat(window.getComputedStyle(el, '::after').opacity),
+    }));
+    expect(ctaState.translate).toBe('none');
+    expect(ctaState.ringOpacity).toBe(0);
+
+    await context.close();
+  });
+
+  test('Hero sheen animation runs on third typewriter line under normal motion', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/', { waitUntil: 'load' });
+
+    const sheen = page.locator('.home-hero-sheen');
+    await expect(sheen).toBeVisible();
+    const animName = await sheen.evaluate((el) => window.getComputedStyle(el).animationName);
+    expect(animName, 'Hero sheen should have running animation-name').toBe('home-hero-sheen');
+  });
+
+  test('Nested CTA in card: hovering CTA sets vars on CTA while card spotlight holds last point', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/thiet-ke-website/', { waitUntil: 'load' });
+
+    const card = page.locator('#row-1975763604 .col-inner[data-pointer="card"]').first();
+    await card.evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      window.scrollBy(0, r.top - 150);
+    });
+    await page.waitForTimeout(200);
+
+    const cardBox = await card.boundingBox();
+    expect(cardBox).not.toBeNull();
+
+    // 1. Move to a card point outside the CTA
+    await page.mouse.move(cardBox!.x + 50, cardBox!.y + 50);
+    await page.waitForTimeout(200);
+
+    const cardSpot1 = await card.evaluate((el) => ({
+      x: el.style.getPropertyValue('--pointer-x'),
+      y: el.style.getPropertyValue('--pointer-y'),
+    }));
+    expect(cardSpot1.x).not.toBe('');
+
+    // 2. Move pointer over the nested CTA inside this card
+    const cta = card.locator('a.but-lh[data-pointer="cta"]');
+    const ctaBox = await cta.boundingBox();
+    expect(ctaBox).not.toBeNull();
+    await page.mouse.move(ctaBox!.x + ctaBox!.width * 0.7, ctaBox!.y + ctaBox!.height * 0.7);
+    await page.waitForTimeout(200);
+
+    const ctaState = await cta.evaluate((el) => ({
+      x: el.style.getPropertyValue('--pointer-x'),
+      translate: window.getComputedStyle(el).translate,
+    }));
+    expect(ctaState.x, 'Nested CTA should receive pointer coords').not.toBe('');
+    expect(ctaState.translate, 'Nested CTA should pull').not.toBe('none');
+
+    // Card variables should hold last point
+    const cardSpot2 = await card.evaluate((el) => ({
+      x: el.style.getPropertyValue('--pointer-x'),
+      y: el.style.getPropertyValue('--pointer-y'),
+    }));
+    expect(cardSpot2.x).toBe(cardSpot1.x);
+    expect(cardSpot2.y).toBe(cardSpot1.y);
+  });
+
+  test('JS off: no pull island, but hover and focus ring still function in CSS', async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({
+      javaScriptEnabled: false,
+      viewport: { width: 1440, height: 900 },
+    });
+    const page = await context.newPage();
+    await page.goto('/', { waitUntil: 'load' });
+
+    const cta = page.locator('.link_banner a[data-pointer="cta"]');
+    const box = await cta.boundingBox();
+    expect(box).not.toBeNull();
+
+    await page.mouse.move(box!.x + 40, box!.y + 20);
+    await page.waitForTimeout(350);
+
+    const hoverState = await cta.evaluate((el) => ({
+      translate: window.getComputedStyle(el).translate,
+      ringOpacity: parseFloat(window.getComputedStyle(el, '::after').opacity),
+      ringAnim: window.getComputedStyle(el, '::after').animationName,
+    }));
+
+    expect(hoverState.translate, 'With JS off, translate must stay none').toBe('none');
+    expect(
+      hoverState.ringOpacity,
+      'With JS off, ring opacity must still show via CSS :hover',
+    ).toBeGreaterThan(0);
+    expect(hoverState.ringAnim).toBe('cta-ring-rotate');
+
+    await context.close();
+  });
+});
+
 test.describe('CAP-16: Budget & CLS Gate', () => {
   const isRecord = process.env.CAP16_RECORD === '1';
 

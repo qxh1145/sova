@@ -46,7 +46,9 @@ export function HomeHero({ hero, locale }: HomeHeroProps) {
                         className="typewriter"
                         style={idx === 2 ? { color: '#0065df' } : undefined}
                       >
-                        <strong>{line}</strong>
+                        <strong className={idx === 2 ? 'home-hero-sheen' : undefined}>
+                          {line}
+                        </strong>
                       </span>
                     ))}
                   </h1>
@@ -59,7 +61,7 @@ export function HomeHero({ hero, locale }: HomeHeroProps) {
                 {hero.cta && (
                   <div id={ctaWrapperId} className="text link_banner hide-for-small">
                     <p>
-                      <a href={hero.cta.href}>
+                      <a href={hero.cta.href} data-pointer="cta">
                         <span>{hero.cta.label}</span>
                       </a>
                     </p>
