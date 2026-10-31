@@ -368,9 +368,9 @@ const FAMILY_ROUTES = manifest.rows.filter((row) => {
   return true;
 });
 
-/** Wait until the home hero canvas is in the DOM and has issued a WebGL2 draw call. */
-async function waitForHeroDraw(page: Page) {
-  await expect(page.locator('canvas.gradient-ascii-canvas')).toBeAttached();
+/** Wait until the hero canvas is in the DOM and has issued a WebGL2 draw call. */
+async function waitForHeroDraw(page: Page, selector = 'canvas.gradient-ascii-canvas') {
+  await expect(page.locator(selector)).toBeAttached();
   await expect
     .poll(() =>
       page.evaluate(() => (window as unknown as { __getDrawCount: () => number }).__getDrawCount()),
@@ -463,8 +463,12 @@ test.describe('CAP-16: WebGL Contexts', () => {
       await installWebGLContextTracker(page);
       await page.goto(url, { waitUntil: 'load' });
       await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {});
-      // The home hero creates its context in an effect: count after it exists and has drawn.
-      if (HOME_ROUTES.some((route) => route.url === url)) await waitForHeroDraw(page);
+      // The heroes create their contexts in effects: count after they exist and have drawn.
+      if (HOME_ROUTES.some((route) => route.url === url)) {
+        await waitForHeroDraw(page);
+      } else if (url === '/thiet-ke-website/') {
+        await waitForHeroDraw(page, 'canvas.light-rays-canvas');
+      }
 
       const live = await page.evaluate(() => {
         return (
@@ -673,6 +677,247 @@ test.describe('CAP-16: Home hero', () => {
         ).__getUnreleasedWebGLContextCount(),
       );
       expect(unreleased, 'Contexts held after restore').toBeLessThanOrEqual(1);
+    });
+  }
+});
+
+const SUB_HERO_ROUTES = [
+  { name: 'about', url: '/gioi-thieu/' },
+  { name: 'projects', url: '/du-an/' },
+  { name: 'website', url: '/thiet-ke-website/' },
+  { name: 'faq', url: '/cau-hoi-thuong-gap/' },
+  { name: 'privacy', url: '/chinh-sach-bao-mat/' },
+];
+
+test.describe('CAP-16: Sub-page hero', () => {
+  for (const { name, url } of SUB_HERO_ROUTES) {
+    test(`Happy path draws and steers toward pointer on ${name} (${url})`, async ({ page }) => {
+      await installWebGLContextTracker(page);
+      await page.goto(url, { waitUntil: 'load' });
+      await waitForHeroDraw(page, 'canvas.light-rays-canvas');
+
+      const hero = page.locator('.banner-bg .light-rays');
+      await expect(hero).toBeVisible();
+      await expect(page.locator('canvas.light-rays-canvas')).toBeVisible();
+
+      await page.mouse.move(200, 200);
+      await page.mouse.move(400, 250);
+      expect(await drawCount(page), 'Draw calls while pointer moves').toBeGreaterThan(0);
+    });
+
+    test(`Client navigation from home acquires context and keeps count <= 1 on ${name} (${url})`, async ({
+      page,
+    }) => {
+      await installWebGLContextTracker(page);
+      await page.goto('/', { waitUntil: 'load' });
+      await waitForHeroDraw(page);
+
+      const link = page.locator(`#footer a[href="${url}"]`).first();
+      await expect(link).toBeAttached();
+      await link.click();
+      await expect(page).toHaveURL(new RegExp(`${url.replace(/\//g, '\\/')}$`));
+      await waitForHeroDraw(page, 'canvas.light-rays-canvas');
+
+      const live = await page.evaluate(() =>
+        (
+          window as unknown as { __getLiveWebGLContextCount: () => number }
+        ).__getLiveWebGLContextCount(),
+      );
+      expect(live, 'Live WebGL contexts after client nav').toBe(1);
+
+      const unreleased = await page.evaluate(() =>
+        (
+          window as unknown as { __getUnreleasedWebGLContextCount: () => number }
+        ).__getUnreleasedWebGLContextCount(),
+      );
+      expect(unreleased, 'Unreleased WebGL contexts after client nav').toBeLessThanOrEqual(1);
+    });
+
+    test(`Coarse pointer draws without window pointermove listener on ${name} (${url})`, async ({
+      browser,
+    }) => {
+      const pointerMoveListeners = async (touch: boolean) => {
+        const context = await browser.newContext(
+          touch ? { hasTouch: true, isMobile: true, viewport: { width: 390, height: 844 } } : {},
+        );
+        const page = await context.newPage();
+        await installWebGLContextTracker(page);
+        await page.addInitScript(() => {
+          let count = 0;
+          const origAdd = window.addEventListener;
+          window.addEventListener = function (this: Window, ...args: Parameters<typeof origAdd>) {
+            if (args[0] === 'pointermove') count++;
+            return origAdd.apply(this, args);
+          } as typeof origAdd;
+          (window as unknown as { __pointerMoveCount: () => number }).__pointerMoveCount = () =>
+            count;
+        });
+        await page.goto(url, { waitUntil: 'load' });
+        await waitForHeroDraw(page, 'canvas.light-rays-canvas');
+        const count = await page.evaluate(() =>
+          (window as unknown as { __pointerMoveCount: () => number }).__pointerMoveCount(),
+        );
+        const draws = await drawCount(page, 500);
+        await context.close();
+        return { count, draws };
+      };
+
+      const fine = await pointerMoveListeners(false);
+      expect(fine.count, 'Fine pointer: window pointermove attached').toBeGreaterThanOrEqual(1);
+      expect(fine.draws, 'Fine pointer: draws').toBeGreaterThan(0);
+
+      const coarse = await pointerMoveListeners(true);
+      expect(coarse.count, 'Coarse pointer: window pointermove listener not attached').toBe(0);
+      expect(coarse.draws, 'Coarse pointer: draws').toBeGreaterThan(0);
+    });
+
+    test(`Mobile DPR caps canvas width to clientWidth * 2 on ${name} (${url})`, async ({
+      browser,
+    }) => {
+      const context = await browser.newContext({
+        viewport: { width: 390, height: 844 },
+        deviceScaleFactor: 3,
+      });
+      const page = await context.newPage();
+      await installWebGLContextTracker(page);
+      await page.goto(url, { waitUntil: 'load' });
+      await waitForHeroDraw(page, 'canvas.light-rays-canvas');
+
+      const { canvasWidth, clientWidth } = await page.evaluate(() => {
+        const c = document.querySelector<HTMLCanvasElement>('canvas.light-rays-canvas')!;
+        return { canvasWidth: c.width, clientWidth: c.clientWidth };
+      });
+      expect(canvasWidth).toBeLessThanOrEqual(clientWidth * 2);
+      await context.close();
+    });
+
+    test(`Hero stops drawing offscreen and resumes on re-entry on ${name} (${url})`, async ({
+      page,
+    }) => {
+      await installWebGLContextTracker(page);
+      await page.goto(url, { waitUntil: 'load' });
+      await waitForHeroDraw(page, 'canvas.light-rays-canvas');
+
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(300);
+      expect(await drawCount(page), 'Draw calls while hero is offscreen').toBe(0);
+
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.waitForTimeout(300);
+      expect(await drawCount(page), 'Draw calls after hero re-enters').toBeGreaterThan(0);
+    });
+
+    test(`Hero stops drawing in a hidden tab and resumes when visible on ${name} (${url})`, async ({
+      page,
+    }) => {
+      await installWebGLContextTracker(page);
+      await page.goto(url, { waitUntil: 'load' });
+      await waitForHeroDraw(page, 'canvas.light-rays-canvas');
+
+      await setHidden(page, true);
+      await page.waitForTimeout(100);
+      expect(await drawCount(page), 'Draw calls while tab is hidden').toBe(0);
+
+      await setHidden(page, false);
+      expect(await drawCount(page), 'Draw calls after tab is visible').toBeGreaterThan(0);
+    });
+
+    test(`Hero draws one still frame under reduced motion at load on ${name} (${url})`, async ({
+      page,
+    }) => {
+      await installWebGLContextTracker(page);
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.goto(url, { waitUntil: 'load' });
+      await waitForHeroDraw(page, 'canvas.light-rays-canvas');
+      await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {});
+      await page.waitForTimeout(300);
+      expect(await drawCount(page), 'Draw calls after load under reduced motion').toBe(0);
+    });
+
+    test(`Hero stops when reduced motion is switched on mid-run on ${name} (${url})`, async ({
+      page,
+    }) => {
+      await installWebGLContextTracker(page);
+      await page.goto(url, { waitUntil: 'load' });
+      await waitForHeroDraw(page, 'canvas.light-rays-canvas');
+
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.waitForTimeout(300);
+      expect(await drawCount(page), 'Draw calls after switching to reduce').toBe(0);
+
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+      expect(await drawCount(page), 'Draw calls after switching back').toBeGreaterThan(0);
+    });
+
+    test(`Hero without WebGL2 shows background image with no page error on ${name} (${url})`, async ({
+      page,
+    }) => {
+      const pageErrors: string[] = [];
+      page.on('pageerror', (e) => pageErrors.push(e.message));
+      await page.addInitScript(() => {
+        const orig = HTMLCanvasElement.prototype.getContext;
+        (HTMLCanvasElement.prototype as unknown as { getContext: unknown }).getContext = function (
+          this: HTMLCanvasElement,
+          type: string,
+          ...args: unknown[]
+        ) {
+          if (type === 'webgl2') return null;
+          return (orig as (this: HTMLCanvasElement, t: string, ...r: unknown[]) => unknown).call(
+            this,
+            type,
+            ...args,
+          );
+        };
+      });
+      await page.goto(url, { waitUntil: 'load' });
+
+      await expect(page.locator('canvas.light-rays-canvas')).toHaveCount(0);
+      await expect(page.locator('.banner-bg img').first()).toBeVisible();
+      expect(pageErrors).toEqual([]);
+    });
+
+    test(`Hero shows image on context loss and recovers on restore on ${name} (${url})`, async ({
+      page,
+    }) => {
+      await installWebGLContextTracker(page);
+      await page.goto(url, { waitUntil: 'load' });
+      await waitForHeroDraw(page, 'canvas.light-rays-canvas');
+
+      await page.evaluate(() => {
+        const canvas = document.querySelector<HTMLCanvasElement>('canvas.light-rays-canvas')!;
+        const ext = canvas.getContext('webgl2')!.getExtension('WEBGL_lose_context')!;
+        (window as unknown as { __subHeroLose: WEBGL_lose_context }).__subHeroLose = ext;
+        ext.loseContext();
+      });
+      await expect(page.locator('.banner-bg .light-rays--lost')).toBeVisible();
+      await expect(page.locator('.banner-bg img').first()).toBeVisible();
+      expect(await drawCount(page, 500), 'Draw calls while context is lost').toBe(0);
+
+      await page.evaluate(() =>
+        (window as unknown as { __subHeroLose: WEBGL_lose_context }).__subHeroLose.restoreContext(),
+      );
+      await expect(page.locator('.banner-bg .light-rays--lost')).toHaveCount(0);
+      await expect(page.locator('canvas.light-rays-canvas')).toBeVisible();
+      expect(await drawCount(page), 'Draw calls after restore').toBeGreaterThan(0);
+      const unreleased = await page.evaluate(() =>
+        (
+          window as unknown as { __getUnreleasedWebGLContextCount: () => number }
+        ).__getUnreleasedWebGLContextCount(),
+      );
+      expect(unreleased, 'Contexts held after restore').toBeLessThanOrEqual(1);
+    });
+
+    test(`Hero with JS off shows background image and all text reads on ${name} (${url})`, async ({
+      browser,
+    }) => {
+      const context = await browser.newContext({ javaScriptEnabled: false });
+      const page = await context.newPage();
+      await page.goto(url, { waitUntil: 'load' });
+
+      await expect(page.locator('canvas.light-rays-canvas')).toHaveCount(0);
+      await expect(page.locator('.banner-bg img').first()).toBeVisible();
+      await expectTextReadable(page);
+      await context.close();
     });
   }
 });
@@ -1094,7 +1339,8 @@ test.describe('CAP-16: Card hover', () => {
         ).__getCoarsePointerListenerCounts?.() ?? {}
       );
     });
-    expect(listeners['pointermove'] ?? 0).toBe(1);
+    // Two fine-pointer listeners: PointerTracker on document + LightRays on window.
+    expect(listeners['pointermove'] ?? 0).toBe(2);
 
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.waitForTimeout(200);
