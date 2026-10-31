@@ -113,6 +113,40 @@ html.has-custom-cursor .cursor-ring {
   }
 }
 
+/* Home hero third typewriter line sheen (CAP-16, story 9.5). Sweep in the first 40% of each
+   cycle, then hold: both end positions show the all-blue half of the 200% gradient. */
+@keyframes home-hero-sheen {
+  0% {
+    background-position: 100% 0;
+  }
+  40%,
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (background-clip: text) or (-webkit-background-clip: text) {
+    .home-hero-sheen {
+      background-image: linear-gradient(
+        90deg,
+        #0065df 0%,
+        #0065df 15%,
+        #a5d8ff 25%,
+        #0065df 35%,
+        #0065df 100%
+      );
+      background-size: 200% 100%;
+      background-position: 100% 0;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      /* 6.4s = legacy `.typewriter:nth-child(3)` delay 4.4s + `typing` 2s (legacy/11-custom.css). */
+      animation: home-hero-sheen 6s ease-in-out 6.4s infinite;
+    }
+  }
+}
+
 /* Not in source: stop the home marquee and the contact widget pulse for users who ask for reduced motion. */
 @media (prefers-reduced-motion: reduce) {
   .cs-moving_text,

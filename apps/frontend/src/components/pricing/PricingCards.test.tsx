@@ -54,6 +54,9 @@ describe('PricingCards', () => {
 
     const pointerCards = root.querySelectorAll('.col-inner[data-pointer="card"]');
     expect(pointerCards.length).toBe(6); // 3 desktop + 3 slider
+
+    const ctaLinks = root.querySelectorAll('a.but-lh[data-pointer="cta"]');
+    expect(ctaLinks.length).toBe(6); // 3 desktop + 3 slider
   });
 
   it('renders EN pricing with original price and discount price, slider after section', () => {

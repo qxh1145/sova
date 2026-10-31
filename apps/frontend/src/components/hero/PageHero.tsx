@@ -159,7 +159,7 @@ export function PageHero({
                         {hero.cta && ids.ctaText && (
                           <div id={ids.ctaText} className="text">
                             <Line>
-                              <Link className="but-lh" href={hero.cta.href}>
+                              <Link className="but-lh" href={hero.cta.href} data-pointer="cta">
                                 {hero.cta.label}
                                 {ctaIcon && (
                                   <>

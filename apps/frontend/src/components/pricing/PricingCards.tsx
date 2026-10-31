@@ -592,6 +592,7 @@ function PricingCardInner({
             href={plan.cta.href}
             target={plan.cta.external ? '_blank' : undefined}
             rel={plan.cta.external ? 'noopener' : undefined}
+            data-pointer="cta"
           >
             {plan.cta.label}
           </a>
