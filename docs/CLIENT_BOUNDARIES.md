@@ -40,6 +40,7 @@ Nội dung sửa qua admin không làm thay đổi server/client boundary. Query
 | LoginPanel | utility login | password reveal, remember, auth status | UI prototype + auth contract; credentials không gửi từ planning/mock |
 | GradientASCII | home hero (HomeHero) | port React Bits GradientASCII (MIT + Commons Clause, giữ header bản quyền), cắt còn props đang dùng | ≤1 WebGL context mỗi trang, `loseContext` khi unmount; dừng khi ngoài viewport/tab ẩn; reduced motion vẽ một khung tĩnh rồi dừng; listener pointer chỉ khi `(pointer: fine)`; không có WebGL2 hoặc mất context → `.gradient-ascii--fallback` gradient CSS. Kiểm chứng bằng `cap16.spec.ts` |
 | ScrollReveal | shell | một IntersectionObserver, CSS transitions trên opacity/transform/filter | re-scan khi pathname đổi; không ẩn target đã trong viewport; JS off hoặc reduced motion không ẩn gì; loại trừ pin/masonry/sliders; kiểm chứng bằng cap16.spec.ts |
+| PointerTracker | shell | một passive document pointermove chỉ khi `(pointer: fine)` và không reduced motion | gán CSS vars `--pointer-x/y` trên `closest('[data-pointer]')`; stories 5 và 7 tái sử dụng; kiểm chứng bằng `cap16.spec.ts` |
 
 Không tạo Client Component cho một danh sách tĩnh chỉ vì nguồn dùng jQuery. Không mang toàn bộ Flatsome/CF7/ar-contactus runtime vào React page để “giữ tương tác”; port hành vi đã kiểm kê thành islands, có adapter riêng khi library cần DOM.
 

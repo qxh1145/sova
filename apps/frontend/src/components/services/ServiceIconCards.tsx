@@ -421,7 +421,11 @@ export function ServiceIconCards({
             // carry no inline zero margin. Icon widths differ per page (VPS), so they live in the ids.
             return (
               <div key={benefit.id} id={cardIds?.col} className="col medium-6 small-12 large-6">
-                <div className="col-inner" style={{ backgroundColor: 'rgba(66, 66, 66, 0.6)' }}>
+                <div
+                  className="col-inner"
+                  data-pointer="card"
+                  style={{ backgroundColor: 'rgba(66, 66, 66, 0.6)' }}
+                >
                   <div
                     className={`icon-box featured-box icon-center-new${idx === 2 ? '' : ' icon-padding'} icon-box-left text-left`}
                     style={idx === 0 || idx === 2 ? undefined : { margin: '0px 0px 0px 0px' }}

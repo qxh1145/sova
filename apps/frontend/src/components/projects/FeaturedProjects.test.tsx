@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { parse } from 'node-html-parser';
 import { ProjectShowcaseItem } from './ProjectShowcaseItem';
+import { ProjectCard } from './ProjectCard';
 import { FeaturedProjects } from './FeaturedProjects';
 import type { AssetRef, Project, ProjectCategory, SectionCopy } from '@/types/content';
 
@@ -130,5 +132,21 @@ describe('FeaturedProjects and ProjectShowcaseItem edge cases', () => {
   it('returns null when projects list is empty', () => {
     const html = renderToStaticMarkup(<FeaturedProjects projects={[]} copy={mockCopy} />);
     expect(html).toBe('');
+  });
+
+  it('renders ProjectShowcaseItem with data-pointer="card" on .item-content', () => {
+    const html = renderToStaticMarkup(
+      <ProjectShowcaseItem project={mockProject} categoryLabel="Website" />,
+    );
+    const root = parse(html);
+    expect(root.querySelector('.item-content[data-pointer="card"]')).not.toBeNull();
+  });
+
+  it('renders ProjectCard with data-pointer="card" on .portfolio-box', () => {
+    const html = renderToStaticMarkup(
+      <ProjectCard project={mockProject} categoryLabel="Website" />,
+    );
+    const root = parse(html);
+    expect(root.querySelector('.portfolio-box[data-pointer="card"]')).not.toBeNull();
   });
 });

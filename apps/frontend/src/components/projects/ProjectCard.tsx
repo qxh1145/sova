@@ -43,7 +43,7 @@ export function ProjectCard({
     <div className="col" data-terms={termsAttr}>
       <div className="col-inner">
         <Link href={project.path} className="plain">
-          <div className="portfolio-box box has-hover">
+          <div className="portfolio-box box has-hover" data-pointer="card">
             <div className="box-image">
               <div>
                 {thumbnailAsset ? (

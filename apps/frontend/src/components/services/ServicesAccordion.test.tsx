@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { parse } from 'node-html-parser';
 import { ServicesAccordion, toggleAccordionIndex } from './ServicesAccordion';
-import type { Service } from '@/types/content';
+import { ServicesList } from './ServicesList';
+import { ServiceIconCards, SERVICE_ICON_CARDS_IDS_HOSTING_VI } from './ServiceIconCards';
+import type { Feature, Service } from '@/types/content';
 
 describe('ServicesAccordion state transitions', () => {
   it('toggleAccordionIndex transitions sequentially across items', () => {
@@ -124,5 +126,57 @@ describe('ServicesAccordion markup and initial render', () => {
   it('renders null when services array is empty', () => {
     const html = renderToStaticMarkup(<ServicesAccordion services={[]} />);
     expect(html).toBe('');
+  });
+});
+
+describe('ServicesList', () => {
+  it('renders cards with data-pointer="card"', () => {
+    const mockServices: Service[] = [
+      {
+        id: 'serv-1',
+        locale: 'vi',
+        path: '/serv-1/',
+        title: 'Dịch vụ 1',
+        key: 'website',
+        summary: 'Summary 1',
+        homeSummary: 'Home Summary 1',
+        subServices: [],
+        arrowHref: '/serv-1/',
+        hero: { headingLines: ['Title 1'] },
+        benefits: [],
+        faqs: [],
+        testimonialIds: [],
+        featuredProjectIds: [],
+        seo: { title: 'SEO 1', canonicalPath: '/serv-1/' },
+        offerings: [],
+        sectionCopy: {},
+        sources: [],
+      },
+    ];
+
+    const html = renderToStaticMarkup(<ServicesList services={mockServices} />);
+    const root = parse(html);
+    const cards = root.querySelectorAll('.dich_vu[data-pointer="card"]');
+    expect(cards).toHaveLength(1);
+  });
+});
+
+describe('ServiceIconCards', () => {
+  it('renders cards with data-pointer="card"', () => {
+    const benefits: Feature[] = [
+      {
+        id: 'feat-1',
+        title: 'Feature 1',
+        body: { format: 'sanitized-html', html: '<p>Desc 1</p>', assetIds: [], sources: [] },
+        iconId: 'icon-1',
+      },
+    ];
+
+    const html = renderToStaticMarkup(
+      <ServiceIconCards benefits={benefits} ids={SERVICE_ICON_CARDS_IDS_HOSTING_VI} />,
+    );
+    const root = parse(html);
+    const cards = root.querySelectorAll('.col-inner[data-pointer="card"]');
+    expect(cards.length).toBeGreaterThan(0);
   });
 });

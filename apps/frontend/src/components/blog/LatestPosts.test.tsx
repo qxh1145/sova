@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { parse } from 'node-html-parser';
 import { LatestPosts } from './LatestPosts';
+import { PostCard } from './PostCard';
 import type { AssetRef, CarouselLabels, Post, SectionCopy } from '@/types/content';
 
 describe('LatestPosts component', () => {
@@ -193,5 +194,17 @@ describe('LatestPosts component', () => {
     expect(html).toContain('Missing Status Post');
     expect(html).toContain('No Asset Post');
     expect(html).toContain('No Thumbnail ID Post');
+  });
+
+  it('renders data-pointer="card" for list, grid, and home PostCard variants', () => {
+    const post = createPost('post-1', '/bai-viet-1/', 'Bài viết 1');
+    const listHtml = renderToStaticMarkup(<PostCard post={post} variant="list" />);
+    expect(parse(listHtml).querySelector('article[data-pointer="card"]')).not.toBeNull();
+
+    const gridHtml = renderToStaticMarkup(<PostCard post={post} variant="grid" />);
+    expect(parse(gridHtml).querySelector('.col-inner[data-pointer="card"]')).not.toBeNull();
+
+    const homeHtml = renderToStaticMarkup(<PostCard post={post} variant="home" />);
+    expect(parse(homeHtml).querySelector('.box-blog-post[data-pointer="card"]')).not.toBeNull();
   });
 });

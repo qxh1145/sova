@@ -51,6 +51,9 @@ describe('PricingCards', () => {
 
     // Slider present inside section
     expect(root.querySelector('#section_1346750226 #slider-74016963')).toBeTruthy();
+
+    const pointerCards = root.querySelectorAll('.col-inner[data-pointer="card"]');
+    expect(pointerCards.length).toBe(6); // 3 desktop + 3 slider
   });
 
   it('renders EN pricing with original price and discount price, slider after section', () => {

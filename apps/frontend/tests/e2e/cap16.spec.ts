@@ -883,6 +883,197 @@ test.describe('CAP-16: JS Off Readability', () => {
   }
 });
 
+test.describe('CAP-16: Card hover', () => {
+  const CARD_FAMILIES = [
+    {
+      name: 'ServicesList',
+      url: '/',
+      selector: '.dich_vu[data-pointer="card"]',
+    },
+    {
+      name: 'PostCard',
+      url: '/',
+      selector: '.box-blog-post[data-pointer="card"]',
+    },
+    {
+      name: 'showcase',
+      url: '/',
+      selector: '.scroll-item .item-content[data-pointer="card"]',
+    },
+    {
+      name: 'ServiceDetailCards',
+      url: '/thiet-ke-website/',
+      selector: '.eras-table-price .col-inner[data-pointer="card"]',
+    },
+    {
+      name: 'PricingCards',
+      url: '/thiet-ke-website/',
+      selector: '#row-1975763604 .col-inner[data-pointer="card"]',
+    },
+    {
+      name: 'ServicePackageCards',
+      url: '/seo-tu-khoa-website/',
+      selector: '.col-inner[data-pointer="card"]',
+    },
+    {
+      name: 'ProjectCard',
+      url: '/featured_item/',
+      selector: '.portfolio-box[data-pointer="card"]',
+    },
+  ];
+
+  for (const family of CARD_FAMILIES) {
+    test(`Fine pointer hover updates --pointer-x and overlay opacity on ${family.name} (${family.url})`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await page.goto(family.url, { waitUntil: 'load' });
+      const card = page.locator(family.selector).first();
+      await card.evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        window.scrollBy(0, r.top - 150);
+      });
+      await page.waitForTimeout(200);
+
+      const box = await card.boundingBox();
+      expect(box, `${family.name} should have a bounding box`).not.toBeNull();
+
+      // Point 1
+      await page.mouse.move(box!.x + 40, box!.y + 40);
+      await page.waitForTimeout(350);
+
+      const x1 = await card.evaluate((el) => el.style.getPropertyValue('--pointer-x'));
+      const opacity1 = await card.evaluate((el) => {
+        return parseFloat(window.getComputedStyle(el, '::before').opacity);
+      });
+
+      expect(x1, `${family.name} should set --pointer-x at point 1`).not.toBe('');
+      expect(opacity1, `${family.name} overlay opacity should be > 0 on hover`).toBeGreaterThan(0);
+
+      // Point 2
+      await page.mouse.move(box!.x + 80, box!.y + 80);
+      await page.waitForTimeout(100);
+
+      const x2 = await card.evaluate((el) => el.style.getPropertyValue('--pointer-x'));
+      expect(x2, `${family.name} should set --pointer-x at point 2`).not.toBe('');
+      expect(x2, `${family.name} --pointer-x should differ between two hover points`).not.toEqual(
+        x1,
+      );
+
+      // Pointer leaves
+      await page.mouse.move(0, 0);
+      await page.waitForTimeout(350);
+      const opacityOff = await card.evaluate((el) => {
+        return parseFloat(window.getComputedStyle(el, '::before').opacity);
+      });
+      expect(opacityOff, `${family.name} overlay opacity should fade to 0 on pointer leave`).toBe(
+        0,
+      );
+    });
+
+    test(`Touch tap sets no --pointer-x and leaves overlay opacity at 0 on ${family.name} (${family.url})`, async ({
+      browser,
+    }) => {
+      const context = await browser.newContext({
+        hasTouch: true,
+        isMobile: true,
+        viewport: { width: 800, height: 1000 },
+      });
+      const page = await context.newPage();
+      await page.goto(family.url, { waitUntil: 'load' });
+      await page.evaluate(() => {
+        window.addEventListener('click', (e) => e.preventDefault(), { capture: true });
+      });
+      const card = page.locator(family.selector).first();
+      await card.evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        window.scrollBy(0, r.top - 150);
+      });
+      await page.waitForTimeout(200);
+      await card.tap();
+      await page.waitForTimeout(100);
+
+      const tapX = await card.evaluate((el) => el.style.getPropertyValue('--pointer-x'));
+      const tapOpacity = await card.evaluate((el) => {
+        return parseFloat(window.getComputedStyle(el, '::before').opacity);
+      });
+
+      expect(tapX, `${family.name} tap should not set --pointer-x`).toBe('');
+      expect(tapOpacity, `${family.name} tap overlay opacity should be 0`).toBe(0);
+
+      await context.close();
+    });
+  }
+
+  test('Reduced motion at load attaches no pointermove listener and leaves overlay hidden', async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({
+      reducedMotion: 'reduce',
+      viewport: { width: 1440, height: 900 },
+    });
+    const page = await context.newPage();
+    await installPointerListenerTracker(page);
+    await page.goto('/thiet-ke-website/', { waitUntil: 'load' });
+    await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {});
+
+    const listeners = await page.evaluate(() => {
+      return (
+        (
+          window as unknown as {
+            __getCoarsePointerListenerCounts?: () => Record<string, number>;
+          }
+        ).__getCoarsePointerListenerCounts?.() ?? {}
+      );
+    });
+    expect(listeners['pointermove'] ?? 0).toBe(0);
+
+    const card = page.locator('.eras-table-price .col-inner[data-pointer="card"]').first();
+    const box = await card.boundingBox();
+    if (box) {
+      await page.mouse.move(box.x + 40, box.y + 40);
+      await page.waitForTimeout(200);
+      const opacity = await card.evaluate((el) => {
+        return parseFloat(window.getComputedStyle(el, '::before').opacity);
+      });
+      expect(opacity).toBe(0);
+    }
+    await context.close();
+  });
+
+  test('Switching reduced motion mid-run removes pointermove listener', async ({ page }) => {
+    await installPointerListenerTracker(page);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/thiet-ke-website/', { waitUntil: 'load' });
+    await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {});
+
+    let listeners = await page.evaluate(() => {
+      return (
+        (
+          window as unknown as {
+            __getCoarsePointerListenerCounts?: () => Record<string, number>;
+          }
+        ).__getCoarsePointerListenerCounts?.() ?? {}
+      );
+    });
+    expect(listeners['pointermove'] ?? 0).toBe(1);
+
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.waitForTimeout(200);
+
+    listeners = await page.evaluate(() => {
+      return (
+        (
+          window as unknown as {
+            __getCoarsePointerListenerCounts?: () => Record<string, number>;
+          }
+        ).__getCoarsePointerListenerCounts?.() ?? {}
+      );
+    });
+    expect(listeners['pointermove'] ?? 0).toBe(0);
+  });
+});
+
 test.describe('CAP-16: Budget & CLS Gate', () => {
   const isRecord = process.env.CAP16_RECORD === '1';
 
