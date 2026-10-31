@@ -5,8 +5,8 @@ import { expect, test } from '../e2e/fixtures';
 import manifest from './manifest.json';
 import { freeze, rowViewports, type ManifestRow } from './source';
 
-/** Dynamic Sova regions (Carousel renders `.flickity-enabled`; videos; map iframes), masked in Sova shots. */
-export const SOVA_MASK = ['.flickity-enabled', 'video', 'iframe'];
+/** Dynamic Sova regions (Carousel renders `.flickity-enabled`; videos; map iframes; WebGL canvases), masked in Sova shots. */
+export const SOVA_MASK = ['.flickity-enabled', 'video', 'iframe', 'canvas'];
 /** Allowed run-to-run move of a logged cell's diff ratio around its measured value. */
 export const SLACK = 0.005;
 const SOVA_SNAPSHOT_DIR = path.resolve(__dirname, '../../baseline-sova');

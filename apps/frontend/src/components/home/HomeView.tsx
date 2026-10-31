@@ -12,7 +12,6 @@ import { LatestPosts } from '@/components/blog/LatestPosts';
 export interface HomeViewProps {
   content: HomePageContent | null;
   locale: Locale;
-  videoAsset?: AssetRef | null;
   projectAssets?: AssetRef[];
   projectCategories?: ProjectCategory[];
   partnerAssets?: AssetRef[];
@@ -23,7 +22,6 @@ export interface HomeViewProps {
 export function HomeView({
   content,
   locale,
-  videoAsset,
   projectAssets,
   projectCategories,
   partnerAssets,
@@ -38,7 +36,7 @@ export function HomeView({
 
   return (
     <main id="main">
-      <HomeHero hero={content.hero} locale={locale} videoAsset={videoAsset} />
+      <HomeHero hero={content.hero} locale={locale} />
       <HomeStats stats={content.stats} copy={content.sectionCopy.achievements} locale={locale} />
       {content.services.length > 0 && (
         <section className="section" id={isEn ? 'section_2119007658' : 'section_1856001238'}>
