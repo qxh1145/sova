@@ -15,6 +15,7 @@ import { MobileMenuPanel } from './MobileMenuPanel';
 import { MobileContactBar } from './MobileContactBar';
 import { FloatingContactActions } from './FloatingContactActions';
 import { CustomCursor } from './CustomCursor';
+import { ScrollReveal } from '../motion/ScrollReveal';
 
 export interface SiteShellProps {
   locale: Locale;
@@ -82,6 +83,7 @@ export function SiteShell({
       />
       <FloatingContactActions labels={shellContent.floatingContacts} settings={settings} />
       <CustomCursor />
+      <ScrollReveal />
     </ShellOverlayProvider>
   );
 }

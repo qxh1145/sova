@@ -257,44 +257,51 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
 
         // Resize down to 390
         await page.setViewportSize({ width: 390, height: 900 });
-        await page.waitForTimeout(100);
 
-        const pinData = await page.evaluate(() => {
-          const st = (
-            window as unknown as {
-              ScrollTrigger?: {
-                getAll: () => {
-                  trigger?: HTMLElement;
-                  start: number;
-                  end: number;
-                }[];
-              };
-            }
-          ).ScrollTrigger;
-          const triggerObj = st
-            ?.getAll()
-            .find(
-              (t) =>
-                t.trigger?.classList.contains('horizontal-scroll-section') ||
-                Boolean(t.trigger?.querySelector('.scrolling-wrapper')),
-            );
-          const pinSpacer = document.querySelector('.pin-spacer') as HTMLElement;
-          const rect = pinSpacer.getBoundingClientRect();
-          const spacerDocTop = Math.round(window.scrollY + rect.top);
-          const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
-          const distance = Math.max(0, wrapper.scrollWidth - window.innerWidth);
+        const readPinData = () =>
+          page.evaluate(() => {
+            const st = (
+              window as unknown as {
+                ScrollTrigger?: {
+                  getAll: () => {
+                    trigger?: HTMLElement;
+                    start: number;
+                    end: number;
+                  }[];
+                };
+              }
+            ).ScrollTrigger;
+            const triggerObj = st
+              ?.getAll()
+              .find(
+                (t) =>
+                  t.trigger?.classList.contains('horizontal-scroll-section') ||
+                  Boolean(t.trigger?.querySelector('.scrolling-wrapper')),
+              );
+            const pinSpacer = document.querySelector('.pin-spacer') as HTMLElement;
+            const rect = pinSpacer.getBoundingClientRect();
+            const spacerDocTop = Math.round(window.scrollY + rect.top);
+            const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
+            const distance = Math.max(0, wrapper.scrollWidth - window.innerWidth);
 
-          return {
-            triggerStart: triggerObj ? Math.round(triggerObj.start) : -1,
-            spacerDocTop,
-            distance,
-          };
-        });
+            return {
+              triggerStart: triggerObj ? Math.round(triggerObj.start) : -1,
+              spacerDocTop,
+              distance,
+            };
+          });
 
-        expect(
-          Math.abs(pinData.triggerStart - pinData.spacerDocTop),
-          `On ${testPath}: trigger.start (${pinData.triggerStart}) must equal pinSpacer top (${pinData.spacerDocTop}) within 2px`,
-        ).toBeLessThanOrEqual(2);
+        await expect
+          .poll(
+            async () => {
+              const d = await readPinData();
+              return Math.abs(d.triggerStart - d.spacerDocTop);
+            },
+            { message: `On ${testPath}: trigger.start must equal pinSpacer top within 2px` },
+          )
+          .toBeLessThanOrEqual(2);
+
+        const pinData = await readPinData();
 
         // Scroll to start + 50% distance
         const scrollTarget = pinData.triggerStart + 0.5 * pinData.distance;

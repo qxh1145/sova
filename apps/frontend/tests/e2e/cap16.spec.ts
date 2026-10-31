@@ -4,6 +4,7 @@ import zlib from 'node:zlib';
 import type { Page } from '@playwright/test';
 import { test, expect, installRafCounter } from './fixtures';
 import manifest from '../baseline/manifest.json';
+import { REVEAL_TARGET_SELECTOR } from '../../src/components/motion/revealTargets';
 
 export const CAP16_FINAL_STATE = ['.typewriter'];
 
@@ -250,8 +251,14 @@ export async function expectTextReadable(page: Page) {
       .getAnimations()
       .filter((a) => a.effect?.getComputedTiming().endTime !== Infinity);
     await Promise.all(finite.map((a) => a.finished.catch(() => undefined)));
+    const root =
+      document.querySelector(
+        ':is(main, [role="main"], #content, #login, .portfolio-page-wrapper)',
+      ) ?? document.body;
     const els = Array.from(
-      document.querySelectorAll('main :is(h1, h2, h3, h4, h5, h6, p, .typewriter)'),
+      root.querySelectorAll(
+        ':is(h1, h2, h3, h4, h5, h6, p, .typewriter):not(.mota_mt, .mota_mt *, [data-state="inactive"], [data-state="inactive"] *)',
+      ),
     ).filter((el) => el.getClientRects().length > 0);
     return {
       total: els.length,
@@ -353,6 +360,13 @@ const CORE_ROUTES = [
 ];
 
 const HOME_ROUTES = CORE_ROUTES.filter(({ name }) => name.startsWith('home-'));
+
+const seenFamilies = new Set<string>();
+const FAMILY_ROUTES = manifest.rows.filter((row) => {
+  if (seenFamilies.has(row.family)) return false;
+  seenFamilies.add(row.family);
+  return true;
+});
 
 /** Wait until the home hero canvas is in the DOM and has issued a WebGL2 draw call. */
 async function waitForHeroDraw(page: Page) {
@@ -663,9 +677,203 @@ test.describe('CAP-16: Home hero', () => {
   }
 });
 
+/** Count reveal targets whose top is at or below the viewport bottom (the island hides exactly these). */
+function countBelowFoldTargets(page: Page) {
+  return page.evaluate((sel) => {
+    const h = window.innerHeight;
+    return Array.from(document.querySelectorAll(sel)).filter(
+      (el) => el.getBoundingClientRect().top >= h,
+    ).length;
+  }, REVEAL_TARGET_SELECTOR);
+}
+
+function countHiddenInViewport(page: Page, where: 'in' | 'above') {
+  return page.evaluate((w) => {
+    return Array.from(document.querySelectorAll('[data-reveal="hidden"]')).filter((el) => {
+      const r = el.getBoundingClientRect();
+      if (w === 'above') return r.bottom <= 0;
+      return (
+        r.bottom > 0 && r.top < window.innerHeight && r.right > 0 && r.left < window.innerWidth
+      );
+    }).length;
+  }, where);
+}
+
+/**
+ * Full reveal cycle on the current page: below-fold targets get hidden (proves the island scanned this
+ * DOM), nothing in view is hidden, stepped scroll leaves 0 hidden, revealed targets end `shown` and visible.
+ */
+async function expectRevealCycle(page: Page, label: string, { requireTargets = true } = {}) {
+  const belowFold = await countBelowFoldTargets(page);
+  if (belowFold > 0) {
+    await expect
+      .poll(() => page.locator('[data-reveal="hidden"]').count(), {
+        message: `Below-fold targets are marked hidden on ${label}`,
+      })
+      .toBeGreaterThan(0);
+  }
+
+  expect(
+    await countHiddenInViewport(page, 'in'),
+    `No in-viewport target has data-reveal="hidden" on ${label}`,
+  ).toBe(0);
+
+  await page.evaluate(async () => {
+    const step = window.innerHeight || 800;
+    const maxScroll = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+    for (let y = 0; y <= maxScroll; y += step) {
+      window.scrollTo(0, y);
+      await new Promise((r) => setTimeout(r, 50));
+    }
+    window.scrollTo(0, maxScroll);
+    await new Promise((r) => setTimeout(r, 50));
+  });
+
+  await expect(page.locator('[data-reveal="hidden"]')).toHaveCount(0);
+  if (belowFold > 0) {
+    expect(
+      await page.locator('[data-reveal="shown"]').count(),
+      `Hidden targets end data-reveal="shown" on ${label}`,
+    ).toBeGreaterThan(0);
+  }
+
+  await page.evaluate(async () => {
+    const finite = document
+      .getAnimations()
+      .filter((a) => a.effect?.getComputedTiming().endTime !== Infinity);
+    await Promise.all(finite.map((a) => a.finished.catch(() => undefined)));
+  });
+
+  const { targetCount, notVisible } = await page.evaluate((sel) => {
+    const targets = Array.from(document.querySelectorAll(sel));
+    return {
+      targetCount: targets.length,
+      notVisible: targets
+        .filter((el) => !el.checkVisibility({ opacityProperty: true }))
+        .map((el) => `${el.tagName}.${el.className}`),
+    };
+  }, REVEAL_TARGET_SELECTOR);
+
+  if (requireTargets) {
+    expect(targetCount, `Reveal targets exist on ${label}`).toBeGreaterThan(0);
+  }
+  expect(notVisible, `Every reveal target passes checkVisibility on ${label}`).toEqual([]);
+}
+
+test.describe('CAP-16: Scroll reveal', () => {
+  for (const row of FAMILY_ROUTES) {
+    test(`Targets in viewport are visible on load and below-fold reveal on scroll on ${row.key} (${row.url})`, async ({
+      page,
+    }) => {
+      await page.goto(row.url, { waitUntil: 'load' });
+      // (a) + (b): nothing in view hidden; below-fold targets hide, then reveal on scroll
+      await expectRevealCycle(page, row.key, {
+        requireTargets: !['login', 'profile'].includes(row.family),
+      });
+    });
+
+    test(`Zero targets marked hidden under reduced motion on ${row.key} (${row.url})`, async ({
+      page,
+    }) => {
+      // (d) under reducedMotion: 'reduce' 0 targets are marked hidden
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.goto(row.url, { waitUntil: 'load' });
+      const hiddenCount = await page.locator('[data-reveal="hidden"]').count();
+      expect(hiddenCount, '0 targets marked hidden under reduced motion').toBe(0);
+    });
+  }
+
+  test('Scroll reveal persists across client soft navigation from / to /gioi-thieu/ and back', async ({
+    page,
+  }) => {
+    // (c) same after a soft nav from / via a header link (to /gioi-thieu/) and from /gioi-thieu/ back to /
+    await page.goto('/', { waitUntil: 'load' });
+
+    // Mark window to verify soft navigation
+    await page.evaluate(() => {
+      (window as unknown as { __softNavMarker?: number }).__softNavMarker = 42;
+    });
+
+    // Soft nav to /gioi-thieu/ via header link
+    await page.locator('#header a[href="/gioi-thieu/"]').first().click();
+    await expect(page).toHaveURL(/\/gioi-thieu\/?$/);
+    await expect(page.locator('#content[role="main"]')).toBeVisible();
+    const marker1 = await page.evaluate(
+      () => (window as unknown as { __softNavMarker?: number }).__softNavMarker,
+    );
+    expect(marker1, 'Soft navigation preserved window marker to /gioi-thieu/').toBe(42);
+    await expectRevealCycle(page, '/gioi-thieu/ after soft nav');
+
+    // Soft nav back to / via header link
+    await page.locator('#header a[href="/"]').first().click();
+    await expect(page).toHaveURL(/^https?:\/\/[^/]+\/?$/);
+    await expect(page.locator('main#main')).toBeVisible();
+    const marker2 = await page.evaluate(
+      () => (window as unknown as { __softNavMarker?: number }).__softNavMarker,
+    );
+    expect(marker2, 'Soft navigation preserved window marker back to /').toBe(42);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expectRevealCycle(page, '/ after soft nav back');
+  });
+
+  test('Switching to reduced motion mid-run shows hidden targets; switching back never hides targets above the viewport', async ({
+    page,
+  }) => {
+    await page.goto('/', { waitUntil: 'load' });
+    await expect.poll(() => page.locator('[data-reveal="hidden"]').count()).toBeGreaterThan(0);
+
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await expect(page.locator('[data-reveal="hidden"]')).toHaveCount(0);
+
+    // Re-scan from mid-page: targets below hide again, targets above stay visible
+    await page.evaluate(() =>
+      window.scrollTo(0, (document.documentElement.scrollHeight - window.innerHeight) / 2),
+    );
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await expect.poll(() => page.locator('[data-reveal="hidden"]').count()).toBeGreaterThan(0);
+    expect(
+      await countHiddenInViewport(page, 'above'),
+      'No target above the viewport is hidden on a mid-page scan',
+    ).toBe(0);
+    expect(
+      await countHiddenInViewport(page, 'in'),
+      'No in-viewport target is hidden on a mid-page scan',
+    ).toBe(0);
+  });
+
+  test('horizontal-scroll-section, its .section ancestor, descendants and ProjectGrid .col never get data-reveal', async ({
+    page,
+  }) => {
+    // (e) the pin, the .section wrapping it, its descendants and ProjectGrid .col never get data-reveal
+    for (const url of ['/', '/thiet-ke-website/', '/ui-ux-branding-design/', '/du-an/']) {
+      await page.goto(url, { waitUntil: 'load' });
+      const badReveals = await page.evaluate(() => {
+        const horizontalEls = Array.from(
+          document.querySelectorAll(
+            '.horizontal-scroll-section, .horizontal-scroll-section *, .section:has(.horizontal-scroll-section)',
+          ),
+        );
+        const projectCols = Array.from(
+          document.querySelectorAll('.row > .col:has(.portfolio-box), #portfolio-isotope > .col'),
+        );
+        return [...horizontalEls, ...projectCols]
+          .filter((el) => el.hasAttribute('data-reveal'))
+          .map((el) => `${el.tagName}.${el.className}`);
+      });
+      expect(badReveals, `Excluded elements on ${url} must never have data-reveal`).toEqual([]);
+    }
+  });
+});
+
+// One route per family plus the core VI/EN routes, deduplicated by URL.
+const JS_OFF_ROUTES = [
+  ...CORE_ROUTES.map(({ name, url }) => ({ key: name, url })),
+  ...FAMILY_ROUTES.map(({ key, url }) => ({ key, url })),
+].filter((route, i, all) => all.findIndex((r) => r.url === route.url) === i);
+
 test.describe('CAP-16: JS Off Readability', () => {
-  for (const { name, url } of CORE_ROUTES) {
-    test(`Headings and paragraphs readable with JS off on ${name}`, async ({ browser }) => {
+  for (const { key, url } of JS_OFF_ROUTES) {
+    test(`Headings and paragraphs readable with JS off on ${key}`, async ({ browser }) => {
       const context = await browser.newContext({ javaScriptEnabled: false });
       const page = await context.newPage();
       await page.goto(url, { waitUntil: 'load' });
