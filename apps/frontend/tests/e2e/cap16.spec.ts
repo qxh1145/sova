@@ -1152,38 +1152,68 @@ test.describe('CAP-16: CTA effects', () => {
 
       const box = await cta.boundingBox();
       expect(box, `${site.name} CTA should have a bounding box`).not.toBeNull();
+      // Box centre is unaffected by the legacy hover scale, so its shift is the pull alone.
+      const restCentre = { x: box!.x + box!.width / 2, y: box!.y + box!.height / 2 };
 
       // Hover off-centre (at 80% width, 80% height)
       await page.mouse.move(box!.x + box!.width * 0.8, box!.y + box!.height * 0.8);
       await page.waitForTimeout(350);
 
-      const hoverState = await cta.evaluate((el) => ({
-        x: el.style.getPropertyValue('--pointer-x'),
-        y: el.style.getPropertyValue('--pointer-y'),
-        translate: window.getComputedStyle(el).translate,
-        ringOpacity: parseFloat(window.getComputedStyle(el, '::after').opacity),
-        ringAnim: window.getComputedStyle(el, '::after').animationName,
-      }));
+      const hoverState = await cta.evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        const ring = window.getComputedStyle(el, '::after');
+        return {
+          x: el.style.getPropertyValue('--pointer-x'),
+          y: el.style.getPropertyValue('--pointer-y'),
+          cx: r.x + r.width / 2,
+          cy: r.y + r.height / 2,
+          ringOpacity: parseFloat(ring.opacity),
+          ringAnim: ring.animationName,
+          ringWidth: parseFloat(ring.width),
+          ringHeight: parseFloat(ring.height),
+          width: r.width,
+          height: r.height,
+        };
+      });
 
       expect(hoverState.x, `${site.name} should set --pointer-x`).not.toBe('');
       expect(hoverState.y, `${site.name} should set --pointer-y`).not.toBe('');
-      expect(hoverState.translate, `${site.name} translate should not be none or 0px`).not.toBe(
-        'none',
-      );
-      expect(hoverState.translate).not.toBe('0px');
+      // computed `translate` reports the declared value even on inline boxes it cannot move.
+      expect(
+        hoverState.cx - restCentre.x,
+        `${site.name} should move right toward pointer`,
+      ).toBeGreaterThan(1);
+      expect(
+        hoverState.cy - restCentre.y,
+        `${site.name} should move down toward pointer`,
+      ).toBeGreaterThan(1);
       expect(hoverState.ringOpacity, `${site.name} ring opacity should be > 0`).toBeGreaterThan(0);
       expect(hoverState.ringAnim).toBe('cta-ring-rotate');
+      // Ring wraps the anchor box (untransformed size), not an inline fragment.
+      expect(hoverState.ringWidth, `${site.name} ring should span the CTA width`).toBeGreaterThan(
+        hoverState.width * 0.8,
+      );
+      expect(hoverState.ringHeight, `${site.name} ring should span the CTA height`).toBeGreaterThan(
+        hoverState.height * 0.8,
+      );
 
       // Pointer leaves
       await page.mouse.move(0, 0);
       await page.waitForTimeout(350);
 
-      const leaveState = await cta.evaluate((el) => ({
-        translate: window.getComputedStyle(el).translate,
-        ringOpacity: parseFloat(window.getComputedStyle(el, '::after').opacity),
-      }));
+      const leaveState = await cta.evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        return {
+          cx: r.x + r.width / 2,
+          cy: r.y + r.height / 2,
+          translate: window.getComputedStyle(el).translate,
+          ringOpacity: parseFloat(window.getComputedStyle(el, '::after').opacity),
+        };
+      });
 
       expect(leaveState.translate, `${site.name} translate should return to none`).toBe('none');
+      expect(Math.abs(leaveState.cx - restCentre.x)).toBeLessThan(1);
+      expect(Math.abs(leaveState.cy - restCentre.y)).toBeLessThan(1);
       expect(leaveState.ringOpacity, `${site.name} ring opacity should fade to 0`).toBe(0);
     });
 
@@ -1280,6 +1310,17 @@ test.describe('CAP-16: CTA effects', () => {
     expect(ctaState.translate).toBe('none');
     expect(ctaState.ringOpacity).toBe(0);
 
+    // Keyboard focus shows no ring either
+    await page.mouse.move(0, 0);
+    await cta.focus();
+    await page.waitForTimeout(350);
+    const focusState = await cta.evaluate((el) => ({
+      ringOpacity: parseFloat(window.getComputedStyle(el, '::after').opacity),
+      ringAnim: window.getComputedStyle(el, '::after').animationName,
+    }));
+    expect(focusState.ringOpacity, 'Reduced motion focus should show no ring').toBe(0);
+    expect(focusState.ringAnim).toBe('none');
+
     await context.close();
   });
 
@@ -1328,12 +1369,15 @@ test.describe('CAP-16: CTA effects', () => {
     await page.mouse.move(ctaBox!.x + ctaBox!.width * 0.7, ctaBox!.y + ctaBox!.height * 0.7);
     await page.waitForTimeout(200);
 
-    const ctaState = await cta.evaluate((el) => ({
-      x: el.style.getPropertyValue('--pointer-x'),
-      translate: window.getComputedStyle(el).translate,
-    }));
+    const ctaState = await cta.evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      return { x: el.style.getPropertyValue('--pointer-x'), cx: r.x + r.width / 2 };
+    });
     expect(ctaState.x, 'Nested CTA should receive pointer coords').not.toBe('');
-    expect(ctaState.translate, 'Nested CTA should pull').not.toBe('none');
+    expect(
+      ctaState.cx - (ctaBox!.x + ctaBox!.width / 2),
+      'Nested CTA should pull toward pointer',
+    ).toBeGreaterThan(1);
 
     // Card variables should hold last point
     const cardSpot2 = await card.evaluate((el) => ({
@@ -1373,6 +1417,16 @@ test.describe('CAP-16: CTA effects', () => {
       'With JS off, ring opacity must still show via CSS :hover',
     ).toBeGreaterThan(0);
     expect(hoverState.ringAnim).toBe('cta-ring-rotate');
+
+    await page.mouse.move(0, 0);
+    await cta.focus();
+    await page.waitForTimeout(350);
+    const focusState = await cta.evaluate((el) => ({
+      ringOpacity: parseFloat(window.getComputedStyle(el, '::after').opacity),
+      ringAnim: window.getComputedStyle(el, '::after').animationName,
+    }));
+    expect(focusState.ringOpacity, 'With JS off, focus ring must still show').toBeGreaterThan(0);
+    expect(focusState.ringAnim).toBe('cta-ring-rotate');
 
     await context.close();
   });

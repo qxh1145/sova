@@ -113,11 +113,13 @@ html.has-custom-cursor .cursor-ring {
   }
 }
 
-/* Home hero third typewriter line sheen (CAP-16, story 9.5). */
+/* Home hero third typewriter line sheen (CAP-16, story 9.5). Sweep in the first 40% of each
+   cycle, then hold: both end positions show the all-blue half of the 200% gradient. */
 @keyframes home-hero-sheen {
   0% {
     background-position: 100% 0;
   }
+  40%,
   100% {
     background-position: -100% 0;
   }
@@ -129,9 +131,9 @@ html.has-custom-cursor .cursor-ring {
       background-image: linear-gradient(
         90deg,
         #0065df 0%,
-        #0065df 40%,
-        #a5d8ff 50%,
-        #0065df 60%,
+        #0065df 15%,
+        #a5d8ff 25%,
+        #0065df 35%,
         #0065df 100%
       );
       background-size: 200% 100%;
@@ -139,7 +141,8 @@ html.has-custom-cursor .cursor-ring {
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: home-hero-sheen 3s ease-in-out 6.4s infinite;
+      /* 6.4s = legacy `.typewriter:nth-child(3)` delay 4.4s + `typing` 2s (legacy/11-custom.css). */
+      animation: home-hero-sheen 6s ease-in-out 6.4s infinite;
     }
   }
 }
@@ -166,11 +169,6 @@ html.has-custom-cursor .cursor-ring {
     animation: none;
     width: 100%;
     opacity: 1;
-  }
-  .home-hero-sheen {
-    animation: none;
-    background: none;
-    -webkit-text-fill-color: currentcolor;
   }
 }
 
