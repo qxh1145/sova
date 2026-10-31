@@ -33,7 +33,7 @@ Radix là primitives không áp đặt giao diện hoàn chỉnh; dùng phần b
 
 ## Motion và carousel: adapter có kiểm tra parity
 
-GSAP dùng trong client island với scoped refs và cleanup qua useGSAP; giữ pin/scrub/resize lifecycle. CSS typewriter/marquee không cần client timer. Scroll reveal dùng một IntersectionObserver island + CSS transitions (không dùng SplitText để đảm bảo JS budget). Hero backgrounds dùng hand-written WebGL canvas ported từ React Bits (≤1 context, pause offscreen/hidden, one still frame under reduced motion). Giữ nguyên lệnh cấm cài Framer Motion, `motion`, `three` hoặc `ogl`. [GSAP React](https://gsap.com/resources/React/).
+GSAP dùng trong client island với scoped refs và cleanup qua useGSAP; giữ pin/scrub/resize lifecycle. CSS typewriter/marquee không cần client timer. Không thêm Framer Motion/Motion song song cho cùng một loại hiệu ứng. Scroll reveal dùng một IntersectionObserver island + CSS transitions (không dùng SplitText để giữ JS budget). Nền hero dùng WebGL canvas tự viết, port từ React Bits (tối đa 1 context mỗi trang, dừng khi ra khỏi màn hình hoặc tab ẩn, chỉ vẽ một khung tĩnh khi reduced motion). Epic motion upgrade (epic 9) không thêm dependency, kể cả Framer Motion, `motion`, `three` hay `ogl`. [GSAP React](https://gsap.com/resources/React/).
 
 Embla là lựa chọn đích cho slider React; repository chính thức có React wrapper. [Embla repository](https://github.com/davidjerleke/embla-carousel).
 

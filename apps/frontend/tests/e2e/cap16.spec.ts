@@ -14,18 +14,19 @@ export interface RouteMetrics {
   jsGzip: number;
   cls390: number;
   cls1440: number;
+  /** rAF calls in a 1s window after load at 1440px under `reducedMotion: 'reduce'`. */
   idleRaf: number;
 }
 
 export type BeforeRunData = Record<string, RouteMetrics>;
 
-/** Load cap16-before-run.json if it exists. */
+/** Load cap16-before-run.json; null only when the file is absent. A corrupt file throws. */
 export function loadBeforeRun(): BeforeRunData | null {
   if (!fs.existsSync(BEFORE_RUN_PATH)) return null;
   try {
     return JSON.parse(fs.readFileSync(BEFORE_RUN_PATH, 'utf-8'));
-  } catch {
-    return null;
+  } catch (e) {
+    throw new Error(`cap16-before-run.json is unreadable: ${e}`);
   }
 }
 
@@ -110,14 +111,19 @@ export async function installPointerListenerTracker(page: Page) {
     const origAdd = EventTarget.prototype.addEventListener;
     const origRemove = EventTarget.prototype.removeEventListener;
 
-    const isReactInternal = (listener: unknown) =>
+    // React's root dispatchers are bound functions (minified name, e.g. `bound fF`) added to a
+    // container React has marked `_reactListening<random>`. Only those are skipped; a bound app
+    // listener on any other target still counts.
+    // ponytail: an app listener bound with `.bind` on a React root (document) is still skipped;
+    // match React's per-type listener burst if that ever matters.
+    const isReactInternal = (target: EventTarget, listener: unknown) =>
       typeof listener === 'function' &&
       listener.name.startsWith('bound ') &&
-      listener.toString().includes('[native code]');
+      Object.keys(target).some((k) => k.startsWith('_reactListening'));
 
     EventTarget.prototype.addEventListener = function (type, listener, options) {
       if (typeof type === 'string' && trackedEvents.has(type)) {
-        if (!isReactInternal(listener)) {
+        if (!isReactInternal(this, listener)) {
           activeListeners.set(type, (activeListeners.get(type) || 0) + 1);
         }
       }
@@ -126,7 +132,7 @@ export async function installPointerListenerTracker(page: Page) {
 
     EventTarget.prototype.removeEventListener = function (type, listener, options) {
       if (typeof type === 'string' && trackedEvents.has(type)) {
-        if (!isReactInternal(listener)) {
+        if (!isReactInternal(this, listener)) {
           const cur = activeListeners.get(type) || 0;
           if (cur > 0) activeListeners.set(type, cur - 1);
         }
@@ -199,78 +205,64 @@ export async function installWebGLContextTracker(page: Page) {
   });
 }
 
-/** Check readability of headings and paragraphs in main when JS is disabled. */
+/**
+ * Check that every rendered `main` heading, paragraph and `.typewriter` line is visible once finite
+ * CSS animations end. `checkVisibility` walks ancestors, so text inside an `opacity: 0` or hidden
+ * wrapper (e.g. a scroll-reveal block) fails even when its own opacity is 1.
+ */
 export async function expectTextReadable(page: Page) {
-  let items: Array<{ tag: string; text: string; opacity: number; visibility: string }>;
-  try {
-    const client = await page.context().newCDPSession(page);
-    const res = await client.send('Runtime.evaluate', {
-      expression: `(() => {
-        const els = Array.from(document.querySelectorAll('main h1, main h2, main h3, main h4, main h5, main h6, main p'));
-        return els.map(el => {
-          const cs = window.getComputedStyle(el);
-          return {
-            tag: el.tagName,
-            text: el.textContent?.slice(0, 30) ?? '',
-            opacity: parseFloat(cs.opacity || '1'),
-            visibility: cs.visibility
-          };
-        });
-      })()`,
-      returnByValue: true,
-    });
-    items = res.result?.value ?? [];
-  } catch {
-    items = await page.evaluate(() => {
-      const els = Array.from(
-        document.querySelectorAll('main h1, main h2, main h3, main h4, main h5, main h6, main p'),
-      );
-      return els.map((el) => {
-        const cs = window.getComputedStyle(el);
-        return {
-          tag: el.tagName,
-          text: el.textContent?.slice(0, 30) ?? '',
-          opacity: parseFloat(cs.opacity || '1'),
-          visibility: cs.visibility,
-        };
-      });
-    });
-  }
+  const { total, hidden } = await page.evaluate(async () => {
+    const finite = document
+      .getAnimations()
+      .filter((a) => a.effect?.getComputedTiming().endTime !== Infinity);
+    await Promise.all(finite.map((a) => a.finished.catch(() => undefined)));
+    const els = Array.from(
+      document.querySelectorAll('main :is(h1, h2, h3, h4, h5, h6, p, .typewriter)'),
+    ).filter((el) => el.getClientRects().length > 0);
+    return {
+      total: els.length,
+      hidden: els
+        .filter((el) => !el.checkVisibility({ opacityProperty: true, visibilityProperty: true }))
+        .map((el) => `${el.tagName} ("${(el.textContent ?? '').trim().slice(0, 30)}")`),
+    };
+  });
 
-  expect(items.length, 'Expected at least one main heading or paragraph').toBeGreaterThan(0);
-  for (const item of items) {
-    expect(item.opacity, `${item.tag} ("${item.text}") opacity should be > 0`).toBeGreaterThan(0);
-    expect(item.visibility, `${item.tag} ("${item.text}") visibility should be visible`).toBe(
-      'visible',
-    );
-  }
+  expect(total, 'Expected at least one rendered main heading or paragraph').toBeGreaterThan(0);
+  expect(hidden, 'Text hidden by opacity 0 or visibility on itself or an ancestor').toEqual([]);
 }
 
-/** Measure route JS gzip sum, layout shift (CLS), and optional idle rAF after load. */
+/**
+ * Idle rAF calls after load at 1440px under `reducedMotion: 'reduce'`. The record run and the
+ * gate both use this, so the before-run and the check measure the same condition.
+ */
+export async function reducedMotionIdleRaf(page: Page, url: string): Promise<number> {
+  await installRafCounter(page);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(url, { waitUntil: 'load' });
+  await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {});
+  await page.waitForTimeout(1000);
+  return idleRafCount(page, 1000);
+}
+
+/** Measure route JS gzip sum and layout shift (CLS) after load, scroll to bottom and network idle. */
 export async function measureRoute(
   page: Page,
   url: string,
-  measureIdleRaf = false,
-): Promise<{ jsGzip: number; cls: number; idleRaf: number }> {
+): Promise<{ jsGzip: number; cls: number }> {
   const jsResponses = new Map<string, Buffer>();
   const bodyPromises: Promise<void>[] = [];
 
   const onResponse = (response: import('@playwright/test').Response) => {
     const resUrl = response.url();
-    if (resUrl.includes('/_next/static/') && resUrl.endsWith('.js')) {
-      const p = Promise.race([
-        response.body(),
-        new Promise<Buffer>((_, reject) =>
-          setTimeout(() => reject(new Error('body read timeout')), 3000),
-        ),
-      ])
-        .then((body) => {
-          if (!jsResponses.has(resUrl)) {
-            jsResponses.set(resUrl, body);
-          }
-        })
-        .catch(() => {});
-      bodyPromises.push(p);
+    const { pathname } = new URL(resUrl);
+    if (pathname.startsWith('/_next/static/') && pathname.endsWith('.js')) {
+      // A failed read rejects Promise.all below: an unread chunk must fail, not shrink jsGzip.
+      bodyPromises.push(
+        response.body().then((body) => {
+          if (!jsResponses.has(resUrl)) jsResponses.set(resUrl, body);
+        }),
+      );
     }
   };
 
@@ -296,12 +288,9 @@ export async function measureRoute(
   }
 
   await page.goto(url, { waitUntil: 'load' });
-
-  let idleRaf = 0;
-  if (measureIdleRaf) {
-    await page.waitForTimeout(1000);
-    idleRaf = await idleRafCount(page, 1000);
-  }
+  // Settle before the jump: scrolling right at `load` puts a still-mounting section under the
+  // viewport, and its first layout reads as a whole-viewport shift (CLS 1.0) no user would see.
+  await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {});
 
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.waitForTimeout(500);
@@ -319,7 +308,7 @@ export async function measureRoute(
     jsGzip += zlib.gzipSync(body).length;
   }
 
-  return { jsGzip, cls, idleRaf };
+  return { jsGzip, cls };
 }
 
 // Target test routes for matrix suites
@@ -342,24 +331,15 @@ test.describe('CAP-16: Reduced Motion & Typewriter', () => {
 test.describe('CAP-16: Idle rAF under Reduced Motion', () => {
   for (const { name, url } of CORE_ROUTES) {
     test(`rAF calls within ceiling on ${name} (${url})`, async ({ page }) => {
-      await installRafCounter(page);
-      await page.emulateMedia({ reducedMotion: 'reduce' });
-      await page.setViewportSize({ width: 1440, height: 900 });
-      await page.goto(url, { waitUntil: 'load' });
-      await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {});
-      await page.waitForTimeout(1000);
+      test.skip(process.env.CAP16_RECORD === '1', 'the Budget test records idleRaf');
+      const base = loadBeforeRun()?.[name];
+      expect(base, `Missing before-run idleRaf for ${name}: run CAP16_RECORD=1`).toBeDefined();
 
-      const idle = await idleRafCount(page, 1000);
-      const beforeRun = loadBeforeRun();
-      const recorded = beforeRun?.[name]?.idleRaf ?? 0;
-      const ceiling = recorded + 5;
-
-      if (process.env.CAP16_RECORD !== '1') {
-        expect(
-          idle,
-          `Idle rAF (${idle}) on ${name} exceeded recorded (${recorded}) + 5`,
-        ).toBeLessThanOrEqual(ceiling);
-      }
+      const idle = await reducedMotionIdleRaf(page, url);
+      expect(
+        idle,
+        `Idle rAF (${idle}) on ${name} exceeded recorded (${base!.idleRaf}) + 5`,
+      ).toBeLessThanOrEqual(base!.idleRaf + 5);
     });
   }
 });
@@ -445,18 +425,20 @@ test.describe('CAP-16: Budget & CLS Gate', () => {
       // 1. Measure at 1440 (standard motion, isolated page context)
       const page1440 = await context.newPage();
       await page1440.setViewportSize({ width: 1440, height: 900 });
-      await installRafCounter(page1440);
-
-      const { jsGzip, cls: cls1440, idleRaf } = await measureRoute(page1440, row.url, true);
+      const { jsGzip, cls: cls1440 } = await measureRoute(page1440, row.url);
       await page1440.close();
 
       // 2. Measure at 390 (standard motion, isolated page context)
       const page390 = await context.newPage();
       await page390.setViewportSize({ width: 390, height: 844 });
-      const { cls: cls390 } = await measureRoute(page390, row.url, false);
+      const { cls: cls390 } = await measureRoute(page390, row.url);
       await page390.close();
 
       if (isRecord) {
+        // 3. Idle rAF under reduced motion: the reference for the idle rAF gate.
+        const pageIdle = await context.newPage();
+        const idleRaf = await reducedMotionIdleRaf(pageIdle, row.url);
+        await pageIdle.close();
         syncBeforeRunJson(row.key, { jsGzip, cls390, cls1440, idleRaf });
       } else {
         const beforeRun = loadBeforeRun();
