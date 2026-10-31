@@ -506,7 +506,11 @@ export function ServiceDetailCards({
                 id={cardIds?.col}
                 className="col col-logo medium-4 small-12 large-4"
               >
-                <div className="col-inner" style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}>
+                <div
+                  className="col-inner"
+                  data-pointer="card"
+                  style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}
+                >
                   <div id={cardIds?.titleText} className="text">
                     <h3>{offering.title}</h3>
                   </div>
@@ -576,7 +580,11 @@ export function ServiceDetailCards({
               return (
                 <div className="row" id={cardIds?.row} key={offering.id}>
                   <div id={cardIds?.col} className="col col-logo medium-4 small-12 large-4">
-                    <div className="col-inner" style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}>
+                    <div
+                      className="col-inner"
+                      data-pointer="card"
+                      style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}
+                    >
                       <div id={cardIds?.titleText} className="text">
                         <h3>{offering.title}</h3>
                       </div>

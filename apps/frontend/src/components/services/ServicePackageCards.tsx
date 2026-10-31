@@ -587,7 +587,7 @@ function CardContent({
   const items = offering.items ?? [];
 
   return (
-    <div className="col-inner">
+    <div className="col-inner" data-pointer="card">
       <div
         className="is-border"
         style={{

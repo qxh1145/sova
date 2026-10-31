@@ -482,7 +482,11 @@ function PricingCardInner({
   const planFeatures = plan.featureIds.map((id) => features.find((f) => f.id === id)?.label ?? id);
 
   return (
-    <div className="col-inner" style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}>
+    <div
+      className="col-inner"
+      data-pointer="card"
+      style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}
+    >
       <div
         className="is-border"
         style={{

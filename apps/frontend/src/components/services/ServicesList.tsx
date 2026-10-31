@@ -15,7 +15,11 @@ export function ServicesList({ services, id }: ServicesListProps) {
         const num = String(idx + 1).padStart(2, '0');
 
         return (
-          <div key={service.id} className={`text dich_vu ${isLast ? 'dich_vu_last' : ''}`.trim()}>
+          <div
+            key={service.id}
+            data-pointer="card"
+            className={`text dich_vu ${isLast ? 'dich_vu_last' : ''}`.trim()}
+          >
             <p className="num_dv">
               <span>{num}</span>
             </p>

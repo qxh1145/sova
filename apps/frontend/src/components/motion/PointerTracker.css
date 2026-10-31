@@ -1,0 +1,55 @@
+/* Card hover overlays (spotlight & glare) driven by PointerTracker (CAP-16, E9.3). */
+
+article[data-pointer],
+.dich_vu[data-pointer],
+.item-content[data-pointer] {
+  position: relative;
+}
+
+/* One ::before carries both layers so it paints before every child, below `.is-border`. */
+[data-pointer='card']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--motion-duration-base) var(--motion-ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  [data-pointer='card']::before {
+    background-image:
+      radial-gradient(
+        circle at var(--pointer-x, 50%) var(--pointer-y, 50%),
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0) 60%
+      ),
+      linear-gradient(
+        115deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0) 40%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0) 60%,
+        rgba(255, 255, 255, 0) 100%
+      );
+    background-repeat: no-repeat;
+    background-size:
+      100% 100%,
+      200% 200%;
+    background-position:
+      0 0,
+      100% 100%;
+    transition:
+      opacity var(--motion-duration-base) var(--motion-ease-out),
+      background-position var(--motion-duration-slow) var(--motion-ease-out);
+  }
+
+  /* Gated on the island's root attribute so JS off leaves cards unchanged. */
+  :root[data-pointer-tracker] [data-pointer='card']:hover::before {
+    opacity: 1;
+    background-position:
+      0 0,
+      0% 0%;
+  }
+}

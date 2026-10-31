@@ -25,6 +25,7 @@ export function PostCard({
     return (
       <article
         id={post.id}
+        data-pointer="card"
         className={`${post.id} post type-post status-publish format-standard has-post-thumbnail hentry`}
       >
         <div className="article-inner ">
@@ -64,7 +65,7 @@ export function PostCard({
   if (variant === 'grid') {
     return (
       <div className={`col related-post-item item-${itemIndex}`}>
-        <div className="col-inner">
+        <div className="col-inner" data-pointer="card">
           <Link href={post.path} title={post.title}>
             <div className="box-image">
               <div className="image-cover image-zoom" style={{ paddingTop: '58%' }}>
@@ -91,7 +92,10 @@ export function PostCard({
     <div className="col post-item-cus">
       <div className="col-inner">
         <Link href={post.path} className="plain">
-          <div className="box box-normal box-text-bottom box-blog-post has-hover">
+          <div
+            className="box box-normal box-text-bottom box-blog-post has-hover"
+            data-pointer="card"
+          >
             <div className="box-image">
               <div className="image-cover" style={{ position: 'relative' }}>
                 {hasValidMedia && thumbnailAsset && (
