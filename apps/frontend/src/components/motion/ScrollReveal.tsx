@@ -2,20 +2,16 @@
 
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { REVEAL_TARGET_SELECTOR } from './revealTargets';
 import './ScrollReveal.css';
 
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
-
-const TARGET_SELECTOR = [
-  ':is(main, [role="main"], .portfolio-page-wrapper) .section:not(.section .section, .horizontal-scroll-section, .horizontal-scroll-section *)',
-  ':is(main, [role="main"], .portfolio-page-wrapper) :is(h2, h3):not(.horizontal-scroll-section, :is(.section, .banner, .horizontal-scroll-section) *)',
-].join(', ');
 
 export function ScrollReveal() {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+    if (!('IntersectionObserver' in window)) {
       return;
     }
 
@@ -39,7 +35,7 @@ export function ScrollReveal() {
       });
 
       const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-      const targets = document.querySelectorAll<HTMLElement>(TARGET_SELECTOR);
+      const targets = document.querySelectorAll<HTMLElement>(REVEAL_TARGET_SELECTOR);
       for (const target of targets) {
         const r = target.getBoundingClientRect();
         if (r.top >= windowHeight) {

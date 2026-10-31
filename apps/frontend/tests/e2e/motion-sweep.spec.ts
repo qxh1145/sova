@@ -292,10 +292,13 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
           });
 
         await expect
-          .poll(async () => {
-            const d = await readPinData();
-            return Math.abs(d.triggerStart - d.spacerDocTop);
-          })
+          .poll(
+            async () => {
+              const d = await readPinData();
+              return Math.abs(d.triggerStart - d.spacerDocTop);
+            },
+            { message: `On ${testPath}: trigger.start must equal pinSpacer top within 2px` },
+          )
           .toBeLessThanOrEqual(2);
 
         const pinData = await readPinData();
