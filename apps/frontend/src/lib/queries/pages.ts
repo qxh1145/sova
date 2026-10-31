@@ -118,7 +118,6 @@ export async function getHomePage(
 }
 
 export interface HomeAssets {
-  videoAsset: AssetRef | null;
   projectAssets: AssetRef[];
   projectCategories: ProjectCategory[];
   partnerAssets: AssetRef[];
@@ -135,7 +134,6 @@ export async function getHomeAssets(
 ): Promise<HomeAssets> {
   if (!content) {
     return {
-      videoAsset: null,
       projectAssets: [],
       projectCategories: [],
       partnerAssets: [],
@@ -155,9 +153,8 @@ export async function getHomeAssets(
     .map((p) => p.thumbnailId)
     .filter((id): id is string => Boolean(id));
 
-  const [videoAssets, projectAssets, categories, partnerAssets, testimonialAssets, postAssets] =
+  const [projectAssets, categories, partnerAssets, testimonialAssets, postAssets] =
     await Promise.all([
-      content.hero.videoId ? repository.getAssets([content.hero.videoId]) : Promise.resolve([]),
       galleryAssetIds.length ? repository.getAssets(galleryAssetIds) : Promise.resolve([]),
       repository.getProjectCategories(),
       partnerLogoIds.length ? repository.getAssets(partnerLogoIds) : Promise.resolve([]),
@@ -168,23 +165,15 @@ export async function getHomeAssets(
     ]);
 
   const wanted = [
-    ...(content.hero.videoId ? [content.hero.videoId] : []),
     ...galleryAssetIds,
     ...partnerLogoIds,
     ...testimonialAvatarIds,
     ...postThumbnailIds,
   ];
-  const allResolved = [
-    ...videoAssets,
-    ...projectAssets,
-    ...partnerAssets,
-    ...testimonialAssets,
-    ...postAssets,
-  ];
+  const allResolved = [...projectAssets, ...partnerAssets, ...testimonialAssets, ...postAssets];
   assertResolved(content.id, missingIds(wanted, allResolved));
 
   return {
-    videoAsset: videoAssets[0] ?? null,
     projectAssets,
     projectCategories: categories,
     partnerAssets,

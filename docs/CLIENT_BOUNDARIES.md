@@ -10,7 +10,7 @@ Nội dung sửa qua admin không làm thay đổi server/client boundary. Query
 
 - Mọi `page.tsx`, layout wrapper, SiteShell, Header/Footer markup, nav link data, LanguageSwitcher (link counterpart có sẵn).
 - PageHero, PageHeading, SectionHeading, ServiceBenefits, pricing markup, rich text, ProjectCard/PostCard/TestimonialCard/PartnerLogo khi render từ server.
-- HomeHero video dùng thuộc tính native `muted autoPlay loop playsInline`, ContactMap iframe dùng HTML; không cần React state cho bản hiện tại.
+- HomeHero là server component; nền hero vẽ bằng island GradientASCII. ContactMap iframe dùng HTML; không cần React state cho bản hiện tại.
 - TypewriterHeading: CSS `typing 2s steps(30,end)` + `fadeIn .5s`; delay 0/2.2/4.4s theo `index.html:157`. Không cần client timer.
 - Marquee: CSS keyframes tại child stylesheet, không client nếu không có interaction thực.
 - BlogPagination, category links và SearchForm native GET không tự cần client; kết quả search/query xử lý server.
@@ -38,6 +38,7 @@ Nội dung sửa qua admin không làm thay đổi server/client boundary. Query
 | CaptchaAdapter | hai full forms nếu còn dùng reCAPTCHA | external callback/browser widget | Dev mock không gọi live endpoint; production credentials/backend tách config |
 | FlipbookViewer (plan sau, ngoài phase A) | profile VI/EN | DFlip canvas/WebGL/PDF | Lazy load island; PDF missing/error/loading; source `controlsPosition:hide`, `enableDownload:false` không bị global defaults ghi đè |
 | LoginPanel | utility login | password reveal, remember, auth status | UI prototype + auth contract; credentials không gửi từ planning/mock |
+| GradientASCII | home hero (HomeHero) | port React Bits GradientASCII (MIT + Commons Clause, giữ header bản quyền), cắt còn props đang dùng | ≤1 WebGL context mỗi trang, `loseContext` khi unmount; dừng khi ngoài viewport/tab ẩn; reduced motion vẽ một khung tĩnh rồi dừng; listener pointer chỉ khi `(pointer: fine)`; không có WebGL2 hoặc mất context → `.gradient-ascii--fallback` gradient CSS. Kiểm chứng bằng `cap16.spec.ts` |
 
 Không tạo Client Component cho một danh sách tĩnh chỉ vì nguồn dùng jQuery. Không mang toàn bộ Flatsome/CF7/ar-contactus runtime vào React page để “giữ tương tác”; port hành vi đã kiểm kê thành islands, có adapter riêng khi library cần DOM.
 

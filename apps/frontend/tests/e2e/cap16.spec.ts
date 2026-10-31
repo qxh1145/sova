@@ -152,10 +152,14 @@ export async function installPointerListenerTracker(page: Page) {
   });
 }
 
-/** Track WebGL context creation and count live contexts connected to DOM. */
+/**
+ * Track WebGL context creation: live = canvas connected to the DOM; unreleased = connected or its
+ * context not lost (a detached canvas whose context was never lost still holds GPU memory). Also
+ * counts WebGL2 draw calls, so a test can prove a canvas loop stopped while other rAF loops run.
+ */
 export async function installWebGLContextTracker(page: Page) {
   await page.addInitScript(() => {
-    const canvasesWithContext = new Set<HTMLCanvasElement>();
+    const canvasesWithContext = new Map<HTMLCanvasElement, WebGLRenderingContextBase>();
     const origGetContext = HTMLCanvasElement.prototype.getContext;
 
     (HTMLCanvasElement.prototype as unknown as { getContext: unknown }).getContext = function (
@@ -176,7 +180,7 @@ export async function installWebGLContextTracker(page: Page) {
           contextType === 'webgl2' ||
           contextType === 'experimental-webgl')
       ) {
-        canvasesWithContext.add(this);
+        canvasesWithContext.set(this, ctx as WebGLRenderingContextBase);
       }
       return ctx;
     };
@@ -188,10 +192,40 @@ export async function installWebGLContextTracker(page: Page) {
       }
     ).__getLiveWebGLContextCount = () => {
       let live = 0;
-      for (const c of canvasesWithContext) {
+      for (const c of canvasesWithContext.keys()) {
         if (c.isConnected) live++;
       }
       return live;
+    };
+
+    (
+      window as unknown as { __getUnreleasedWebGLContextCount: () => number }
+    ).__getUnreleasedWebGLContextCount = () => {
+      let unreleased = 0;
+      for (const [c, ctx] of canvasesWithContext) {
+        if (c.isConnected || !ctx.isContextLost()) unreleased++;
+      }
+      return unreleased;
+    };
+
+    let draws = 0;
+    if (typeof WebGL2RenderingContext !== 'undefined') {
+      const proto = WebGL2RenderingContext.prototype;
+      const origDrawArrays = proto.drawArrays;
+      const origDrawElements = proto.drawElements;
+      proto.drawArrays = function (...args: Parameters<typeof origDrawArrays>) {
+        draws++;
+        return origDrawArrays.apply(this, args);
+      };
+      proto.drawElements = function (...args: Parameters<typeof origDrawElements>) {
+        draws++;
+        return origDrawElements.apply(this, args);
+      };
+    }
+    const w = window as unknown as { __getDrawCount: () => number; __resetDrawCount: () => void };
+    w.__getDrawCount = () => draws;
+    w.__resetDrawCount = () => {
+      draws = 0;
     };
 
     (window as unknown as { __hasWebGL2: () => boolean }).__hasWebGL2 = () => {
@@ -318,6 +352,37 @@ const CORE_ROUTES = [
   { name: 'website-vi', url: '/thiet-ke-website/' },
 ];
 
+const HOME_ROUTES = CORE_ROUTES.filter(({ name }) => name.startsWith('home-'));
+
+/** Wait until the home hero canvas is in the DOM and has issued a WebGL2 draw call. */
+async function waitForHeroDraw(page: Page) {
+  await expect(page.locator('canvas.gradient-ascii-canvas')).toBeAttached();
+  await expect
+    .poll(() =>
+      page.evaluate(() => (window as unknown as { __getDrawCount: () => number }).__getDrawCount()),
+    )
+    .toBeGreaterThan(0);
+}
+
+/** WebGL2 draw calls over `windowMs`. */
+async function drawCount(page: Page, windowMs = 1000): Promise<number> {
+  await page.evaluate(() =>
+    (window as unknown as { __resetDrawCount: () => void }).__resetDrawCount(),
+  );
+  await page.waitForTimeout(windowMs);
+  return page.evaluate(() =>
+    (window as unknown as { __getDrawCount: () => number }).__getDrawCount(),
+  );
+}
+
+/** Set `document.hidden` and fire `visibilitychange`, as a tab switch does. */
+async function setHidden(page: Page, hidden: boolean) {
+  await page.evaluate((value) => {
+    Object.defineProperty(document, 'hidden', { configurable: true, get: () => value });
+    document.dispatchEvent(new Event('visibilitychange'));
+  }, hidden);
+}
+
 test.describe('CAP-16: Reduced Motion & Typewriter', () => {
   for (const { name, url } of CORE_ROUTES) {
     test(`Typewriter shows final state on ${name} (${url})`, async ({ page }) => {
@@ -384,6 +449,8 @@ test.describe('CAP-16: WebGL Contexts', () => {
       await installWebGLContextTracker(page);
       await page.goto(url, { waitUntil: 'load' });
       await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {});
+      // The home hero creates its context in an effect: count after it exists and has drawn.
+      if (HOME_ROUTES.some((route) => route.url === url)) await waitForHeroDraw(page);
 
       const live = await page.evaluate(() => {
         return (
@@ -401,6 +468,197 @@ test.describe('CAP-16: WebGL Contexts', () => {
         type: 'webgl2-support',
         description: hasWebGL2 ? 'available' : 'unavailable',
       });
+    });
+  }
+});
+
+test.describe('CAP-16: Home hero', () => {
+  for (const { name, url } of HOME_ROUTES) {
+    test(`Client navigation to a sub-page releases the hero context on ${name}`, async ({
+      page,
+    }) => {
+      await installWebGLContextTracker(page);
+      await page.goto(url, { waitUntil: 'load' });
+      await waitForHeroDraw(page);
+
+      const href = await page.evaluate((home) => {
+        const prefix = home === '/' ? '/' : '/en/';
+        const link = Array.from(document.querySelectorAll<HTMLAnchorElement>('#footer a[href]'))
+          .map((a) => a.getAttribute('href') ?? '')
+          .find(
+            (h) =>
+              h.startsWith(prefix) &&
+              h !== home &&
+              h !== '/' &&
+              (prefix === '/en/' || !h.startsWith('/en/')),
+          );
+        return link ?? null;
+      }, url);
+      expect(href, `No footer sub-page link on ${name}`).not.toBeNull();
+      await page.locator(`#footer a[href="${href}"]`).first().click();
+      await expect(page).toHaveURL(new RegExp(`${href!.replace(/\//g, '\\/')}$`));
+
+      await expect
+        .poll(() =>
+          page.evaluate(() =>
+            (
+              window as unknown as { __getUnreleasedWebGLContextCount: () => number }
+            ).__getUnreleasedWebGLContextCount(),
+          ),
+        )
+        .toBe(0);
+      const live = await page.evaluate(() =>
+        (
+          window as unknown as { __getLiveWebGLContextCount: () => number }
+        ).__getLiveWebGLContextCount(),
+      );
+      expect(live).toBe(0);
+    });
+
+    test(`Hero pointer input attaches only under a fine pointer on ${name}`, async ({
+      browser,
+    }) => {
+      // The hero adds a window `pointerdown` listener only under a fine pointer; other islands may add more.
+      const pointerDownListeners = async (touch: boolean) => {
+        const context = await browser.newContext(
+          touch ? { hasTouch: true, isMobile: true, viewport: { width: 390, height: 844 } } : {},
+        );
+        const page = await context.newPage();
+        await installWebGLContextTracker(page);
+        await page.addInitScript(() => {
+          let count = 0;
+          const origAdd = window.addEventListener;
+          window.addEventListener = function (this: Window, ...args: Parameters<typeof origAdd>) {
+            if (args[0] === 'pointerdown') count++;
+            return origAdd.apply(this, args);
+          } as typeof origAdd;
+          (window as unknown as { __pointerDownCount: () => number }).__pointerDownCount = () =>
+            count;
+        });
+        await page.goto(url, { waitUntil: 'load' });
+        await waitForHeroDraw(page);
+        const count = await page.evaluate(() =>
+          (window as unknown as { __pointerDownCount: () => number }).__pointerDownCount(),
+        );
+        await context.close();
+        return count;
+      };
+      expect(
+        await pointerDownListeners(false),
+        'Fine pointer: hero input listener',
+      ).toBeGreaterThanOrEqual(1);
+      expect(await pointerDownListeners(true), 'Coarse pointer: hero input listener').toBe(0);
+    });
+
+    test(`Hero stops drawing offscreen and resumes on re-entry on ${name}`, async ({ page }) => {
+      await installWebGLContextTracker(page);
+      await page.goto(url, { waitUntil: 'load' });
+      await waitForHeroDraw(page);
+
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(300);
+      expect(await drawCount(page), 'Draw calls while the hero is offscreen').toBe(0);
+
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.waitForTimeout(300);
+      expect(await drawCount(page), 'Draw calls after the hero re-enters').toBeGreaterThan(0);
+    });
+
+    test(`Hero stops drawing in a hidden tab and resumes when visible on ${name}`, async ({
+      page,
+    }) => {
+      await installWebGLContextTracker(page);
+      await page.goto(url, { waitUntil: 'load' });
+      await waitForHeroDraw(page);
+
+      await setHidden(page, true);
+      await page.waitForTimeout(100);
+      expect(await drawCount(page), 'Draw calls while the tab is hidden').toBe(0);
+
+      await setHidden(page, false);
+      expect(await drawCount(page), 'Draw calls after the tab is visible').toBeGreaterThan(0);
+    });
+
+    test(`Hero draws one still frame under reduced motion at load on ${name}`, async ({ page }) => {
+      await installWebGLContextTracker(page);
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.goto(url, { waitUntil: 'load' });
+      await waitForHeroDraw(page);
+      await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {});
+      await page.waitForTimeout(300);
+      expect(await drawCount(page), 'Draw calls after load under reduced motion').toBe(0);
+    });
+
+    test(`Hero stops when reduced motion is switched on mid-run on ${name}`, async ({ page }) => {
+      await installWebGLContextTracker(page);
+      await page.goto(url, { waitUntil: 'load' });
+      await waitForHeroDraw(page);
+
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.waitForTimeout(300);
+      expect(await drawCount(page), 'Draw calls after switching to reduce').toBe(0);
+
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+      expect(await drawCount(page), 'Draw calls after switching back').toBeGreaterThan(0);
+    });
+
+    test(`Hero shows the CSS fallback without WebGL2 on ${name}`, async ({ page }) => {
+      const pageErrors: string[] = [];
+      page.on('pageerror', (e) => pageErrors.push(e.message));
+      await page.addInitScript(() => {
+        const orig = HTMLCanvasElement.prototype.getContext;
+        (HTMLCanvasElement.prototype as unknown as { getContext: unknown }).getContext = function (
+          this: HTMLCanvasElement,
+          type: string,
+          ...args: unknown[]
+        ) {
+          if (type === 'webgl2') return null;
+          return (orig as (this: HTMLCanvasElement, t: string, ...r: unknown[]) => unknown).call(
+            this,
+            type,
+            ...args,
+          );
+        };
+      });
+      await page.goto(url, { waitUntil: 'load' });
+
+      const fallback = page.locator('.banner-bg .gradient-ascii--fallback');
+      await expect(fallback).toBeVisible();
+      expect(await fallback.evaluate((el) => getComputedStyle(el).backgroundImage)).toMatch(
+        /gradient/,
+      );
+      await expect(page.locator('canvas.gradient-ascii-canvas')).toBeHidden();
+      expect(pageErrors).toEqual([]);
+    });
+
+    test(`Hero shows the fallback on context loss and recovers on restore on ${name}`, async ({
+      page,
+    }) => {
+      await installWebGLContextTracker(page);
+      await page.goto(url, { waitUntil: 'load' });
+      await waitForHeroDraw(page);
+
+      await page.evaluate(() => {
+        const canvas = document.querySelector<HTMLCanvasElement>('canvas.gradient-ascii-canvas')!;
+        const ext = canvas.getContext('webgl2')!.getExtension('WEBGL_lose_context')!;
+        (window as unknown as { __heroLose: WEBGL_lose_context }).__heroLose = ext;
+        ext.loseContext();
+      });
+      await expect(page.locator('.banner-bg .gradient-ascii--fallback')).toBeVisible();
+      expect(await drawCount(page, 500), 'Draw calls while the context is lost').toBe(0);
+
+      await page.evaluate(() =>
+        (window as unknown as { __heroLose: WEBGL_lose_context }).__heroLose.restoreContext(),
+      );
+      await expect(page.locator('.banner-bg .gradient-ascii--fallback')).toHaveCount(0);
+      await expect(page.locator('canvas.gradient-ascii-canvas')).toBeVisible();
+      expect(await drawCount(page), 'Draw calls after restore').toBeGreaterThan(0);
+      const unreleased = await page.evaluate(() =>
+        (
+          window as unknown as { __getUnreleasedWebGLContextCount: () => number }
+        ).__getUnreleasedWebGLContextCount(),
+      );
+      expect(unreleased, 'Contexts held after restore').toBeLessThanOrEqual(1);
     });
   }
 });

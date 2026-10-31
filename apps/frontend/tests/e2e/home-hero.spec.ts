@@ -71,20 +71,14 @@ test.describe('Home query, hero and stats', () => {
     expect(errors, `Unexpected 404 responses:\n${errors.join('\n')}`).toEqual([]);
   });
 
-  test('Video banner attributes, single H1, and no duplicate IDs on VI and EN home routes', async ({
+  test('ASCII gradient background, single H1, and no duplicate IDs on VI and EN home routes', async ({
     page,
   }) => {
     for (const path of ['/', '/en/home/']) {
       await page.goto(path);
 
-      const video = page.locator('video.video-bg');
-      await expect(video).toBeVisible();
-      await expect(video).toHaveAttribute('autoplay', '');
-      await expect(video).toHaveAttribute('muted', '');
-      await expect(video).toHaveAttribute('loop', '');
-      await expect(video).toHaveAttribute('playsinline', '');
-      await expect(video).toHaveAttribute('preload', /auto|metadata/);
-      await expect(video.locator('source')).toHaveAttribute('src', /video-banner-2\.mp4/);
+      await expect(page.locator('.banner-bg canvas.gradient-ascii-canvas')).toBeVisible();
+      await expect(page.locator('video.video-bg')).toHaveCount(0);
 
       const h1s = page.locator('main h1');
       await expect(h1s).toHaveCount(1);
