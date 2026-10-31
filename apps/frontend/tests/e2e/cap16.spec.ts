@@ -250,8 +250,14 @@ export async function expectTextReadable(page: Page) {
       .getAnimations()
       .filter((a) => a.effect?.getComputedTiming().endTime !== Infinity);
     await Promise.all(finite.map((a) => a.finished.catch(() => undefined)));
+    const root =
+      document.querySelector(
+        ':is(main, [role="main"], #content, #login, .portfolio-page-wrapper)',
+      ) ?? document.body;
     const els = Array.from(
-      document.querySelectorAll('main :is(h1, h2, h3, h4, h5, h6, p, .typewriter)'),
+      root.querySelectorAll(
+        ':is(h1, h2, h3, h4, h5, h6, p, .typewriter):not(.mota_mt, .mota_mt *, [data-state="inactive"], [data-state="inactive"] *)',
+      ),
     ).filter((el) => el.getClientRects().length > 0);
     return {
       total: els.length,
@@ -353,6 +359,18 @@ const CORE_ROUTES = [
 ];
 
 const HOME_ROUTES = CORE_ROUTES.filter(({ name }) => name.startsWith('home-'));
+
+export const REVEAL_TARGET_SELECTOR = [
+  ':is(main, [role="main"], .portfolio-page-wrapper) .section:not(.section .section, .horizontal-scroll-section, .horizontal-scroll-section *)',
+  ':is(main, [role="main"], .portfolio-page-wrapper) :is(h2, h3):not(.horizontal-scroll-section, :is(.section, .banner, .horizontal-scroll-section) *)',
+].join(', ');
+
+const seenFamilies = new Set<string>();
+const FAMILY_ROUTES = manifest.rows.filter((row) => {
+  if (seenFamilies.has(row.family)) return false;
+  seenFamilies.add(row.family);
+  return true;
+});
 
 /** Wait until the home hero canvas is in the DOM and has issued a WebGL2 draw call. */
 async function waitForHeroDraw(page: Page) {
@@ -663,9 +681,218 @@ test.describe('CAP-16: Home hero', () => {
   }
 });
 
+test.describe('CAP-16: Scroll reveal', () => {
+  for (const row of FAMILY_ROUTES) {
+    test(`Targets in viewport are visible on load and below-fold reveal on scroll on ${row.key} (${row.url})`, async ({
+      page,
+    }) => {
+      await page.goto(row.url, { waitUntil: 'load' });
+
+      // (a) after load, no in-viewport target has data-reveal="hidden"
+      const inViewportHidden = await page.evaluate(() => {
+        const hiddenEls = Array.from(document.querySelectorAll('[data-reveal="hidden"]'));
+        return hiddenEls.filter((el) => {
+          const r = el.getBoundingClientRect();
+          return (
+            r.bottom > 0 && r.top < window.innerHeight && r.right > 0 && r.left < window.innerWidth
+          );
+        }).length;
+      });
+      expect(inViewportHidden, 'No in-viewport target has data-reveal="hidden" on load').toBe(0);
+
+      // (b) scrolling the page down in steps leaves 0 hidden targets and every target passes checkVisibility({opacityProperty:true})
+      await page.evaluate(async () => {
+        const step = window.innerHeight || 800;
+        const maxScroll = Math.max(
+          document.documentElement.scrollHeight,
+          document.body.scrollHeight,
+        );
+        for (let y = 0; y <= maxScroll; y += step) {
+          window.scrollTo(0, y);
+          await new Promise((r) => setTimeout(r, 50));
+        }
+        window.scrollTo(0, maxScroll);
+        await new Promise((r) => setTimeout(r, 50));
+      });
+
+      await expect(page.locator('[data-reveal="hidden"]')).toHaveCount(0);
+
+      await page.evaluate(async () => {
+        const finite = document
+          .getAnimations()
+          .filter((a) => a.effect?.getComputedTiming().endTime !== Infinity);
+        await Promise.all(finite.map((a) => a.finished.catch(() => undefined)));
+      });
+
+      const { targetCount, notVisible } = await page.evaluate((sel) => {
+        const targets = Array.from(document.querySelectorAll(sel));
+        return {
+          targetCount: targets.length,
+          notVisible: targets
+            .filter((el) => !el.checkVisibility({ opacityProperty: true }))
+            .map((el) => `${el.tagName}.${el.className}`),
+        };
+      }, REVEAL_TARGET_SELECTOR);
+
+      if (!['login', 'profile'].includes(row.family)) {
+        expect(targetCount, `Reveal targets exist on ${row.key}`).toBeGreaterThan(0);
+      }
+      expect(notVisible, 'Every reveal target passes checkVisibility').toEqual([]);
+    });
+
+    test(`Zero targets marked hidden under reduced motion on ${row.key} (${row.url})`, async ({
+      page,
+    }) => {
+      // (d) under reducedMotion: 'reduce' 0 targets are marked hidden
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.goto(row.url, { waitUntil: 'load' });
+      const hiddenCount = await page.locator('[data-reveal="hidden"]').count();
+      expect(hiddenCount, '0 targets marked hidden under reduced motion').toBe(0);
+    });
+  }
+
+  test('Scroll reveal persists across client soft navigation from / to /gioi-thieu/ and back', async ({
+    page,
+  }) => {
+    // (c) same after a soft nav from / via a header link (to /gioi-thieu/) and from /gioi-thieu/ back to /
+    await page.goto('/', { waitUntil: 'load' });
+
+    // Mark window to verify soft navigation
+    await page.evaluate(() => {
+      (window as unknown as { __softNavMarker?: number }).__softNavMarker = 42;
+    });
+
+    // Soft nav to /gioi-thieu/ via header link
+    await page.locator('#header a[href="/gioi-thieu/"]').first().click();
+    await expect(page).toHaveURL(/\/gioi-thieu\/?$/);
+    const marker1 = await page.evaluate(
+      () => (window as unknown as { __softNavMarker?: number }).__softNavMarker,
+    );
+    expect(marker1, 'Soft navigation preserved window marker to /gioi-thieu/').toBe(42);
+
+    const inViewportHidden1 = await page.evaluate(() => {
+      const hiddenEls = Array.from(document.querySelectorAll('[data-reveal="hidden"]'));
+      return hiddenEls.filter((el) => {
+        const r = el.getBoundingClientRect();
+        return (
+          r.bottom > 0 && r.top < window.innerHeight && r.right > 0 && r.left < window.innerWidth
+        );
+      }).length;
+    });
+    expect(
+      inViewportHidden1,
+      'No in-viewport target has data-reveal="hidden" on /gioi-thieu/',
+    ).toBe(0);
+
+    await page.evaluate(async () => {
+      const step = window.innerHeight || 800;
+      const maxScroll = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+      for (let y = 0; y <= maxScroll; y += step) {
+        window.scrollTo(0, y);
+        await new Promise((r) => setTimeout(r, 50));
+      }
+      window.scrollTo(0, maxScroll);
+      await new Promise((r) => setTimeout(r, 50));
+    });
+    await expect(page.locator('[data-reveal="hidden"]')).toHaveCount(0);
+
+    await page.evaluate(async () => {
+      const finite = document
+        .getAnimations()
+        .filter((a) => a.effect?.getComputedTiming().endTime !== Infinity);
+      await Promise.all(finite.map((a) => a.finished.catch(() => undefined)));
+    });
+
+    const res1 = await page.evaluate((sel) => {
+      const targets = Array.from(document.querySelectorAll(sel));
+      return {
+        targetCount: targets.length,
+        notVisible: targets
+          .filter((el) => !el.checkVisibility({ opacityProperty: true }))
+          .map((el) => `${el.tagName}.${el.className}`),
+      };
+    }, REVEAL_TARGET_SELECTOR);
+    expect(res1.targetCount, 'Reveal targets exist on /gioi-thieu/').toBeGreaterThan(0);
+    expect(res1.notVisible, 'Every reveal target on /gioi-thieu/ passes checkVisibility').toEqual(
+      [],
+    );
+
+    // Soft nav back to / via header link
+    await page.locator('#header a[href="/"]').first().click();
+    await expect(page).toHaveURL(/^https?:\/\/[^/]+\/?$/);
+    const marker2 = await page.evaluate(
+      () => (window as unknown as { __softNavMarker?: number }).__softNavMarker,
+    );
+    expect(marker2, 'Soft navigation preserved window marker back to /').toBe(42);
+
+    const inViewportHidden2 = await page.evaluate(() => {
+      const hiddenEls = Array.from(document.querySelectorAll('[data-reveal="hidden"]'));
+      return hiddenEls.filter((el) => {
+        const r = el.getBoundingClientRect();
+        return (
+          r.bottom > 0 && r.top < window.innerHeight && r.right > 0 && r.left < window.innerWidth
+        );
+      }).length;
+    });
+    expect(inViewportHidden2, 'No in-viewport target has data-reveal="hidden" back on /').toBe(0);
+
+    await page.evaluate(async () => {
+      const step = window.innerHeight || 800;
+      const maxScroll = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+      for (let y = 0; y <= maxScroll; y += step) {
+        window.scrollTo(0, y);
+        await new Promise((r) => setTimeout(r, 50));
+      }
+      window.scrollTo(0, maxScroll);
+      await new Promise((r) => setTimeout(r, 50));
+    });
+    await expect(page.locator('[data-reveal="hidden"]')).toHaveCount(0);
+
+    await page.evaluate(async () => {
+      const finite = document
+        .getAnimations()
+        .filter((a) => a.effect?.getComputedTiming().endTime !== Infinity);
+      await Promise.all(finite.map((a) => a.finished.catch(() => undefined)));
+    });
+
+    const res2 = await page.evaluate((sel) => {
+      const targets = Array.from(document.querySelectorAll(sel));
+      return {
+        targetCount: targets.length,
+        notVisible: targets
+          .filter((el) => !el.checkVisibility({ opacityProperty: true }))
+          .map((el) => `${el.tagName}.${el.className}`),
+      };
+    }, REVEAL_TARGET_SELECTOR);
+    expect(res2.targetCount, 'Reveal targets exist back on /').toBeGreaterThan(0);
+    expect(res2.notVisible, 'Every reveal target back on / passes checkVisibility').toEqual([]);
+  });
+
+  test('horizontal-scroll-section, descendants and ProjectGrid .col never get data-reveal', async ({
+    page,
+  }) => {
+    // (e) a .horizontal-scroll-section and its descendants and ProjectGrid .col never get data-reveal
+    for (const url of ['/', '/thiet-ke-website/', '/du-an/']) {
+      await page.goto(url, { waitUntil: 'load' });
+      const badReveals = await page.evaluate(() => {
+        const horizontalEls = Array.from(
+          document.querySelectorAll('.horizontal-scroll-section, .horizontal-scroll-section *'),
+        );
+        const projectCols = Array.from(
+          document.querySelectorAll('.row > .col:has(.portfolio-box), #portfolio-isotope > .col'),
+        );
+        return [...horizontalEls, ...projectCols]
+          .filter((el) => el.hasAttribute('data-reveal'))
+          .map((el) => `${el.tagName}.${el.className}`);
+      });
+      expect(badReveals, `Excluded elements on ${url} must never have data-reveal`).toEqual([]);
+    }
+  });
+});
+
 test.describe('CAP-16: JS Off Readability', () => {
-  for (const { name, url } of CORE_ROUTES) {
-    test(`Headings and paragraphs readable with JS off on ${name}`, async ({ browser }) => {
+  for (const { key, url } of FAMILY_ROUTES) {
+    test(`Headings and paragraphs readable with JS off on ${key}`, async ({ browser }) => {
       const context = await browser.newContext({ javaScriptEnabled: false });
       const page = await context.newPage();
       await page.goto(url, { waitUntil: 'load' });
