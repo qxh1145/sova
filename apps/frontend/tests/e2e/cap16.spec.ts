@@ -903,7 +903,8 @@ test.describe('CAP-16: Card hover', () => {
     {
       name: 'ServiceDetailCards',
       url: '/thiet-ke-website/',
-      selector: '.eras-table-price .col-inner[data-pointer="card"]',
+      // PricingCards renders first with `.hover_border eras-table-price`; exclude it.
+      selector: '.eras-table-price:not(.hover_border) .col-inner[data-pointer="card"]',
     },
     {
       name: 'PricingCards',
@@ -942,23 +943,39 @@ test.describe('CAP-16: Card hover', () => {
       await page.mouse.move(box!.x + 40, box!.y + 40);
       await page.waitForTimeout(350);
 
-      const x1 = await card.evaluate((el) => el.style.getPropertyValue('--pointer-x'));
+      const readSpot = () =>
+        card.evaluate((el) => ({
+          x: el.style.getPropertyValue('--pointer-x'),
+          y: el.style.getPropertyValue('--pointer-y'),
+          bg: window.getComputedStyle(el, '::before').backgroundImage,
+        }));
+
+      const spot1 = await readSpot();
+      const x1 = spot1.x;
       const opacity1 = await card.evaluate((el) => {
         return parseFloat(window.getComputedStyle(el, '::before').opacity);
       });
 
       expect(x1, `${family.name} should set --pointer-x at point 1`).not.toBe('');
       expect(opacity1, `${family.name} overlay opacity should be > 0 on hover`).toBeGreaterThan(0);
+      expect(spot1.bg, `${family.name} spotlight should sit at the pointer`).toContain(
+        `${spot1.x} ${spot1.y}`,
+      );
 
       // Point 2
       await page.mouse.move(box!.x + 80, box!.y + 80);
       await page.waitForTimeout(100);
 
-      const x2 = await card.evaluate((el) => el.style.getPropertyValue('--pointer-x'));
+      const spot2 = await readSpot();
+      const x2 = spot2.x;
       expect(x2, `${family.name} should set --pointer-x at point 2`).not.toBe('');
       expect(x2, `${family.name} --pointer-x should differ between two hover points`).not.toEqual(
         x1,
       );
+      expect(spot2.bg, `${family.name} spotlight should follow the pointer`).toContain(
+        `${spot2.x} ${spot2.y}`,
+      );
+      expect(spot2.bg).not.toEqual(spot1.bg);
 
       // Pointer leaves
       await page.mouse.move(0, 0);
@@ -1028,16 +1045,37 @@ test.describe('CAP-16: Card hover', () => {
     });
     expect(listeners['pointermove'] ?? 0).toBe(0);
 
-    const card = page.locator('.eras-table-price .col-inner[data-pointer="card"]').first();
+    const card = page
+      .locator('.eras-table-price:not(.hover_border) .col-inner[data-pointer="card"]')
+      .first();
     const box = await card.boundingBox();
-    if (box) {
-      await page.mouse.move(box.x + 40, box.y + 40);
-      await page.waitForTimeout(200);
-      const opacity = await card.evaluate((el) => {
-        return parseFloat(window.getComputedStyle(el, '::before').opacity);
-      });
-      expect(opacity).toBe(0);
-    }
+    expect(box, 'ServiceDetailCards card should have a bounding box').not.toBeNull();
+    await page.mouse.move(box!.x + 40, box!.y + 40);
+    await page.waitForTimeout(200);
+    const opacity = await card.evaluate((el) => {
+      return parseFloat(window.getComputedStyle(el, '::before').opacity);
+    });
+    expect(opacity).toBe(0);
+    await context.close();
+  });
+
+  test('JS off: hovering a card shows no overlay', async ({ browser }) => {
+    const context = await browser.newContext({
+      javaScriptEnabled: false,
+      viewport: { width: 1440, height: 900 },
+    });
+    const page = await context.newPage();
+    await page.goto('/thiet-ke-website/', { waitUntil: 'load' });
+    const card = page.locator('#row-1975763604 .col-inner[data-pointer="card"]').first();
+    await card.scrollIntoViewIfNeeded();
+    const box = await card.boundingBox();
+    expect(box, 'PricingCards card should have a bounding box').not.toBeNull();
+    await page.mouse.move(box!.x + 40, box!.y + 40);
+    await page.waitForTimeout(350);
+    const opacity = await card.evaluate((el) => {
+      return parseFloat(window.getComputedStyle(el, '::before').opacity);
+    });
+    expect(opacity).toBe(0);
     await context.close();
   });
 

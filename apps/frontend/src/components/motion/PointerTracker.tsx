@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import './PointerTracker.css';
 
-const QUERY = '(pointer: fine) and (prefers-reduced-motion: no-preference)';
+const QUERY = '(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)';
 
 export function PointerTracker() {
   useEffect(() => {
@@ -26,12 +26,14 @@ export function PointerTracker() {
     const start = () => {
       if (listening) return;
       document.addEventListener('pointermove', onMove, { passive: true });
+      document.documentElement.setAttribute('data-pointer-tracker', '');
       listening = true;
     };
 
     const stop = () => {
       if (!listening) return;
       document.removeEventListener('pointermove', onMove);
+      document.documentElement.removeAttribute('data-pointer-tracker');
       listening = false;
     };
 

@@ -177,6 +177,6 @@ describe('ServiceIconCards', () => {
     );
     const root = parse(html);
     const cards = root.querySelectorAll('.col-inner[data-pointer="card"]');
-    expect(cards.length).toBeGreaterThan(0);
+    expect(cards).toHaveLength(1);
   });
 });
