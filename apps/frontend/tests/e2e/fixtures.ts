@@ -105,6 +105,11 @@ export async function installListenerCounter(page: Page) {
       Map<EventListenerOrEventListenerObject, Set<boolean>>
     >();
     const docListeners = new Map<string, Map<EventListenerOrEventListenerObject, Set<boolean>>>();
+    const mqlRegistry = new Map<
+      MediaQueryList,
+      Map<EventListenerOrEventListenerObject, Set<boolean>>
+    >();
+    const observerTargets = new Map<IntersectionObserver, Set<Element>>();
 
     function getRegistry(target: EventTarget) {
       return target === window ? windowListeners : docListeners;
@@ -115,6 +120,44 @@ export async function installListenerCounter(page: Page) {
     ): boolean {
       if (typeof options === 'boolean') return options;
       return Boolean(options?.capture);
+    }
+
+    function addMqlListener(
+      mql: MediaQueryList,
+      listener: EventListenerOrEventListenerObject,
+      options?: boolean | AddEventListenerOptions,
+    ) {
+      let typeMap = mqlRegistry.get(mql);
+      if (!typeMap) {
+        typeMap = new Map();
+        mqlRegistry.set(mql, typeMap);
+      }
+      let captureSet = typeMap.get(listener);
+      if (!captureSet) {
+        captureSet = new Set();
+        typeMap.set(listener, captureSet);
+      }
+      captureSet.add(normalizeCapture(options));
+    }
+
+    function removeMqlListener(
+      mql: MediaQueryList,
+      listener: EventListenerOrEventListenerObject,
+      options?: boolean | EventListenerOptions,
+    ) {
+      const typeMap = mqlRegistry.get(mql);
+      if (typeMap) {
+        const captureSet = typeMap.get(listener);
+        if (captureSet) {
+          captureSet.delete(normalizeCapture(options));
+          if (captureSet.size === 0) {
+            typeMap.delete(listener);
+          }
+        }
+        if (typeMap.size === 0) {
+          mqlRegistry.delete(mql);
+        }
+      }
     }
 
     const origAdd = EventTarget.prototype.addEventListener;
@@ -139,6 +182,13 @@ export async function installListenerCounter(page: Page) {
           typeMap.set(listener, captureSet);
         }
         captureSet.add(normalizeCapture(options));
+      } else if (
+        listener &&
+        typeof MediaQueryList !== 'undefined' &&
+        this instanceof MediaQueryList &&
+        type === 'change'
+      ) {
+        addMqlListener(this, listener, options);
       }
       return origAdd.call(this, type, listener as EventListenerOrEventListenerObject, options);
     };
@@ -164,9 +214,92 @@ export async function installListenerCounter(page: Page) {
             registry.delete(type);
           }
         }
+      } else if (
+        listener &&
+        typeof MediaQueryList !== 'undefined' &&
+        this instanceof MediaQueryList &&
+        type === 'change'
+      ) {
+        removeMqlListener(this, listener, options);
       }
       return origRemove.call(this, type, listener as EventListenerOrEventListenerObject, options);
     };
+
+    if (typeof MediaQueryList !== 'undefined' && MediaQueryList.prototype) {
+      const origAddListener = (
+        MediaQueryList.prototype as unknown as {
+          addListener?: (
+            this: MediaQueryList,
+            listener: (this: MediaQueryList, ev: MediaQueryListEvent) => unknown,
+          ) => void;
+        }
+      ).addListener;
+      const origRemoveListener = (
+        MediaQueryList.prototype as unknown as {
+          removeListener?: (
+            this: MediaQueryList,
+            listener: (this: MediaQueryList, ev: MediaQueryListEvent) => unknown,
+          ) => void;
+        }
+      ).removeListener;
+      if (origAddListener) {
+        (MediaQueryList.prototype as unknown as { addListener: unknown }).addListener = function (
+          this: MediaQueryList,
+          listener: (this: MediaQueryList, ev: MediaQueryListEvent) => unknown,
+        ) {
+          if (listener) addMqlListener(this, listener as unknown as EventListener);
+          return origAddListener.call(this, listener);
+        };
+      }
+      if (origRemoveListener) {
+        (MediaQueryList.prototype as unknown as { removeListener: unknown }).removeListener =
+          function (
+            this: MediaQueryList,
+            listener: (this: MediaQueryList, ev: MediaQueryListEvent) => unknown,
+          ) {
+            if (listener) removeMqlListener(this, listener as unknown as EventListener);
+            return origRemoveListener.call(this, listener);
+          };
+      }
+    }
+
+    if (typeof IntersectionObserver !== 'undefined' && IntersectionObserver.prototype) {
+      const origObserve = IntersectionObserver.prototype.observe;
+      const origUnobserve = IntersectionObserver.prototype.unobserve;
+      const origDisconnect = IntersectionObserver.prototype.disconnect;
+
+      IntersectionObserver.prototype.observe = function (target: Element) {
+        if (target) {
+          let targets = observerTargets.get(this);
+          if (!targets) {
+            targets = new Set();
+            observerTargets.set(this, targets);
+          }
+          targets.add(target);
+        }
+        return origObserve.call(this, target);
+      };
+
+      IntersectionObserver.prototype.unobserve = function (target: Element) {
+        if (target) {
+          const targets = observerTargets.get(this);
+          if (targets) {
+            targets.delete(target);
+            if (targets.size === 0) observerTargets.delete(this);
+          }
+        }
+        return origUnobserve.call(this, target);
+      };
+
+      IntersectionObserver.prototype.disconnect = function () {
+        const targets = observerTargets.get(this);
+        if (targets) {
+          targets.clear();
+          observerTargets.delete(this);
+        }
+        return origDisconnect.call(this);
+      };
+    }
 
     (window as unknown as { __liveListeners: () => Record<string, number> }).__liveListeners =
       () => {
@@ -182,6 +315,24 @@ export async function installListenerCounter(page: Page) {
             }
           }
         }
+        let mqlCount = 0;
+        for (const typeMap of mqlRegistry.values()) {
+          for (const captureSet of typeMap.values()) {
+            mqlCount += captureSet.size;
+          }
+        }
+        if (mqlCount > 0) {
+          counts['mql:change'] = mqlCount;
+        }
+
+        let ioCount = 0;
+        for (const targets of observerTargets.values()) {
+          ioCount += targets.size;
+        }
+        if (ioCount > 0) {
+          counts['io:targets'] = ioCount;
+        }
+
         return counts;
       };
   });

@@ -32,13 +32,12 @@
 
 import { useEffect, useRef, useState, type HTMLAttributes } from 'react';
 import './GradientASCII.css';
+import { clamp, linkProgram, type Program } from './webgl';
 
 export interface GradientASCIIProps extends HTMLAttributes<HTMLDivElement> {
   colors?: string[];
   fontFamily?: string;
 }
-
-type Program = { program: WebGLProgram; uniforms: Record<string, WebGLUniformLocation | null> };
 
 type Target = {
   textures: (WebGLTexture | null)[];
@@ -300,8 +299,6 @@ void main() {
   outColor = color;
 }`;
 
-const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
-
 const toLinear = (value: number) =>
   value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
 
@@ -317,41 +314,6 @@ const toLab = ([r, g, b]: number[]): number[] => {
     1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
     0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s,
   ];
-};
-
-const compile = (gl: WebGL2RenderingContext, type: number, source: string) => {
-  const shader = gl.createShader(type);
-  if (!shader) return null;
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-  if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) return shader;
-  gl.deleteShader(shader);
-  return null;
-};
-
-const link = (gl: WebGL2RenderingContext, fragmentSource: string): Program | null => {
-  const vertex = compile(gl, gl.VERTEX_SHADER, VERTEX);
-  const fragment = compile(gl, gl.FRAGMENT_SHADER, fragmentSource);
-  const program = gl.createProgram();
-  if (!vertex || !fragment || !program) return null;
-  gl.attachShader(program, vertex);
-  gl.attachShader(program, fragment);
-  gl.linkProgram(program);
-  gl.deleteShader(vertex);
-  gl.deleteShader(fragment);
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    gl.deleteProgram(program);
-    return null;
-  }
-  const uniforms: Record<string, WebGLUniformLocation | null> = {};
-  const count = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
-  for (let i = 0; i < count; i++) {
-    const info = gl.getActiveUniform(program, i);
-    if (!info) continue;
-    const name = info.name.replace(/\[0\]$/, '');
-    uniforms[name] = gl.getUniformLocation(program, name);
-  }
-  return { program, uniforms };
 };
 
 const createTarget = (gl: WebGL2RenderingContext, count: number): Target => {
@@ -456,10 +418,10 @@ const GradientASCII = ({
       loseExtension?.loseContext();
       canvas.remove();
     };
-    const field = gl && link(gl, FIELD);
-    const halo = gl && link(gl, HALO);
-    const blur = gl && link(gl, BLUR);
-    const composite = gl && link(gl, COMPOSITE);
+    const field = gl && linkProgram(gl, VERTEX, FIELD);
+    const halo = gl && linkProgram(gl, VERTEX, HALO);
+    const blur = gl && linkProgram(gl, VERTEX, BLUR);
+    const composite = gl && linkProgram(gl, VERTEX, COMPOSITE);
     if (!gl || !field || !halo || !blur || !composite) {
       container.classList.add(FALLBACK_CLASS);
       release();
