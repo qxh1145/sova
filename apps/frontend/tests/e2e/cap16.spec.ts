@@ -1776,6 +1776,10 @@ test.describe('CAP-16: Showcase', () => {
     '/thiet-ke-app-mobile/',
     '/seo-tu-khoa-website/',
     '/ui-ux-branding-design/',
+    '/en/website-development/',
+    '/en/app-mobile-development/',
+    '/en/website-keyword-seo/',
+    '/en/ui-ux-branding-design/',
   ];
   const STACK = '[data-scroll-stack]';
   const TILT = '.portfolio-box > .box-image[data-tilt] > div';
