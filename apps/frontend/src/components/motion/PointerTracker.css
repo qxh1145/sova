@@ -65,7 +65,6 @@ article[data-pointer],
   }
 }
 
-/* Tilted project card (CAP-16, E9.8): the image layer tilts; `.portfolio-box` keeps its legacy lift. */
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   [data-pointer='card']::before {
     background-image:
@@ -125,6 +124,7 @@ article[data-pointer],
     translate: calc((var(--pointer-x, 50%) - 50%) * 0.2) calc((var(--pointer-y, 50%) - 50%) * 0.2);
   }
 
+  /* Tilted project card (CAP-16, E9.8): the image layer tilts; `.portfolio-box` keeps its legacy lift. */
   :root[data-pointer-tracker] .box-image[data-tilt] > div {
     transition: transform var(--motion-duration-base) var(--motion-ease-out);
   }

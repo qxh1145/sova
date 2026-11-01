@@ -197,9 +197,7 @@ test.describe('CAP-16: Home hero', () => {
     }) => {
       // The hero adds a window `pointerdown` listener only under a fine pointer; other islands may add more.
       const pointerDownListeners = async (touch: boolean) => {
-        const context = await browser.newContext(
-          touch ? TOUCH_CONTEXT : {},
-        );
+        const context = await browser.newContext(touch ? TOUCH_CONTEXT : {});
         const page = await context.newPage();
         await installWebGLContextTracker(page);
         await page.addInitScript(() => {
@@ -404,9 +402,7 @@ test.describe('CAP-16: Sub-page hero', () => {
       browser,
     }) => {
       const pointerMoveListeners = async (touch: boolean) => {
-        const context = await browser.newContext(
-          touch ? TOUCH_CONTEXT : {},
-        );
+        const context = await browser.newContext(touch ? TOUCH_CONTEXT : {});
         const page = await context.newPage();
         await installWebGLContextTracker(page);
         await page.addInitScript(() => {
@@ -898,7 +894,7 @@ test.describe('CAP-16: Card hover', () => {
 
       // Pointer leaves
       await page.mouse.move(0, 0);
-      await page.waitForTimeout(400);
+      await page.waitForTimeout(350);
       const opacityOff = await card.evaluate((el) => {
         return parseFloat(window.getComputedStyle(el, '::before').opacity);
       });
@@ -1067,7 +1063,7 @@ test.describe('CAP-16: CTA effects', () => {
         const r = el.getBoundingClientRect();
         window.scrollBy(0, r.top - 150);
       });
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(200);
 
       const box = await cta.boundingBox();
       expect(box, `${site.name} CTA should have a bounding box`).not.toBeNull();
@@ -1118,7 +1114,7 @@ test.describe('CAP-16: CTA effects', () => {
 
       // Pointer leaves
       await page.mouse.move(0, 0);
-      await page.waitForTimeout(400);
+      await page.waitForTimeout(350);
 
       const leaveState = await cta.evaluate((el) => {
         const r = el.getBoundingClientRect();
@@ -1153,7 +1149,7 @@ test.describe('CAP-16: CTA effects', () => {
         const r = el.getBoundingClientRect();
         window.scrollBy(0, r.top - 150);
       });
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(200);
       await cta.tap();
       await page.waitForTimeout(100);
 
@@ -1274,7 +1270,7 @@ test.describe('CAP-16: CTA effects', () => {
       style.fillColor,
       'Hero sheen text fill color must not be transparent under forced colors',
     ).not.toBe('rgba(0, 0, 0, 0)');
-    expect(style.fillColor).not.toBe('transparent');
+    expect(style.bgImage, 'Hero sheen gradient must be removed under forced colors').toBe('none');
   });
 
   test('Nested CTA in card: hovering CTA sets vars on CTA while card spotlight holds last point', async ({

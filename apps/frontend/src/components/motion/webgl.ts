@@ -36,7 +36,7 @@ export interface Program {
 export const clamp = (value: number, min: number, max: number): number =>
   Math.min(max, Math.max(min, value));
 
-export const compileShader = (
+const compileShader = (
   gl: WebGL2RenderingContext,
   type: number,
   source: string,

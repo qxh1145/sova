@@ -91,6 +91,14 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
         return st ? st.getAll().length : 0;
       });
       expect(cycle1Triggers, 'ScrollTrigger count on /lien-he/ after cycle 1 must be 0').toBe(0);
+      // Positive control: the tracker must see the islands' MQL listeners and IO targets.
+      expect(
+        cycle1Listeners['mql:change'] ?? 0,
+        'tracker should count MQL change listeners',
+      ).toBeGreaterThan(0);
+      expect(cycle1Listeners['io:targets'] ?? 0, 'tracker should count IO targets').toBeGreaterThan(
+        0,
+      );
 
       // Cycle 2: Repeat the exact same sequence
       // 1. /thiet-ke-website/
