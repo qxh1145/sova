@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 import Link from 'next/link';
 import type { AssetRef, HeroContent } from '@/types/content';
 import { RichText } from '@/components/ui/RichText';
+import { LightRays } from '@/components/motion/LightRays';
 
 export interface PageHeroIds {
   banner: string;
@@ -91,6 +92,7 @@ export function PageHero({
                 loading="lazy"
               />
             )}
+            <LightRays raysColor="#0065df" />
           </div>
 
           <div className="banner-layers container">
