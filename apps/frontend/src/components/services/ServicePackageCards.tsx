@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { AssetRef, OfferingPanel, SectionCopy } from '@/types/content';
 import { Carousel, type CarouselLabels } from '@/components/ui/Carousel';
+import '@/components/motion/ScrollStack.css';
 
 export interface ServicePackageCardIds {
   col: string;
@@ -774,6 +775,7 @@ export function ServicePackageCards({
         <div
           className={`row row-small ${ids.alignEqual ? 'align-equal ' : ''}row-ndv hover_gra eras-table-price hide-for-small`} // business-text-ok: source CSS class name
           id={ids.gridRow}
+          data-scroll-stack=""
         >
           {offerings.map((offering, idx) => {
             const cardIds = ids.gridCards[idx];

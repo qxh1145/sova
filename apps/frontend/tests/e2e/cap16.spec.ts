@@ -269,9 +269,14 @@ export async function installWebGLContextTracker(page: Page) {
  */
 export async function expectTextReadable(page: Page) {
   const { total, hidden } = await page.evaluate(async () => {
+    // Scroll-driven animations (scroll stack) finish only when scrolled, not in time: skip them.
     const finite = document
       .getAnimations()
-      .filter((a) => a.effect?.getComputedTiming().endTime !== Infinity);
+      .filter(
+        (a) =>
+          a.timeline instanceof DocumentTimeline &&
+          a.effect?.getComputedTiming().endTime !== Infinity,
+      );
     await Promise.all(finite.map((a) => a.finished.catch(() => undefined)));
     const root =
       document.querySelector(
@@ -1015,9 +1020,14 @@ async function expectRevealCycle(page: Page, label: string, { requireTargets = t
   }
 
   await page.evaluate(async () => {
+    // Scroll-driven animations (scroll stack) finish only when scrolled, not in time: skip them.
     const finite = document
       .getAnimations()
-      .filter((a) => a.effect?.getComputedTiming().endTime !== Infinity);
+      .filter(
+        (a) =>
+          a.timeline instanceof DocumentTimeline &&
+          a.effect?.getComputedTiming().endTime !== Infinity,
+      );
     await Promise.all(finite.map((a) => a.finished.catch(() => undefined)));
   });
 
@@ -1758,4 +1768,265 @@ test.describe('CAP-16: Budget & CLS Gate', () => {
       }
     });
   }
+});
+
+test.describe('CAP-16: Showcase', () => {
+  const STACK_ROUTES = [
+    '/thiet-ke-website/',
+    '/thiet-ke-app-mobile/',
+    '/seo-tu-khoa-website/',
+    '/ui-ux-branding-design/',
+    '/en/website-development/',
+    '/en/app-mobile-development/',
+    '/en/website-keyword-seo/',
+    '/en/ui-ux-branding-design/',
+  ];
+  const STACK = '[data-scroll-stack]';
+  const TILT = '.portfolio-box > .box-image[data-tilt] > div';
+
+  /** Computed `translate` of every `.col` in the first stack row, after placing its top at `top`. */
+  async function stackState(page: Page, top: number | 'past') {
+    const row = page.locator(STACK).first();
+    await row.evaluate((el, at) => {
+      if (at === 'past') window.scrollTo(0, document.documentElement.scrollHeight);
+      else window.scrollBy(0, el.getBoundingClientRect().top - at);
+    }, top);
+    // A timeout, not rAF: rAF callbacks never run in a JS-off context.
+    await page.waitForTimeout(150);
+    return row.evaluate((el) => {
+      const cols = Array.from(el.querySelectorAll<HTMLElement>(':scope > .col'));
+      return {
+        translates: cols.map((c) => getComputedStyle(c).translate),
+        rotates: cols.map((c) => getComputedStyle(c).rotate),
+        lefts: cols.map((c) => Math.round(c.getBoundingClientRect().left)),
+      };
+    });
+  }
+
+  const isFlat = (s: { translates: string[]; rotates: string[] }) =>
+    s.translates.every((t) => t === 'none') && s.rotates.every((r) => r === 'none');
+
+  /** First listing card scrolled to 150px from the top, with its box. */
+  async function firstCard(page: Page) {
+    const card = page.locator('.portfolio-box[data-pointer="card"]').first();
+    await card.evaluate((el) => window.scrollBy(0, el.getBoundingClientRect().top - 150));
+    await page.waitForTimeout(200);
+    const box = await card.boundingBox();
+    expect(box, 'project card should have a bounding box').not.toBeNull();
+    return { card, box: box! };
+  }
+
+  const tiltOf = (page: Page) =>
+    page
+      .locator('.portfolio-box[data-pointer="card"]')
+      .first()
+      .evaluate((el) => {
+        const inner = el.querySelector<HTMLElement>('.box-image > div');
+        return { inner: inner ? getComputedStyle(inner).transform : 'none' };
+      });
+
+  for (const url of STACK_ROUTES) {
+    test(`Scroll stack spreads to source columns and ends flat on ${url}`, async ({ page }) => {
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await page.goto(url, { waitUntil: 'load' });
+      const rows = await page.locator(STACK).count();
+      expect(rows, `${url} should mark its desktop package row`).toBeGreaterThan(0);
+
+      // Row top just inside the viewport bottom: cards sit stacked over the first column.
+      const entering = await stackState(page, 880);
+      expect(entering.translates.length).toBeGreaterThan(1);
+      expect(entering.translates[0]).toBe('none');
+      expect(entering.rotates[0]).toBe('none');
+      expect(entering.translates.slice(1).every((t) => t !== 'none')).toBe(true);
+      expect(entering.rotates.slice(1).every((r) => r !== 'none')).toBe(true);
+      const spread = entering.lefts[entering.lefts.length - 1] - entering.lefts[0];
+
+      // Row near the top: range ended, transform none, columns at their source places.
+      const inView = await stackState(page, 100);
+      expect(
+        isFlat(inView),
+        `${url} translate/rotate at range end: ${inView.translates} / ${inView.rotates}`,
+      ).toBe(true);
+      expect(inView.lefts[inView.lefts.length - 1] - inView.lefts[0]).toBeGreaterThan(spread + 50);
+
+      // Section fully passed: still the original layout.
+      const past = await stackState(page, 'past');
+      expect(
+        isFlat(past),
+        `${url} translate/rotate after scroll past: ${past.translates} / ${past.rotates}`,
+      ).toBe(true);
+    });
+  }
+
+  test('Scroll stack sits only behind @supports (animation-timeline: view())', async ({ page }) => {
+    await page.goto('/thiet-ke-website/', { waitUntil: 'load' });
+    const placement = await page.evaluate(() => {
+      const out: { inSupports: number; outside: number } = { inSupports: 0, outside: 0 };
+      const walk = (rules: CSSRuleList, supported: boolean) => {
+        for (const rule of Array.from(rules)) {
+          if (rule instanceof CSSSupportsRule) {
+            walk(rule.cssRules, supported || rule.conditionText.includes('animation-timeline'));
+          } else if (rule instanceof CSSGroupingRule) {
+            walk(rule.cssRules, supported);
+          } else if (
+            rule instanceof CSSStyleRule &&
+            rule.selectorText.includes('data-scroll-stack')
+          ) {
+            out[supported ? 'inSupports' : 'outside']++;
+          }
+        }
+      };
+      for (const sheet of Array.from(document.styleSheets)) {
+        try {
+          walk(sheet.cssRules, false);
+        } catch {}
+      }
+      return out;
+    });
+    expect(placement.inSupports, 'stack rules should exist').toBeGreaterThan(0);
+    expect(placement.outside, 'no stack rule may apply without scroll-timeline support').toBe(0);
+  });
+
+  test('Tilt follows the pointer on /du-an/ and resets on leave; box keeps legacy lift', async ({
+    page,
+  }) => {
+    await installPointerListenerTracker(page);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/du-an/', { waitUntil: 'load' });
+    await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {});
+    expect(await page.locator(TILT).count()).toBeGreaterThan(0);
+    const { card, box } = await firstCard(page);
+
+    await page.mouse.move(box.x + 30, box.y + 30);
+    await page.waitForTimeout(400);
+    const t1 = await tiltOf(page);
+    await page.mouse.move(box.x + box.width - 30, box.y + 120);
+    await page.waitForTimeout(400);
+    const t2 = await tiltOf(page);
+    expect(t1.inner, 'inner layer should tilt').not.toBe('none');
+    expect(t2.inner).not.toBe('none');
+    expect(t2.inner, 'tilt should differ between two points').not.toEqual(t1.inner);
+    const boxTransform = await card.evaluate((el) => getComputedStyle(el).transform);
+    expect(boxTransform, '.portfolio-box keeps its legacy translateY(-5px)').toBe(
+      'matrix(1, 0, 0, 1, 0, -5)',
+    );
+
+    // One shared PointerTracker listener (+ the PageHero LightRays one), no tilt listener.
+    const listeners = await page.evaluate(
+      () =>
+        (
+          window as unknown as { __getCoarsePointerListenerCounts: () => Record<string, number> }
+        ).__getCoarsePointerListenerCounts()['pointermove'] ?? 0,
+    );
+    expect(listeners).toBe(2);
+
+    await page.mouse.move(0, 0);
+    await page.waitForTimeout(450);
+    expect((await tiltOf(page)).inner, 'tilt should return to none').toBe('none');
+  });
+
+  test('Touch: no stack transform, no tilt, no pointer listeners', async ({ browser }) => {
+    const context = await browser.newContext({
+      hasTouch: true,
+      isMobile: true,
+      viewport: { width: 1440, height: 900 },
+    });
+    const page = await context.newPage();
+    await installPointerListenerTracker(page);
+    await page.goto('/thiet-ke-website/', { waitUntil: 'load' });
+    expect(isFlat(await stackState(page, 880)), 'no stack transform on touch').toBe(true);
+
+    await page.goto('/du-an/', { waitUntil: 'load' });
+    await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {});
+    await page.evaluate(() => {
+      window.addEventListener('click', (e) => e.preventDefault(), { capture: true });
+    });
+    const { card } = await firstCard(page);
+    await card.tap();
+    await page.waitForTimeout(400);
+    expect((await tiltOf(page)).inner, 'no tilt on touch').toBe('none');
+    const listeners = await page.evaluate(() =>
+      (
+        window as unknown as { __getCoarsePointerListenerCounts: () => Record<string, number> }
+      ).__getCoarsePointerListenerCounts(),
+    );
+    // Pre-epic listeners (CustomCursor mousemove) are out of scope; the tilt adds no pointermove.
+    expect(listeners['pointermove'] ?? 0).toBe(0);
+    await context.close();
+  });
+
+  test('Reduced motion at load: original layout and no tilt', async ({ browser }) => {
+    const context = await browser.newContext({
+      reducedMotion: 'reduce',
+      viewport: { width: 1440, height: 900 },
+    });
+    const page = await context.newPage();
+    await page.goto('/thiet-ke-website/', { waitUntil: 'load' });
+    expect(isFlat(await stackState(page, 880))).toBe(true);
+
+    await page.goto('/du-an/', { waitUntil: 'load' });
+    const { box } = await firstCard(page);
+    await page.mouse.move(box.x + 30, box.y + 30);
+    await page.waitForTimeout(400);
+    expect((await tiltOf(page)).inner).toBe('none');
+    await context.close();
+  });
+
+  test('Reduced motion switched mid-run: stack and tilt drop at once', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/thiet-ke-website/', { waitUntil: 'load' });
+    expect(isFlat(await stackState(page, 880))).toBe(false);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    expect(isFlat(await stackState(page, 880))).toBe(true);
+
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/du-an/', { waitUntil: 'load' });
+    const { box } = await firstCard(page);
+    await page.mouse.move(box.x + 30, box.y + 30);
+    await page.waitForTimeout(400);
+    expect((await tiltOf(page)).inner).not.toBe('none');
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.waitForTimeout(100);
+    expect((await tiltOf(page)).inner).toBe('none');
+  });
+
+  test('Masonry /featured_item/: no tilt and ProjectGrid columns unchanged on hover', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/featured_item/', { waitUntil: 'load' });
+    await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {});
+    expect(await page.locator('[data-tilt]').count()).toBe(0);
+    const { box } = await firstCard(page);
+    const grid = () =>
+      page.evaluate(() =>
+        Array.from(document.querySelectorAll<HTMLElement>('.portfolio-box'))
+          .map((b) => b.closest('.col') as HTMLElement)
+          .map((c) => `${c.offsetLeft},${c.offsetTop},${c.offsetHeight}`),
+      );
+    const before = await grid();
+    await page.mouse.move(box.x + 30, box.y + 30);
+    await page.waitForTimeout(400);
+    expect((await tiltOf(page)).inner).toBe('none');
+    expect(await grid()).toEqual(before);
+  });
+
+  test('JS off: stack runs from CSS, no tilt, text reads', async ({ browser }) => {
+    const context = await browser.newContext({
+      javaScriptEnabled: false,
+      viewport: { width: 1440, height: 900 },
+    });
+    const page = await context.newPage();
+    await page.goto('/thiet-ke-website/', { waitUntil: 'load' });
+    expect(isFlat(await stackState(page, 880)), 'CSS-only stack runs with JS off').toBe(false);
+    expect(isFlat(await stackState(page, 100))).toBe(true);
+
+    await page.goto('/du-an/', { waitUntil: 'load' });
+    await expectTextReadable(page);
+    const { box } = await firstCard(page);
+    await page.mouse.move(box.x + 30, box.y + 30);
+    await page.waitForTimeout(400);
+    expect((await tiltOf(page)).inner).toBe('none');
+    await context.close();
+  });
 });

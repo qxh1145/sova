@@ -126,3 +126,16 @@ article[data-pointer],
     translate: calc((var(--pointer-x, 50%) - 50%) * 0.2) calc((var(--pointer-y, 50%) - 50%) * 0.2);
   }
 }
+
+/* Tilted project card (CAP-16, E9.8): the image layer tilts; `.portfolio-box` keeps its legacy lift. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  :root[data-pointer-tracker] .box-image[data-tilt] > div {
+    transition: transform var(--motion-duration-base) var(--motion-ease-out);
+  }
+
+  /* Legacy `scale(1.15)` on the img covers the edges the rotation exposes. */
+  :root[data-pointer-tracker] [data-pointer='card']:hover .box-image[data-tilt] > div {
+    transform: perspective(800px) rotateX(calc((0.5 - var(--pointer-ry, 0.5)) * 8deg))
+      rotateY(calc((var(--pointer-rx, 0.5) - 0.5) * 8deg));
+  }
+}

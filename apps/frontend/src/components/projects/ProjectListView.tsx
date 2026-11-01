@@ -62,6 +62,7 @@ export function ProjectListView({
         filterAllLabel={copy.filterAll}
         paginationLabels={copy.pagination}
         pageSize={6}
+        tilt
       />
     </main>
   );
