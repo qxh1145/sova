@@ -258,7 +258,6 @@ export function LightRays({ raysColor = DEFAULT_COLOR_HEX, className = '' }: Lig
       antialias: false,
       depth: false,
       stencil: false,
-      powerPreference: 'high-performance',
     });
     const loseExtension = gl?.getExtension('WEBGL_lose_context');
     const release = () => {

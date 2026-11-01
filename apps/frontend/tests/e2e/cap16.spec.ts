@@ -223,7 +223,29 @@ export async function installWebGLContextTracker(page: Page) {
         return origDrawElements.apply(this, args);
       };
     }
-    const w = window as unknown as { __getDrawCount: () => number; __resetDrawCount: () => void };
+    // Last `uAim` value sent by LightRays, so a test can prove pointer steering, not just drawing.
+    let aim: [number, number] | null = null;
+    if (typeof WebGL2RenderingContext !== 'undefined') {
+      const proto = WebGL2RenderingContext.prototype;
+      const aimLocations = new WeakSet<WebGLUniformLocation>();
+      const origGetUniformLocation = proto.getUniformLocation;
+      const origUniform2f = proto.uniform2f;
+      proto.getUniformLocation = function (...args: Parameters<typeof origGetUniformLocation>) {
+        const location = origGetUniformLocation.apply(this, args);
+        if (location && args[1] === 'uAim') aimLocations.add(location);
+        return location;
+      };
+      proto.uniform2f = function (...args: Parameters<typeof origUniform2f>) {
+        if (args[0] && aimLocations.has(args[0])) aim = [args[1], args[2]];
+        return origUniform2f.apply(this, args);
+      };
+    }
+    const w = window as unknown as {
+      __getDrawCount: () => number;
+      __resetDrawCount: () => void;
+      __getAim: () => [number, number] | null;
+    };
+    w.__getAim = () => aim;
     w.__getDrawCount = () => draws;
     w.__resetDrawCount = () => {
       draws = 0;
@@ -700,9 +722,17 @@ test.describe('CAP-16: Sub-page hero', () => {
       await expect(hero).toBeVisible();
       await expect(page.locator('canvas.light-rays-canvas')).toBeVisible();
 
-      await page.mouse.move(200, 200);
-      await page.mouse.move(400, 250);
-      expect(await drawCount(page), 'Draw calls while pointer moves').toBeGreaterThan(0);
+      // The time loop draws regardless of the pointer, so read the aim direction itself:
+      // its x component follows the pointer across the hero.
+      const aimX = () =>
+        page.evaluate(
+          () => (window as unknown as { __getAim: () => [number, number] | null }).__getAim()?.[0],
+        );
+      const { width } = page.viewportSize()!;
+      await page.mouse.move(20, 200);
+      await expect.poll(aimX, { message: 'Rays steer left toward pointer' }).toBeLessThan(-0.01);
+      await page.mouse.move(width - 20, 200);
+      await expect.poll(aimX, { message: 'Rays steer right toward pointer' }).toBeGreaterThan(0.01);
     });
 
     test(`Client navigation from home acquires context and keeps count <= 1 on ${name} (${url})`, async ({
@@ -771,7 +801,7 @@ test.describe('CAP-16: Sub-page hero', () => {
       expect(coarse.draws, 'Coarse pointer: draws').toBeGreaterThan(0);
     });
 
-    test(`Mobile DPR caps canvas width to clientWidth * 2 on ${name} (${url})`, async ({
+    test(`Mobile DPR keeps canvas width at the sampling cap on ${name} (${url})`, async ({
       browser,
     }) => {
       const context = await browser.newContext({
@@ -787,7 +817,9 @@ test.describe('CAP-16: Sub-page hero', () => {
         const c = document.querySelector<HTMLCanvasElement>('canvas.light-rays-canvas')!;
         return { canvasWidth: c.width, clientWidth: c.clientWidth };
       });
-      expect(canvasWidth).toBeLessThanOrEqual(clientWidth * 2);
+      // The source sampling cap (≈0.523 at the hard-coded density/sharpness) binds before DPR ≤ 2;
+      // pin it so a constant tweak cannot quietly grow the mobile backbuffer up to 2×.
+      expect(canvasWidth).toBeLessThanOrEqual(Math.ceil(clientWidth * 0.53));
       await context.close();
     });
 
