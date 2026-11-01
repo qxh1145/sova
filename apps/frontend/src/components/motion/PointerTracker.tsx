@@ -20,6 +20,11 @@ export function PointerTracker() {
       const y = Math.round(e.clientY - rect.top);
       target.style.setProperty('--pointer-x', `${x}px`);
       target.style.setProperty('--pointer-y', `${y}px`);
+      // Unitless 0–1 ratios so CSS can map the pointer to an angle (tilted card).
+      if (rect.width > 0 && rect.height > 0) {
+        target.style.setProperty('--pointer-rx', (x / rect.width).toFixed(3));
+        target.style.setProperty('--pointer-ry', (y / rect.height).toFixed(3));
+      }
     };
 
     let listening = false;

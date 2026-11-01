@@ -23,6 +23,8 @@ export interface ProjectFiltersProps {
   pageSize?: number;
   wrapperId?: string;
   grid?: Omit<ProjectGridProps, 'children'>;
+  /** Tilted cards (CAP-16, E9.8); only the non-masonry listing passes it. */
+  tilt?: boolean;
 }
 
 export function ProjectFilters({
@@ -39,6 +41,7 @@ export function ProjectFilters({
   pageSize,
   wrapperId = 'portfolio-wrapper',
   grid = { id: 'portfolio-results' },
+  tilt = false,
 }: ProjectFiltersProps) {
   const [selectedSlug, setSelectedSlug] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -130,6 +133,7 @@ export function ProjectFilters({
               project={project}
               thumbnailAsset={project.thumbnailId ? assetMap.get(project.thumbnailId) : undefined}
               categoryLabel={categoryLabel(project.categoryIds, categoryMap)}
+              tilt={tilt}
             />
           ))
         )}

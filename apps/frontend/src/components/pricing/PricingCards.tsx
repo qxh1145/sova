@@ -1,5 +1,6 @@
 import type { AssetRef, PricingFeature, PricingPlan, SectionCopy } from '@/types/content';
 import { Carousel, type CarouselLabels } from '@/components/ui/Carousel';
+import '@/components/motion/ScrollStack.css';
 
 export interface PricingCardIds {
   col: string;
@@ -709,6 +710,7 @@ export function PricingCards({
     <div
       className="row align-equal hover_gra hover_border eras-table-price hide-for-small" // business-text-ok: source CSS class name
       id={ids.gridRow}
+      data-scroll-stack=""
     >
       {plans.map((plan, idx) => {
         const cardIds = ids.gridCards[idx];

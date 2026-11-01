@@ -4,6 +4,9 @@ import { parse } from 'node-html-parser';
 import { ProjectShowcaseItem } from './ProjectShowcaseItem';
 import { ProjectCard } from './ProjectCard';
 import { FeaturedProjects } from './FeaturedProjects';
+import { ProjectListView } from './ProjectListView';
+import { ProjectArchiveView } from './ProjectArchiveView';
+import { projectListingCopy } from '@/data/listings';
 import type { AssetRef, Project, ProjectCategory, SectionCopy } from '@/types/content';
 
 describe('FeaturedProjects and ProjectShowcaseItem edge cases', () => {
@@ -148,5 +151,40 @@ describe('FeaturedProjects and ProjectShowcaseItem edge cases', () => {
     );
     const root = parse(html);
     expect(root.querySelector('.portfolio-box[data-pointer="card"]')).not.toBeNull();
+  });
+
+  it('puts data-tilt on .box-image only when the ListView renders the cards', () => {
+    const data = {
+      projects: [mockProject],
+      categories: [{ ...mockCategory, count: 1 }],
+      thumbnailAssets: [],
+      heroImage: null,
+      bgImage: null,
+      settings: null,
+      copy: projectListingCopy.vi,
+      locale: 'vi' as const,
+    };
+    const list = parse(renderToStaticMarkup(<ProjectListView {...data} />));
+    expect(list.querySelectorAll('.portfolio-box > .box-image[data-tilt]')).toHaveLength(1);
+    expect(list.querySelector('.portfolio-box[data-tilt]')).toBeNull();
+
+    const archive = parse(
+      renderToStaticMarkup(
+        <ProjectArchiveView
+          {...data}
+          ids={{
+            section: 's',
+            portfolio: 'p',
+            hero: {} as Parameters<typeof ProjectArchiveView>[0]['ids']['hero'],
+          }}
+          listingPath="/featured_item/"
+        />,
+      ),
+    );
+    expect(archive.querySelectorAll('.portfolio-box').length).toBeGreaterThan(0);
+    expect(archive.querySelector('[data-tilt]')).toBeNull();
+
+    const card = parse(renderToStaticMarkup(<ProjectCard project={mockProject} />));
+    expect(card.querySelector('[data-tilt]')).toBeNull();
   });
 });

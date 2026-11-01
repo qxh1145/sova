@@ -93,4 +93,23 @@ describe('PricingCards', () => {
     expect(root.querySelector('#section_1856214289 #slider-1604990153')).toBeNull();
     expect(root.querySelector('#slider-1604990153')).toBeTruthy();
   });
+
+  it('marks only the desktop row for the scroll stack', () => {
+    const root = parse(
+      renderToStaticMarkup(
+        <PricingCards
+          plans={viPricing.plans}
+          features={'features' in viPricing ? viPricing.features : []}
+          copy={{ eyebrow: 'Bảng giá dịch vụ', title: 'Thiết kế website' }}
+          ids={PRICING_CARDS_IDS_VI}
+          labels={labels}
+        />,
+      ),
+    );
+    const stacks = root.querySelectorAll('[data-scroll-stack]');
+    expect(stacks).toHaveLength(1);
+    expect(stacks[0].getAttribute('id')).toBe('row-1975763604');
+    expect(stacks[0].classList.contains('hide-for-small')).toBe(true);
+    expect(root.querySelector('.show-for-small [data-scroll-stack]')).toBeNull();
+  });
 });
