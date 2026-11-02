@@ -22,12 +22,15 @@ Tài liệu bàn giao tập trung (CAP-14) phục vụ chuyển tiếp từ Phas
   - Phase A đã đóng; Phase B có thể bắt đầu.
 - **Responsive dưới 1280px (epic 8, A63):** Parity với nguồn chỉ áp dụng từ 1280px trở lên. Dưới 1280px, [`apps/frontend/src/styles/responsive-fixes.css`](../apps/frontend/src/styles/responsive-fixes.css) là nguồn sự thật: Sova sửa chồng lấn và tràn ngang mà nguồn vẫn có, kiểm soát bằng `npm run test:responsive` (320–1440px, danh sách expected failure rỗng). Các file trong `styles/legacy/` giữ nguyên. Ngoại lệ từ 1280px trở lên: khối parity đánh dấu cho tràn ngang login-vi nằm ngay trong `responsive-fixes.css`, và chồng lấn about-vi/en được sửa trong `AboutView.tsx` và `lib/queries/pages.ts` (story 8.3).
   - Kiểm tra đóng epic trên `bf70617` (2026-10-19, local `next start`): lint đạt (0 lỗi), typecheck đạt, `npm test` 661/661, build đạt; `test:responsive` 58/58, expected failure `{}`; `baseline:sova` 467/467, không lỗi ở 1280/1440; `git diff 3e153cc -- apps/frontend/src/styles/legacy/` rỗng. `test:e2e` lần đầu 14 thất bại: 6 test cỡ chữ hero cũ ở 550–1199px (`home-hero.spec.ts`, đã sửa theo clamp của story 8.1 trong `c8ef947`) và 8 test pin/motion chập chờn khi tải nặng (đạt khi chạy riêng). Chạy lại sau khi sửa: 637 đạt, 1 bỏ qua, 0 thất bại.
+- **Chuyển động (epic 9, A64):** Sova thêm chuyển động có chủ đích mà nguồn không có: hiện dần khi cuộn, hover thẻ, hiệu ứng CTA, sheen trên tiêu đề hero (giữ typewriter), nền WebGL cho hero trang chủ (GradientASCII) và hero trang con (LightRays), cùng scroll stack và thẻ dự án nghiêng. Bố cục cuối giữ parity từ 1280px trở lên. Khi bật reduced motion, trang hiện ngay trạng thái cuối. Với con trỏ thô hoặc khi tắt JS, trang không gắn listener con trỏ và nội dung vẫn đọc được. Các file trong `styles/legacy/` giữ nguyên, `package.json` không thêm dependency.
+  - Kiểm tra đóng epic trên `212c2b0` (2026-11-02, local `next start`): lint đạt (0 lỗi), typecheck đạt, `npm test` 684/684, `check:components`, `prettier --check` và build đạt, `check:brand` 2318 tệp sạch, `verify:assets` đạt. `test:e2e` 818 đạt, 1 bỏ qua; `test:e2e:extended` 8/8; `baseline:sova` 395/395, không có ô nào phải phân loại lại; `test:responsive` 49/49; `cap16` + `motion-sweep` 252/252. `git diff d011ed7 -- apps/frontend/src/styles/legacy/ apps/frontend/package.json` rỗng.
+  - Hai lần chạy trước không tính: lần đầu dùng nhầm một `next-server` cũ trên cổng 3100; lần hai có 2 test fail do canh thời gian (slider 549px với `clock.runFor` và idle rAF home-vi với GSAP `autoSleep`), cả hai xuất hiện từ story 9.2 và đã sửa trong `212c2b0` (chỉ sửa test).
 
 ## 2. Bảng bất thường (Anomaly register)
 
-Toàn bộ 62 dòng bất thường trong [ANOMALY_REGISTER.md](ANOMALY_REGISTER.md) (từ A01 đến A63), xếp theo mã ID. Cột Status chép nguyên văn từ register; tóm tắt rút gọn, chi tiết và dẫn chứng xem tại register.
+Toàn bộ 63 dòng bất thường trong [ANOMALY_REGISTER.md](ANOMALY_REGISTER.md) (từ A01 đến A64), xếp theo mã ID. Cột Status chép nguyên văn từ register; tóm tắt rút gọn, chi tiết và dẫn chứng xem tại register.
 
-Tổng hợp trạng thái cuối: 30 `resolved`, 31 `accepted`, 1 `not-applicable` (A09).
+Tổng hợp trạng thái cuối: 30 `resolved`, 32 `accepted`, 1 `not-applicable` (A09).
 
 > **Ghi chú về khoảng trống mã A33:**
 > Register nhảy từ A32 (trang Email, `epic-services-and-about`) sang A34 (lightbox gallery dự án, `epic-collections`). Bản register đầu tiên được commit vào git (`09dd609`) đã không có A33, nên không có dòng hay khiếm khuyết nào mang mã này. Trạng thái cuối: không tồn tại trong register. Epic phụ trách: không có.
@@ -96,6 +99,7 @@ Tổng hợp trạng thái cuối: 30 `resolved`, 31 `accepted`, 1 `not-applicab
 | A61 | Home EN bỏ khối INSIGHT rỗng.                                                    | epic-home                                      | accepted (story 7.9)                                                                                                                                         |
 | A62 | Footer gỡ thương hiệu Eras.                                                      | epic-fidelity-and-handoff                      | accepted (story 7.9)                                                                                                                                         |
 | A63 | Chồng lấn, tràn ngang dưới 1280px; sửa trong `responsive-fixes.css` và About.    | epic-responsive-fix                            | resolved (epic 8, stories 8.1–8.7)                                                                                                                           |
+| A64 | Chuyển động có chủ đích: reveal, hover, CTA, sheen, WebGL, scroll stack, tilt.   | epic-motion-upgrade                            | accepted (epic 9, stories 9.1–9.8)                                                                                                                           |
 
 ## 3. Các kịch bản mock (Mock scenarios)
 
