@@ -332,7 +332,9 @@ export async function reducedMotionIdleRaf(page: Page, url: string): Promise<num
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(url, { waitUntil: 'load' });
   await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {});
-  await page.waitForTimeout(1000);
+  // GSAP's ticker checks autoSleep every 120 frames (~2s), so it can run up to 2s past the last
+  // load-time tween. Settle past that, or the window counts the ticker's tail (0-60 extra calls).
+  await page.waitForTimeout(2500);
   return idleRafCount(page, 1000);
 }
 

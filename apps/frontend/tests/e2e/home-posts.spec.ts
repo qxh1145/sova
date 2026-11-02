@@ -113,8 +113,9 @@ test.describe('Latest posts', () => {
       await expect(dots).toHaveCount(3);
       await expect(dots.nth(0)).toHaveClass(/is-selected/);
 
-      // After 7s with no input, selected dot is unchanged (no autoplay)
-      await page.clock.runFor(7000);
+      // After 7s with no input, selected dot is unchanged (no autoplay). fastForward fires a due
+      // autoplay timer once; runFor would replay ~440 hero WebGL frames and outrun the test timeout.
+      await page.clock.fastForward(7000);
       await expect(dots.nth(0)).toHaveClass(/is-selected/);
 
       // Next advances 0 -> 1 -> 2, then wraps from the last slide back to the first
