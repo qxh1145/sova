@@ -271,7 +271,9 @@ describe('FeaturedProjects and ProjectShowcaseItem edge cases', () => {
       const root = parse(html);
       const panel = root.querySelector('.accordion-gallery-panel');
       expect(panel).not.toBeNull();
-      expect(panel?.querySelector('h3.accordion-gallery-title')?.text).toBe('Project Without Image');
+      expect(panel?.querySelector('h3.accordion-gallery-title')?.text).toBe(
+        'Project Without Image',
+      );
       expect(panel?.querySelector('.accordion-gallery-category')?.text).toContain('Website');
       expect(panel?.querySelector('img.accordion-gallery-img')).toBeNull();
     });

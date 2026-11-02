@@ -1,5 +1,13 @@
 import type { Page } from '@playwright/test';
-import { expect, expectNoDuplicateIds, KNOWN_ABSENT_CSS_ASSETS, STAGING, test } from './fixtures';
+import {
+  expect,
+  expectNoDuplicateIds,
+  installRafCounter,
+  KNOWN_ABSENT_CSS_ASSETS,
+  STAGING,
+  test,
+} from './fixtures';
+import { idleRafCount, loadBeforeRun } from './cap16-helpers';
 import manifest from '../baseline/manifest.json';
 import { homePages } from '../../src/data/pages/home';
 import type { SectionCopy } from '@/types/content';
@@ -328,6 +336,16 @@ test.describe('Home query, hero and stats', () => {
     // Grayscale: target panel 0%, inactive 100%
     const targetFilter = await targetPanel.evaluate((el) => window.getComputedStyle(el).filter);
     expect(targetFilter).not.toContain('grayscale(1');
+
+    // Every other panel is narrower than the target and gray
+    for (const i of [0, 1, 2, 4, 5]) {
+      const other = panels.nth(i);
+      const otherBox = await other.boundingBox();
+      expect(targetBox && otherBox && otherBox.width < targetBox.width).toBe(true);
+      await expect
+        .poll(() => other.evaluate((el) => window.getComputedStyle(el).filter))
+        .toContain('grayscale(1');
+    }
   });
 
   test('Keyboard: Tab to panel, ArrowRight moves focus and active (wraps)', async ({ page }) => {
@@ -399,7 +417,65 @@ test.describe('Home query, hero and stats', () => {
     }
   });
 
+  test('Touch tap at 768px: first tap expands an inactive panel without navigating; second tap navigates', async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({
+      hasTouch: true,
+      isMobile: true,
+      viewport: { width: 768, height: 1024 },
+    });
+    const page = await context.newPage();
+    try {
+      await page.goto('/');
+
+      const section = page.locator('.horizontal-scroll-section');
+      await expect(section).toBeVisible();
+      expect(await page.evaluate(() => window.matchMedia('(pointer: coarse)').matches)).toBe(true);
+
+      const panels = section.locator('.accordion-gallery-panel');
+      await expect(panels.nth(0)).toHaveAttribute('data-state', 'active');
+      await expect(panels.nth(2)).toHaveAttribute('data-state', 'inactive');
+
+      const targetHref = await panels.nth(2).getAttribute('href');
+      expect(targetHref).toBeTruthy();
+
+      await panels.nth(2).tap();
+      await expect(panels.nth(2)).toHaveAttribute('data-state', 'active');
+      await expect(panels.nth(0)).toHaveAttribute('data-state', 'inactive');
+      expect(new URL(page.url()).pathname).toBe('/');
+
+      await panels.nth(2).tap();
+      await page.waitForURL(new RegExp(`${targetHref}$`));
+      expect(new URL(page.url()).pathname).toBe(targetHref);
+    } finally {
+      await context.close();
+    }
+  });
+
+  test('Keyboard at 390px: Tab to a non-first panel activates it and Enter navigates on the first press', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+
+    const panels = page.locator('.horizontal-scroll-section .accordion-gallery-panel');
+    await expect(panels.nth(0)).toHaveAttribute('data-state', 'active');
+    const targetHref = await panels.nth(1).getAttribute('href');
+    expect(targetHref).toBeTruthy();
+
+    await panels.nth(0).focus();
+    await page.keyboard.press('Tab');
+    await expect(panels.nth(1)).toBeFocused();
+    await expect(panels.nth(1)).toHaveAttribute('data-state', 'active');
+
+    await page.keyboard.press('Enter');
+    await page.waitForURL(new RegExp(`${targetHref}$`));
+    expect(new URL(page.url()).pathname).toBe(targetHref);
+  });
+
   test('Reduced motion: active state applied instantly with no running tween', async ({ page }) => {
+    await installRafCounter(page);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');
 
@@ -414,13 +490,12 @@ test.describe('Home query, hero and stats', () => {
     await expect(panels.nth(3)).toHaveAttribute('data-state', 'active');
     await expect(panels.nth(0)).toHaveAttribute('data-state', 'inactive');
 
-    // Active state applied instantly without running tweens on the gallery
-    const isTweening = await page.evaluate(() => {
-      const gsap = (window as unknown as { gsap?: { isTweening: (t: unknown) => boolean } }).gsap;
-      const galleryPanels = document.querySelectorAll('.accordion-gallery-panel');
-      return Array.from(galleryPanels).some((p) => gsap?.isTweening(p));
-    });
-    expect(isTweening).toBe(false);
+    // window.gsap is only exposed by HorizontalProjects (not on home), so a running tween shows as
+    // rAF activity instead: none may remain once GSAP's autoSleep tail has settled.
+    await page.waitForTimeout(2500);
+    const base = loadBeforeRun()?.['home-vi'];
+    expect(base, 'Missing before-run idleRaf for home-vi').toBeDefined();
+    expect(await idleRafCount(page)).toBeLessThanOrEqual(base!.idleRaf + 5);
 
     // Computed style shows expanded active panel
     const flexGrow = await panels.nth(3).evaluate((el) => window.getComputedStyle(el).flexGrow);
@@ -445,6 +520,17 @@ test.describe('Home query, hero and stats', () => {
       await expect(panels.nth(0).locator('.accordion-gallery-title')).toBeVisible();
       await expect(panels.nth(0).locator('.accordion-gallery-category')).toBeVisible();
 
+      // toBeVisible ignores opacity: the caption must be fully opaque, and panel 0 widest (CSS first frame)
+      const captionOpacity = await panels
+        .nth(0)
+        .locator('.accordion-gallery-caption')
+        .evaluate((el) => window.getComputedStyle(el).opacity);
+      expect(captionOpacity).toBe('1');
+      const widths = await panels.evaluateAll((els) =>
+        els.map((el) => el.getBoundingClientRect().width),
+      );
+      widths.slice(1).forEach((w) => expect(widths[0]).toBeGreaterThan(w));
+
       // Every panel has a working href link
       for (let i = 0; i < 6; i++) {
         const href = await panels.nth(i).getAttribute('href');
@@ -463,9 +549,7 @@ test.describe('Home query, hero and stats', () => {
     await expect(section).toBeVisible();
 
     const gallery = section.locator('.accordion-gallery');
-    const flexDirection = await gallery.evaluate(
-      (el) => window.getComputedStyle(el).flexDirection,
-    );
+    const flexDirection = await gallery.evaluate((el) => window.getComputedStyle(el).flexDirection);
     expect(flexDirection).toBe('column');
 
     // No horizontal overflow

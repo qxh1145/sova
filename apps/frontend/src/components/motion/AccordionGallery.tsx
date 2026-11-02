@@ -43,7 +43,6 @@ export interface AccordionGalleryItem {
 
 export interface AccordionGalleryProps {
   items: AccordionGalleryItem[];
-  className?: string;
 }
 
 const DEFAULT_EXPAND_RATIO = 5.4;
@@ -51,7 +50,7 @@ const DEFAULT_TILT = 8;
 const DURATION = 0.6;
 const EASE = 'power3.out';
 
-export function AccordionGallery({ items, className }: AccordionGalleryProps) {
+export function AccordionGallery({ items }: AccordionGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const panelRefs = useRef<(HTMLAnchorElement | null)[]>([]);
@@ -93,11 +92,18 @@ export function AccordionGallery({ items, className }: AccordionGalleryProps) {
     panels.forEach((panel, i) => {
       const isTarget = i === activeIndex;
       const targetFlex = isTarget ? (isNarrow ? 4 : DEFAULT_EXPAND_RATIO) : 1;
-      const targetTilt = isNarrow ? 0 : isTarget ? 0 : i < activeIndex ? -DEFAULT_TILT : DEFAULT_TILT;
+      const targetTilt = isNarrow
+        ? 0
+        : isTarget
+          ? 0
+          : i < activeIndex
+            ? -DEFAULT_TILT
+            : DEFAULT_TILT;
 
       gsap.to(panel, {
         flexGrow: targetFlex,
         rotateY: targetTilt,
+        transformPerspective: 800,
         duration: DURATION,
         ease: EASE,
         overwrite: 'auto',
@@ -140,6 +146,8 @@ export function AccordionGallery({ items, className }: AccordionGalleryProps) {
   };
 
   const handleClick = (e: MouseEvent<HTMLAnchorElement>, index: number) => {
+    // detail 0 = keyboard or assistive-tech activation: the focused panel is already active, navigate at once.
+    if (e.detail === 0) return;
     const isCoarse = window.matchMedia('(pointer: coarse)').matches;
     const isNarrow = window.matchMedia('(max-width: 549px)').matches;
     const isTouch = (e.nativeEvent as PointerEvent).pointerType === 'touch';
@@ -168,10 +176,7 @@ export function AccordionGallery({ items, className }: AccordionGalleryProps) {
   if (!items.length) return null;
 
   return (
-    <div
-      ref={containerRef}
-      className={`accordion-gallery ${className ?? ''}`.trim()}
-    >
+    <div ref={containerRef} className="accordion-gallery">
       {items.map((item, index) => {
         const isActive = activeIndex === index;
         return (
@@ -195,7 +200,7 @@ export function AccordionGallery({ items, className }: AccordionGalleryProps) {
               {item.image && (
                 <img
                   src={item.image}
-                  alt={item.alt ?? item.title}
+                  alt={item.alt ?? ''}
                   className="accordion-gallery-img"
                   loading="lazy"
                 />

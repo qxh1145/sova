@@ -41,6 +41,15 @@ export function FeaturedProjects({
   const assetMap = new Map(assets.filter((a) => a.status !== 'missing').map((a) => [a.id, a.src]));
   const resolvedIds = { ...FEATURED_PROJECTS_DEFAULT_IDS, ...ids };
   const isAccordion = variant === 'accordion';
+  const items = projects.map((project) => {
+    const firstGalleryId = project.galleryIds[0];
+    const categoryId = project.categoryIds[0];
+    return {
+      project,
+      imageUrl: firstGalleryId ? assetMap.get(firstGalleryId) : undefined,
+      categoryLabel: categoryId ? categoryMap.get(categoryId) : undefined,
+    };
+  });
 
   const sectionClassName = [
     'horizontal-scroll-section',
@@ -88,38 +97,24 @@ export function FeaturedProjects({
       {isAccordion ? (
         <div className="featured-accordion-wrapper">
           <AccordionGallery
-            items={projects.map((project) => {
-              const firstGalleryId = project.galleryIds[0];
-              const imageUrl = firstGalleryId ? assetMap.get(firstGalleryId) : undefined;
-              const categoryId = project.categoryIds[0];
-              const categoryLabel = categoryId ? categoryMap.get(categoryId) : undefined;
-              return {
-                href: project.path,
-                title: project.title,
-                category: categoryLabel,
-                image: imageUrl,
-                alt: project.title,
-              };
-            })}
+            items={items.map(({ project, imageUrl, categoryLabel }) => ({
+              href: project.path,
+              title: project.title,
+              category: categoryLabel,
+              image: imageUrl,
+            }))}
           />
         </div>
       ) : (
         <HorizontalProjects>
-          {projects.map((project) => {
-            const firstGalleryId = project.galleryIds[0];
-            const imageUrl = firstGalleryId ? assetMap.get(firstGalleryId) : undefined;
-            const categoryId = project.categoryIds[0];
-            const categoryLabel = categoryId ? categoryMap.get(categoryId) : undefined;
-
-            return (
-              <ProjectShowcaseItem
-                key={project.id}
-                project={project}
-                imageUrl={imageUrl}
-                categoryLabel={categoryLabel}
-              />
-            );
-          })}
+          {items.map(({ project, imageUrl, categoryLabel }) => (
+            <ProjectShowcaseItem
+              key={project.id}
+              project={project}
+              imageUrl={imageUrl}
+              categoryLabel={categoryLabel}
+            />
+          ))}
         </HorizontalProjects>
       )}
     </section>

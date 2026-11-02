@@ -168,7 +168,9 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
     });
   });
 
-  test.describe('IS1 accordion pin refresh at 390px and 549px', () => {
+  // Home no longer pins (accordion gallery); no kept route has an accordion above the pin, so this
+  // closes the service-page FAQ (below the pin) and checks the pin start and translation still hold.
+  test.describe('IS1 pin start after closing an accordion item at 390px and 549px', () => {
     for (const width of [390, 549]) {
       test(`Closing open accordion item at ${width}px refreshes pin trigger start and maintains scroll translation`, async ({
         page,
@@ -543,6 +545,90 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
           `translateX at scroll ${scrollY}px must never be > 0`,
         ).toBeLessThanOrEqual(0);
       }
+    });
+  });
+
+  test.describe('Service-page pin and card hover', () => {
+    const readPinGeometry = (page: import('@playwright/test').Page) =>
+      page.evaluate(() => {
+        const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
+        const pinSpacer = document.querySelector('.pin-spacer') as HTMLElement;
+        const sec = document.querySelector('.horizontal-scroll-section') as HTMLElement;
+        const rect = (pinSpacer ?? sec).getBoundingClientRect();
+        return {
+          startY: window.scrollY + rect.top,
+          distance: wrapper.scrollWidth - window.innerWidth,
+        };
+      });
+    const readTranslateX = (page: import('@playwright/test').Page) =>
+      page.evaluate(() => {
+        const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
+        const transform = window.getComputedStyle(wrapper).transform;
+        return transform && transform !== 'none' ? new DOMMatrixReadOnly(transform).m41 : 0;
+      });
+    const readScale = (card: import('@playwright/test').Locator) =>
+      card.evaluate((el) => {
+        const transform = window.getComputedStyle(el).transform;
+        return !transform || transform === 'none'
+          ? 1
+          : Math.round(new DOMMatrixReadOnly(transform).a * 100) / 100;
+      });
+
+    for (const width of [1440, 390]) {
+      test(`Horizontal projects pin and scrub on /thiet-ke-website/ at width ${width}px`, async ({
+        page,
+      }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto('/thiet-ke-website/');
+        await expect(page.locator('.horizontal-scroll-section')).toBeVisible();
+        await expect(page.locator('.pin-spacer')).toHaveCount(1);
+
+        const { startY, distance } = await readPinGeometry(page);
+
+        await page.evaluate((y) => window.scrollTo(0, y), startY + 0.5 * distance);
+        await page.waitForTimeout(300);
+        expect(Math.abs((await readTranslateX(page)) - -0.5 * distance)).toBeLessThanOrEqual(25);
+
+        await page.evaluate((y) => window.scrollTo(0, y), startY + distance);
+        await page.waitForTimeout(300);
+        expect(Math.abs((await readTranslateX(page)) - -distance)).toBeLessThanOrEqual(25);
+      });
+    }
+
+    test('Under reduced motion on /thiet-ke-website/, pin and translation still occur and hover leaves scale at 1', async ({
+      page,
+    }) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.goto('/thiet-ke-website/');
+      await expect(page.locator('.horizontal-scroll-section')).toBeVisible();
+
+      const { startY, distance } = await readPinGeometry(page);
+
+      await page.evaluate((y) => window.scrollTo(0, y), startY);
+      await page.waitForTimeout(300);
+      const firstCard = page.locator('.scroll-item').first();
+      await firstCard.hover();
+      await page.waitForTimeout(350);
+      expect(await readScale(firstCard)).toBe(1);
+
+      await page.evaluate((y) => window.scrollTo(0, y), startY + 0.5 * distance);
+      await page.waitForTimeout(300);
+      await expect(page.locator('.pin-spacer')).toHaveCount(1);
+      expect(Math.abs((await readTranslateX(page)) - -0.5 * distance)).toBeLessThanOrEqual(25);
+    });
+
+    test('Hover over card scales up to 1.05 on /thiet-ke-website/ under normal motion', async ({
+      page,
+    }) => {
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+      await page.goto('/thiet-ke-website/');
+
+      const firstCard = page.locator('.scroll-item').first();
+      await firstCard.scrollIntoViewIfNeeded();
+      await firstCard.hover();
+      await page.waitForTimeout(400);
+
+      expect(await readScale(firstCard)).toBe(1.05);
     });
   });
 
