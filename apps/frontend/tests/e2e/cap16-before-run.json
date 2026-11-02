@@ -1,0 +1,284 @@
+{
+  "about-en": {
+    "jsGzip": 347076,
+    "cls390": 0.005410607962160178,
+    "cls1440": 0.004061100260416666,
+    "idleRaf": 0
+  },
+  "about-vi": {
+    "jsGzip": 347076,
+    "cls390": 0.0023833400843249427,
+    "cls1440": 0.004183875868055555,
+    "idleRaf": 0
+  },
+  "blog-category-page-2": {
+    "jsGzip": 346388,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "blog-category-vi": {
+    "jsGzip": 346388,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "blog-en": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "blog-page-2": {
+    "jsGzip": 346388,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "blog-page-5": {
+    "jsGzip": 346388,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "blog-vi": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "branding-en": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "branding-vi": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 122
+  },
+  "contact-en": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "contact-vi": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "content-en": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "content-refund-en": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "content-refund-vi": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "content-terms-en": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "content-terms-vi": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "content-vi": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "content-warranty-en": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "content-warranty-vi": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "faq-en": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "faq-vi": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "home-en": {
+    "jsGzip": 347076,
+    "cls390": 0.02428536576066235,
+    "cls1440": 0.007011122832540292,
+    "idleRaf": 0
+  },
+  "home-vi": {
+    "jsGzip": 347076,
+    "cls390": 0.009932806980960874,
+    "cls1440": 0.007011122832540292,
+    "idleRaf": 64
+  },
+  "login-vi": {
+    "jsGzip": 239478,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "mobile-en": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "mobile-vi": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 122
+  },
+  "payment-en": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "payment-vi": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "post-detail-table": {
+    "jsGzip": 346388,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "post-detail-video": {
+    "jsGzip": 346388,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "profile-en": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "profile-vi": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "project-detail-no-gallery": {
+    "jsGzip": 356994,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "project-detail-thp": {
+    "jsGzip": 356994,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "projects-category-branding": {
+    "jsGzip": 356994,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "projects-category-mobile-app": {
+    "jsGzip": 356994,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "projects-category-website": {
+    "jsGzip": 356994,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "projects-en": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "projects-featured-index": {
+    "jsGzip": 356994,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "projects-vi": {
+    "jsGzip": 357682,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "search-vi": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "seo-en": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "seo-vi": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 120
+  },
+  "thank-you-vi": {
+    "jsGzip": 346388,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "website-en": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 0
+  },
+  "website-vi": {
+    "jsGzip": 347076,
+    "cls390": 0,
+    "cls1440": 0,
+    "idleRaf": 120
+  }
+}

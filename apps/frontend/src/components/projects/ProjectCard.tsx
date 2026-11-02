@@ -29,6 +29,8 @@ export interface ProjectCardProps {
   thumbnailAsset?: AssetRef | null;
   categoryLabel?: string;
   imageClassName?: string;
+  /** Tilt the image layer on fine-pointer hover (`/du-an/`, `/en/our-project/` only). */
+  tilt?: boolean;
 }
 
 export function ProjectCard({
@@ -36,6 +38,7 @@ export function ProjectCard({
   thumbnailAsset,
   categoryLabel: label = '',
   imageClassName = 'attachment-original size-original',
+  tilt = false,
 }: ProjectCardProps) {
   const termsAttr = label ? JSON.stringify([label]) : undefined;
 
@@ -43,8 +46,8 @@ export function ProjectCard({
     <div className="col" data-terms={termsAttr}>
       <div className="col-inner">
         <Link href={project.path} className="plain">
-          <div className="portfolio-box box has-hover">
-            <div className="box-image">
+          <div className="portfolio-box box has-hover" data-pointer="card">
+            <div className="box-image" data-tilt={tilt ? '' : undefined}>
               <div>
                 {thumbnailAsset ? (
                   <img

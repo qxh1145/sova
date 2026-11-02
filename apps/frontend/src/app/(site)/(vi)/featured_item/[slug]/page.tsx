@@ -57,7 +57,7 @@ export default async function ViProjectDetailPage({ params }: ProjectDetailPageP
   const { project, heroAsset, galleryAssets, terms, related } = detail;
 
   return (
-    <div className="portfolio-page-wrapper portfolio-single-page">
+    <div className="portfolio-page-wrapper portfolio-single-page" role="main">
       <ProjectHero title={project.title} heroImage={heroAsset} />
       <ProjectGallery
         galleryAssets={galleryAssets}

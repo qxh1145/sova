@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { AssetRef, OfferingPanel, SectionCopy } from '@/types/content';
 import { Carousel, type CarouselLabels } from '@/components/ui/Carousel';
+import '@/components/motion/ScrollStack.css';
 
 export interface ServicePackageCardIds {
   col: string;
@@ -587,7 +588,7 @@ function CardContent({
   const items = offering.items ?? [];
 
   return (
-    <div className="col-inner">
+    <div className="col-inner" data-pointer="card">
       <div
         className="is-border"
         style={{
@@ -689,7 +690,12 @@ function CardContent({
 
       {offering.ctaHref && (
         <p>
-          <Link className="but-lh" style={{ borderRadius: 12 }} href={offering.ctaHref.href}>
+          <Link
+            className="but-lh"
+            style={{ borderRadius: 12 }}
+            href={offering.ctaHref.href}
+            data-pointer="cta"
+          >
             {offering.ctaHref.label}
           </Link>
         </p>
@@ -769,6 +775,7 @@ export function ServicePackageCards({
         <div
           className={`row row-small ${ids.alignEqual ? 'align-equal ' : ''}row-ndv hover_gra eras-table-price hide-for-small`} // business-text-ok: source CSS class name
           id={ids.gridRow}
+          data-scroll-stack=""
         >
           {offerings.map((offering, idx) => {
             const cardIds = ids.gridCards[idx];

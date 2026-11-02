@@ -251,13 +251,12 @@ test('navigation resolves without tokens left', async () => {
   expect(JSON.stringify(nav)).not.toContain('{{site.');
 });
 
-test('getHomeAssets resolves video, projects, categories, partners, testimonials, and posts in order', async () => {
+test('getHomeAssets resolves projects, categories, partners, testimonials, and posts in order', async () => {
   repository = repoWith({ projectCategories });
   const home = await getHomePage('vi');
   expect(home).not.toBeNull();
   const result = await getHomeAssets(home);
 
-  expect(result.videoAsset?.id).toBe(home!.hero.videoId);
   expect(result.projectAssets.map((a) => a.id)).toEqual(
     home!.projects.map((p) => p.galleryIds[0]).filter(Boolean),
   );
@@ -271,11 +270,10 @@ test('getHomeAssets resolves video, projects, categories, partners, testimonials
   );
 });
 
-test('getHomeAssets handles null content and missing hero video gracefully', async () => {
+test('getHomeAssets handles null content gracefully', async () => {
   repository = repoWith();
   const nullResult = await getHomeAssets(null);
   expect(nullResult).toEqual({
-    videoAsset: null,
     projectAssets: [],
     projectCategories: [],
     partnerAssets: [],
@@ -285,12 +283,7 @@ test('getHomeAssets handles null content and missing hero video gracefully', asy
 
   const home = await getHomePage('vi');
   expect(home).not.toBeNull();
-  const noVideoHome = {
-    ...home!,
-    hero: { ...home!.hero, videoId: undefined },
-  };
-  const result = await getHomeAssets(noVideoHome);
-  expect(result.videoAsset).toBeNull();
+  const result = await getHomeAssets(home);
   expect(result.projectAssets.length).toBeGreaterThan(0);
 });
 
@@ -302,10 +295,9 @@ test('getHomeAssets reads assets from the repository it is given', async () => {
 
   const getAssetsSpy = vi.spyOn(customRepo, 'getAssets');
   const getCategoriesSpy = vi.spyOn(customRepo, 'getProjectCategories');
-  const result = await getHomeAssets(home, customRepo);
+  await getHomeAssets(home, customRepo);
 
-  expect(result.videoAsset?.id).toBe(home!.hero.videoId);
-  expect(getAssetsSpy).toHaveBeenCalledWith([home!.hero.videoId]);
+  expect(getAssetsSpy).not.toHaveBeenCalledWith([home!.hero.videoId]);
   expect(getAssetsSpy).toHaveBeenCalledWith(
     home!.projects.map((p) => p.galleryIds[0]).filter(Boolean),
   );

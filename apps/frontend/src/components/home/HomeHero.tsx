@@ -1,12 +1,12 @@
-import type { AssetRef, HeroContent, Locale } from '@/types/content';
+import GradientASCII from '@/components/motion/GradientASCII';
+import type { HeroContent, Locale } from '@/types/content';
 
 export interface HomeHeroProps {
   hero: HeroContent;
   locale: Locale;
-  videoAsset?: AssetRef | null;
 }
 
-export function HomeHero({ hero, locale, videoAsset }: HomeHeroProps) {
+export function HomeHero({ hero, locale }: HomeHeroProps) {
   const isEn = locale === 'en';
   const bannerId = isEn ? 'banner-1274327306' : 'banner-1767683074';
   const textBoxId = isEn ? 'text-box-1959633488' : 'text-box-1471599896';
@@ -19,12 +19,10 @@ export function HomeHero({ hero, locale, videoAsset }: HomeHeroProps) {
     <div className="banner has-hover has-video" id={bannerId}>
       <div className="banner-inner fill">
         <div className="banner-bg fill">
-          <div className="video-overlay no-click fill visible" />
-          {videoAsset && (
-            <video className="video-bg fill visible" preload="auto" playsInline autoPlay muted loop>
-              <source src={videoAsset.src} type="video/mp4" />
-            </video>
-          )}
+          <GradientASCII
+            colors={['#0065df', '#f6f8ff', '#a5d8ff', '#38bdf8']}
+            fontFamily="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          />
         </div>
 
         <div className="banner-layers container">
@@ -48,7 +46,9 @@ export function HomeHero({ hero, locale, videoAsset }: HomeHeroProps) {
                         className="typewriter"
                         style={idx === 2 ? { color: '#0065df' } : undefined}
                       >
-                        <strong>{line}</strong>
+                        <strong className={idx === 2 ? 'home-hero-sheen' : undefined}>
+                          {line}
+                        </strong>
                       </span>
                     ))}
                   </h1>
@@ -61,7 +61,7 @@ export function HomeHero({ hero, locale, videoAsset }: HomeHeroProps) {
                 {hero.cta && (
                   <div id={ctaWrapperId} className="text link_banner hide-for-small">
                     <p>
-                      <a href={hero.cta.href}>
+                      <a href={hero.cta.href} data-pointer="cta">
                         <span>{hero.cta.label}</span>
                       </a>
                     </p>

@@ -1,5 +1,6 @@
 import type { AssetRef, PricingFeature, PricingPlan, SectionCopy } from '@/types/content';
 import { Carousel, type CarouselLabels } from '@/components/ui/Carousel';
+import '@/components/motion/ScrollStack.css';
 
 export interface PricingCardIds {
   col: string;
@@ -482,7 +483,11 @@ function PricingCardInner({
   const planFeatures = plan.featureIds.map((id) => features.find((f) => f.id === id)?.label ?? id);
 
   return (
-    <div className="col-inner" style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}>
+    <div
+      className="col-inner"
+      data-pointer="card"
+      style={{ backgroundColor: 'rgba(66, 66, 66, 0.3)' }}
+    >
       <div
         className="is-border"
         style={{
@@ -588,6 +593,7 @@ function PricingCardInner({
             href={plan.cta.href}
             target={plan.cta.external ? '_blank' : undefined}
             rel={plan.cta.external ? 'noopener' : undefined}
+            data-pointer="cta"
           >
             {plan.cta.label}
           </a>
@@ -704,6 +710,7 @@ export function PricingCards({
     <div
       className="row align-equal hover_gra hover_border eras-table-price hide-for-small" // business-text-ok: source CSS class name
       id={ids.gridRow}
+      data-scroll-stack=""
     >
       {plans.map((plan, idx) => {
         const cardIds = ids.gridCards[idx];

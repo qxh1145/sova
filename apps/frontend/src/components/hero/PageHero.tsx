@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 import Link from 'next/link';
 import type { AssetRef, HeroContent } from '@/types/content';
 import { RichText } from '@/components/ui/RichText';
+import { LightRays } from '@/components/motion/LightRays';
 
 export interface PageHeroIds {
   banner: string;
@@ -91,6 +92,7 @@ export function PageHero({
                 loading="lazy"
               />
             )}
+            <LightRays raysColor="#0065df" />
           </div>
 
           <div className="banner-layers container">
@@ -159,7 +161,7 @@ export function PageHero({
                         {hero.cta && ids.ctaText && (
                           <div id={ids.ctaText} className="text">
                             <Line>
-                              <Link className="but-lh" href={hero.cta.href}>
+                              <Link className="but-lh" href={hero.cta.href} data-pointer="cta">
                                 {hero.cta.label}
                                 {ctaIcon && (
                                   <>

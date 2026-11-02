@@ -439,7 +439,12 @@ export function StorageOfferings({
                   />
                   {offering.cta && (
                     <p>
-                      <Link className="but-lh" style={{ borderRadius: 12 }} href={href}>
+                      <Link
+                        className="but-lh"
+                        style={{ borderRadius: 12 }}
+                        href={href}
+                        data-pointer="cta"
+                      >
                         {offering.cta.label}
                       </Link>
                     </p>
@@ -567,7 +572,12 @@ export function StorageOfferings({
                       />
                       {offering.cta && (
                         <p>
-                          <Link className="but-lh" style={{ borderRadius: 12 }} href={href}>
+                          <Link
+                            className="but-lh"
+                            style={{ borderRadius: 12 }}
+                            href={href}
+                            data-pointer="cta"
+                          >
                             {offering.cta.label}
                           </Link>
                         </p>

@@ -1,0 +1,38 @@
+/*
+ * Scroll stack (CAP-16, E9.8): deck spread on the desktop package rows. Cards start stacked over
+ * the first column and spread to their own columns while the row scrolls into view. CSS only:
+ * without scroll-timeline support, under reduced motion or a coarse pointer the layout is the source.
+ */
+@keyframes scroll-stack-spread {
+  from {
+    translate: calc(var(--stack-i) * -100%) 0;
+    rotate: calc(var(--stack-i) * -2deg);
+  }
+  to {
+    translate: none;
+    rotate: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    /* The first card already sits in its own column: only the cards after it travel. */
+    [data-scroll-stack] > .col:not(:first-child) {
+      animation: scroll-stack-spread linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+
+    [data-scroll-stack] > .col:nth-child(2) {
+      --stack-i: 1;
+    }
+
+    [data-scroll-stack] > .col:nth-child(3) {
+      --stack-i: 2;
+    }
+
+    [data-scroll-stack] > .col:nth-child(4) {
+      --stack-i: 3;
+    }
+  }
+}

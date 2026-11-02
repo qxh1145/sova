@@ -51,6 +51,12 @@ describe('PricingCards', () => {
 
     // Slider present inside section
     expect(root.querySelector('#section_1346750226 #slider-74016963')).toBeTruthy();
+
+    const pointerCards = root.querySelectorAll('.col-inner[data-pointer="card"]');
+    expect(pointerCards.length).toBe(6); // 3 desktop + 3 slider
+
+    const ctaLinks = root.querySelectorAll('a.but-lh[data-pointer="cta"]');
+    expect(ctaLinks.length).toBe(6); // 3 desktop + 3 slider
   });
 
   it('renders EN pricing with original price and discount price, slider after section', () => {
@@ -86,5 +92,24 @@ describe('PricingCards', () => {
     // Slider sits outside section for EN
     expect(root.querySelector('#section_1856214289 #slider-1604990153')).toBeNull();
     expect(root.querySelector('#slider-1604990153')).toBeTruthy();
+  });
+
+  it('marks only the desktop row for the scroll stack', () => {
+    const root = parse(
+      renderToStaticMarkup(
+        <PricingCards
+          plans={viPricing.plans}
+          features={'features' in viPricing ? viPricing.features : []}
+          copy={{ eyebrow: 'Bảng giá dịch vụ', title: 'Thiết kế website' }}
+          ids={PRICING_CARDS_IDS_VI}
+          labels={labels}
+        />,
+      ),
+    );
+    const stacks = root.querySelectorAll('[data-scroll-stack]');
+    expect(stacks).toHaveLength(1);
+    expect(stacks[0].getAttribute('id')).toBe('row-1975763604');
+    expect(stacks[0].classList.contains('hide-for-small')).toBe(true);
+    expect(root.querySelector('.show-for-small [data-scroll-stack]')).toBeNull();
   });
 });

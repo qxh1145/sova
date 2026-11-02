@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { LightRays } from '@/components/motion/LightRays';
 interface PageHeroSimpleIds {
   banner: string;
   textBox: string;
@@ -45,6 +46,7 @@ export function PageHeroSimple({
             alt=""
             loading="lazy"
           />
+          <LightRays raysColor="#0065df" />
         </div>
 
         <div className="banner-layers container">

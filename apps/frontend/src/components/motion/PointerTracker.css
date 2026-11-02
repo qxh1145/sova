@@ -1,0 +1,143 @@
+/* Card hover overlays (spotlight & glare) driven by PointerTracker (CAP-16, E9.3). */
+
+article[data-pointer],
+.dich_vu[data-pointer],
+.item-content[data-pointer] {
+  position: relative;
+}
+
+/* One ::before carries both layers so it paints before every child, below `.is-border`. */
+[data-pointer='card']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--motion-duration-base) var(--motion-ease-out);
+}
+
+/* CTA hover ring & pointer pull driven by PointerTracker (CAP-16, E9.3). */
+
+@property --cta-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes cta-ring-rotate {
+  to {
+    --cta-angle: 360deg;
+  }
+}
+
+/* Any position: relative sits in :where() so legacy position: absolute (slider a.but-lh) wins. */
+:where([data-pointer='cta']) {
+  position: relative;
+}
+
+/* 2px masked rotating conic-gradient ring on ::after (hero CTA ::before is legacy slide). */
+[data-pointer='cta']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  box-sizing: border-box;
+  pointer-events: none;
+  opacity: 0;
+  background: conic-gradient(
+    from var(--cta-angle) at 50% 50%,
+    var(--color-primary),
+    #38bdf8,
+    #a5d8ff,
+    var(--color-primary)
+  );
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  transition: opacity var(--motion-duration-base) var(--motion-ease-out);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-pointer='cta']:focus-visible::after {
+    opacity: 1;
+    animation: cta-ring-rotate 3s linear infinite;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  [data-pointer='card']::before {
+    background-image:
+      radial-gradient(
+        circle at var(--pointer-x, 50%) var(--pointer-y, 50%),
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0) 60%
+      ),
+      linear-gradient(
+        115deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0) 40%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0) 60%,
+        rgba(255, 255, 255, 0) 100%
+      );
+    background-repeat: no-repeat;
+    background-size:
+      100% 100%,
+      200% 200%;
+    background-position:
+      0 0,
+      100% 100%;
+    transition:
+      opacity var(--motion-duration-base) var(--motion-ease-out),
+      background-position var(--motion-duration-slow) var(--motion-ease-out);
+  }
+
+  /* Gated on the island's root attribute so JS off leaves cards unchanged. */
+  :root[data-pointer-tracker] [data-pointer='card']:hover::before {
+    opacity: 1;
+    background-position:
+      0 0,
+      0% 0%;
+  }
+
+  /* translate skips inline boxes and the ring needs a real box; :where() lets legacy display win. */
+  :where([data-pointer='cta']) {
+    display: inline-block;
+  }
+
+  [data-pointer='cta']:hover::after {
+    opacity: 1;
+    animation: cta-ring-rotate 3s linear infinite;
+  }
+
+  :root[data-pointer-tracker] [data-pointer='cta'] {
+    transition:
+      transform var(--motion-duration-base) var(--motion-ease-out),
+      background-color var(--motion-duration-base) var(--motion-ease-out),
+      color var(--motion-duration-base) var(--motion-ease-out),
+      box-shadow var(--motion-duration-base) var(--motion-ease-out),
+      translate var(--motion-duration-fast) var(--motion-ease-out);
+  }
+
+  :root[data-pointer-tracker] [data-pointer='cta']:hover {
+    translate: calc((var(--pointer-x, 50%) - 50%) * 0.2) calc((var(--pointer-y, 50%) - 50%) * 0.2);
+  }
+
+  /* Tilted project card (CAP-16, E9.8): the image layer tilts; `.portfolio-box` keeps its legacy lift. */
+  :root[data-pointer-tracker] .box-image[data-tilt] > div {
+    transition: transform var(--motion-duration-base) var(--motion-ease-out);
+  }
+
+  /* Legacy `scale(1.15)` on the img covers the edges the rotation exposes. */
+  :root[data-pointer-tracker] [data-pointer='card']:hover .box-image[data-tilt] > div {
+    transform: perspective(800px) rotateX(calc((0.5 - var(--pointer-ry, 0.5)) * 8deg))
+      rotateY(calc((var(--pointer-rx, 0.5) - 0.5) * 8deg));
+  }
+}

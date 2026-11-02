@@ -73,7 +73,7 @@ export function LatestPosts({ posts, copy, assets = [], href, labels }: LatestPo
               {copy.description && (
                 <div id="text-578526168" className="text">
                   <p>
-                    <Link href={href} className="but-lh">
+                    <Link href={href} className="but-lh" data-pointer="cta">
                       {copy.description}
                     </Link>
                   </p>

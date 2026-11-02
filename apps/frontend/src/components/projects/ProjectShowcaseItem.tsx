@@ -21,6 +21,7 @@ export function ProjectShowcaseItem({
       >
         <div
           className="item-content"
+          data-pointer="card"
           style={imageUrl ? { backgroundImage: `url("${imageUrl}")` } : undefined}
         />
         <div className="box-text">

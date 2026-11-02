@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 import type { AssetRef, Project, ProjectCategory, SectionCopy } from '@/types/content';
 import { HorizontalProjects } from './HorizontalProjects';
 import { ProjectShowcaseItem } from './ProjectShowcaseItem';
+import { AccordionGallery } from '@/components/motion/AccordionGallery';
 
 export interface FeaturedProjectsIds {
   row?: string;
@@ -23,6 +24,7 @@ export interface FeaturedProjectsProps {
   assets?: AssetRef[];
   categories?: ProjectCategory[];
   ids?: FeaturedProjectsIds;
+  variant?: 'pin' | 'accordion';
 }
 
 export function FeaturedProjects({
@@ -31,15 +33,33 @@ export function FeaturedProjects({
   assets = [],
   categories = [],
   ids = FEATURED_PROJECTS_DEFAULT_IDS,
+  variant = 'pin',
 }: FeaturedProjectsProps) {
   if (!projects.length) return null;
 
   const categoryMap = new Map(categories.map((c) => [c.id, c.label]));
   const assetMap = new Map(assets.filter((a) => a.status !== 'missing').map((a) => [a.id, a.src]));
   const resolvedIds = { ...FEATURED_PROJECTS_DEFAULT_IDS, ...ids };
+  const isAccordion = variant === 'accordion';
+  const items = projects.map((project) => {
+    const firstGalleryId = project.galleryIds[0];
+    const categoryId = project.categoryIds[0];
+    return {
+      project,
+      imageUrl: firstGalleryId ? assetMap.get(firstGalleryId) : undefined,
+      categoryLabel: categoryId ? categoryMap.get(categoryId) : undefined,
+    };
+  });
+
+  const sectionClassName = [
+    'horizontal-scroll-section',
+    isAccordion ? 'horizontal-scroll-section--accordion' : undefined,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
-    <section className="horizontal-scroll-section">
+    <section className={sectionClassName}>
       <div className="row row-collapse tt_home_new" id={resolvedIds.row}>
         <div id={resolvedIds.col} className="col small-12 large-12">
           <div className="col-inner text-center">
@@ -74,23 +94,29 @@ export function FeaturedProjects({
         </div>
       </div>
 
-      <HorizontalProjects>
-        {projects.map((project) => {
-          const firstGalleryId = project.galleryIds[0];
-          const imageUrl = firstGalleryId ? assetMap.get(firstGalleryId) : undefined;
-          const categoryId = project.categoryIds[0];
-          const categoryLabel = categoryId ? categoryMap.get(categoryId) : undefined;
-
-          return (
+      {isAccordion ? (
+        <div className="featured-accordion-wrapper">
+          <AccordionGallery
+            items={items.map(({ project, imageUrl, categoryLabel }) => ({
+              href: project.path,
+              title: project.title,
+              category: categoryLabel,
+              image: imageUrl,
+            }))}
+          />
+        </div>
+      ) : (
+        <HorizontalProjects>
+          {items.map(({ project, imageUrl, categoryLabel }) => (
             <ProjectShowcaseItem
               key={project.id}
               project={project}
               imageUrl={imageUrl}
               categoryLabel={categoryLabel}
             />
-          );
-        })}
-      </HorizontalProjects>
+          ))}
+        </HorizontalProjects>
+      )}
     </section>
   );
 }
