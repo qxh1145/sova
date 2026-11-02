@@ -174,19 +174,19 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
         page,
       }) => {
         await page.setViewportSize({ width, height: 900 });
-        await page.goto('/');
+        await page.goto('/thiet-ke-website/');
 
         const section = page.locator('.horizontal-scroll-section');
         await expect(section).toBeVisible();
 
         // Check accordion item is open by default
-        const firstItem = page.locator('.acc_dvu .accordion-item').first();
-        await expect(firstItem).toHaveClass(/is-active/);
+        const firstItem = page.locator('.accordion-item').first();
+        const firstTrigger = firstItem.locator('button.accordion-title');
+        await expect(firstTrigger).toHaveClass(/active/);
 
         // Close the open item
-        const firstTrigger = firstItem.locator('button.accordion-title');
         await firstTrigger.click();
-        await expect(firstItem).not.toHaveClass(/is-active/);
+        await expect(firstTrigger).not.toHaveClass(/active/);
 
         // Wait for ResizeObserver / rAF
         await page.waitForTimeout(100);
@@ -225,6 +225,11 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
         });
 
         expect(
+          pinData.triggerStart,
+          `triggerStart must be resolved on /thiet-ke-website/`,
+        ).toBeGreaterThanOrEqual(0);
+
+        expect(
           Math.abs(pinData.triggerStart - pinData.spacerDocTop),
           `At ${width}px: trigger.start (${pinData.triggerStart}) must equal pinSpacer top (${pinData.spacerDocTop}) within 2px`,
         ).toBeLessThanOrEqual(2);
@@ -252,8 +257,8 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
     }
   });
 
-  test.describe('Resize from 1440 to 390 on home and service page', () => {
-    for (const testPath of ['/', '/thiet-ke-website/']) {
+  test.describe('Resize from 1440 to 390 on service page', () => {
+    for (const testPath of ['/thiet-ke-website/']) {
       test(`Resize 1440 -> 390 on ${testPath} refreshes pin start and translation`, async ({
         page,
       }) => {
@@ -350,7 +355,7 @@ test.describe('Motion Sweep: Listener leaks, pin resilience, reduced motion, and
         });
       });
 
-      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await page.goto('/thiet-ke-website/', { waitUntil: 'domcontentloaded' });
       const section = page.locator('.horizontal-scroll-section');
       await expect(section).toBeVisible();
 

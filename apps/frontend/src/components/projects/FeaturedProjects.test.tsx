@@ -187,4 +187,93 @@ describe('FeaturedProjects and ProjectShowcaseItem edge cases', () => {
     const card = parse(renderToStaticMarkup(<ProjectCard project={mockProject} />));
     expect(card.querySelector('[data-tilt]')).toBeNull();
   });
+
+  describe('Accordion variant', () => {
+    const sixProjects: Project[] = Array.from({ length: 6 }, (_, i) => ({
+      ...mockProject,
+      id: `proj-${i + 1}`,
+      slug: `proj-${i + 1}`,
+      title: `Project ${i + 1}`,
+      path: `/featured_item/proj-${i + 1}/`,
+      galleryIds: [`asset-proj-${i + 1}`],
+    }));
+
+    const sixAssets: AssetRef[] = Array.from({ length: 6 }, (_, i) => ({
+      id: `asset-proj-${i + 1}`,
+      src: `/images/proj-${i + 1}.webp`,
+      alt: `Project ${i + 1} screenshot`,
+      kind: 'image',
+      status: 'local',
+      sources: [],
+    }));
+
+    it('renders 6 links in order with href, title, category, and img', () => {
+      const html = renderToStaticMarkup(
+        <FeaturedProjects
+          projects={sixProjects}
+          copy={mockCopy}
+          assets={sixAssets}
+          categories={[mockCategory]}
+          variant="accordion"
+        />,
+      );
+      const root = parse(html);
+
+      const section = root.querySelector('.horizontal-scroll-section--accordion');
+      expect(section).not.toBeNull();
+
+      const panels = root.querySelectorAll('.accordion-gallery-panel');
+      expect(panels).toHaveLength(6);
+
+      for (let i = 0; i < 6; i++) {
+        const panel = panels[i];
+        expect(panel.getAttribute('href')).toBe(`/featured_item/proj-${i + 1}/`);
+        expect(panel.querySelector('h3.accordion-gallery-title')?.text).toBe(`Project ${i + 1}`);
+        expect(panel.querySelector('.accordion-gallery-category')?.text).toContain('Website');
+        const img = panel.querySelector('img.accordion-gallery-img');
+        expect(img).not.toBeNull();
+        expect(img?.getAttribute('src')).toBe(`/images/proj-${i + 1}.webp`);
+      }
+    });
+
+    it('sets first panel to default active (data-state="active") and others to inactive', () => {
+      const html = renderToStaticMarkup(
+        <FeaturedProjects
+          projects={sixProjects}
+          copy={mockCopy}
+          assets={sixAssets}
+          categories={[mockCategory]}
+          variant="accordion"
+        />,
+      );
+      const root = parse(html);
+      const panels = root.querySelectorAll('.accordion-gallery-panel');
+      expect(panels[0].getAttribute('data-state')).toBe('active');
+      for (let i = 1; i < panels.length; i++) {
+        expect(panels[i].getAttribute('data-state')).toBe('inactive');
+      }
+    });
+
+    it('renders panel with title and category but without img when gallery asset is missing', () => {
+      let html = '';
+      expect(() => {
+        html = renderToStaticMarkup(
+          <FeaturedProjects
+            projects={[mockProject]}
+            copy={mockCopy}
+            assets={[]}
+            categories={[mockCategory]}
+            variant="accordion"
+          />,
+        );
+      }).not.toThrow();
+
+      const root = parse(html);
+      const panel = root.querySelector('.accordion-gallery-panel');
+      expect(panel).not.toBeNull();
+      expect(panel?.querySelector('h3.accordion-gallery-title')?.text).toBe('Project Without Image');
+      expect(panel?.querySelector('.accordion-gallery-category')?.text).toContain('Website');
+      expect(panel?.querySelector('img.accordion-gallery-img')).toBeNull();
+    });
+  });
 });

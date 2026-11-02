@@ -230,7 +230,7 @@ test.describe('Home query, hero and stats', () => {
     const section = page.locator('.horizontal-scroll-section');
     await expect(section).toBeVisible();
 
-    const items = section.locator('.scroll-item');
+    const items = section.locator('.accordion-gallery-panel');
     await expect(items).toHaveCount(6);
 
     const expectedProjects = [
@@ -274,74 +274,206 @@ test.describe('Home query, hero and stats', () => {
 
     for (const [idx, expected] of expectedProjects.entries()) {
       const item = items.nth(idx);
-      const link = item.locator('a.item-link');
-      await expect(link).toHaveAttribute('href', expected.path);
-      await expect(item.locator('.item-title')).toHaveText(expected.title);
-      await expect(item.locator('.item-categories .item-term')).toHaveText(expected.category);
-      const content = item.locator('.item-content');
-      const bgStyle = await content.evaluate((el) => el.style.backgroundImage);
-      expect(bgStyle).toContain(expected.image);
+      await expect(item).toHaveAttribute('href', expected.path);
+      await expect(item.locator('.accordion-gallery-title')).toHaveText(expected.title);
+      await expect(item.locator('.accordion-gallery-category')).toContainText(expected.category);
+      const img = item.locator('.accordion-gallery-img');
+      await expect(img).toHaveAttribute('src', new RegExp(expected.image));
     }
+
+    // No .pin-spacer exists on home VI
+    await expect(page.locator('.pin-spacer')).toHaveCount(0);
 
     // On EN home, no .horizontal-scroll-section
     await page.goto('/en/home/');
     await expect(page.locator('.horizontal-scroll-section')).toHaveCount(0);
   });
 
-  for (const width of [1440, 390]) {
-    test(`Horizontal projects pin and scrub at width ${width}px`, async ({ page }) => {
-      await page.setViewportSize({ width, height: 900 });
+  test('Fine pointer hover: panel 4 grows, color and caption in, others shrink and gray', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/');
+
+    const section = page.locator('.horizontal-scroll-section');
+    await expect(section).toBeVisible();
+
+    const panels = section.locator('.accordion-gallery-panel');
+    await expect(panels).toHaveCount(6);
+
+    // Panel 0 is initially active
+    await expect(panels.nth(0)).toHaveAttribute('data-state', 'active');
+    await expect(panels.nth(3)).toHaveAttribute('data-state', 'inactive');
+
+    // Hover panel 4 (index 3)
+    const targetPanel = panels.nth(3);
+    await targetPanel.scrollIntoViewIfNeeded();
+    await targetPanel.hover();
+    await page.waitForTimeout(400);
+
+    await expect(targetPanel).toHaveAttribute('data-state', 'active');
+    await expect(panels.nth(0)).toHaveAttribute('data-state', 'inactive');
+
+    // Target panel width grows larger than inactive panels
+    const targetBox = await targetPanel.boundingBox();
+    const inactiveBox = await panels.nth(0).boundingBox();
+    expect(targetBox && inactiveBox && targetBox.width > inactiveBox.width * 2).toBe(true);
+
+    // Caption in on target panel
+    const captionOpacity = await targetPanel
+      .locator('.accordion-gallery-caption')
+      .evaluate((el) => window.getComputedStyle(el).opacity);
+    expect(Number(captionOpacity)).toBeGreaterThan(0.5);
+
+    // Grayscale: target panel 0%, inactive 100%
+    const targetFilter = await targetPanel.evaluate((el) => window.getComputedStyle(el).filter);
+    expect(targetFilter).not.toContain('grayscale(1');
+  });
+
+  test('Keyboard: Tab to panel, ArrowRight moves focus and active (wraps)', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/');
+
+    const section = page.locator('.horizontal-scroll-section');
+    await expect(section).toBeVisible();
+
+    const panels = section.locator('.accordion-gallery-panel');
+    await expect(panels.nth(0)).toHaveAttribute('data-state', 'active');
+
+    // Focus first panel
+    await panels.nth(0).focus();
+    await expect(panels.nth(0)).toBeFocused();
+
+    // ArrowRight moves focus and active to panel 1
+    await page.keyboard.press('ArrowRight');
+    await expect(panels.nth(1)).toBeFocused();
+    await expect(panels.nth(1)).toHaveAttribute('data-state', 'active');
+    await expect(panels.nth(0)).toHaveAttribute('data-state', 'inactive');
+
+    // Move to last panel (index 5)
+    await panels.nth(5).focus();
+    await expect(panels.nth(5)).toHaveAttribute('data-state', 'active');
+
+    // ArrowRight on last panel wraps to panel 0
+    await page.keyboard.press('ArrowRight');
+    await expect(panels.nth(0)).toBeFocused();
+    await expect(panels.nth(0)).toHaveAttribute('data-state', 'active');
+  });
+
+  test('Touch tap: coarse pointer, tap inactive panel expands without navigating; tap again navigates', async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({
+      hasTouch: true,
+      isMobile: true,
+      viewport: { width: 390, height: 844 },
+    });
+    const page = await context.newPage();
+    try {
       await page.goto('/');
 
       const section = page.locator('.horizontal-scroll-section');
       await expect(section).toBeVisible();
 
-      const { startY, distance } = await page.evaluate(() => {
-        const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
-        const pinSpacer = document.querySelector('.pin-spacer') as HTMLElement;
-        const sec = document.querySelector('.horizontal-scroll-section') as HTMLElement;
-        const trigger = pinSpacer ?? sec;
-        const rect = trigger.getBoundingClientRect();
-        return {
-          startY: window.scrollY + rect.top,
-          distance: wrapper.scrollWidth - window.innerWidth,
-        };
-      });
+      const panels = section.locator('.accordion-gallery-panel');
+      await expect(panels.nth(0)).toHaveAttribute('data-state', 'active');
+      await expect(panels.nth(2)).toHaveAttribute('data-state', 'inactive');
 
-      // Scroll to 50% of distance
-      await page.evaluate((y) => window.scrollTo(0, y), startY + 0.5 * distance);
-      await page.waitForTimeout(300);
+      const targetHref = await panels.nth(2).getAttribute('href');
+      expect(targetHref).toBeTruthy();
 
-      const halfData = await page.evaluate(() => {
-        const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
-        const pinSpacer = document.querySelector('.pin-spacer') as HTMLElement;
-        const transform = window.getComputedStyle(wrapper).transform;
-        const matrix = transform && transform !== 'none' ? new DOMMatrixReadOnly(transform) : null;
-        return {
-          hasPinSpacer: Boolean(pinSpacer),
-          translateX: matrix ? matrix.m41 : 0,
-        };
-      });
+      // Tap inactive panel 2 (index 2)
+      await panels.nth(2).click();
+      await page.waitForTimeout(200);
 
-      expect(halfData.hasPinSpacer).toBe(true);
-      expect(Math.abs(halfData.translateX - -0.5 * distance)).toBeLessThanOrEqual(25);
+      // Expands to active, but URL remains '/'
+      await expect(panels.nth(2)).toHaveAttribute('data-state', 'active');
+      expect(new URL(page.url()).pathname).toBe('/');
 
-      // Scroll to end of distance
-      await page.evaluate((y) => window.scrollTo(0, y), startY + distance);
-      await page.waitForTimeout(300);
+      // Tap panel 2 again
+      await panels.nth(2).click();
+      await page.waitForURL(new RegExp(`${targetHref}$`));
+      expect(new URL(page.url()).pathname).toBe(targetHref);
+    } finally {
+      await context.close();
+    }
+  });
 
-      const endData = await page.evaluate(() => {
-        const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
-        const transform = window.getComputedStyle(wrapper).transform;
-        const matrix = transform && transform !== 'none' ? new DOMMatrixReadOnly(transform) : null;
-        return {
-          translateX: matrix ? matrix.m41 : 0,
-        };
-      });
+  test('Reduced motion: active state applied instantly with no running tween', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
 
-      expect(Math.abs(endData.translateX - -distance)).toBeLessThanOrEqual(25);
+    const section = page.locator('.horizontal-scroll-section');
+    await expect(section).toBeVisible();
+
+    const panels = section.locator('.accordion-gallery-panel');
+    await expect(panels.nth(0)).toHaveAttribute('data-state', 'active');
+
+    // Hover or focus panel 3
+    await panels.nth(3).focus();
+    await expect(panels.nth(3)).toHaveAttribute('data-state', 'active');
+    await expect(panels.nth(0)).toHaveAttribute('data-state', 'inactive');
+
+    // Active state applied instantly without running tweens on the gallery
+    const isTweening = await page.evaluate(() => {
+      const gsap = (window as unknown as { gsap?: { isTweening: (t: unknown) => boolean } }).gsap;
+      const galleryPanels = document.querySelectorAll('.accordion-gallery-panel');
+      return Array.from(galleryPanels).some((p) => gsap?.isTweening(p));
     });
-  }
+    expect(isTweening).toBe(false);
+
+    // Computed style shows expanded active panel
+    const flexGrow = await panels.nth(3).evaluate((el) => window.getComputedStyle(el).flexGrow);
+    expect(Number(flexGrow)).toBeGreaterThanOrEqual(4);
+  });
+
+  test('JS off / SSR: default panel expanded via CSS and all panels are working links', async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false });
+    const page = await context.newPage();
+    try {
+      await page.goto('/');
+      const section = page.locator('.horizontal-scroll-section');
+      await expect(section).toBeVisible();
+
+      const panels = section.locator('.accordion-gallery-panel');
+      await expect(panels).toHaveCount(6);
+
+      // Default panel (0) has data-state="active", title, and category
+      await expect(panels.nth(0)).toHaveAttribute('data-state', 'active');
+      await expect(panels.nth(0).locator('.accordion-gallery-title')).toBeVisible();
+      await expect(panels.nth(0).locator('.accordion-gallery-category')).toBeVisible();
+
+      // Every panel has a working href link
+      for (let i = 0; i < 6; i++) {
+        const href = await panels.nth(i).getAttribute('href');
+        expect(href).toMatch(/^\/featured_item\/.+/);
+      }
+    } finally {
+      await context.close();
+    }
+  });
+
+  test('Narrow (< 550px): vertical accordion with no horizontal overflow', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+
+    const section = page.locator('.horizontal-scroll-section');
+    await expect(section).toBeVisible();
+
+    const gallery = section.locator('.accordion-gallery');
+    const flexDirection = await gallery.evaluate(
+      (el) => window.getComputedStyle(el).flexDirection,
+    );
+    expect(flexDirection).toBe('column');
+
+    // No horizontal overflow
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - window.innerWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
 
   // Every route change from / crosses a root layout (full reload), so unmount is driven in place.
   test('Unmounting the island removes .pin-spacer and kills its ScrollTrigger', async ({
@@ -369,82 +501,5 @@ test.describe('Home query, hero and stats', () => {
     await expect(page.locator('.horizontal-scroll-section')).toHaveCount(0);
     await expect(page.locator('.pin-spacer')).toHaveCount(0);
     expect(await liveTriggers()).toBe(0);
-  });
-
-  test('Under reduced motion, pin and translation still occur and hover leaves scale at 1', async ({
-    page,
-  }) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('/');
-
-    const section = page.locator('.horizontal-scroll-section');
-    await expect(section).toBeVisible();
-
-    const { startY, distance } = await page.evaluate(() => {
-      const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
-      const pinSpacer = document.querySelector('.pin-spacer') as HTMLElement;
-      const sec = document.querySelector('.horizontal-scroll-section') as HTMLElement;
-      const trigger = pinSpacer ?? sec;
-      const rect = trigger.getBoundingClientRect();
-      return {
-        startY: window.scrollY + rect.top,
-        distance: wrapper.scrollWidth - window.innerWidth,
-      };
-    });
-
-    // Hover over first card while at start (inside viewport)
-    await page.evaluate((y) => window.scrollTo(0, y), startY);
-    await page.waitForTimeout(300);
-    const firstCard = page.locator('.scroll-item').first();
-    await firstCard.hover();
-    await page.waitForTimeout(350);
-
-    const scale = await firstCard.evaluate((el) => {
-      const style = window.getComputedStyle(el);
-      const transform = style.transform;
-      if (!transform || transform === 'none') return 1;
-      const matrix = new DOMMatrixReadOnly(transform);
-      return matrix.a; // matrix.a is scaleX
-    });
-
-    expect(scale).toBe(1);
-
-    // Scroll to 50%
-    await page.evaluate((y) => window.scrollTo(0, y), startY + 0.5 * distance);
-    await page.waitForTimeout(300);
-
-    const halfData = await page.evaluate(() => {
-      const wrapper = document.querySelector('.scrolling-wrapper') as HTMLElement;
-      const pinSpacer = document.querySelector('.pin-spacer') as HTMLElement;
-      const transform = window.getComputedStyle(wrapper).transform;
-      const matrix = transform && transform !== 'none' ? new DOMMatrixReadOnly(transform) : null;
-      return {
-        hasPinSpacer: Boolean(pinSpacer),
-        translateX: matrix ? matrix.m41 : 0,
-      };
-    });
-
-    expect(halfData.hasPinSpacer).toBe(true);
-    expect(Math.abs(halfData.translateX - -0.5 * distance)).toBeLessThanOrEqual(25);
-  });
-
-  test('Hover over card scales up to 1.05 under normal motion', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'no-preference' });
-    await page.goto('/');
-
-    const firstCard = page.locator('.scroll-item').first();
-    await firstCard.scrollIntoViewIfNeeded();
-    await firstCard.hover();
-    await page.waitForTimeout(400);
-
-    const scale = await firstCard.evaluate((el) => {
-      const style = window.getComputedStyle(el);
-      const transform = style.transform;
-      if (!transform || transform === 'none') return 1;
-      const matrix = new DOMMatrixReadOnly(transform);
-      return Math.round(matrix.a * 100) / 100;
-    });
-
-    expect(scale).toBe(1.05);
   });
 });

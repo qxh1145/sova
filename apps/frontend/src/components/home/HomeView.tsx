@@ -96,6 +96,7 @@ export function HomeView({
         copy={content.sectionCopy.projects}
         assets={projectAssets}
         categories={projectCategories}
+        variant="accordion"
       />
       {content.partners.length > 0 && (
         <>
