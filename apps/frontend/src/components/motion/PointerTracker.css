@@ -46,7 +46,13 @@ article[data-pointer],
   box-sizing: border-box;
   pointer-events: none;
   opacity: 0;
-  background: conic-gradient(from var(--cta-angle) at 50% 50%, var(--color-primary), #38bdf8, #a5d8ff, var(--color-primary));
+  background: conic-gradient(
+    from var(--cta-angle) at 50% 50%,
+    var(--color-primary),
+    #38bdf8,
+    #a5d8ff,
+    var(--color-primary)
+  );
   mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);

@@ -13,6 +13,7 @@ import {
   reducedMotionIdleRaf,
   measureRoute,
   TOUCH_CONTEXT,
+  waitForRevealed,
 } from './cap16-helpers';
 
 // Target test routes for matrix suites
@@ -849,7 +850,7 @@ test.describe('CAP-16: Card hover', () => {
         const r = el.getBoundingClientRect();
         window.scrollBy(0, r.top - 150);
       });
-      await page.waitForTimeout(200);
+      await waitForRevealed(card);
 
       const box = await card.boundingBox();
       expect(box, `${family.name} should have a bounding box`).not.toBeNull();
@@ -894,13 +895,13 @@ test.describe('CAP-16: Card hover', () => {
 
       // Pointer leaves
       await page.mouse.move(0, 0);
-      await page.waitForTimeout(350);
-      const opacityOff = await card.evaluate((el) => {
-        return parseFloat(window.getComputedStyle(el, '::before').opacity);
-      });
-      expect(opacityOff, `${family.name} overlay opacity should fade to 0 on pointer leave`).toBe(
-        0,
-      );
+      // Poll: a fixed wait can land on the 300ms fade's last frame (opacity ~1e-13).
+      await expect
+        .poll(
+          () => card.evaluate((el) => parseFloat(window.getComputedStyle(el, '::before').opacity)),
+          { message: `${family.name} overlay opacity should fade to 0 on pointer leave` },
+        )
+        .toBe(0);
     });
 
     test(`Touch tap sets no --pointer-x and leaves overlay opacity at 0 on ${family.name} (${family.url})`, async ({
@@ -1063,7 +1064,7 @@ test.describe('CAP-16: CTA effects', () => {
         const r = el.getBoundingClientRect();
         window.scrollBy(0, r.top - 150);
       });
-      await page.waitForTimeout(200);
+      await waitForRevealed(cta);
 
       const box = await cta.boundingBox();
       expect(box, `${site.name} CTA should have a bounding box`).not.toBeNull();
@@ -1114,7 +1115,7 @@ test.describe('CAP-16: CTA effects', () => {
 
       // Pointer leaves
       await page.mouse.move(0, 0);
-      await page.waitForTimeout(350);
+      await page.waitForTimeout(400);
 
       const leaveState = await cta.evaluate((el) => {
         const r = el.getBoundingClientRect();
@@ -1149,7 +1150,7 @@ test.describe('CAP-16: CTA effects', () => {
         const r = el.getBoundingClientRect();
         window.scrollBy(0, r.top - 150);
       });
-      await page.waitForTimeout(200);
+      await waitForRevealed(cta);
       await cta.tap();
       await page.waitForTimeout(100);
 

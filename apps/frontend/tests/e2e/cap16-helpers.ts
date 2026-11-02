@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { expect, installRafCounter } from './fixtures';
 
 export const CAP16_FINAL_STATE = ['.typewriter'];
@@ -47,6 +47,25 @@ export function syncBeforeRunJson(key: string, metrics: RouteMetrics) {
     allParts[k] = JSON.parse(fs.readFileSync(path.join(PARTS_DIR, file), 'utf-8'));
   }
   fs.writeFileSync(BEFORE_RUN_PATH, JSON.stringify(allParts, null, 2));
+}
+
+/** Wait until every scroll-reveal host of the element is shown and its 600ms transition has ended. */
+export async function waitForRevealed(locator: Locator) {
+  await expect
+    .poll(() =>
+      locator.evaluate((el) => {
+        for (
+          let n = el.closest('[data-reveal]');
+          n;
+          n = n.parentElement?.closest('[data-reveal]') ?? null
+        ) {
+          if (n.getAttribute('data-reveal') === 'hidden' || n.getAnimations().length > 0)
+            return false;
+        }
+        return true;
+      }),
+    )
+    .toBe(true);
 }
 
 /** Check that all elements matching selectors are at their final state (opacity 1, width 100%, animation none). */
