@@ -841,7 +841,7 @@ test.describe('CAP-16: Card hover', () => {
     },
     {
       name: 'showcase',
-      url: '/',
+      url: '/thiet-ke-website/',
       selector: '.scroll-item .item-content[data-pointer="card"]',
     },
     {
