@@ -324,7 +324,9 @@ export async function expectTextReadable(page: Page) {
 
 /**
  * Idle rAF calls after load at 1440px under `reducedMotion: 'reduce'`. The record run and the
- * gate both use this, so the before-run and the check measure the same condition.
+ * gate both use this. The before-run (`d011ed7`) was recorded with a 1s settle, but the hero video
+ * then delayed `networkidle`, so its window already sat past GSAP's autoSleep tail. The 2.5s
+ * settle keeps that condition. Ceiling: a loop that stops by itself within 2.5s is not counted.
  */
 export async function reducedMotionIdleRaf(page: Page, url: string): Promise<number> {
   await installRafCounter(page);
