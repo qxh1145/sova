@@ -20,7 +20,7 @@
     #38bdf8 0%,
     #a5d8ff 20%,
     #f6f8ff 40%,
-    #0065df 65%,
+    var(--color-primary) 65%,
     transparent 100%
   );
 }

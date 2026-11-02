@@ -32,15 +32,11 @@
 
 import { useEffect, useRef, useState } from 'react';
 import './LightRays.css';
+import { clamp, linkProgram } from './webgl';
 
 export interface LightRaysProps {
   raysColor?: string;
   className?: string;
-}
-
-interface Program {
-  program: WebGLProgram;
-  uniforms: Record<string, WebGLUniformLocation | null>;
 }
 
 const DEFAULT_COLOR_HEX = '#0065df';
@@ -161,8 +157,6 @@ void main() {
   fragColor = vec4(clamp(shown + grain, 0.0, level) * uOpacity, level * uOpacity);
 }`;
 
-const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
-
 const parseColor = (value: string): [number, number, number] | null => {
   const text = String(value || '').trim();
   const hex = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(text);
@@ -183,45 +177,6 @@ const parseColor = (value: string): [number, number, number] | null => {
     ];
   }
   return null;
-};
-
-const compile = (gl: WebGL2RenderingContext, type: number, source: string) => {
-  const shader = gl.createShader(type);
-  if (!shader) return null;
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    gl.deleteShader(shader);
-    return null;
-  }
-  return shader;
-};
-
-const link = (gl: WebGL2RenderingContext): Program | null => {
-  const vertex = compile(gl, gl.VERTEX_SHADER, VERTEX);
-  const fragment = compile(gl, gl.FRAGMENT_SHADER, FRAGMENT);
-  const program = vertex && fragment ? gl.createProgram() : null;
-  if (!vertex || !fragment || !program) {
-    if (vertex) gl.deleteShader(vertex);
-    if (fragment) gl.deleteShader(fragment);
-    return null;
-  }
-  gl.attachShader(program, vertex);
-  gl.attachShader(program, fragment);
-  gl.linkProgram(program);
-  gl.deleteShader(vertex);
-  gl.deleteShader(fragment);
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    gl.deleteProgram(program);
-    return null;
-  }
-  const uniforms: Program['uniforms'] = {};
-  const count = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
-  for (let index = 0; index < count; index++) {
-    const info = gl.getActiveUniform(program, index);
-    if (info) uniforms[info.name.replace(/\[0\]$/, '')] = gl.getUniformLocation(program, info.name);
-  }
-  return { program, uniforms };
 };
 
 const smoother = (t: number) => {
@@ -265,7 +220,7 @@ export function LightRays({ raysColor = DEFAULT_COLOR_HEX, className = '' }: Lig
       canvas.remove();
     };
 
-    const shader = gl ? link(gl) : null;
+    const shader = gl ? linkProgram(gl, VERTEX, FRAGMENT) : null;
     if (!gl || !shader) {
       container.classList.add('light-rays--lost');
       release();
@@ -515,5 +470,3 @@ export function LightRays({ raysColor = DEFAULT_COLOR_HEX, className = '' }: Lig
     />
   );
 }
-
-export default LightRays;
