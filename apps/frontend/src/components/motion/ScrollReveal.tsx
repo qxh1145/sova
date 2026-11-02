@@ -11,7 +11,13 @@ export function ScrollReveal() {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!('IntersectionObserver' in window)) {
+    // REVEAL_TARGET_SELECTOR uses :has(); querySelectorAll throws where it is unsupported (Firefox < 121).
+    // Skip reveal there: nothing is hidden, so all content shows.
+    if (
+      !('IntersectionObserver' in window) ||
+      typeof CSS === 'undefined' ||
+      !CSS.supports('selector(:has(a))')
+    ) {
       return;
     }
 

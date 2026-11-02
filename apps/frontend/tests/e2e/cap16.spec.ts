@@ -757,6 +757,34 @@ test.describe('CAP-16: Scroll reveal', () => {
     ).toBe(0);
   });
 
+  test('Without :has() support, reveal is skipped: no target hidden, page renders', async ({
+    page,
+  }) => {
+    // Firefox < 121 has no :has(); stub CSS.supports so the guard takes that path in Chromium.
+    await page.addInitScript(() => {
+      const supports = CSS.supports.bind(CSS);
+      CSS.supports = ((...args: [string, string?]) =>
+        args.length === 1 && args[0].includes(':has(')
+          ? false
+          : supports(...(args as [string, string]))) as typeof CSS.supports;
+    });
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(String(e)));
+    await page.goto('/', { waitUntil: 'load' });
+    await expect(page.locator('main#main')).toBeVisible();
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await expect(page.locator('[data-reveal]')).toHaveCount(0);
+    expect(errors, 'no page error without :has()').toEqual([]);
+  });
+
+  test('Print media shows below-fold targets that are still hidden on screen', async ({ page }) => {
+    await page.goto('/', { waitUntil: 'load' });
+    const hidden = page.locator('[data-reveal="hidden"]').first();
+    await expect(hidden).toHaveCount(1);
+    await page.emulateMedia({ media: 'print' });
+    await expect.poll(() => hidden.evaluate((el) => getComputedStyle(el).opacity)).toBe('1');
+  });
+
   test('horizontal-scroll-section, its .section ancestor, descendants and ProjectGrid .col never get data-reveal', async ({
     page,
   }) => {
@@ -1285,7 +1313,7 @@ test.describe('CAP-16: CTA effects', () => {
       const r = el.getBoundingClientRect();
       window.scrollBy(0, r.top - 150);
     });
-    await page.waitForTimeout(200);
+    await waitForRevealed(card);
 
     const cardBox = await card.boundingBox();
     expect(cardBox).not.toBeNull();
@@ -1460,7 +1488,7 @@ test.describe('CAP-16: Showcase', () => {
   async function firstCard(page: Page) {
     const card = page.locator('.portfolio-box[data-pointer="card"]').first();
     await card.evaluate((el) => window.scrollBy(0, el.getBoundingClientRect().top - 150));
-    await page.waitForTimeout(200);
+    await waitForRevealed(card);
     const box = await card.boundingBox();
     expect(box, 'project card should have a bounding box').not.toBeNull();
     return { card, box: box! };

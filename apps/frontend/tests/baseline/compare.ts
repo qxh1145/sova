@@ -7,12 +7,17 @@ import { freeze, rowViewports, type ManifestRow } from './source';
 
 /**
  * Dynamic Sova regions (Carousel renders `.flickity-enabled`; videos; map iframes; WebGL canvases), masked in Sova shots.
- * The sub-page LightRays canvas fills the whole hero, so it is hidden (SOVA_HIDE) instead of masked:
- * the hero image and text underneath stay under the gate.
+ * The hero canvases (sub-page LightRays, home GradientASCII) fill the whole hero, so they are hidden
+ * (SOVA_HIDE) instead of masked: the hero text, CTA and layout on top stay under the gate.
  */
-export const SOVA_MASK = ['.flickity-enabled', 'video', 'iframe', 'canvas:not(.light-rays-canvas)'];
-/** Transparent overlays hidden in Sova shots; the page underneath is compared as is. */
-const SOVA_HIDE = '.light-rays { visibility: hidden !important; }';
+export const SOVA_MASK = [
+  '.flickity-enabled',
+  'video',
+  'iframe',
+  'canvas:not(.light-rays-canvas, .gradient-ascii-canvas)',
+];
+/** Hero canvases hidden in Sova shots; the page underneath is compared as is. */
+const SOVA_HIDE = '.light-rays, .gradient-ascii-canvas { visibility: hidden !important; }';
 /** Allowed run-to-run move of a logged cell's diff ratio around its measured value. */
 export const SLACK = 0.005;
 const SOVA_SNAPSHOT_DIR = path.resolve(__dirname, '../../baseline-sova');
