@@ -7,18 +7,18 @@ Nguồn chỉ đọc: `../eras-clone`.
 
 ## Chạy ứng dụng
 
-Node 24 (`.nvmrc`), npm. Không cần `.env`.
+Node 24 (`.nvmrc`), npm. Chạy dev và test không cần `.env`; build production cần `SITE_URL` (xem mục Deploy).
 
 ```bash
 cd apps/frontend
 npm ci
 npm run dev        # http://localhost:3000/
-npm run build && npm run start
+SITE_URL=https://your-domain.vn npm run build && npm run start
 npm run lint       # eslint .
 npm run typecheck  # tsc --noEmit
 npm run format     # prettier --write .
 npm test           # vitest run
-npx playwright install chromium && npm run test:e2e  # chạy trên production build (cần `npm run build` trước)
+npx playwright install chromium && npm run test:e2e  # chạy trên production build (cần `npm run build:e2e` trước)
 ```
 
 E2E specs import `test` từ `apps/frontend/tests/e2e/fixtures.ts`: network guard fail-closed, chặn mọi host ngoài localhost và `MAPS_EMBED_ALLOWLIST`.
@@ -43,7 +43,7 @@ cd apps/frontend
 npm run baseline          # chụp manifest × 8 viewport vào baseline/<route-key>/<vw>.png + .json (network/DOM evidence)
 npm run baseline:compare  # kiểm tra harness: trang nguồn khớp baseline, trang bị sửa thì fail
 npm run baseline:hash     # ../eras-clone khớp tests/baseline/source-hash.json (UPDATE_SOURCE_HASH=1 để tạo lại)
-npm run baseline:sova     # cần `npm run build` trước: khởi động `next start` (port 3100) và chạy spec Sova so với baseline
+npm run baseline:sova     # tự build bằng `build:e2e`: khởi động `next start` (port 3100) và chạy spec Sova so với baseline
 ```
 
 - `ERAS_CLONE_DIR`: đường dẫn mirror (mặc định `../eras-clone` cạnh repo). Đường dẫn tương đối được resolve theo cwd (`apps/frontend` khi chạy qua npm), không theo repo root, nên dùng đường dẫn tuyệt đối. Thiếu mirror thì các spec tự skip.
@@ -51,10 +51,19 @@ npm run baseline:sova     # cần `npm run build` trước: khởi động `next
 - Page epic đặt spec so sánh trong `tests/baseline/`, đặt tên `*.sova.spec.ts` (để `baseline:sova` chạy), `test.skip` khi `BASELINE_SOVA !== '1'` như `sova.spec.ts` (import `test` từ `tests/e2e/fixtures.ts`), gọi `compareToBaseline(page, key, viewport)` từ `tests/baseline/compare.ts` và chạy với `BASELINE_SOVA=1` (như `baseline:sova`); diff image trong `test-results/`.
 - Khác biệt đã biết (font Google bị chặn, asset thiếu trong mirror) ghi ở `docs/ANOMALY_REGISTER.md` (local).
 
+## Deploy
+
+App cần Node server (`next start`, Node 24 trở lên): có Proxy và route động, nên không export tĩnh được.
+
+1. Build sạch trên chính máy hoặc pipeline deploy: `SITE_URL=https://your-domain.vn npm run build`. `SITE_URL` được ghi cố định lúc build vào sitemap, robots và canonical; build production thiếu biến này sẽ dừng với lỗi.
+2. Không dùng `.next` do `build:e2e` (hoặc gate kiểm tra dùng nó) tạo ra: bản đó bật `NEXT_PUBLIC_E2E=1`, cho phép `CONTENT_SCENARIO` đổi nội dung.
+3. Không đặt `FIXTURE_HARNESS` hoặc `CONTENT_SCENARIO` trên môi trường production.
+4. Khi trang đang chờ nội dung đã có nội dung thật, bỏ path của nó khỏi `NOINDEX_PATHS` (`apps/frontend/src/lib/routes.ts`) và bỏ `robots` trong page tương ứng.
+
 ## Liên kết GitHub và Vercel (thao tác thủ công)
 
 1. Tạo GitHub repo, `git remote add origin <url>`, push. Kiểm tra workflow **CI** (`.github/workflows/ci.yml`) xanh trong tab Actions.
-2. Trên Vercel: Import repo, đặt **Root Directory = `apps/frontend`**, framework Next.js, không cần env vars. Mở staging URL và kiểm tra hiển thị "Sova".
+2. Trên Vercel: Import repo, đặt **Root Directory = `apps/frontend`**, framework Next.js, không cần env vars (Vercel tự cấp `VERCEL_PROJECT_PRODUCTION_URL`; đặt `SITE_URL` khi dùng domain riêng). Mở staging URL và kiểm tra hiển thị "Sova".
 3. Không commit token/secret Vercel hoặc GitHub vào repo.
 
 ## Nghiệm thu Staging (Staging acceptance)

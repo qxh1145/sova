@@ -503,13 +503,13 @@ export const navigation: Navigation[] = [
           },
           {
             id: 'nav-footer-en-en--terms-of-use',
-            label: 'Term of use',
+            label: 'Terms of use',
             destination: { kind: 'internal', routeId: 'route-en--terms-of-use' },
           },
           {
             id: 'nav-footer-en-chinh-sach-bao-mat',
             label: 'Privacy Policy',
-            destination: { kind: 'internal', routeId: 'route-chinh-sach-bao-mat' },
+            destination: { kind: 'internal', routeId: 'route-en--privacy-policy' },
           },
           {
             id: 'nav-footer-en-en--refund-policy',
@@ -523,7 +523,7 @@ export const navigation: Navigation[] = [
           },
           {
             id: 'nav-footer-en-en--payment-guide',
-            label: 'Payment Intructions',
+            label: 'Payment Guide',
             destination: { kind: 'internal', routeId: 'route-en--payment-guide' },
           },
         ],

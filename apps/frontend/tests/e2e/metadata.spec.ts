@@ -1,6 +1,6 @@
 import { ALLOW_404, ALLOW_SERVER_ERROR, expect, test } from './fixtures';
 import { routes } from '../../src/data/routes';
-import { buildCounterpartMap } from '../../src/lib/routes';
+import { buildCounterpartMap, NOINDEX_PATHS } from '../../src/lib/routes';
 import { BRAND_TITLE_SUFFIX, BRAND_TITLE_SUFFIX_EN } from '../../src/lib/queries/site';
 
 test.describe('Metadata & Indexing Acceptance', () => {
@@ -70,7 +70,7 @@ test.describe('Metadata & Indexing Acceptance', () => {
     });
   }
 
-  test('Sitemap /sitemap.xml serves 139 registry loc pathnames and no aliases', async ({
+  test('Sitemap /sitemap.xml serves 133 indexable loc pathnames and no aliases', async ({
     request,
   }) => {
     const response = await request.get('/sitemap.xml');
@@ -78,11 +78,33 @@ test.describe('Metadata & Indexing Acceptance', () => {
     const body = await response.text();
 
     const locMatches = [...body.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-    expect(locMatches).toHaveLength(139);
+    expect(locMatches).toHaveLength(133);
 
     const locPathnames = locMatches.map((loc) => new URL(loc).pathname);
-    const registryPaths = routes.map((r) => r.path);
-    expect(locPathnames).toEqual(registryPaths);
+    const indexablePaths = routes.map((r) => r.path).filter((p) => !NOINDEX_PATHS.has(p));
+    expect(locPathnames).toEqual(indexablePaths);
+  });
+
+  for (const path of NOINDEX_PATHS) {
+    test(`${path} sets robots noindex, follow`, async ({ page }) => {
+      await page.goto(path);
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+        'content',
+        'noindex, follow',
+      );
+    });
+  }
+
+  test('Indexable pages carry Open Graph and the security headers', async ({ page }) => {
+    const response = await page.goto('/thiet-ke-website/');
+    expect(response?.headers()['content-security-policy']).toContain("frame-ancestors 'self'");
+    expect(response?.headers()['x-content-type-options']).toBe('nosniff');
+    expect(response?.headers()['x-powered-by']).toBeUndefined();
+    await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute('content', 'Sova');
+    await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
+      'content',
+      /\/thiet-ke-website\/$/,
+    );
   });
 
   test('Robots /robots.txt serves allow / and sitemap directive', async ({ request }) => {

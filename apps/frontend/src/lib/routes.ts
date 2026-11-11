@@ -8,6 +8,19 @@ export function normalizePath(input: string): PublicPath {
   return (lead.endsWith('/') ? lead : `${lead}/`) as PublicPath;
 }
 
+/**
+ * Live routes kept out of search: utility pages, plus pages still waiting for content
+ * (portfolio PDFs, EN posts and projects). Drop a path once its content exists.
+ */
+export const NOINDEX_PATHS: ReadonlySet<string> = new Set([
+  '/login-sova/',
+  '/xin-chan-thanh-cam-on-quy-khach/',
+  '/ho-so-nang-luc-sova/',
+  '/en/sova-portfolio/',
+  '/en/insight/',
+  '/en/our-project/',
+]);
+
 const firstSegment = (path: string) => path.split('/')[1];
 
 /**

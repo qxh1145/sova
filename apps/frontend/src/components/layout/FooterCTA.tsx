@@ -42,7 +42,12 @@ export function FooterCTA({ headingLines, targetHref, locale }: FooterCTAProps) 
 
           <div id={ids.colRight} className="col medium-3 small-3 large-3">
             <div className="col-inner text-right">
-              <Link className="plain" href={targetHref} data-pointer="cta">
+              <Link
+                className="plain"
+                href={targetHref}
+                data-pointer="cta"
+                aria-label={headingLines.join(' ')}
+              >
                 <div
                   className={
                     // Source EN arrow box differs from VI (en/home/index.html:2718).

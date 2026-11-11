@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getRepository } from '@/lib/repositories';
 import type { ContentRepository } from '@/lib/repositories/contracts';
-import { buildCounterpartMap, pathForRouteId, resolvePath } from '@/lib/routes';
+import { buildCounterpartMap, NOINDEX_PATHS, pathForRouteId, resolvePath } from '@/lib/routes';
 import type {
   Locale,
   Navigation,
@@ -89,10 +89,23 @@ export async function routeAlternates(path: PublicPath): Promise<Metadata['alter
 
 export async function seoMetadata(seo: SEO): Promise<Metadata> {
   const alternates = await routeAlternates(seo.canonicalPath);
+  const [image] = seo.imageId ? await getRepository().getAssets([seo.imageId]) : [];
+  const hasImage = image?.status === 'local';
+  const noIndex = seo.noIndex || NOINDEX_PATHS.has(seo.canonicalPath);
   return {
     title: seo.title,
     ...(seo.description && { description: seo.description }),
     alternates,
-    ...(seo.noIndex && { robots: { index: false, follow: true } }),
+    openGraph: {
+      title: seo.title,
+      ...(seo.description && { description: seo.description }),
+      url: seo.canonicalPath,
+      siteName: 'Sova',
+      type: 'website',
+      locale: seo.canonicalPath.startsWith('/en/') ? 'en_US' : 'vi_VN',
+      ...(hasImage && { images: [image.src] }),
+    },
+    twitter: { card: hasImage ? 'summary_large_image' : 'summary' },
+    ...(noIndex && { robots: { index: false, follow: true } }),
   };
 }
