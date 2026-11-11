@@ -17,6 +17,16 @@ test('falls back to https VERCEL_PROJECT_PRODUCTION_URL', () => {
   expect(getSiteUrl()).toBe('https://sova.vercel.app');
 });
 
+test('a production build without an origin throws; the e2e build still gets localhost', () => {
+  vi.stubEnv('SITE_URL', '');
+  vi.stubEnv('VERCEL_PROJECT_PRODUCTION_URL', '');
+  vi.stubEnv('NODE_ENV', 'production');
+  vi.stubEnv('NEXT_PUBLIC_E2E', '');
+  expect(() => getSiteUrl()).toThrow('SITE_URL is required');
+  vi.stubEnv('NEXT_PUBLIC_E2E', '1');
+  expect(getSiteUrl()).toMatch(/^http:\/\/localhost:/);
+});
+
 test('falls back to localhost on PORT, default 3000', () => {
   vi.stubEnv('SITE_URL', '');
   vi.stubEnv('VERCEL_PROJECT_PRODUCTION_URL', '');

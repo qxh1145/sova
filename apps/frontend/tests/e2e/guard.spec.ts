@@ -1,5 +1,8 @@
 import { ALLOW_404, expect, isAllowedUrl, STAGING, test } from './fixtures';
 
+// These tests check the harness guards, so the site CSP must not block the request first.
+test.use({ bypassCSP: true });
+
 test('guard allows local and Maps embed hosts', () => {
   expect(isAllowedUrl('http://localhost:3100/', null)).toBe(true);
   expect(isAllowedUrl('https://www.google.com/maps/embed?pb=x', null)).toBe(true);

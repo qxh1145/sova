@@ -82,7 +82,6 @@ export const projects: Project[] = [
     seo: {
       title: 'Evc Athena – Công ty TNHH EVC ATHENA - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/evc-athena-cong-ty-tnhh-evc-athena/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-16d5473331',
     },
     sources: [
@@ -180,7 +179,6 @@ export const projects: Project[] = [
       title:
         'Centro – Nội thất cao cấp Centro Châu Âu - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/centro-noi-that-cao-cap-centro-chau-au/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-a8b853c9f2',
     },
     sources: [
@@ -282,7 +280,6 @@ export const projects: Project[] = [
         'Muagiday – Sàn thương mại điện tử xuyên biên giới hàng đầu Việt Nam - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath:
         '/featured_item/muagiday-san-thuong-mai-dien-tu-xuyen-bien-gioi-hang-dau-viet-nam/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-0003b059bb',
     },
     sources: [
@@ -377,7 +374,6 @@ export const projects: Project[] = [
     seo: {
       title: 'Pink Nail Spa & Beauty - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/pink-nail-spa-beauty/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-a7e02243b0',
     },
     sources: [
@@ -474,7 +470,6 @@ export const projects: Project[] = [
       title:
         'PA Marketing – Đơn vị đào tạo hàng đầu về Marketing - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/pa-marketing-don-vi-dao-tao-hang-dau-ve-marketing/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-c7af1bf39f',
     },
     sources: [
@@ -575,7 +570,6 @@ export const projects: Project[] = [
       title:
         'Nhamoi Architechture – Kiến trúc đẹp cho mọi nhà - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/nhamoi-architechture-kien-truc-dep-cho-moi-nha/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-75dd41901d',
     },
     sources: [
@@ -676,7 +670,6 @@ export const projects: Project[] = [
       title:
         'Công ty Cổ phần Kiến trúc và Xây dựng GT House - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/cong-ty-co-phan-kien-truc-va-xay-dung-gt-house/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-9ec64ec23e',
     },
     sources: [
@@ -774,7 +767,6 @@ export const projects: Project[] = [
       title:
         'Bossman – Công ty cổ phần Bossman Việt Nam - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/bossman-cong-ty-co-phan-bossman-viet-nam/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-374a31241b',
     },
     sources: [
@@ -869,7 +861,6 @@ export const projects: Project[] = [
     seo: {
       title: 'iPhone HD – iPhone trong tầm tay - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/iphone-hd-iphone-trong-tam-tay/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-a3be7e047a',
     },
     sources: [
@@ -971,7 +962,6 @@ export const projects: Project[] = [
         'Ichi Japan – Xuất khẩu lao động Nhật Bản lương cao chi phí thấp - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath:
         '/featured_item/ichi-japan-xuat-khau-lao-dong-nhat-ban-luong-cao-chi-phi-thap/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-cb300f7275',
     },
     sources: [
@@ -1073,7 +1063,6 @@ export const projects: Project[] = [
         'Xanhthienthanh – Công ty Cổ phần Đầu tư và Phát triển Xanh Thiên Thanh - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath:
         '/featured_item/xanhthienthanh-cong-ty-co-phan-dau-tu-va-phat-trien-xanh-thien-thanh/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-3297810c7d',
     },
     sources: [
@@ -1175,7 +1164,6 @@ export const projects: Project[] = [
         'Cinvico Lean Pro- Công ty cổ phần hợp tác đầu tư công nghệ Cinvico - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath:
         '/featured_item/cinvico-lean-pro-cong-ty-co-phan-hop-tac-dau-tu-cong-nghe-cinvico/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-f186b5f4cb',
     },
     sources: [
@@ -1276,7 +1264,6 @@ export const projects: Project[] = [
       title:
         'Wewell – Công ty cổ phần Dược liệu và Thực phẩm Việt Nam - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/wewell-cong-ty-co-phan-duoc-lieu-va-thuc-pham-viet-nam/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-aa1cf68ee2',
     },
     sources: [
@@ -1371,7 +1358,6 @@ export const projects: Project[] = [
     seo: {
       title: 'Giang Lâm – Dụng cụ cơ khí - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/giang-lam-dung-cu-co-khi/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-fd32fc651f',
     },
     sources: [
@@ -1462,7 +1448,6 @@ export const projects: Project[] = [
     seo: {
       title: 'Wisdomland – International Preschool - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/wisdomland-international-preschool/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-09e327e9db',
     },
     sources: [
@@ -1560,7 +1545,6 @@ export const projects: Project[] = [
       title:
         'Forex Robot – Automated Trading Robots - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/forex-robot-automated-trading-robots/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-c10d06625d',
     },
     sources: [
@@ -1661,7 +1645,6 @@ export const projects: Project[] = [
       title:
         'Hoàng Gia- Công Ty CP Xây Dựng và Nội Thất Hoàng Gia - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/hoang-gia-cong-ty-cp-xay-dung-va-noi-that-hoang-gia/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-e532069691',
     },
     sources: [
@@ -1759,7 +1742,6 @@ export const projects: Project[] = [
       title:
         'Moonstore – Thời trang công sở moonstore - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/moonstore-thoi-trang-cong-so-moonstore/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-842a79d6cd',
     },
     sources: [
@@ -1860,7 +1842,6 @@ export const projects: Project[] = [
       title:
         'Nutrition Fitness – Công ty cổ phần Nutrition Fitness - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/nutrition-fitness-cong-ty-co-phan-nutrition-fitness/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-5b1db4cca1',
     },
     sources: [
@@ -1961,7 +1942,6 @@ export const projects: Project[] = [
       title:
         'Bình Phát – Công ty TNHH Máy xây dựng Bình Phát - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/binh-phat-cong-ty-tnhh-may-xay-dung-binh-phat/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-960193a139',
     },
     sources: [
@@ -2062,7 +2042,6 @@ export const projects: Project[] = [
       title:
         'HUNG AN GROUP – Dịch vụ cung ứng nhân lực uy tín nhất - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/hung-an-group-dich-vu-cung-ung-nhan-luc-uy-tin-nhat/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-fee54030b9',
     },
     sources: [
@@ -2164,7 +2143,6 @@ export const projects: Project[] = [
         'Sửa Tivi Chuyên Nghiệp – Dịch vụ sửa chữa Tivi & Thiết bị âm thanh chính hãng - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath:
         '/featured_item/sua-tivi-chuyen-nghiep-dich-vu-sua-chua-tivi-thiet-bi-am-thanh-chinh-hang/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-f2f9988f6a',
     },
     sources: [
@@ -2262,7 +2240,6 @@ export const projects: Project[] = [
       title:
         'WEHA – Đưa công nghệ gần gũi hơn với đời sống - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/weha-dua-cong-nghe-gan-gui-hon-voi-doi-song/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-7d07270901',
     },
     sources: [
@@ -2363,7 +2340,6 @@ export const projects: Project[] = [
       title:
         'NOVOPHARM – Tận tâm cho sự Sáng tạo & Chất lượng - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/novopharm-tan-tam-cho-su-sang-tao-chat-luong/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-eb81435eba',
     },
     sources: [
@@ -2464,7 +2440,6 @@ export const projects: Project[] = [
       title:
         'Applesmile – Cửa hàng sản phẩm Apple chính hãng - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/applesmile-cua-hang-san-pham-apple-chinh-hang/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-082bdea432',
     },
     sources: [
@@ -2559,7 +2534,6 @@ export const projects: Project[] = [
     seo: {
       title: 'Tengroup – All for the best - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/tengroup-all-for-the-best/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-aae4d2dbf8',
     },
     sources: [
@@ -2650,7 +2624,6 @@ export const projects: Project[] = [
     seo: {
       title: 'Bánh nướng & Ăn vặt Cô Ti - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/banh-nuong-an-vat-co-ti/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-85bce1408a',
     },
     sources: [
@@ -2747,7 +2720,6 @@ export const projects: Project[] = [
       title:
         'An Phát – Công ty Cổ phần Công nghệ Thương mại An Phát - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/an-phat-cong-ty-co-phan-cong-nghe-thuong-mai-an-phat/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-7f747226a1',
     },
     sources: [
@@ -2842,7 +2814,6 @@ export const projects: Project[] = [
     seo: {
       title: 'Nikico – Công ty TNHH Nihon Kizai - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/nikico-cong-ty-tnhh-nihon-kizai/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-8770261900',
     },
     sources: [
@@ -2937,7 +2908,6 @@ export const projects: Project[] = [
     seo: {
       title: 'Dwatch luxury – Đồng hồ thuỵ sỹ - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/dwatch-luxury-dong-ho-thuy-sy/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-56adb4352b',
     },
     sources: [
@@ -3038,7 +3008,6 @@ export const projects: Project[] = [
       title:
         'DrNhanh – Công ty TNHH Tư vấn Giáo dục Dr Nhanh - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/drnhanh-cong-ty-tnhh-tu-van-giao-duc-dr-nhanh/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-3bce149754',
     },
     sources: [
@@ -3140,7 +3109,6 @@ export const projects: Project[] = [
         'Hoanglan Logistics – Đơn vị vận chuyển hàng Trung Việt hàng đầu Việt Nam - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath:
         '/featured_item/hoanglan-logistics-don-vi-van-chuyen-hang-trung-viet-hang-dau-viet-nam/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-8ee40604af',
     },
     sources: [
@@ -3235,7 +3203,6 @@ export const projects: Project[] = [
     seo: {
       title: 'Hộp Háo Hức – Công ty TNHH Mầm Nhỏ - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/hop-hao-huc-cong-ty-tnhh-mam-nho/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-da0e394844',
     },
     sources: [
@@ -3330,7 +3297,6 @@ export const projects: Project[] = [
     seo: {
       title: 'Công ty CP Đầu tư Xây dựng Vina2 - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/cong-ty-cp-dau-tu-xay-dung-vina2/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-5f234625ef',
     },
     sources: [
@@ -3431,7 +3397,6 @@ export const projects: Project[] = [
       title:
         'Công ty CP Du lịch & Thương mại Khung Trời Việt - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/cong-ty-cp-du-lich-thuong-mai-khung-troi-viet/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-2a3553968a',
     },
     sources: [
@@ -3529,7 +3494,6 @@ export const projects: Project[] = [
       title:
         'Công ty TNHH Sơn NERO – Thương hiệu MODENA - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/cong-ty-tnhh-son-nero-thuong-hieu-modena/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-30d1494162',
     },
     sources: [
@@ -3630,7 +3594,6 @@ export const projects: Project[] = [
       title:
         'Trangmoon – Shop cây cảnh để bàn hợp phong thuỷ - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/trangmoon-shop-cay-canh-de-ban-hop-phong-thuy/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-a98c9700ad',
     },
     sources: [
@@ -3731,7 +3694,6 @@ export const projects: Project[] = [
       title:
         'PRO CAR PARTS VIỆT NAM – Phân phối phụ tùng bảo dưỡng & gầm ô tô - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/pro-car-parts-viet-nam-phan-phoi-phu-tung-bao-duong-gam-o-to/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-14d203f158',
     },
     sources: [
@@ -3832,7 +3794,6 @@ export const projects: Project[] = [
       title:
         'PPMVN – Công ty TNHH Quản lý tài sản Premier Việt Nam - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/ppmvn-cong-ty-tnhh-quan-ly-tai-san-premier-viet-nam/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-0ef63a94af',
     },
     sources: [
@@ -3933,7 +3894,6 @@ export const projects: Project[] = [
       title:
         'Việt THT Production – Công ty Cổ phần Việt THT - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/viet-tht-production-cong-ty-co-phan-viet-tht/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-74ecc834f7',
     },
     sources: [
@@ -4035,7 +3995,6 @@ export const projects: Project[] = [
         'Liên Đoàn Thương mại và Công nghiệp Việt Nam tại Đà Nẵng – VCCI Đà Nẵng - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath:
         '/featured_item/lien-doan-thuong-mai-va-cong-nghiep-viet-nam-tai-da-nang-vcci-da-nang/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-b11771bfea',
     },
     sources: [
@@ -4130,7 +4089,6 @@ export const projects: Project[] = [
     seo: {
       title: 'PA Store – Công ty TNHH PA Marketing - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/pa-store-cong-ty-tnhh-pa-marketing/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-045882934d',
     },
     sources: [
@@ -4225,7 +4183,6 @@ export const projects: Project[] = [
     seo: {
       title: 'Công ty luật Legal Art - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/cong-ty-luat-legal-art/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-9ebe97a96d',
     },
     sources: [
@@ -4316,7 +4273,6 @@ export const projects: Project[] = [
     seo: {
       title: 'Công ty TNHH Nha Khoa Viva Dental - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/cong-ty-tnhh-nha-khoa-viva-dental/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-94b4daa423',
     },
     sources: [
@@ -4411,7 +4367,6 @@ export const projects: Project[] = [
     seo: {
       title: 'Nha khoa thẩm mỹ quốc tế Việt Pháp - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/nha-khoa-tham-my-quoc-te-viet-phap/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-b382027b66',
     },
     sources: [
@@ -4512,7 +4467,6 @@ export const projects: Project[] = [
       title:
         'Công ty CP Công Nghệ An Ninh Mạng Quốc Gia Việt Nam - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/cong-ty-cp-cong-nghe-an-ninh-mang-quoc-gia-viet-nam/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-e6ac507b7b',
     },
     sources: [
@@ -4610,7 +4564,6 @@ export const projects: Project[] = [
       title:
         'HRZONE – Kiến tạo cộng đồng nhân sự quốc tế - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/hrzone-kien-tao-cong-dong-nhan-su-quoc-te/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-b534e2142e',
     },
     sources: [
@@ -4711,7 +4664,6 @@ export const projects: Project[] = [
       title:
         'Tintuc365 – Công ty Cổ phần Truyền Thông Thương Mại Việt - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/tintuc365-cong-ty-co-phan-truyen-thong-thuong-mai-viet/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-2771b61b33',
     },
     sources: [
@@ -4806,7 +4758,6 @@ export const projects: Project[] = [
     seo: {
       title: 'An Phú Decor – Kiến tạo giấc mơ - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/an-phu-decor-kien-tao-giac-mo/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-4d4f6640bd',
     },
     sources: [
@@ -4904,7 +4855,6 @@ export const projects: Project[] = [
       title:
         'Aya Spa Beauty – Công ty Cổ phần Gỗ Đỏ - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/aya-spa-beauty-cong-ty-co-phan-go-do/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-9027fa1ea8',
     },
     sources: [
@@ -5002,7 +4952,6 @@ export const projects: Project[] = [
       title:
         'Trường Trung học phổ thông Huỳnh Thúc Kháng - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/truong-trung-hoc-pho-thong-huynh-thuc-khang/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-1c302e4acd',
     },
     sources: [
@@ -5106,7 +5055,6 @@ export const projects: Project[] = [
         'Nha khoa Viva Dental - Hệ thống chuỗi nha khoa tiêu chuẩn Mỹ đầu tiên tại Việt Nam - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath:
         '/featured_item/nha-khoa-viva-dental-he-thong-chuoi-nha-khoa-tieu-chuan-my-dau-tien-tai-viet-nam/',
-      description: 'Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-d75d3553c3',
     },
     sources: [
@@ -5208,7 +5156,6 @@ export const projects: Project[] = [
         'Nha khoa Việt Pháp - Hệ thống chuỗi nha khoa tiêu chuẩn pháp đầu tiên tại Việt Nam - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath:
         '/featured_item/nha-khoa-viet-phap-he-thong-chuoi-nha-khoa-tieu-chuan-phap-dau-tien-tai-viet-nam/',
-      description: 'Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-155a7dbf14',
     },
     sources: [
@@ -5306,7 +5253,6 @@ export const projects: Project[] = [
       title:
         'Beework - Công ty TNHH Beework Việt Nam - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/beework-cong-ty-tnhh-beework-viet-nam/',
-      description: 'Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-4d40b810a7',
     },
     sources: [
@@ -5401,7 +5347,6 @@ export const projects: Project[] = [
     seo: {
       title: 'CÔNG TY CỔ PHẦN SQUARE ORANGE - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/cong-ty-co-phan-square-orange/',
-      description: 'Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-986bcf3524',
     },
     sources: [
@@ -5496,7 +5441,6 @@ export const projects: Project[] = [
     seo: {
       title: 'Công ty TNHH Konnertec Việt Nam - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/cong-ty-tnhh-konnertec-viet-nam/',
-      description: 'Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-87e9e445b8',
     },
     sources: [
@@ -5591,7 +5535,6 @@ export const projects: Project[] = [
     seo: {
       title: 'Sở Y Tế Bệnh Viện Mắt Hà Giang - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/so-y-te-benh-vien-mat-ha-giang/',
-      description: 'Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-2dd44cb02a',
     },
     sources: [
@@ -5687,7 +5630,6 @@ export const projects: Project[] = [
       title:
         'SENCOM - Home decor - Lighting - Design - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/sencom-home-decor-lighting-design/',
-      description: 'Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-efd106a89b',
     },
     sources: [
@@ -5785,7 +5727,6 @@ export const projects: Project[] = [
       title:
         'FLEXIUS - Công ty Cổ phần Thế Giới Bảng - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/flexius-cong-ty-co-phan-the-gioi-bang/',
-      description: 'Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-94ffacdb58',
     },
     sources: [
@@ -5824,7 +5765,6 @@ export const projects: Project[] = [
       title:
         '#STORMICK – Công ty TNHH Storm Entertaiment - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/stormick-cong-ty-tnhh-storm-entertaiment/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-d6640dbce6',
     },
     sources: [
@@ -5863,7 +5803,6 @@ export const projects: Project[] = [
       title:
         'Công ty Cổ phần Phát triển Công nghệ THP - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/cong-ty-co-phan-phat-trien-cong-nghe-thp/',
-      description: 'Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-42fded6f42',
     },
     sources: [
@@ -5905,7 +5844,6 @@ export const projects: Project[] = [
       title:
         'Giao diện Dsmart – Giải pháp điều khiển xe hơi trên smartphone - Công ty thiết kế website chuyên nghiệp | Sova',
       canonicalPath: '/featured_item/giao-dien-dsmart-giai-phap-dieu-khien-xe-hoi-tren-smartphone/',
-      description: '» Lần 1: 50% sau khi ký hợp đồng.',
       imageId: 'asset-b473c3b1c4',
     },
     sources: [

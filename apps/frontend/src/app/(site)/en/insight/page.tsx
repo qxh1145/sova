@@ -18,6 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title,
     alternates,
+    robots: { index: false, follow: true }, // NOINDEX_PATHS: no EN posts yet
   };
 }
 

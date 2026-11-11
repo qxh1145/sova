@@ -31,6 +31,7 @@ export function ProjectGallerySlider({ galleryAssets, labels }: ProjectGallerySl
             <div className="img-inner">
               <a
                 className="lightbox-gallery"
+                aria-label={img.alt || `Xem ảnh ${index + 1}`}
                 href={img.src}
                 onClick={(e) => {
                   e.preventDefault();
@@ -80,6 +81,7 @@ export function ProjectGallerySingle({ asset }: ProjectGallerySingleProps) {
             <a
               ref={triggerRef}
               className="lightbox-gallery"
+              aria-label={asset.alt || 'Xem ảnh'}
               href={asset.src}
               onClick={(e) => {
                 e.preventDefault();
